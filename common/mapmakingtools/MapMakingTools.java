@@ -1,5 +1,7 @@
 package mapmakingtools;
 
+import java.io.File;
+
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;

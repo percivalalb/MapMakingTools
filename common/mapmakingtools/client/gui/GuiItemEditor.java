@@ -6,7 +6,6 @@ import mapmakingtools.core.helper.TextureHelper;
 import mapmakingtools.inventory.ContainerItemEditor;
 import mapmakingtools.lib.ResourceReference;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 

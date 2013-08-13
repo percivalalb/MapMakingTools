@@ -4,7 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -64,70 +66,144 @@ public class PacketChestSymmetrify extends PacketMMT {
 			TileEntity tile = player.worldObj.getBlockTileEntity(x, y, z);
 			if(tile instanceof TileEntityChest) {
 				TileEntityChest chest = (TileEntityChest)tile;
-				int numberOfItems = 0;
-				for(int index = 0; index < chest.getSizeInventory(); ++index) {
-					if(chest.getStackInSlot(index) != null) ++numberOfItems;
-				}
+				
+				//Gets the valid stacks from the chest and stores them in a list
 				List<ItemStack> stacksInChest = new ArrayList<ItemStack>();
 				int currentCount = 0;
 				for(int index = 0; index < chest.getSizeInventory(); ++index) {
 					ItemStack stack = chest.getStackInSlot(index);
 					if(stack != null) {
-						stacksInChest.add(stack.copy());
+						stacksInChest.add(stack);
 						chest.setInventorySlotContents(index, null);
 						++currentCount;
 					}
 				}
 				
-				List<ItemStack> sortedStacks = new ArrayList<ItemStack>();
-				while(!stacksInChest.isEmpty()) {
-					ItemStack stack = stacksInChest.get(0);
-					Iterator<ItemStack> ite = stacksInChest.iterator();
-					//int index = 0;
+				
+				//Counts the amount of each id in the chest
+				Map<Integer, Integer> idCounts = new HashMap<Integer, Integer>();
+				for(ItemStack stack : stacksInChest) {
+					int id = stack.itemID;
+					if(idCounts.containsKey(id)) {
+						idCounts.put(id, idCounts.get(id) + 1);
+					}
+					else {
+						idCounts.put(id, 1);
+					}
+				}
+				
+				List<ArrayList<ItemStack>> sortedItems = new ArrayList<ArrayList<ItemStack>>();
+				
+				while(idCounts.size() > 0) {
+					int maxEvenId = 0;
+					int maxEvenCount = 0;
+					int maxOddId = 0;
+					int maxOddCount = 0;
+					
+					Iterator<Integer> ite = idCounts.keySet().iterator();
+					
 					while(ite.hasNext()) {
-						ItemStack check = ite.next();
-						if(check.itemID < stack.itemID) {
-							stack = check;
-							//++index;
+						int id = ite.next();
+						if(idCounts.get(id) % 2 == 0 && idCounts.get(id) > maxEvenCount) {
+							maxEvenId = id;
+							maxEvenCount = idCounts.get(id);
+						}
+						if(idCounts.get(id) % 2 == 1 && idCounts.get(id) > maxOddCount) {
+							maxOddId = id;
+							maxOddCount = idCounts.get(id);
 						}
 					}
 					
-					sortedStacks.add(stack.copy());
-					LogHelper.logDebug("Add: " + stack.getDisplayName() + " Id: " + stack.itemID);
-					//LogHelper.logDebug("Remove: " + stacksInChest.get(index).getDisplayName() + " Id: " + stacksInChest.get(index).itemID);
-		
-					stacksInChest.remove(stack);
-					LogHelper.logDebug("List size: "+ stacksInChest.size());
-				}
-				
-				for(ItemStack stack : sortedStacks) {
-					if(stack != null) {
-						LogHelper.logDebug(stack.getDisplayName() + " Id: " + stack.itemID);
+					int maxId;	
+					if(maxEvenCount != 0) {
+						maxId = maxEvenId;
 					}
 					else {
-						LogHelper.logDebug("null Id: 0");
+						maxId = maxOddId;
 					}
+					
+					ArrayList<ItemStack> group = new ArrayList<ItemStack>();
+					for(ItemStack stack : stacksInChest) {
+						if(stack.itemID == maxId) {
+							group.add(stack);
+						}
+					}
+					
+					sortedItems.add(group);
+					idCounts.remove(maxId);	
 				}
 				
-				String[][] pattern = ChestSymmetrifyHelper.getPattern(numberOfItems);
+				int[] taken = new int[27];
+				Arrays.fill(taken, 0);
 				
-				int currentSlot = 0;
+				String[][] arrangement = ChestSymmetrifyHelper.getPattern(stacksInChest.size());
 				
-				int[] rows = new int[] {1, 0, 2};
-				int[] columns = new int[] {4, 5, 3, 6, 2, 7, 1, 8, 0};
-				for(int row : rows) {
-					for(int column : columns) {
-						int slot = row * 9 + column;
-						if(pattern[row][column].equals("X")) {
-							chest.setInventorySlotContents(slot, sortedStacks.get(currentSlot));
-							++currentSlot;
+				Map<Integer, ItemStack> newItems = new HashMap<Integer, ItemStack>();
+				
+				for(int row : new int[] {1, 0, 2}) {
+					if(arrangement[row][4].equalsIgnoreCase("x")) {
+						for(ArrayList<ItemStack> group : sortedItems) {
+							if(group.size() % 2 == 1) {
+								int qtyPlaced = 0;
+								for(ItemStack item : group) {
+									boolean placed = false;
+									for(int column : new int[] {4, 5, 3, 6, 2, 7, 1, 8, 0}) {
+										int idx = row * 9 + column;
+										if(arrangement[row][column].equalsIgnoreCase("x") && taken[idx] == 0) {
+											taken[idx] = 1;
+											newItems.put(idx, item);
+											placed = true;
+											qtyPlaced += 1;
+											break;
+										}
+									}
+									if(!placed) {
+										break;
+									}
+								}
+								for(int i = 0; i < qtyPlaced; ++i) {
+									group.remove(group.get(0));
+								}
+								break;
+								
+							}
 						}
 					}
 				}
 				
-				LogHelper.logDebug("Number of Items in chest: " + numberOfItems);
+				for(ArrayList<ItemStack> group : sortedItems) {
+					for(ItemStack item : group) {
+						boolean placed = false;
+						for(int row : new int[] {1, 0, 2}) {
+							for(int column : new int[] {4, 5, 3, 6, 2, 7, 1, 8, 0}) {
+								int idx = row * 9 + column;
+								if(arrangement[row][column].equalsIgnoreCase("x") && taken[idx] == 0) {
+									taken[idx] = 1;
+									newItems.put(idx, item);
+									placed = true;
+									break;
+								}
+							}
+							
+							if(placed) {
+								break;
+							}
+								
+						}
+					}
+				}
 				
+				for(int index = 0; index < chest.getSizeInventory(); ++index) {
+					chest.setInventorySlotContents(index, null);
+				}
 				
+				Iterator<Integer> ite = newItems.keySet().iterator();
+				
+				while(ite.hasNext()) {
+					int key = ite.next();
+					ItemStack item = newItems.get(key);
+					chest.setInventorySlotContents(key, item.copy());
+				}
 			}
 		}
 		else {

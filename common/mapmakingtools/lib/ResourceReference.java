@@ -1,7 +1,7 @@
 package mapmakingtools.lib;
 
+import net.minecraft.util.ResourceLocation;
 import mapmakingtools.core.helper.TextureHelper;
-import net.minecraft.client.resources.ResourceLocation;
 
 /**
  * @author ProPercivalalb

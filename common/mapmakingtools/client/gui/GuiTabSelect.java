@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -31,7 +30,7 @@ public class GuiTabSelect extends GuiButton {
     
     @Override
     public void drawButton(Minecraft minecraft, int i, int j) {
-        if(drawButton) {
+        if(this.drawButton) {
         	FontRenderer fontRenderer = minecraft.fontRenderer;
         	minecraft.func_110434_K().func_110577_a(ResourceReference.tabs);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

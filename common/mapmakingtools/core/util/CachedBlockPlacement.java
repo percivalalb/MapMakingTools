@@ -3,7 +3,6 @@ package mapmakingtools.core.util;
 import mapmakingtools.api.RotationManager;
 import mapmakingtools.core.helper.TileEntityHelper;
 import mapmakingtools.core.helper.WorldHelper;
-import multiobject.core.helper.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -170,7 +169,6 @@ public class CachedBlockPlacement {
 			newZ = -backUpZ;
 			break;
 		}
-		LogHelper.logInfo("New Y: " +newY);
 		CachedBlockPlacement replacementCache = new CachedBlockPlacement(player.worldObj, newX, newY, newZ); //Creates a new Instance with the changes to the block at the classes, x, y, z
 		this.clearTileEntity(world, newX, newY, newZ);
 		WorldHelper.setBlockCheaply(player.worldObj, newX, newY, newZ, blockId, blockMeta); 		//Sets the block data with no block update
