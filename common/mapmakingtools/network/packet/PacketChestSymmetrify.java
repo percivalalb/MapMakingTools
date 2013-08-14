@@ -79,6 +79,10 @@ public class PacketChestSymmetrify extends PacketMMT {
 					}
 				}
 				
+				if(stacksInChest.size() < 1) {
+					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.chestSymmetrify.noContents"));
+					return;
+				}	
 				
 				//Counts the amount of each id in the chest
 				Map<Integer, Integer> idCounts = new HashMap<Integer, Integer>();
@@ -204,6 +208,8 @@ public class PacketChestSymmetrify extends PacketMMT {
 					ItemStack item = newItems.get(key);
 					chest.setInventorySlotContents(key, item.copy());
 				}
+				
+				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.chestSymmetrify.complete"));
 			}
 		}
 		else {

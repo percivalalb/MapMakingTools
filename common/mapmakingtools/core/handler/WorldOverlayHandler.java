@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import mapmakingtools.ModItems;
 import mapmakingtools.core.helper.ItemStackHelper;
 import mapmakingtools.core.helper.MathHelper;
+import mapmakingtools.core.helper.VersionHelper;
+import mapmakingtools.core.helper.VersionHelper.Type;
 import mapmakingtools.core.util.DataStorage;
 import mapmakingtools.lib.Constants;
 import net.minecraft.block.Block;
@@ -22,9 +24,17 @@ import net.minecraftforge.event.ForgeSubscribe;
 public class WorldOverlayHandler {
 	
 	Minecraft mc = Minecraft.getMinecraft();
+	private static boolean hasCheckedVersion = false;
 	
 	@ForgeSubscribe
 	 public void onWorldRenderLast(RenderWorldLastEvent event) {
+		if(!hasCheckedVersion) {
+			if(mc.thePlayer != null) {
+				VersionHelper.checkVersion(Type.COLOURED);
+				this.hasCheckedVersion = true;
+			}
+		}
+		
 		if(!DataStorage.hasSelectedPostions(mc.thePlayer) || !ItemStackHelper.isItem(mc.thePlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) return; 
 		GL11.glPushMatrix();
 		int secMinX = DataStorage.getSelectedPosFromPlayer(mc.thePlayer)[0];

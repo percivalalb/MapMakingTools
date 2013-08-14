@@ -12,8 +12,8 @@ public class Reference {
 	//Mod Related Constants 
 	public static final String 		 MOD_ID 	     = "MapMakingTools";
 	public static final String		 MOD_NAME        = "Map Making Tools";
-	public static final String 		 MOD_VERSION     = "v2.0.0";
-	public static final String 		 MOD_DEPENDENCIES = "required-after:Forge@[7.7.1.650,)";
+	public static final String 		 MOD_VERSION     = "v2.0.0a";
+	public static final String 		 MOD_DEPENDENCIES = "required-after:Forge@[9.10.0.800,)";
 	public static final String 		 SP_CLIENT 		 = "mapmakingtools.core.proxy.ClientProxy";
 	public static final String 		 SP_SERVER		 = "mapmakingtools.core.proxy.CommonProxy";
 	public static final List<String> MOD_AUTHORS     = Arrays.asList("ProPercvialalb");

@@ -1,7 +1,5 @@
 package mapmakingtools;
 
-import java.io.File;
-
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -23,6 +21,7 @@ import mapmakingtools.common.RotationFurnace;
 import mapmakingtools.common.RotationHayBale;
 import mapmakingtools.common.RotationHopper;
 import mapmakingtools.common.RotationLadder;
+import mapmakingtools.common.RotationPistonBase;
 import mapmakingtools.common.RotationPoweredRail;
 import mapmakingtools.common.RotationPumpkin;
 import mapmakingtools.common.RotationQuatzPillar;
@@ -46,6 +45,8 @@ import mapmakingtools.core.helper.ChestSymmetrifyHelper;
 import mapmakingtools.core.helper.DirectoryHelper;
 import mapmakingtools.core.helper.LogHelper;
 import mapmakingtools.core.helper.MobSpawnerType;
+import mapmakingtools.core.helper.VersionHelper;
+import mapmakingtools.core.helper.VersionHelper.Type;
 import mapmakingtools.core.proxy.CommonProxy;
 import mapmakingtools.filters.FilterBabyMonster;
 import mapmakingtools.filters.FilterConvertToDispenser;
@@ -100,6 +101,7 @@ public class MapMakingTools {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		proxy.onPreLoad();
+		VersionHelper.checkVersion(Type.BLANK);
 		//Loads the Languages into the game
 		LocalizationHandler.loadLanguages();
 		//Sets the mc directory
@@ -161,6 +163,8 @@ public class MapMakingTools {
 		RotationManager.registerRotationHandler(Block.doorWood.blockID, new RotationDoor());
 		RotationManager.registerRotationHandler(Block.doorIron.blockID, new RotationDoor());
 		
+		//RotationManager.registerRotationHandler(Block.pistonBase.blockID, new RotationPistonBase());
+		//RotationManager.registerRotationHandler(Block.pistonStickyBase.blockID, new RotationPistonBase());
 		RotationManager.registerRotationHandler(Block.ladder.blockID, new RotationLadder());
 		RotationManager.registerRotationHandler(Block.torchWood.blockID, new RotationTorch());
 		RotationManager.registerRotationHandler(Block.torchRedstoneIdle.blockID, new RotationTorch());

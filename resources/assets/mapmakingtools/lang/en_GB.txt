@@ -61,7 +61,9 @@ filter.potionSpawner.complete=Changed the potion that the spawner spawns.
 filter.mobArmor.complete=Changed the armor the mob wears.
 filter.spawnerTimings.complete=Changed the spawner properties.
 filter.villagerShop.complete=Created a custom Villager Shop.
+filter.chestSymmetrify.complete=Made the chests contents look as symmetrical as possible!
 
+filter.chestSymmetrify.noContents=The chest must contant some items.
 filter.villagerShop.inputNull=At least 1 input has to contain an item.
 filter.villagerShop.outputNull=The output has to contain an item.
 error.wrenchTask.entity=%s is already editing this entity.

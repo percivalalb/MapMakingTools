@@ -69,6 +69,7 @@ public class ContainerFilter extends Container {
 	
 	@Override
 	public Slot addSlotToContainer(Slot par1Slot) {
+		par1Slot.xDisplayPosition += 62 / 2;
         par1Slot.slotNumber = this.inventorySlots.size();
         this.inventorySlots.add(par1Slot);
         this.inventoryItemStacks.add((Object)null);

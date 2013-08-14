@@ -54,17 +54,17 @@ import org.lwjgl.opengl.GL12;
 
 public class GuiFilterMenu extends GuiContainer {
    
-	//Extra data the class holds
+	/** Extra data the class holds **/
 	public EntityPlayer entityPlayer;
     public int x, y, z;
     public int entityId;
 	public Mode mode;
 	public enum Mode { ENTITY, BLOCK; }
     
-    //The list that the current screen could be
+	/** The list that the current screen could be **/
     private List<IFilter> filterList;
     private static IFilter current;
-    //The page varibles 
+    /** The page varibles **/
     public static int currentPage = 1;
     int maxPages = 1;
 
@@ -87,7 +87,7 @@ public class GuiFilterMenu extends GuiContainer {
     private GuiFilterMenu(EntityPlayer player, List<IFilter> filters, List<IServerFilter> serverFilters) {
        	super(new ContainerFilter(player, serverFilters));
     	this.entityPlayer = player;
-        this.xSize = 240;
+        this.xSize = 302;
         this.ySize = 100;
         this.filterList = filters;
         this.maxPages = (filterList.size() + (deducuce(filterList.size() % 6))) / 6;
@@ -229,42 +229,16 @@ public class GuiFilterMenu extends GuiContainer {
             		}
             		break;
                 case 150:
-                	if(var1 instanceof GuiTabSelect) {
-                		GuiTabSelect button = (GuiTabSelect)var1;
-                		unSelectAllExpect(button);
-                	}
-                	break;
                 case 151:
-                	if(var1 instanceof GuiTabSelect) {
-                		GuiTabSelect button = (GuiTabSelect)var1;
-                		unSelectAllExpect(button);
-                	}
-                	break;
                 case 152:
-                	if(var1 instanceof GuiTabSelect) {
-                		GuiTabSelect button = (GuiTabSelect)var1;
-                		unSelectAllExpect(button);
-                	}
-                	break;
                 case 153:
-                	if(var1 instanceof GuiTabSelect) {
-                		GuiTabSelect button = (GuiTabSelect)var1;
-                		unSelectAllExpect(button);
-                	}
-                	break;
                 case 154:
-                	if(var1 instanceof GuiTabSelect) {
-                		GuiTabSelect button = (GuiTabSelect)var1;
-                		unSelectAllExpect(button);
-                	}
-                	break;
                 case 155:
                 	if(var1 instanceof GuiTabSelect) {
                 		GuiTabSelect button = (GuiTabSelect)var1;
                 		unSelectAllExpect(button);
                 	}
                 	break;
-
                 default:
             }
         }
@@ -447,7 +421,7 @@ public class GuiFilterMenu extends GuiContainer {
 	}
 	
 	public int xSize() {
-		return this.xSize;
+		return 240;
 	}
 	
 	public int ySize() {
