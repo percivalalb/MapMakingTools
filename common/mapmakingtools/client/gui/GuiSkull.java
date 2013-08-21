@@ -1,14 +1,26 @@
 package mapmakingtools.client.gui;
 
+import java.util.Hashtable;
+import java.util.Map;
+
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.model.ModelSkeletonHead;
+import net.minecraft.client.renderer.ChestItemRenderHelper;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.StringUtils;
+import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import mapmakingtools.core.helper.ItemStackHelper;
 import mapmakingtools.core.helper.TextureHelper;
@@ -28,7 +40,8 @@ public class GuiSkull extends GuiScreen {
     private GuiButton btn_ok;
     private GuiButton btn_cancel;
     private String startText = "";
-    private Boolean hasPerson = false;
+    private boolean hasPerson = false;
+    private static ModelSkeletonHead modelskeletonhead = new ModelSkeletonHead(0, 0, 64, 32);
 
     public GuiSkull(EntityPlayer var1) {
         this.entityPlayer = var1;
@@ -47,18 +60,14 @@ public class GuiSkull extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
         this.buttonList.clear();
-        int var1 = this.width / 2 + 100 - 80;
-        int var2 = this.height / 2 + 50 - 24;
-        this.btn_ok = new GuiButton(0, var1, var2, 60, 20, "OK");
+        int var1 = (this.width - 240) / 2;
+        int var2 = (this.height - 100) / 2;
+        this.btn_ok = new GuiButton(0, var1 + 140, var2 + 70, 60, 20, "OK");
         this.btn_ok.enabled = false;
-        var1 = this.width / 2 - 100 + 20;
-        var2 = this.height / 2 + 50 - 24;
-        this.btn_cancel = new GuiButton(1, var1, var2, 60, 20, "Cancel");
+        this.btn_cancel = new GuiButton(1, var1 + 40, var2 + 70, 60, 20, "Cancel");
         this.buttonList.add(this.btn_ok);
         this.buttonList.add(this.btn_cancel);
-        var1 = this.width / 2 - 100;
-        var2 = this.height / 2 - 50 + 47;
-        this.txt_skullName = new GuiTextField(this.fontRenderer, var1, var2, 200, 20);
+        this.txt_skullName = new GuiTextField(this.fontRenderer, var1 + 20, var2 + 40, 200, 20);
         this.txt_skullName.setFocused(true);
         this.txt_skullName.setMaxStringLength(32);
         this.txt_skullName.setText(startText);
@@ -101,31 +110,51 @@ public class GuiSkull extends GuiScreen {
     }
 
     @Override
-    public void drawScreen(int var1, int var2, float var3) {
+    public void drawScreen(int xMouse, int yMouse, float particleTicks) {
         this.drawDefaultBackground();
-        this.drawGuiBackground();
-        int var4 = this.width / 2 - this.fontRenderer.getStringWidth(this.TITLE) / 2;
-        int var5 = this.height / 2 - 50 + 20;
-        this.fontRenderer.drawString(this.TITLE, var4, var5, 0);
-        var4 = this.width / 2 - 100;
-        var5 = this.height / 2 - 50 + 35;
-        this.fontRenderer.drawString("New name:", var4, var5, 4210752);
+        this.drawGuiBackground(xMouse, yMouse, particleTicks);
+        int var4 = (this.width - 240) / 2;
+        int var5 = (this.height - 100) / 2;
+        this.fontRenderer.drawString(this.TITLE, var4 + 120 - this.fontRenderer.getStringWidth(this.TITLE) / 2, var5 + 10, 0);
+        this.fontRenderer.drawString("New name:", var4 + 20, var5 + 30, 4210752);
         this.txt_skullName.drawTextBox();
-        super.drawScreen(var1, var2, var3);
+        super.drawScreen(xMouse, yMouse, particleTicks);
     }
 
-    protected void drawGuiBackground() {
+    protected void drawGuiBackground(int xMouse, int yMouse, float particleTicks) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.func_110434_K().func_110577_a(ResourceReference.screenSmall);
-        int var2 = (this.width - 100) / 2;
-        int var3 = (this.height - 50) / 2;
-        this.drawTexturedModalRect(var2 - 100 + 30, var3 - 50 + 30 + 5, 0, 0, 240, 100);
+        int var2 = (this.width - 240) / 2;
+        int var3 = (this.height - 100) / 2;
+        this.drawTexturedModalRect(var2, var3, 0, 0, 240, 100);
        // String url = "http://skins.minecraft.net/MinecraftSkins/" + StringUtils.stripControlCodes(txt_skullName.getText().trim()) + ".png";
 
-        TextureHelper.bindPlayerTexture(txt_skullName.getText().trim());
+       // TextureHelper.bindPlayerTexture(txt_skullName.getText().trim());
+        //TileEntitySkullRenderer.skullRenderer.func_82393_a(3, 3, 0, ForgeDirection.UP.ordinal(), 3, 3, txt_skullName.getText().trim());
+        String username = txt_skullName.getText();
+        TileEntitySkullRenderer.skullRenderer.func_82393_a(-0.5F, 0.0F, -0.5F, 1, 180.0F, 3, username);
+        EntityOtherPlayerMP player = getPlayer(username);
+        byte b0 = player.getDataWatcher().getWatchableObjectByte(16);
+        player.getDataWatcher().updateObject(16, Byte.valueOf((byte)(b0 | 1 << 1)));
+        //player.sho
+		GuiInventory.func_110423_a(var2 - 35, var3 + 90, 40, (float)(var3 - 35 - xMouse), (float)(var2 + 90 - 40 - yMouse), player);
+       
+		/** 
         GL11.glPushMatrix();
         GL11.glScalef(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(var2 - 140 + 30, var3 - 50 + 45 + 5, 32, 64, 32, 64);
         GL11.glPopMatrix();
+        **/
     }
+    
+    private static Map<String, EntityOtherPlayerMP> playerList = new Hashtable<String, EntityOtherPlayerMP>();
+	
+	public EntityOtherPlayerMP getPlayer(String username) {
+		EntityOtherPlayerMP player = playerList.get(username);
+		if(player == null) {
+			player = new EntityOtherPlayerMP(mc.theWorld, username.equals("") ? "steve" : username);
+			playerList.put(username, player);
+		}
+		return player;
+	}
 }
