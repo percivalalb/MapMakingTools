@@ -117,7 +117,6 @@ public class ActionHandler {
 				event.entityPlayer.addChatMessage(message);
 				event.setCanceled(true);
 			}
-			LogHelper.logDebug("Side: Client" + event.entityPlayer.worldObj.isRemote);
 		}
 		
 		if(event.action != Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Item.skull)) {
@@ -126,7 +125,7 @@ public class ActionHandler {
 			    if(event.entityPlayer.worldObj.isRemote) {
 			    	FMLCommonHandler.instance().showGuiScreen(new GuiSkull(event.entityPlayer));
 			    }
-			}
+			}//Compiler
 		}
 		
 		if(event.action == Action.RIGHT_CLICK_BLOCK) {

@@ -1,0 +1,17 @@
+Map Making Tools - Changelog
+
+Update List Key
+(+) A new feature
+(-) A removed feature
+(#) A changed feature
+(*) A bug fix
+(/) Other
+
+v2.1.0a
++ Added a //killentities <type> command, which you can kill all or specified entities in the loaded world
+
+* Fixed the /potion command not working and making the game crash
+* Fixed the items in the villager shop editor flashing from one item to another on opening the GUI
+
+v2.0.0a
+

@@ -1,7 +1,11 @@
 package mapmakingtools.filters.server;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity;
@@ -31,7 +35,7 @@ public class FilterServerVillagerShop implements IServerFilter {
 
 	public static Map<String, Integer> maxRecipesMap = new Hashtable<String, Integer>();
 	public static Map<String, Integer> tradeCountMap = new Hashtable<String, Integer>();
-	public static Map<String, VillagerShopInventory> invMap = new Hashtable<String, VillagerShopInventory>();
+	public static Map<ArrayList<Object>, VillagerShopInventory> invMap = new Hashtable<ArrayList<Object>, VillagerShopInventory>();
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
@@ -179,12 +183,17 @@ public class FilterServerVillagerShop implements IServerFilter {
 	}
 	
 	public VillagerShopInventory getInventory(ContainerFilter player) {
-		String username = PlayerHelper.usernameLowerCase(player.player);
+    	Entity entity = player.player.worldObj.getEntityByID(player.entityId);
+    	if(entity == null)
+    		return null;
+    	ArrayList list = new ArrayList();
+    	list.add(PlayerHelper.usernameLowerCase(player.player));
+    	list.add(entity);
 	    if(!invMap.containsKey(player)) {
-	    	invMap.put(username, new VillagerShopInventory(256 * 3));
+	    	invMap.put(list, new VillagerShopInventory(256 * 3));
 	    }
 	    	
-		return invMap.get(username);
+		return invMap.get(list);
 	}
 
 	public class VillagerShopInventory implements IInventory {

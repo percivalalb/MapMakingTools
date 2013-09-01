@@ -109,6 +109,21 @@ public class FilterVillagerShop implements IFilter {
         gui.getButtonList().add(this.btn_remove);
     	int recipeAmounts = ((FilterServerVillagerShop)((ContainerFilter)gui.inventorySlots).current).getAmountRecipes(gui.entityPlayer);
     	PacketTypeHandler.populatePacketAndSendToServer(new PacketVillagerRecipeAmounts(recipeAmounts));
+		this.btn_add.xPosition = k + 17 + recipeAmounts * 23;
+    	this.btn_remove.xPosition = k + 17 + recipeAmounts * 23;
+    	if(recipeAmounts >= 9) {
+    		this.btn_add.enabled = false;
+    	}
+    	else {
+    		this.btn_add.enabled = true;
+    	}
+    	
+    	if(recipeAmounts <= 1) {
+    		this.btn_remove.enabled = false;
+    	}
+    	else {
+    		this.btn_remove.enabled = true;
+    	}
 	}
 
 	@Override
