@@ -35,7 +35,7 @@ public class ScreenRenderHandler {
 	@ForgeSubscribe
 	public void onPreRenderGameOverlay(RenderGameOverlayEvent.Pre event) {
 	    Minecraft mc = Minecraft.getMinecraft();
-	    if (mc.thePlayer != null) {
+	    if (mc.thePlayer != null && mc.thePlayer.capabilities.isCreativeMode) {
 	    	if (event.type == RenderGameOverlayEvent.ElementType.HELMET) {
 	    		if(mc.currentScreen instanceof GuiChat) {
 	   

@@ -48,14 +48,11 @@ public class ConnectionHandler implements IConnectionHandler {
 
 	@Override
 	public void connectionClosed(INetworkManager manager) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void clientLoggedIn(NetHandler clientHandler,
-			INetworkManager manager, Packet1Login login) {
-		// TODO Auto-generated method stub
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) {
 		
 	}
 

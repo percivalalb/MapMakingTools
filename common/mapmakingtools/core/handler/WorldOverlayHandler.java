@@ -35,7 +35,7 @@ public class WorldOverlayHandler {
 			}
 		}
 		
-		if(!DataStorage.hasSelectedPostions(mc.thePlayer) || !ItemStackHelper.isItem(mc.thePlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) return; 
+		if(mc.thePlayer == null || !mc.thePlayer.capabilities.isCreativeMode || !DataStorage.hasSelectedPostions(mc.thePlayer) || !ItemStackHelper.isItem(mc.thePlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) return; 
 		GL11.glPushMatrix();
 		int secMinX = DataStorage.getSelectedPosFromPlayer(mc.thePlayer)[0];
 		int secMinY = DataStorage.getSelectedPosFromPlayer(mc.thePlayer)[1];

@@ -8,10 +8,13 @@ Update List Key
 (/) Other
 
 v2.1.0a
-+ Added a //killentities <type> command, which you can kill all or specified entities in the loaded world
++ Added a //killentities <type> command, which you can kill all/specified entities in the loaded world
 
+* Fixed the wooden axe not being able to destroy anything in survival mode due to the quick build system
 * Fixed the /potion command not working and making the game crash
 * Fixed the items in the villager shop editor flashing from one item to another on opening the GUI
+
+# Made the selected box outline and block id helper only show in creative mode
 
 v2.0.0a
 
