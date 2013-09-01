@@ -137,7 +137,7 @@ public class GuiSkull extends GuiScreen {
         byte b0 = player.getDataWatcher().getWatchableObjectByte(16);
         player.getDataWatcher().updateObject(16, Byte.valueOf((byte)(b0 | 1 << 1)));
         //player.sho
-		GuiInventory.func_110423_a(var2 - 35, var3 + 90, 40, (float)(var3 - 35 - xMouse), (float)(var2 + 90 - 40 - yMouse), player);
+		GuiInventory.func_110423_a(var2 - 35, var3 + 90, 40, (float)(var2 - 35 - xMouse), (float)(var3 + 90 - 30 - yMouse), player);
        
 		/** 
         GL11.glPushMatrix();

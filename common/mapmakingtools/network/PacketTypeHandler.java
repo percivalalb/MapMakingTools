@@ -29,6 +29,8 @@ import mapmakingtools.network.packet.PacketMobVelocity;
 import mapmakingtools.network.packet.PacketOpenFilterMenu;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
 import mapmakingtools.network.packet.PacketPotionSpawner;
+import mapmakingtools.network.packet.PacketRemoveEntityFromWorld;
+import mapmakingtools.network.packet.PacketSignEdit;
 import mapmakingtools.network.packet.PacketSkullModify;
 import mapmakingtools.network.packet.PacketSpawnerTimings;
 import mapmakingtools.network.packet.PacketVillagerRecipeAmounts;
@@ -70,7 +72,9 @@ public enum PacketTypeHandler {
 	ENTITY_DATA_UPDATE(PacketEntityDataUpdate.class),
 	WRENCH_TASK(PacketWrenchTask.class),
 	VILLAGER_RECIPE_AMOUNR(PacketVillagerRecipeAmounts.class),
-	CHEST_SYMMETRIFY(PacketChestSymmetrify.class);
+	CHEST_SYMMETRIFY(PacketChestSymmetrify.class),
+	REMOVE_ENTITY_FROM_WORLD(PacketRemoveEntityFromWorld.class),
+	SIGN_EDIT(PacketSignEdit.class);
 	
     private Class<? extends PacketMMT> clazz;
 

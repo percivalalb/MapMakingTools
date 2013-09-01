@@ -126,11 +126,4 @@ public class FilterChestSymmetrify implements IFilter {
 	public boolean drawBackground(GuiFilterMenu gui) {
 		return false;
 	}
-
-	@Override
-	public boolean isMouseOverSlot(GuiFilterMenu gui, Slot slot, int mouseX,
-			int mouseY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

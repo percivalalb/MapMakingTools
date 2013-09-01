@@ -7,12 +7,12 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
-import mapmakingtools.api.FilterRegistry;
-import mapmakingtools.api.RotationManager;
+import mapmakingtools.api.manager.FilterManager;
+import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.command.CommandHandler;
-import mapmakingtools.common.RotationFurnace;
-import mapmakingtools.common.RotationQuatzPillar;
-import mapmakingtools.common.RotationVanillaLog;
+import mapmakingtools.common.rotation.RotationFurnace;
+import mapmakingtools.common.rotation.RotationQuatzPillar;
+import mapmakingtools.common.rotation.RotationVanillaLog;
 import mapmakingtools.core.handler.ActionHandler;
 import mapmakingtools.core.handler.ConnectionHandler;
 import mapmakingtools.core.handler.FlyHandler;

@@ -27,7 +27,6 @@ public class LocalizationHandler {
         //For every file specified, load them into the Language Registry
         for (Localizations localization : Localizations.values()) {
         	String localizationFile = Localizations.LANG_RESOURCE_LOCATION + localization.getFile();
-        	LogHelper.logInfo(localizationFile);
             try {
             BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream(localizationFile))); 
 			String line = "";

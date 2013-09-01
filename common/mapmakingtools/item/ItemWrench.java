@@ -2,7 +2,7 @@ package mapmakingtools.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mapmakingtools.api.FilterRegistry;
+import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.core.helper.LogHelper;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,7 +19,7 @@ public class ItemWrench extends Item {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegistry) {
     	this.itemIcon = iconRegistry.registerIcon("mapmakingtools:wrench");
-    	FilterRegistry.registerIcons(iconRegistry);
+    	FilterManager.registerIcons(iconRegistry);
     	LogHelper.logDebug("Register Icons");
     }
 

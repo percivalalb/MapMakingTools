@@ -5,8 +5,8 @@ import java.util.List;
 import cpw.mods.fml.common.FMLCommonHandler;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.ModItems;
-import mapmakingtools.api.FilterRegistry;
 import mapmakingtools.api.IFilter;
+import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.GuiBeacon;
 import mapmakingtools.client.gui.GuiFilterMenu;
 import mapmakingtools.client.gui.GuiSkull;
@@ -48,7 +48,7 @@ public class ActionHandler {
 	public void rightClick(PlayerInteractEvent event) {
 		LogHelper.logDebug("Metadata: " + event.entityPlayer.worldObj.getBlockMetadata(event.x, event.y, event.z));
 		
-		if(event.action == Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
+		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
 			if(!event.entityPlayer.worldObj.isRemote) {
 				DataStorage.setPlayerLeftClick(event.entityPlayer, event.x, event.y, event.z);
 				String message = "Postion 1 set at (" + event.x + ", " + event.y + ", " + event.z + ")";
@@ -83,7 +83,7 @@ public class ActionHandler {
 				event.setCanceled(true);
 			}
 		}
-		if(event.action == Action.RIGHT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
+		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.RIGHT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
 			if(!event.entityPlayer.worldObj.isRemote) {
 				DataStorage.setPlayerRightClick(event.entityPlayer, event.x, event.y, event.z);
 				String message = "Postion 2 set at (" + event.x + ", " + event.y + ", " + event.z + ")";

@@ -50,7 +50,7 @@ public class CommandHelper {
 		addPotion(Potion.field_76443_y, "saturation");
 	}
 	public static String[] getPotionNames() {
-		return (String[])intToStringMapping.values().toArray();
+		return intToStringMapping.values().toArray(new String[] {});
 	}
 	public static int getPotionIdFromString(String name) {
 		name.toLowerCase();

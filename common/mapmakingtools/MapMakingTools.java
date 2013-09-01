@@ -1,40 +1,47 @@
 package mapmakingtools;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import com.google.common.eventbus.Subscribe;
 
-import mapmakingtools.api.FilterRegistry;
-import mapmakingtools.api.RotationManager;
+import mapmakingtools.api.manager.FilterManager;
+import mapmakingtools.api.manager.ForceKillManager;
+import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.command.CommandHandler;
-import mapmakingtools.common.RotationAnvil;
-import mapmakingtools.common.RotationBed;
-import mapmakingtools.common.RotationButton;
-import mapmakingtools.common.RotationChest;
-import mapmakingtools.common.RotationDispenser;
-import mapmakingtools.common.RotationDoor;
-import mapmakingtools.common.RotationDropper;
-import mapmakingtools.common.RotationFenceGate;
-import mapmakingtools.common.RotationFurnace;
-import mapmakingtools.common.RotationHayBale;
-import mapmakingtools.common.RotationHopper;
-import mapmakingtools.common.RotationLadder;
-import mapmakingtools.common.RotationPistonBase;
-import mapmakingtools.common.RotationPoweredRail;
-import mapmakingtools.common.RotationPumpkin;
-import mapmakingtools.common.RotationQuatzPillar;
-import mapmakingtools.common.RotationRedstoneComparator;
-import mapmakingtools.common.RotationRedstoneRepeater;
-import mapmakingtools.common.RotationSignPost;
-import mapmakingtools.common.RotationSignWall;
-import mapmakingtools.common.RotationStairs;
-import mapmakingtools.common.RotationTorch;
-import mapmakingtools.common.RotationTrapdoor;
-import mapmakingtools.common.RotationTripwireSource;
-import mapmakingtools.common.RotationVanillaLog;
-import mapmakingtools.common.RotationVanillaTrack;
+import mapmakingtools.common.killentities.KillAll;
+import mapmakingtools.common.killentities.KillGeneric;
+import mapmakingtools.common.killentities.KillItem;
+import mapmakingtools.common.rotation.RotationAnvil;
+import mapmakingtools.common.rotation.RotationBed;
+import mapmakingtools.common.rotation.RotationButton;
+import mapmakingtools.common.rotation.RotationChest;
+import mapmakingtools.common.rotation.RotationDispenser;
+import mapmakingtools.common.rotation.RotationDoor;
+import mapmakingtools.common.rotation.RotationDropper;
+import mapmakingtools.common.rotation.RotationFenceGate;
+import mapmakingtools.common.rotation.RotationFurnace;
+import mapmakingtools.common.rotation.RotationHayBale;
+import mapmakingtools.common.rotation.RotationHopper;
+import mapmakingtools.common.rotation.RotationLadder;
+import mapmakingtools.common.rotation.RotationPistonBase;
+import mapmakingtools.common.rotation.RotationPoweredRail;
+import mapmakingtools.common.rotation.RotationPumpkin;
+import mapmakingtools.common.rotation.RotationQuatzPillar;
+import mapmakingtools.common.rotation.RotationRedstoneComparator;
+import mapmakingtools.common.rotation.RotationRedstoneRepeater;
+import mapmakingtools.common.rotation.RotationSignPost;
+import mapmakingtools.common.rotation.RotationSignWall;
+import mapmakingtools.common.rotation.RotationStairs;
+import mapmakingtools.common.rotation.RotationTorch;
+import mapmakingtools.common.rotation.RotationTrapdoor;
+import mapmakingtools.common.rotation.RotationTripwireSource;
+import mapmakingtools.common.rotation.RotationVanillaLog;
+import mapmakingtools.common.rotation.RotationVanillaTrack;
 import mapmakingtools.core.handler.ActionHandler;
 import mapmakingtools.core.handler.ConnectionHandler;
 import mapmakingtools.core.handler.FlyHandler;
@@ -56,6 +63,9 @@ import mapmakingtools.filters.FilterFillInventory;
 import mapmakingtools.filters.FilterMobType;
 import mapmakingtools.lib.Reference;
 import mapmakingtools.network.PacketHandler;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Init;
@@ -88,6 +98,8 @@ public class MapMakingTools {
 	@SidedProxy(clientSide = Reference.SP_CLIENT, serverSide = Reference.SP_SERVER)
     public static CommonProxy proxy;
 	
+	public static String sectionSign = "";
+	
 	public MapMakingTools() {
    	 	instance = this;
     }
@@ -108,6 +120,12 @@ public class MapMakingTools {
 		DirectoryHelper.setMcDir(event);
 		//Loads the Items
 		ModItems.inti();
+		
+		try {
+            BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/symbol.txt"))); 
+            sectionSign = paramReader.readLine();
+		}
+		catch(Exception e) {}
 	}
 	
 	@EventHandler
@@ -160,9 +178,8 @@ public class MapMakingTools {
 		RotationManager.registerRotationHandler(Block.stoneButton.blockID, new RotationButton());
 		RotationManager.registerRotationHandler(Block.tripWireSource.blockID, new RotationTripwireSource());
 		//TODO Complete door rotation
-		RotationManager.registerRotationHandler(Block.doorWood.blockID, new RotationDoor());
-		RotationManager.registerRotationHandler(Block.doorIron.blockID, new RotationDoor());
-		
+		//RotationManager.registerRotationHandler(Block.doorWood.blockID, new RotationDoor());
+		//RotationManager.registerRotationHandler(Block.doorIron.blockID, new RotationDoor());
 		//RotationManager.registerRotationHandler(Block.pistonBase.blockID, new RotationPistonBase());
 		//RotationManager.registerRotationHandler(Block.pistonStickyBase.blockID, new RotationPistonBase());
 		RotationManager.registerRotationHandler(Block.ladder.blockID, new RotationLadder());
@@ -173,6 +190,37 @@ public class MapMakingTools {
 		RotationManager.registerRotationHandler(Block.redstoneRepeaterActive.blockID, new RotationRedstoneRepeater());
 		RotationManager.registerRotationHandler(Block.redstoneComparatorIdle.blockID, new RotationRedstoneComparator());
 		RotationManager.registerRotationHandler(Block.redstoneComparatorActive.blockID, new RotationRedstoneComparator());
+		
+		ForceKillManager.registerHandler("all", new KillAll());
+		ForceKillManager.registerHandler("enderman", new KillGeneric(EntityEnderman.class));
+		ForceKillManager.registerHandler("blaze", new KillGeneric(EntityBlaze.class));
+		ForceKillManager.registerHandler("cow", new KillGeneric(EntityCow.class));
+		ForceKillManager.registerHandler("sheep", new KillGeneric(EntitySheep.class));
+		ForceKillManager.registerHandler("item", new KillItem());
+		ForceKillManager.registerHandler("zombie", new KillGeneric(EntityZombie.class));
+		ForceKillManager.registerHandler("skeleton", new KillGeneric(EntitySkeleton.class));
+		ForceKillManager.registerHandler("pigzombie", new KillGeneric(EntityPigZombie.class));
+		ForceKillManager.registerHandler("giant", new KillGeneric(EntityGiantZombie.class));
+		ForceKillManager.registerHandler("cavespider", new KillGeneric(EntityCaveSpider.class));
+		ForceKillManager.registerHandler("creeper", new KillGeneric(EntityCreeper.class));
+		ForceKillManager.registerHandler("ghast", new KillGeneric(EntityGhast.class));
+		ForceKillManager.registerHandler("snowman", new KillGeneric(EntitySnowman.class));
+		ForceKillManager.registerHandler("irongolem", new KillGeneric(EntityIronGolem.class));
+		ForceKillManager.registerHandler("magmacube", new KillGeneric(EntityMagmaCube.class));
+		ForceKillManager.registerHandler("silverfish", new KillGeneric(EntitySilverfish.class));
+		ForceKillManager.registerHandler("slime", new KillGeneric(EntitySlime.class));
+		ForceKillManager.registerHandler("bat", new KillGeneric(EntityBat.class));
+		ForceKillManager.registerHandler("chicken", new KillGeneric(EntityChicken.class));
+		ForceKillManager.registerHandler("horse", new KillGeneric(EntityHorse.class));
+		ForceKillManager.registerHandler("mooshroom", new KillGeneric(EntityMooshroom.class));
+		ForceKillManager.registerHandler("pig", new KillGeneric(EntityPig.class));
+		ForceKillManager.registerHandler("pig", new KillGeneric(EntityPig.class));
+		ForceKillManager.registerHandler("pig", new KillGeneric(EntityPig.class));
+		ForceKillManager.registerHandler("pig", new KillGeneric(EntityPig.class));
+		//ForceKillManager.registerHandler("", new KillGeneric(Entity.class));
+		//ForceKillManager.registerHandler("", new KillGeneric(Entity.class));
+		//ForceKillManager.registerHandler("", new KillGeneric(Entity.class));
+		//ForceKillManager.registerHandler("", new KillGeneric(Entity.class));
 		
 		ChestSymmetrifyHelper.addChestPattern(1, "ooooooooo", "ooooXoooo", "ooooooooo"); //1 Item
 		ChestSymmetrifyHelper.addChestPattern(2, "ooooooooo", "oooXoXooo", "ooooooooo"); //2 Items

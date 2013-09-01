@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import mapmakingtools.api.FilterRegistry;
 import mapmakingtools.api.IFilter;
 import mapmakingtools.api.IServerFilter;
+import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.util.ButtonType;
 import mapmakingtools.core.helper.LogHelper;
 import mapmakingtools.core.helper.QuickBuildHelper;
@@ -427,6 +427,14 @@ public class GuiFilterMenu extends GuiContainer {
 	public int ySize() {
 		return 100;
 		//return this.ySize;
+	}
+	
+	public int guiTop() {
+		return this.guiTop;
+	}
+	
+	public int guiLeft() {
+		return this.guiLeft;
 	}
 	
 	public List getButtonList() {

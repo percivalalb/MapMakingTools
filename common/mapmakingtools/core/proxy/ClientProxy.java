@@ -1,7 +1,7 @@
 package mapmakingtools.core.proxy;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
-import mapmakingtools.api.FilterRegistry;
+import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.core.handler.MMTKeyHandler;
 import mapmakingtools.core.handler.ScreenRenderHandler;
 import mapmakingtools.core.handler.WorldOverlayHandler;
@@ -11,6 +11,7 @@ import mapmakingtools.filters.FilterChestSymmetrify;
 import mapmakingtools.filters.FilterConvertToDispenser;
 import mapmakingtools.filters.FilterConvertToDropper;
 import mapmakingtools.filters.FilterCreeperExplosion;
+import mapmakingtools.filters.FilterEditSign;
 import mapmakingtools.filters.FilterFillInventory;
 import mapmakingtools.filters.FilterItemSpawner;
 import mapmakingtools.filters.FilterMobArmor;
@@ -28,22 +29,23 @@ public class ClientProxy extends CommonProxy {
 	public void onPreLoad() {
 		super.onPreLoad();
 		//Blocks
-		FilterRegistry.registerFilter(new FilterFillInventory());
-		FilterRegistry.registerFilter(new FilterConvertToDropper());
-		FilterRegistry.registerFilter(new FilterConvertToDispenser());
-		FilterRegistry.registerFilter(new FilterMobType());
-		FilterRegistry.registerFilter(new FilterSpawnerTimings());
-		FilterRegistry.registerFilter(new FilterMobVelocity());
-		FilterRegistry.registerFilter(new FilterMobPosition());
-		FilterRegistry.registerFilter(new FilterMobArmor());
-		FilterRegistry.registerFilter(new FilterBabyMonster());
-		FilterRegistry.registerFilter(new FilterCreeperExplosion());
-		FilterRegistry.registerFilter(new FilterPotionSpawner());
-		FilterRegistry.registerFilter(new FilterItemSpawner());
-		FilterRegistry.registerFilter(new FilterChestSymmetrify());
+		FilterManager.registerFilter(new FilterFillInventory());
+		FilterManager.registerFilter(new FilterConvertToDropper());
+		FilterManager.registerFilter(new FilterConvertToDispenser());
+		FilterManager.registerFilter(new FilterMobType());
+		FilterManager.registerFilter(new FilterSpawnerTimings());
+		FilterManager.registerFilter(new FilterMobVelocity());
+		FilterManager.registerFilter(new FilterMobPosition());
+		FilterManager.registerFilter(new FilterMobArmor());
+		FilterManager.registerFilter(new FilterBabyMonster());
+		FilterManager.registerFilter(new FilterCreeperExplosion());
+		FilterManager.registerFilter(new FilterPotionSpawner());
+		FilterManager.registerFilter(new FilterItemSpawner());
+		FilterManager.registerFilter(new FilterChestSymmetrify());
+		FilterManager.registerFilter(new FilterEditSign());
 		
 		//Entities
-		FilterRegistry.registerFilter(new FilterVillagerShop());
+		FilterManager.registerFilter(new FilterVillagerShop());
 		MobSpawnerType.add("Item");
 		MobSpawnerType.add("XPOrb");
 		MobSpawnerType.add("Arrow");

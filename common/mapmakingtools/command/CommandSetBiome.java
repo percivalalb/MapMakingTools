@@ -99,10 +99,12 @@ public class CommandSetBiome extends CommandBase {
 					
 					 if (world.getChunkProvider().chunkExists(x, z)) {
 				            Chunk chunk = world.getChunkFromBlockCoords(x, z);
+			                byte[] biomevals = chunk.getBiomeArray();
 				            if ((chunk != null) && (chunk.isChunkLoaded)) {
-				                byte[] biomevals = chunk.getBiomeArray();
 				                biomevals[((z & 0xF) << 4 | x & 0xF)] = (byte)BiomeGenBase.desert.biomeID;
 				            }
+				            chunk.setBiomeArray(biomevals);
+				            chunk.setChunkModified();
 				        }
 					/**
 					Chunk chunk = world.getChunkFromBlockCoords(x, z);

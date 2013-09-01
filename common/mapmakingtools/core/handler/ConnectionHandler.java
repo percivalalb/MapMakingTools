@@ -42,9 +42,7 @@ public class ConnectionHandler implements IConnectionHandler {
 	}
 
 	@Override
-	public void connectionOpened(NetHandler netClientHandler,
-			MinecraftServer server, INetworkManager manager) {
-		// TODO Auto-generated method stub
+	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) {
 		
 	}
 

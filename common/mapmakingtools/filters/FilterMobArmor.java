@@ -149,11 +149,4 @@ public class FilterMobArmor implements IFilter {
 		gui.drawTexturedModalRect(k, l, 0, 0, gui.xSize(), 151);
 		return true;
 	}
-
-	@Override
-	public boolean isMouseOverSlot(GuiFilterMenu gui, Slot slot, int mouseX,
-			int mouseY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

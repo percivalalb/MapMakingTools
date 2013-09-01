@@ -39,9 +39,13 @@ public interface IFilter {
 	
 	public void mouseClicked(GuiFilterMenu gui, int var1, int var2, int var3);
 	
-	public void keyTyped(GuiFilterMenu gui, char var1, int var2);
-	
-	public boolean isMouseOverSlot(GuiFilterMenu gui, Slot slot, int mouseX, int mouseY);
+	/**
+	 * Called when a key is typed, useful for text boxes
+	 * @param gui The current GUI
+	 * @param cha The key that has been clicked
+	 * @param charIndex The key index that has been clicked, (Keyboard.KEY_T) etc.
+	 */
+	public void keyTyped(GuiFilterMenu gui, char cha, int charIndex);
 
 	/**
 	 * 

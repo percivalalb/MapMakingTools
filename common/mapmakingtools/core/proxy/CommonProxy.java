@@ -2,15 +2,16 @@ package mapmakingtools.core.proxy;
 
 import java.util.List;
 
-import mapmakingtools.api.FilterRegistry;
 import mapmakingtools.api.IFilter;
 import mapmakingtools.api.IServerFilter;
+import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.GuiFilterMenu;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiSkull;
 import mapmakingtools.client.gui.GuiSpawnerSettings;
 import mapmakingtools.core.util.WrenchTasks;
 import mapmakingtools.filters.server.FilterServerChestSymmetrify;
+import mapmakingtools.filters.server.FilterServerEditSign;
 import mapmakingtools.filters.server.FilterServerItemSpawner;
 import mapmakingtools.filters.server.FilterServerPotionSpawner;
 import mapmakingtools.filters.server.FilterServerMobArmor;
@@ -47,14 +48,14 @@ public class CommonProxy implements IGuiHandler {
 			return new ContainerItemEditor(player);
 		}
 		else if(ID == GUI_ID_FILTERS_1) {
-		    List<IServerFilter> filters = FilterRegistry.getApplicableServerFilters(player, world, x, y, z);
+		    List<IServerFilter> filters = FilterManager.getApplicableServerFilters(player, world, x, y, z);
 		    if(!filters.isEmpty()) {
 		    	WrenchTasks.addTaskBlock(player, world, x, y, z);
 		    	return new ContainerFilter(player, filters).setCor(x, y, z);
 		    }
 		}
 		else if(ID == GUI_ID_FILTERS_2) {
-		    List<IServerFilter> filters = FilterRegistry.getApplicableEntityServerFilters(player, world, x);
+		    List<IServerFilter> filters = FilterManager.getApplicableEntityServerFilters(player, world, x);
 		    if(!filters.isEmpty()) {
 		    	WrenchTasks.addTaskEntity(player, world, x);
 		    	return new ContainerFilter(player, filters).setEntityId(x);
@@ -75,15 +76,15 @@ public class CommonProxy implements IGuiHandler {
 			return new GuiItemEditor(player);
 		}
 		else if(ID == GUI_ID_FILTERS_1) {
-		    List<IFilter> filters = FilterRegistry.getApplicableFilters(player, world, x, y, z);
-		    List<IServerFilter> serverFilters = FilterRegistry.getApplicableServerFilters(player, world, x, y, z);
+		    List<IFilter> filters = FilterManager.getApplicableFilters(player, world, x, y, z);
+		    List<IServerFilter> serverFilters = FilterManager.getApplicableServerFilters(player, world, x, y, z);
 		    if(!filters.isEmpty() && !serverFilters.isEmpty()) {
 		    	return new GuiFilterMenu(player, x, y, z, filters, serverFilters);
 		    }
 		}
 		else if(ID == GUI_ID_FILTERS_2) {
-		    List<IFilter> filters = FilterRegistry.getApplicableEntityFilters(player, world, x);
-		    List<IServerFilter> serverFilters = FilterRegistry.getApplicableEntityServerFilters(player, world, x);
+		    List<IFilter> filters = FilterManager.getApplicableEntityFilters(player, world, x);
+		    List<IServerFilter> serverFilters = FilterManager.getApplicableEntityServerFilters(player, world, x);
 		    if(!filters.isEmpty() && !serverFilters.isEmpty()) {
 		    	return new GuiFilterMenu(player, x, filters, serverFilters);
 		    }
@@ -95,21 +96,22 @@ public class CommonProxy implements IGuiHandler {
 
 	public void onPreLoad() {
 		//Blocks
-		FilterRegistry.registerFilter(new FilterServerFillInventory());
-		FilterRegistry.registerFilter(new FilterServerConvertToDropper());
-		FilterRegistry.registerFilter(new FilterServerConvertToDispenser());
-		FilterRegistry.registerFilter(new FilterServerMobType());
-		FilterRegistry.registerFilter(new FilterServerSpawnerTimings());
-		FilterRegistry.registerFilter(new FilterServerMobVelocity());
-		FilterRegistry.registerFilter(new FilterServerMobPosition());
-		FilterRegistry.registerFilter(new FilterServerMobArmor());
-		FilterRegistry.registerFilter(new FilterServerBabyMonster());
-		FilterRegistry.registerFilter(new FilterServerCreeperExplosion());
-		FilterRegistry.registerFilter(new FilterServerPotionSpawner());
-		FilterRegistry.registerFilter(new FilterServerItemSpawner());
-		FilterRegistry.registerFilter(new FilterServerChestSymmetrify());
+		FilterManager.registerFilter(new FilterServerFillInventory());
+		FilterManager.registerFilter(new FilterServerConvertToDropper());
+		FilterManager.registerFilter(new FilterServerConvertToDispenser());
+		FilterManager.registerFilter(new FilterServerMobType());
+		FilterManager.registerFilter(new FilterServerSpawnerTimings());
+		FilterManager.registerFilter(new FilterServerMobVelocity());
+		FilterManager.registerFilter(new FilterServerMobPosition());
+		FilterManager.registerFilter(new FilterServerMobArmor());
+		FilterManager.registerFilter(new FilterServerBabyMonster());
+		FilterManager.registerFilter(new FilterServerCreeperExplosion());
+		FilterManager.registerFilter(new FilterServerPotionSpawner());
+		FilterManager.registerFilter(new FilterServerItemSpawner());
+		FilterManager.registerFilter(new FilterServerChestSymmetrify());
+		FilterManager.registerFilter(new FilterServerEditSign());
 		
 		//Entities
-		FilterRegistry.registerFilter(new FilterServerVillagerShop());
+		FilterManager.registerFilter(new FilterServerVillagerShop());
 	}
 }

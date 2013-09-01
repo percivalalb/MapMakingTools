@@ -216,7 +216,7 @@ public class ItemStackHelper {
 		 var5.setByte(NBTData.POTION_ID, (byte)id);
 		 var5.setByte(NBTData.POTION_AMPLIFIER, (byte)(level - 1));
 		 var5.setInteger(NBTData.POTION_DURATION, duration * 20);
-		 var5.setBoolean(NBTData.POTION_AMBIENT, true);
+		 var5.setBoolean(NBTData.POTION_AMBIENT, ambient);
 		 var4.appendTag(var5);
 	 }
 }

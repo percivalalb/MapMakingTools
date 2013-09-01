@@ -1,6 +1,6 @@
 package mapmakingtools.core.util;
 
-import mapmakingtools.api.RotationManager;
+import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.core.helper.TileEntityHelper;
 import mapmakingtools.core.helper.WorldHelper;
 import net.minecraft.block.Block;

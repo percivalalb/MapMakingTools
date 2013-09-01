@@ -32,5 +32,7 @@ public class CommandHandler {
         //event.registerServerCommand(new CommandFloatingIsland());
         //Mod Commands
         event.registerServerCommand(new CommandConvertStructure());
+        //Entity Commands
+        event.registerServerCommand(new CommandKillAll());
     }
 }

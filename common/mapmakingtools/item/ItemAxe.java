@@ -12,6 +12,9 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+/**
+ * @author ProPercivalalb
+ */
 public class ItemAxe extends net.minecraft.item.ItemAxe {
 	
     public ItemAxe() {
@@ -21,7 +24,7 @@ public class ItemAxe extends net.minecraft.item.ItemAxe {
     }
     
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
     	if(player.capabilities.isCreativeMode && itemstack != null && itemstack.itemID == Item.axeWood.itemID) {
     		return true;
     	}

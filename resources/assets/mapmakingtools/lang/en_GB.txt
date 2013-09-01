@@ -27,6 +27,7 @@ commands.build.walls.usage=//walls <blockId:blockMeta>
 commands.build.replace.usage=//replace <blockId:blockMeta> <blockId:blockMeta>
 commands.build.chunkDoesNotExist=A chunk you have selected does not exist, and has failed to complete this command.
 commands.build.combinespawners.usage=//combinespawners
+commands.killentities.usage=//killentites <type>
 
 advMode.creativeModeNeed=Must be in creative mode
 
@@ -45,6 +46,7 @@ filter.changePotion=Potion Selection
 filter.changeItem=Item Selection
 filter.villagerShop=Villager Shop
 filter.chestSymmetrify=Chest Symmetrify
+filter.signEdit=Sign Edit
 
 filter.fillInventory.complete=Set the contents of this inventory to %s.
 filter.convertToDropper.complete=Converted Dispenser to Dropper.
@@ -62,6 +64,7 @@ filter.mobArmor.complete=Changed the armor the mob wears.
 filter.spawnerTimings.complete=Changed the spawner properties.
 filter.villagerShop.complete=Created a custom Villager Shop.
 filter.chestSymmetrify.complete=Made the chests contents look as symmetrical as possible!
+filter.signEdit.complete=Succesfully edited a sign.
 
 filter.chestSymmetrify.noContents=The chest must contant some items.
 filter.villagerShop.inputNull=At least 1 input has to contain an item.

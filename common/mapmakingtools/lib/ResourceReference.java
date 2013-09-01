@@ -16,6 +16,8 @@ public class ResourceReference {
 	public static final ResourceLocation screenVillagerShop = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("villagerShop.png"));
 
 	public static final ResourceLocation screenScroll = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("guiTab.png"));
+	
+	public static final ResourceLocation buttonTextColour = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("buttonTextColour.png"));
 
 	public static final ResourceLocation tabs = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("tab.png"));
 
