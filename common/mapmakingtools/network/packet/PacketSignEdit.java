@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntitySign;
@@ -80,6 +81,8 @@ public class PacketSignEdit extends PacketMMT {
 				}
 				
 				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.signEdit.complete"));
+				MinecraftServer server = MinecraftServer.getServer();
+				server.getConfigurationManager().sendToAllNearExcept(player, x + 0.5D, y + 0.5D, z + 0.5D, 256 * 256, sign.worldObj.provider.dimensionId, sign.getDescriptionPacket());
 			}
 		}
 		else {
