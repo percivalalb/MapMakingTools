@@ -2,7 +2,7 @@
 	"modid": "MapMakingTools",
 	"name": "Map Making Tools",
 	"description": "Very useful for making custom adventure maps.",
-	"version": "v2.0.0a",
+	"version": "v2.0.1a",
 	"mcversion": "1.6.2",
 	"updateUrl": "http://www.minecraftforum.net/topic/1652014-/",
 	"authors": [ "ProPercivalalb" ],
