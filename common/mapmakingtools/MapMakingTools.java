@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import net.minecraft.block.Block;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -43,6 +44,7 @@ import mapmakingtools.common.rotation.RotationTripwireSource;
 import mapmakingtools.common.rotation.RotationVanillaLog;
 import mapmakingtools.common.rotation.RotationVanillaTrack;
 import mapmakingtools.core.handler.ActionHandler;
+import mapmakingtools.core.handler.ConfigurationHandler;
 import mapmakingtools.core.handler.ConnectionHandler;
 import mapmakingtools.core.handler.FlyHandler;
 import mapmakingtools.core.handler.LocalizationHandler;
@@ -113,6 +115,8 @@ public class MapMakingTools {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		proxy.onPreLoad();
+		ConfigurationHandler.loadConfig(new Configuration(event.getSuggestedConfigurationFile()));
+		
 		VersionHelper.checkVersion(Type.BLANK);
 		//Loads the Languages into the game
 		LocalizationHandler.loadLanguages();

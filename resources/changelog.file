@@ -9,6 +9,7 @@ Update List Key
 
 v2.1.0a
 + Added a //killentities <type> command, which you can kill all/specified entities in the loaded world
++ Added a config option to completly disable the block id helper.
 
 * Fixed the wooden axe not being able to destroy anything in survival mode due to the quick build system
 * Fixed the /potion command not working and making the game crash
