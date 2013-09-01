@@ -53,7 +53,6 @@ public class PacketSignEdit extends PacketMMT {
 		this.z = data.readInt();
         for (int i = 0; i < 4; ++i) {
             this.signLines[i] = Packet.readString(data, 15);
-        	this.signLines[i].replace(MapMakingTools.sectionSign, ";");
         }
 	}
 
@@ -63,7 +62,6 @@ public class PacketSignEdit extends PacketMMT {
 		dos.writeInt(y);
 		dos.writeInt(z);
 		for (int i = 0; i < 4; ++i) {
-	        this.signLines[i].replace(";", MapMakingTools.sectionSign);
 	        Packet.writeString(this.signLines[i], dos);
 	    }
 	}
