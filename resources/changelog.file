@@ -8,8 +8,9 @@ Update List Key
 (/) Other
 
 v2.1.0a
++ Added the ability to edit signs once they are placed in the world and add colours and other text options e.g. bold, underlined etc...
 + Added a //killentities <type> command, which you can kill all/specified entities in the loaded world
-+ Added a config option to completly disable the block id helper.
++ Added a config option to completely disable the block id helper.
 
 * Fixed the wooden axe not being able to destroy anything in survival mode due to the quick build system
 * Fixed the /potion command not working and making the game crash

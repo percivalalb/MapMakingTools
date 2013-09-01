@@ -93,7 +93,13 @@ public class GuiButtonTextColour extends GuiButton {
 		RED(255, 85, 85, "c"),
 		LIGHT_PURPLE(255, 85, 255, "d"),
 		YELLOW(255, 255, 85, "e"),
-		WHITE(255, 255, 255, "f");
+		WHITE(255, 255, 255, "f"),
+		OBFUSCATED(255, 255, 255, "k"),
+		BOLD(255, 255, 255, "l"),
+		STRIKETHROUGHT(255, 255, 255, "m"),
+		UNDERLINE(255, 255, 255, "n"),
+		ITALIC(255, 255, 255, "o"),
+		RESET(255, 255, 255, "r");
 		
 		int red, green, blue;
 		String prefix;

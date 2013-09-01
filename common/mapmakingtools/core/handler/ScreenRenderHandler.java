@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL12;
 import mapmakingtools.core.helper.IDScreenRenderHelper;
 import mapmakingtools.core.helper.ReflectionHelper;
 import mapmakingtools.core.helper.TextureHelper;
+import mapmakingtools.lib.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -35,7 +36,7 @@ public class ScreenRenderHandler {
 	@ForgeSubscribe
 	public void onPreRenderGameOverlay(RenderGameOverlayEvent.Pre event) {
 	    Minecraft mc = Minecraft.getMinecraft();
-	    if (mc.thePlayer != null && mc.thePlayer.capabilities.isCreativeMode) {
+	    if (mc.thePlayer != null && (mc.thePlayer.capabilities.isCreativeMode && Constants.SHOULD_SHOW_BLOCK_ID_HELPER)) {
 	    	if (event.type == RenderGameOverlayEvent.ElementType.HELMET) {
 	    		if(mc.currentScreen instanceof GuiChat) {
 	   
