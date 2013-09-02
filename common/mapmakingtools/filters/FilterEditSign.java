@@ -201,7 +201,7 @@ public class FilterEditSign implements IFilter {
 		this.txtLine4.textboxKeyTyped(var1, var2);
 		
         if (var2 == Keyboard.KEY_RETURN) {
-            gui.actionPerformed(btnColourLine1);
+            gui.actionPerformed(btnOk);
         }
 
         if (var2 == Keyboard.KEY_ESCAPE) {

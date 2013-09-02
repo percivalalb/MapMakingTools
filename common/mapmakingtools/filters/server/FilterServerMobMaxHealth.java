@@ -1,6 +1,7 @@
 package mapmakingtools.filters.server;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -14,7 +15,7 @@ import mapmakingtools.inventory.ContainerFilter;
 /**
  * @author ProPercivalalb
  */
-public class FilterServerMobVelocity implements IServerFilter {
+public class FilterServerMobMaxHealth implements IServerFilter {
 
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
@@ -27,12 +28,13 @@ public class FilterServerMobVelocity implements IServerFilter {
 
 	@Override
 	public boolean isApplicable(Entity entity) {
+		if(entity != null && entity instanceof EntityLiving)
+			return true;
 		return false;
 	}
 
 	@Override
 	public void addSlots(ContainerFilter containerFilter) {
-		// TODO Auto-generated method stub
 		
 	}
 

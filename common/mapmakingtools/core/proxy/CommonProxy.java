@@ -10,6 +10,7 @@ import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiSkull;
 import mapmakingtools.client.gui.GuiSpawnerSettings;
 import mapmakingtools.core.util.WrenchTasks;
+import mapmakingtools.filters.server.FilterServerMobMaxHealth;
 import mapmakingtools.filters.server.FilterServerChestSymmetrify;
 import mapmakingtools.filters.server.FilterServerEditSign;
 import mapmakingtools.filters.server.FilterServerItemSpawner;
@@ -113,5 +114,6 @@ public class CommonProxy implements IGuiHandler {
 		
 		//Entities
 		FilterManager.registerFilter(new FilterServerVillagerShop());
+		FilterManager.registerFilter(new FilterServerMobMaxHealth());
 	}
 }

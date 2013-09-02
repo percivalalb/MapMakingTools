@@ -31,6 +31,9 @@ import mapmakingtools.inventory.SlotFake;
 import mapmakingtools.network.PacketTypeHandler;
 import mapmakingtools.network.packet.PacketMaxVillagerRecipes;
 
+/**
+ * @author ProPercivalalb
+ */
 public class FilterServerVillagerShop implements IServerFilter {
 
 	public static Map<String, Integer> maxRecipesMap = new Hashtable<String, Integer>();

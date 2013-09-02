@@ -11,6 +11,9 @@ import mapmakingtools.api.IServerFilter;
 import mapmakingtools.core.helper.SpawnerHelper;
 import mapmakingtools.inventory.ContainerFilter;
 
+/**
+ * @author ProPercivalalb
+ */
 public class FilterServerMobPosition implements IServerFilter {
 
 	@Override

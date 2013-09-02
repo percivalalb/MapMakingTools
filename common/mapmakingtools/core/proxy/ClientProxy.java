@@ -15,6 +15,7 @@ import mapmakingtools.filters.FilterEditSign;
 import mapmakingtools.filters.FilterFillInventory;
 import mapmakingtools.filters.FilterItemSpawner;
 import mapmakingtools.filters.FilterMobArmor;
+import mapmakingtools.filters.FilterMobMaxHealth;
 import mapmakingtools.filters.FilterMobPosition;
 import mapmakingtools.filters.FilterMobType;
 import mapmakingtools.filters.FilterMobVelocity;
@@ -46,6 +47,8 @@ public class ClientProxy extends CommonProxy {
 		
 		//Entities
 		FilterManager.registerFilter(new FilterVillagerShop());
+		FilterManager.registerFilter(new FilterMobMaxHealth());
+		
 		MobSpawnerType.add("Item");
 		MobSpawnerType.add("XPOrb");
 		MobSpawnerType.add("Arrow");

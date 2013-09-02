@@ -24,6 +24,9 @@ import mapmakingtools.inventory.SlotArmor;
 import mapmakingtools.inventory.SlotFake;
 import mapmakingtools.inventory.SlotFakeArmor;
 
+/**
+ * @author ProPercivalalb
+ */
 public class FilterServerPotionSpawner implements IServerFilter {
 
 	public static Map<String, PotionInventory> invMap = new Hashtable<String, PotionInventory>();
