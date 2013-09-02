@@ -7,6 +7,9 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+v2.0.2b
+* Fixed crash with sign edit
+
 v2.0.2a
 + In the block id helper menu in chat you can now insert blocks ids when doing a command
 + Added a new filter called 'Max Mob Health' you can click on the tab but it is not finished yet
@@ -28,3 +31,4 @@ v2.0.1a
 
 v2.0.0a
 
++ Added the Wrench 
