@@ -40,7 +40,12 @@ public class WorldHelper {
 	public static boolean setBlock(World world, int x, int y, int z, int blockId, int blockMeta, int flag) {
 		try {
 			if(world == null) return false;
-			return world.setBlock(x, y, z, blockId, blockMeta, flag);
+			if(!world.isRemote) {
+				world.isRemote = true;
+			}
+			boolean bool = world.setBlock(x, y, z, blockId, blockMeta, flag);
+			world.isRemote = false;
+			return bool;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
