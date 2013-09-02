@@ -23,8 +23,7 @@ import mapmakingtools.lib.Constants;
 import mapmakingtools.lib.NBTData;
 import mapmakingtools.network.PacketTypeHandler;
 import mapmakingtools.network.packet.PacketBabyMonster;
-import mapmakingtools.network.packet.PacketEntityDataUpdate;
-import mapmakingtools.network.packet.PacketOpenFilterMenu;
+import mapmakingtools.network.packet.PacketOpenFilterMenuClientServer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -82,6 +81,7 @@ public class ActionHandler {
 				event.entityPlayer.addChatMessage(message);
 				event.setCanceled(true);
 			}
+			event.useBlock = Result.DENY;
 		}
 		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.RIGHT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
 			if(!event.entityPlayer.worldObj.isRemote) {
@@ -117,6 +117,7 @@ public class ActionHandler {
 				event.entityPlayer.addChatMessage(message);
 				event.setCanceled(true);
 			}
+			event.useBlock = Result.DENY;
 		}
 		
 		if(event.action != Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Item.skull)) {
@@ -131,7 +132,7 @@ public class ActionHandler {
 		if(event.action == Action.RIGHT_CLICK_BLOCK) {
 			if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench)) {
 				event.setCanceled(true);
-				PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenu(event.x, event.y, event.z));
+				PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenuClientServer(event.x, event.y, event.z));
 			}
 		}
 	}
@@ -139,13 +140,12 @@ public class ActionHandler {
 	@ForgeSubscribe
 	public void entityInteract(EntityInteractEvent event) {
 		if(event.target == null || event.target.isDead) return;
-		
+
+		if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench) && event.entityPlayer.worldObj.isRemote) {
+			PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenuClientServer(event.target.entityId));
+		}
 		if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench) && !event.entityPlayer.worldObj.isRemote) {
 			event.setCanceled(true);
-			PacketTypeHandler.populatePacketAndSendToClient(new PacketEntityDataUpdate(event.target), (EntityPlayerMP)event.entityPlayer);
-		}
-		if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench) && event.entityPlayer.worldObj.isRemote) {
-			PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenu(event.target.entityId));
 		}
 	}
 }

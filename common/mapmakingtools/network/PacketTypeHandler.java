@@ -15,7 +15,6 @@ import mapmakingtools.network.packet.PacketChestSymmetrify;
 import mapmakingtools.network.packet.PacketConvertToDispenser;
 import mapmakingtools.network.packet.PacketConvertToDropper;
 import mapmakingtools.network.packet.PacketCreeperProperties;
-import mapmakingtools.network.packet.PacketEntityDataUpdate;
 import mapmakingtools.network.packet.PacketFillInventory;
 import mapmakingtools.network.packet.PacketFilterPageMenu;
 import mapmakingtools.network.packet.PacketFly;
@@ -26,7 +25,8 @@ import mapmakingtools.network.packet.PacketMobArmor;
 import mapmakingtools.network.packet.PacketMobPosition;
 import mapmakingtools.network.packet.PacketMobType;
 import mapmakingtools.network.packet.PacketMobVelocity;
-import mapmakingtools.network.packet.PacketOpenFilterMenu;
+import mapmakingtools.network.packet.PacketOpenFilterMenuClientServer;
+import mapmakingtools.network.packet.PacketOpenFilterMenuServerClient;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
 import mapmakingtools.network.packet.PacketPotionSpawner;
 import mapmakingtools.network.packet.PacketRemoveEntityFromWorld;
@@ -62,14 +62,14 @@ public enum PacketTypeHandler {
 	SPAWNER_TIMINGS(PacketSpawnerTimings.class),
 	MOB_VELOCITY(PacketMobVelocity.class),
 	MOB_POSITION(PacketMobPosition.class),
-	FITLER_MENU(PacketOpenFilterMenu.class),
+	FITLER_MENU(PacketOpenFilterMenuClientServer.class),
+	FITLER_MENU_NBT_UPDATE(PacketOpenFilterMenuServerClient.class),
 	FILTER_PAGE_MENU(PacketFilterPageMenu.class),
 	MOB_ARMOR(PacketMobArmor.class),
 	POTION_SPAWNER(PacketPotionSpawner.class),
 	ITEM_SPAWNER(PacketItemSpawner.class),
 	VILLAGER_SHOP(PacketVillagerShop.class),
 	MAX_VILLAGER_RECIPES(PacketMaxVillagerRecipes.class),
-	ENTITY_DATA_UPDATE(PacketEntityDataUpdate.class),
 	WRENCH_TASK(PacketWrenchTask.class),
 	VILLAGER_RECIPE_AMOUNR(PacketVillagerRecipeAmounts.class),
 	CHEST_SYMMETRIFY(PacketChestSymmetrify.class),

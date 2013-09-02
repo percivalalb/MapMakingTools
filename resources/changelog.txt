@@ -7,6 +7,13 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+v2.0.3a
++ Made the Fill Inventory like the potion setter on mob spawners and so can put unlimted stacks of items in inventories that contain extra data
+
+# Removed some debug messages
+
+* Fixed the items in the villager shop editor flashing from one item to another on opening the GUI (For real!)
+
 v2.0.2b
 * Fixed crash with sign edit
 

@@ -48,7 +48,6 @@ public class PacketFilterPageMenu extends PacketMMT {
 			if(playerMP.openContainer instanceof ContainerFilter) {
 				ContainerFilter container = (ContainerFilter)playerMP.openContainer;
 				container.setSelected(selected);
-				LogHelper.logDebug("Container selected set: " + selected + " list size: " + container.filters.size());
 			}
 		}
 	}

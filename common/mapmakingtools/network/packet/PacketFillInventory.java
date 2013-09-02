@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,25 +17,27 @@ import mapmakingtools.core.helper.GeneralHelper;
 import mapmakingtools.core.helper.ItemStackHelper;
 import mapmakingtools.core.helper.LogHelper;
 import mapmakingtools.core.helper.QuickBuildHelper;
+import mapmakingtools.core.helper.SpawnerHelper;
 import mapmakingtools.core.util.DataStorage;
+import mapmakingtools.filters.server.FilterServerFillInventory;
+import mapmakingtools.filters.server.FilterServerPotionSpawner;
+import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.lib.NBTData;
 import mapmakingtools.network.PacketTypeHandler;
 
 public class PacketFillInventory extends PacketMMT {
 
 	public int x, y, z;
-	public String text;
 	
 	public PacketFillInventory() {
 		super(PacketTypeHandler.FILL_INVENTORY, false);
 	}
 	
-	public PacketFillInventory(int x, int y, int z, String text) {
+	public PacketFillInventory(int x, int y, int z) {
 		this();
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.text = text;
 	}
 
 	@Override
@@ -42,7 +45,6 @@ public class PacketFillInventory extends PacketMMT {
 		this.x = data.readInt();
 		this.y = data.readInt();
 		this.z = data.readInt();
-		this.text = data.readUTF();
 	}
 
 	@Override
@@ -50,13 +52,36 @@ public class PacketFillInventory extends PacketMMT {
 		dos.writeInt(x);
 		dos.writeInt(y);
 		dos.writeInt(z);
-		dos.writeUTF(text);
 	}
 
 	@Override
 	public void execute(INetworkManager network, EntityPlayer player) {
+		LogHelper.logDebug("Recive");
 		if(GeneralHelper.inCreative(player)) {
 			TileEntity tile = player.worldObj.getBlockTileEntity(x, y, z);
+			if(player instanceof EntityPlayerMP) {
+				EntityPlayerMP playerMP = (EntityPlayerMP)player;
+				if(playerMP.openContainer != null && playerMP.openContainer instanceof ContainerFilter) {
+					ContainerFilter container = (ContainerFilter)playerMP.openContainer;
+					if(container.current != null && container.current instanceof FilterServerFillInventory) {
+						FilterServerFillInventory armor = (FilterServerFillInventory)container.current;
+						if (tile != null && tile instanceof IInventory) {
+			    			for(int var8 = 0; var8 < ((IInventory)tile).getSizeInventory(); ++var8) {
+			    				ItemStack newStack = null;
+			    				if(container.getSlot(0).getStack() != null) {
+			    					newStack = container.getSlot(0).getStack().copy();
+			    					newStack.stackSize = -1;
+			    				}
+			    				((IInventory)tile).setInventorySlotContents(var8, newStack);
+			    			}
+			    		}
+						//SpawnerHelper.setPotionType(player.worldObj.getBlockTileEntity(x, y, z), container.getSlot(0).getStack());
+						player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.fillInventory.complete", new Object[] {container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName()}));
+					}
+				}
+			}
+			
+			/**
 			if(QuickBuildHelper.isValidIds(text)) {
 	    		int[] values = QuickBuildHelper.convertIdString(text);
 	    		int blockId = values[0];
@@ -70,6 +95,7 @@ public class PacketFillInventory extends PacketMMT {
 	    		}
 	    		player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.fillInventory.complete", new Object[] {new ItemStack(blockId, 1, blockMeta).getDisplayName()}));
 			}
+			**/
 		}
 		else {
 			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));

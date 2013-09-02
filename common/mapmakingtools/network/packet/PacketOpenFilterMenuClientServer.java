@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.util.ChatMessageComponent;
@@ -18,7 +19,7 @@ import mapmakingtools.core.util.WrenchTasks;
 import mapmakingtools.lib.NBTData;
 import mapmakingtools.network.PacketTypeHandler;
 
-public class PacketOpenFilterMenu extends PacketMMT {
+public class PacketOpenFilterMenuClientServer extends PacketMMT {
 	
 	public enum Mode {
 		ENTITY,
@@ -29,11 +30,11 @@ public class PacketOpenFilterMenu extends PacketMMT {
 	public int entityId;
 	public Mode mode = Mode.BLOCK;
 	
-	public PacketOpenFilterMenu() {
+	public PacketOpenFilterMenuClientServer() {
 		super(PacketTypeHandler.FITLER_MENU, false);
 	}
 	
-	public PacketOpenFilterMenu(int x, int y, int z) {
+	public PacketOpenFilterMenuClientServer(int x, int y, int z) {
 		this();
 		this.x = x;
 		this.y = y;
@@ -41,7 +42,7 @@ public class PacketOpenFilterMenu extends PacketMMT {
 		this.mode = Mode.BLOCK;
 	}
 	
-	public PacketOpenFilterMenu(int entityId) {
+	public PacketOpenFilterMenuClientServer(int entityId) {
 		this();
 		this.entityId = entityId;
 		this.mode = Mode.ENTITY;
@@ -77,6 +78,7 @@ public class PacketOpenFilterMenu extends PacketMMT {
 		if(GeneralHelper.inCreative(player)) {
 			if(mode == Mode.ENTITY) {
 				if(!WrenchTasks.isThereTaskEntity(player.worldObj, entityId)) {
+					PacketTypeHandler.populatePacketAndSendToClient(new PacketOpenFilterMenuServerClient(player.worldObj, entityId), (EntityPlayerMP)player);
 					player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_FILTERS_2, player.worldObj, entityId, 0, 0);
 				}
 				else {
@@ -86,6 +88,7 @@ public class PacketOpenFilterMenu extends PacketMMT {
 			}
 			else {
 				if(!WrenchTasks.isThereTaskBlock(player.worldObj, x, y, z)) {
+					PacketTypeHandler.populatePacketAndSendToClient(new PacketOpenFilterMenuServerClient(player.worldObj, x, y, z), (EntityPlayerMP)player);
 					player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_FILTERS_1, player.worldObj, x, y, z);	
 				}
 				else {

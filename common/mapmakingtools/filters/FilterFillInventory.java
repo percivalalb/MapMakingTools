@@ -22,6 +22,7 @@ import mapmakingtools.client.gui.GuiFilterMenu;
 import mapmakingtools.core.helper.ClientHelper;
 import mapmakingtools.core.helper.QuickBuildHelper;
 import mapmakingtools.core.helper.TextureHelper;
+import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketTypeHandler;
 import mapmakingtools.network.packet.PacketFillInventory;
 
@@ -61,34 +62,22 @@ public class FilterFillInventory implements IFilter {
 		return false;
 	}
 
-    private GuiTextField txt_skullName;
-    private GuiButton btn_ok;
-    private GuiButton btn_cancel;
-    private String item = "Invalid item Id";
-    private boolean isValid = false;
-    
+	public GuiButton btn_ok;
+	
 	@Override
 	public void initGui(GuiFilterMenu gui) {
-		
-        int k = (gui.width - gui.xSize()) / 2;
-        int l = (gui.height - gui.ySize()) / 2;
-        this.btn_ok = new GuiButton(0, k + 140, l + 66, 60, 20, "OK");
-        this.btn_ok.enabled = false;
-        this.btn_cancel = new GuiButton(1, k + 40, l + 66, 60, 20, "Cancel");
+		gui.setYSize(104);
+		int k = (gui.width - gui.xSize()) / 2;
+        int l = (gui.height - 104) / 2;
+        this.btn_ok = new GuiButton(0, k + 20, l + 61, 20, 20, "OK");
         gui.getButtonList().add(this.btn_ok);
-        gui.getButtonList().add(this.btn_cancel);
-        this.txt_skullName = new GuiTextField(gui.getFont(), k + 20, l + 37, 200, 20);
-        this.txt_skullName.setFocused(true);
-        this.txt_skullName.setMaxStringLength(7);
 	}
 
 	@Override
 	public void drawGuiContainerBackgroundLayer(GuiFilterMenu gui, float f, int i, int j) {
-		int k = (gui.width - gui.xSize()) / 2;
-	    int l = (gui.height - gui.ySize()) / 2;
+	    int k = (gui.width - gui.xSize()) / 2;
+	    int l = (gui.height - 104) / 2;
         gui.getFont().drawString(getFilterName(), k - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xSize() / 2, l + 10, 0);
-        gui.getFont().drawString("Item ID: " + item, k + 20, l + 25, 4210752);
-        this.txt_skullName.drawTextBox();
 	}
 
 	@Override
@@ -99,45 +88,25 @@ public class FilterFillInventory implements IFilter {
 	
 	@Override
 	public void updateScreen(GuiFilterMenu gui) {
-        this.txt_skullName.updateCursorCounter();
         
-    	if(QuickBuildHelper.isValidIds(txt_skullName.getText())) {
-    		int[] values = QuickBuildHelper.convertIdString(txt_skullName.getText());
-    		int blockId = values[0];
-    		int blockMeta = values[1];
-    		if(blockId > 0 && blockId <= Item.itemsList.length && Item.itemsList[blockId] != null) {
-    			item = Item.itemsList[blockId].getItemDisplayName(new ItemStack(blockId, 1, blockMeta));
-        		isValid = true;
-    		}
-    		else {
-    			item = "Invalid item Id";
-        		isValid = false;
-    		}
-    	}
-        else {
-        	item = "Invalid item Id";
-    		isValid = false;
-        }
-        	
-        boolean isenabled = this.txt_skullName.getText().trim().length() > 0 && isValid;
-        btn_ok.enabled = isenabled;
 	}
 
 	@Override
 	public void mouseClicked(GuiFilterMenu gui, int var1, int var2, int var3) {
-		 this.txt_skullName.mouseClicked(var1, var2, var3);
+		 
 	}
 
 	@Override
 	public void keyTyped(GuiFilterMenu gui, char var1, int var2) {
-        this.txt_skullName.textboxKeyTyped(var1, var2);
+      
 
         if (var2 == Keyboard.KEY_RETURN) {
             gui.actionPerformed(btn_ok);
         }
 
         if (var2 == Keyboard.KEY_ESCAPE) {
-            gui.actionPerformed(btn_cancel);
+        	 ClientHelper.mc.displayGuiScreen(null);
+             ClientHelper.mc.setIngameFocus();
         }
 	}
 
@@ -148,7 +117,7 @@ public class FilterFillInventory implements IFilter {
             switch (var1.id)
             {
                 case 0:
-                	PacketTypeHandler.populatePacketAndSendToServer(new PacketFillInventory(gui.x, gui.y, gui.z, txt_skullName.getText()));
+                	PacketTypeHandler.populatePacketAndSendToServer(new PacketFillInventory(gui.x, gui.y, gui.z));
                     
                 case 1:
                     ClientHelper.mc.displayGuiScreen(null);
@@ -160,6 +129,11 @@ public class FilterFillInventory implements IFilter {
 
 	@Override
 	public boolean drawBackground(GuiFilterMenu gui) {
-		return false;
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		ClientHelper.mc.func_110434_K().func_110577_a(ResourceReference.screenOneSlot);
+		int k = (gui.width - gui.xSize()) / 2;
+		int l = (gui.height - 104) / 2;
+		gui.drawTexturedModalRect(k, l, 0, 0, gui.xSize(), 104);
+		return true;
 	}
 }
