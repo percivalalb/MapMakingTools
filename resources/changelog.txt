@@ -11,6 +11,8 @@ v2.0.2a
 + In the block id helper menu in chat you can now insert blocks ids when doing a command
 + Added a new filter called 'Max Mob Health' you can click on the tab but it is not finished yet
 
+* Fixed some blocks popping off when pasting e.g. redstone, torchs etc
+* Fixed the //replace sometimes not working if the replace block had a metadata value
 * Fixed the message 'Succesfully edited a sign.' displaying twice
 
 v2.0.1a
