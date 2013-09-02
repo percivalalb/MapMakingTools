@@ -9,3 +9,5 @@ v1.3.0 - 1270 Downloads
 v1.2.0 - 1161 Downloads
 v1.1.0 - 3103 Downloads
 v1.0.0 - 7488 Downloads
+
+Total = 58018 Downloads
