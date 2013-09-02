@@ -100,7 +100,7 @@ public class CommandReplace extends CommandBase {
 			for(int x = minX; x < maxX; ++x) {
 				for(int y = maxY - 1; y >= minY; --y) {
 					for(int z = minZ; z < maxZ; ++z) {
-						if(var3.worldObj.getBlockId(x, y, z) == oldBlockId && var3.worldObj.getBlockMetadata(x, y, z) == newBlockMeta) {
+						if(var3.worldObj.getBlockId(x, y, z) == oldBlockId && var3.worldObj.getBlockMetadata(x, y, z) == oldBlockMeta) {
 							CachedBlockPlacement undo = new CachedBlockPlacement(var3.worldObj, x, y, z);
 							list.add(undo);
 							undo.clearTileEntity(var3.worldObj, x, y, z);

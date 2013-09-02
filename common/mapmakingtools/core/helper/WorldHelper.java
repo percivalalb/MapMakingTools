@@ -40,9 +40,6 @@ public class WorldHelper {
 	public static boolean setBlock(World world, int x, int y, int z, int blockId, int blockMeta, int flag) {
 		try {
 			if(world == null) return false;
-			if(Block.blocksList[blockId] != null && Block.blocksList[blockId] instanceof BlockTorch && blockMeta == 0) {
-				return world.setBlock(x, y, z, blockId, 5, flag);
-			}
 			return world.setBlock(x, y, z, blockId, blockMeta, flag);
 		}
 		catch(Exception e) {
