@@ -38,19 +38,28 @@ public class WorldHelper {
 	 * @return If the block was successfully placed
 	 */
 	public static boolean setBlock(World world, int x, int y, int z, int blockId, int blockMeta, int flag) {
+		boolean orginal = true;
 		try {
 			if(world == null) return false;
+			orginal = world.isRemote;
 			if(!world.isRemote) {
 				world.isRemote = true;
 			}
 			boolean bool = world.setBlock(x, y, z, blockId, blockMeta, flag);
-			world.isRemote = false;
+			if(!orginal) {
+				world.isRemote = false;
+			}
 			return bool;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			LogHelper.logWarning("Something caused a block to not be placed at "+x+", "+y+", "+z+", in dimension ");
 			return false;
+		}
+		finally {
+			if(!orginal) {
+				world.isRemote = false;
+			}
 		}
 	}
 	/**

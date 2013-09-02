@@ -10,6 +10,8 @@ Update List Key
 v2.0.2a
 + 
 
+* Fixed the message 'Succesfully edited a sign.' displaying twice
+
 v2.0.1a
 + Added the ability to edit signs once they are placed in the world and add colours and other text options e.g. bold, underlined etc...
 + Added a //killentities <type> command, which you can kill all/specified entities in the loaded world

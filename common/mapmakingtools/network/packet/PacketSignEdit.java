@@ -78,13 +78,15 @@ public class PacketSignEdit extends PacketMMT {
 					chunk.setChunkModified();
 				}
 				
-				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.signEdit.complete"));
+				if(!player.worldObj.isRemote) 
+					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.signEdit.complete"));
 				MinecraftServer server = MinecraftServer.getServer();
 				server.getConfigurationManager().sendToAllNearExcept(player, x + 0.5D, y + 0.5D, z + 0.5D, 256 * 256, sign.worldObj.provider.dimensionId, sign.getDescriptionPacket());
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			if(!player.worldObj.isRemote) 
+				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
 		}
 	}
 }
