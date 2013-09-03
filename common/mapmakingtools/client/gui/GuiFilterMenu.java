@@ -74,14 +74,14 @@ public class GuiFilterMenu extends GuiContainer {
         this.y = y;
         this.z = z;
         this.mode = Mode.BLOCK;
-        ((ContainerFilter)inventorySlots).setCor(x, y, z);
+        this.getContainer().setCor(x, y, z);
     }
     
     public GuiFilterMenu(EntityPlayer player, int entityId, List<IFilter> filters, List<IServerFilter> serverFilters) {
        	this(player, filters, serverFilters);
         this.entityId = entityId;
         this.mode = Mode.ENTITY;
-        ((ContainerFilter)inventorySlots).setEntityId(entityId);
+        this.getContainer().setEntityId(entityId);
     }
     
     private GuiFilterMenu(EntityPlayer player, List<IFilter> filters, List<IServerFilter> serverFilters) {
@@ -91,8 +91,6 @@ public class GuiFilterMenu extends GuiContainer {
         this.ySize = 100;
         this.filterList = filters;
         this.maxPages = (filterList.size() + (deducuce(filterList.size() % 6))) / 6;
-        LogHelper.logDebug("" + deducuce(filterList.size() % 6));
-        LogHelper.logDebug("Max Pages: " + maxPages);
         if(currentPage > maxPages) {
         	currentPage = 1;
         }
@@ -102,7 +100,7 @@ public class GuiFilterMenu extends GuiContainer {
         for(int count = 0; count < filterList.size(); ++count) {
 			if(current == filterList.get(count)) {
 				PacketTypeHandler.populatePacketAndSendToServer(new PacketFilterPageMenu(count));
-				((ContainerFilter)inventorySlots).setSelected(count);
+				this.getContainer().setSelected(count);
 			}
 		}
     }
@@ -168,7 +166,7 @@ public class GuiFilterMenu extends GuiContainer {
         			for(int count = 0; count < filterList.size(); ++count) {
         				if(current == filterList.get(count)) {
         					PacketTypeHandler.populatePacketAndSendToServer(new PacketFilterPageMenu(count));
-        					((ContainerFilter)inventorySlots).setSelected(count);
+        					this.getContainer().setSelected(count);
         				}
         			}
         			tab.isSelected = true;
@@ -242,7 +240,6 @@ public class GuiFilterMenu extends GuiContainer {
                 default:
             }
         }
-    	LogHelper.logDebug("Page Number: " + currentPage);
     }
     
     public void unSelectAllExpect(GuiTabSelect button) {

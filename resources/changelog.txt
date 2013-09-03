@@ -9,6 +9,7 @@ Update List Key
 
 v2.0.3a
 + Made the Fill Inventory like the potion setter on mob spawners and so can put unlimted stacks of items in inventories that contain extra data
++ Added the ability to set the amount of uses the recipe can be used in a villager shop
 
 # Removed some debug messages
 

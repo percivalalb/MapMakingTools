@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
@@ -33,24 +34,33 @@ import mapmakingtools.network.PacketTypeHandler;
 public class PacketVillagerShop extends PacketMMT {
 
 	public int entityId;
+	public int[] recipeUses;
 	
 	public PacketVillagerShop() {
 		super(PacketTypeHandler.VILLAGER_SHOP, false);
+		this.recipeUses = new int[9];
 	}
 	
-	public PacketVillagerShop(int entityId) {
+	public PacketVillagerShop(int entityId, int[] recipeUses) {
 		this();
 		this.entityId = entityId;
+		this.recipeUses = recipeUses;
 	}
 
 	@Override
 	public void readData(DataInputStream data) throws IOException {
 		this.entityId = data.readInt();
+		for(int i = 0; i < recipeUses.length; i++) {
+			this.recipeUses[i] = data.readInt();
+		}
 	}
 
 	@Override
 	public void writeData(DataOutputStream dos) throws IOException {
 		dos.writeInt(entityId);
+		for(int i = 0; i < recipeUses.length; i++) {
+			dos.writeInt(this.recipeUses[i]);
+		}
 	}
 
 	@Override
@@ -84,7 +94,9 @@ public class PacketVillagerShop extends PacketMMT {
 			        				player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.villagerShop.outputNull", new Object[0]));
 			        				return;
 			        			}
-			        			recipeList.add(new MerchantRecipe(input1, input2, output));
+			        			MerchantRecipe recipe = new MerchantRecipe(input1, input2, output);
+			        			ReflectionHelper.setField(MerchantRecipe.class, recipe, 4, this.recipeUses[i]);
+			        			recipeList.add(recipe);
 			        		}
 			        		ReflectionHelper.setField(EntityVillager.class, villager, 5, recipeList);
 			        		
