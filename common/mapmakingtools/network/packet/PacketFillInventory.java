@@ -76,7 +76,7 @@ public class PacketFillInventory extends PacketMMT {
 			    			}
 			    		}
 						//SpawnerHelper.setPotionType(player.worldObj.getBlockTileEntity(x, y, z), container.getSlot(0).getStack());
-						player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.fillInventory.complete", new Object[] {container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName()}));
+						player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.fillInventory.complete", new Object[] {container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName()}));
 					}
 				}
 			}
@@ -93,12 +93,12 @@ public class PacketFillInventory extends PacketMMT {
 	    				}
 	    			}
 	    		}
-	    		player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.fillInventory.complete", new Object[] {new ItemStack(blockId, 1, blockMeta).getDisplayName()}));
+	    		player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.fillInventory.complete", new Object[] {new ItemStack(blockId, 1, blockMeta).getDisplayName()}));
 			}
 			**/
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 

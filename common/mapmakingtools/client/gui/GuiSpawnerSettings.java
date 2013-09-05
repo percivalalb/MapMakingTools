@@ -98,7 +98,7 @@ public class GuiSpawnerSettings extends GuiScreenMMT {
 
     protected void drawGuiBackground() {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.func_110434_K().func_110577_a(ResourceReference.transparentBackground);
+        this.mc.getTextureManager().bindTexture(ResourceReference.transparentBackground);
         int imageX = 173;
         int imageY = 210;
         int screenCentre = (this.height - imageY) / 2;

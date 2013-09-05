@@ -263,7 +263,7 @@ public class ScreenRenderHandler {
         GL11.glDepthMask(false);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, time);
-        Minecraft.getMinecraft().func_110434_K().func_110577_a(TextureMap.field_110575_b);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
         float f1 = icon.getMinU();
         float f2 = icon.getMinV();
         float f3 = icon.getMaxU();

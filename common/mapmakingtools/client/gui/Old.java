@@ -242,7 +242,7 @@ public class Old extends GuiScreen
         int var4 = this.width - this.xSize >> 1;
         int var5 = this.height - this.ySize >> 1;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //this.mc.func_110434_K().func_110577_a("/mapmakingtools/spawnerNamer.png");
+        //this.mc.getTextureManager().bindTexture("/mapmakingtools/spawnerNamer.png");
         this.drawTexturedModalRect(var4, var5, 0, 0, this.xSize, this.ySize);
 
         if (this.scrollHeight != 139)

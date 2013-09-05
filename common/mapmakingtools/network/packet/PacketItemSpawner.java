@@ -63,7 +63,7 @@ public class PacketItemSpawner extends PacketMMT {
 					FilterServerItemSpawner armor = (FilterServerItemSpawner)container.current;
 					if(armor == null) return;
 					SpawnerHelper.setItemType(player.worldObj.getBlockTileEntity(x, y, z), container.getSlot(0).getStack());
-					player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.itemSpawner.complete", new Object[] {container.getSlot(0).getStack() == null ? "null" : container.getSlot(0).getStack().getDisplayName()}));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.itemSpawner.complete", new Object[] {container.getSlot(0).getStack() == null ? "null" : container.getSlot(0).getStack().getDisplayName()}));
 				}
 			}
 		}

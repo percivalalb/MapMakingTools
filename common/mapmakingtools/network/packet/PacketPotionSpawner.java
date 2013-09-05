@@ -61,7 +61,7 @@ public class PacketPotionSpawner extends PacketMMT {
 					FilterServerPotionSpawner armor = (FilterServerPotionSpawner)container.current;
 					if(armor == null) return;
 					SpawnerHelper.setPotionType(player.worldObj.getBlockTileEntity(x, y, z), container.getSlot(0).getStack());
-					player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.potionSpawner.complete", new Object[0]));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.potionSpawner.complete"));
 				}
 			}
 		}

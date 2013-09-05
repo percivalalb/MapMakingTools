@@ -64,11 +64,11 @@ public class PacketMobType extends PacketMMT {
 			if(tile instanceof TileEntityMobSpawner) {
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 				SpawnerHelper.setMobId(spawner, mobId);
-				player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.mobSpawnerType.complete", new Object[] {mobId}));
+				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.mobSpawnerType.complete", new Object[] {mobId}));
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 }

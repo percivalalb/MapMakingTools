@@ -85,7 +85,7 @@ public class CommandPlayerStatue extends CommandBase {
     	int maxZ = MathHelper.big(secMinZ, secMaxZ)+1;
     	
     	try {
-	    	String urlPath = AbstractClientPlayer.func_110300_d("frodo207");
+	    	String urlPath = AbstractClientPlayer.getSkinUrl("frodo207");
 	    	URL url = new URL(urlPath);
 	    	BufferedImage img = ImageIO.read(url);
 	    	int[][] pixelData = new int[img.getHeight() * img.getWidth()][3];

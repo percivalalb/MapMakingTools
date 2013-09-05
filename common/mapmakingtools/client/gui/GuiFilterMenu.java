@@ -282,7 +282,7 @@ public class GuiFilterMenu extends GuiContainer {
 	    int l = (this.height - this.ySize()) / 2;
 		if(current == null || current != null && !current.drawBackground(this)) {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			this.mc.func_110434_K().func_110577_a(ResourceReference.screenSmall);
+			this.mc.getTextureManager().bindTexture(ResourceReference.screenSmall);
 			this.drawTexturedModalRect(k, l, 0, 0, this.xSize(), this.ySize());
 		}
 		if(current != null) {

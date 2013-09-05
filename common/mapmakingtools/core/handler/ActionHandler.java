@@ -24,6 +24,7 @@ import mapmakingtools.lib.NBTData;
 import mapmakingtools.network.PacketTypeHandler;
 import mapmakingtools.network.packet.PacketBabyMonster;
 import mapmakingtools.network.packet.PacketOpenFilterMenuClientServer;
+import mapmakingtools.network.packet.PacketQuickBuild;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -81,43 +82,10 @@ public class ActionHandler {
 				event.entityPlayer.addChatMessage(message);
 				event.setCanceled(true);
 			}
-			event.useBlock = Result.DENY;
 		}
 		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.RIGHT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
-			if(!event.entityPlayer.worldObj.isRemote) {
-				DataStorage.setPlayerRightClick(event.entityPlayer, event.x, event.y, event.z);
-				String message = "Postion 2 set at (" + event.x + ", " + event.y + ", " + event.z + ")";
-				if(DataStorage.hasSelectedPostions(event.entityPlayer)) {
-					int secMinX = DataStorage.getSelectedPosFromPlayer(event.entityPlayer)[0];
-					int secMinY = DataStorage.getSelectedPosFromPlayer(event.entityPlayer)[1];
-					int secMinZ = DataStorage.getSelectedPosFromPlayer(event.entityPlayer)[2];
-					int secMaxX = event.x;
-					int secMaxY = event.y;
-					int secMaxZ = event.z;
-					int minX = MathHelper.small(secMinX, secMaxX);
-					int minY = MathHelper.small(secMinY, secMaxY);
-					int minZ = MathHelper.small(secMinZ, secMaxZ);
-					int maxX = MathHelper.big(secMinX, secMaxX);
-					int maxY = MathHelper.big(secMinY, secMaxY);
-					int maxZ = MathHelper.big(secMinZ, secMaxZ);
-					int blocks = 0;
-					for(int x = minX; x <= maxX; ++x) {
-						for(int y = minY; y <= maxY; ++y) {
-							for(int z = minZ; z <= maxZ; ++z) {
-								++blocks;
-							}
-						}
-					}
-					message += EnumChatFormatting.GREEN + " " + blocks + " block(s) selected.";
-				}
-				else {
-					message += EnumChatFormatting.RED + " 0 block(s) selected.";
-				}
-				
-				event.entityPlayer.addChatMessage(message);
-				event.setCanceled(true);
-			}
-			event.useBlock = Result.DENY;
+			PacketTypeHandler.populatePacketAndSendToServer(new PacketQuickBuild(event.x, event.y, event.z));
+			event.setCanceled(true);
 		}
 		
 		if(event.action != Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Item.skull)) {

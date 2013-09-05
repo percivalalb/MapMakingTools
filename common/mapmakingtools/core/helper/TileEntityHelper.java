@@ -40,6 +40,12 @@ public class TileEntityHelper {
 	public static void placeTileEntity(TileEntity tile, World world, int x, int y, int z) {
 		if(tile != null) {
 			tile.validate();
+			NBTTagCompound tag = new NBTTagCompound();
+			tile.writeToNBT(tag);
+			tag.setInteger("x", x);
+			tag.setInteger("y", y);
+			tag.setInteger("z", z);
+			tile.readFromNBT(tag);
 			world.setBlockTileEntity(x, y, z, tile);
 		}
 	}

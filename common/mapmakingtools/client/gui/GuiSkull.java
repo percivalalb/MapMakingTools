@@ -123,7 +123,7 @@ public class GuiSkull extends GuiScreen {
 
     protected void drawGuiBackground(int xMouse, int yMouse, float particleTicks) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.func_110434_K().func_110577_a(ResourceReference.screenSmall);
+        this.mc.getTextureManager().bindTexture(ResourceReference.screenSmall);
         int var2 = (this.width - 240) / 2;
         int var3 = (this.height - 100) / 2;
         this.drawTexturedModalRect(var2, var3, 0, 0, 240, 100);

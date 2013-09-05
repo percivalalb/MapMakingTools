@@ -60,7 +60,7 @@ public class PacketMobArmor extends PacketMMT {
 					FilterServerMobArmor armor = (FilterServerMobArmor)container.current;
 					if(armor == null) return;
 					SpawnerHelper.setMobArmor(player.worldObj.getBlockTileEntity(x, y, z), container.getSlot(5).getStack(), container.getSlot(6).getStack(), container.getSlot(7).getStack(), container.getSlot(8).getStack(), container.getSlot(4).getStack());
-					player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.mobArmor.complete", new Object[0]));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.mobArmor.complete", new Object[0]));
 				}
 			}
 		}

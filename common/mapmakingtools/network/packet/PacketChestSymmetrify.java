@@ -80,7 +80,7 @@ public class PacketChestSymmetrify extends PacketMMT {
 				}
 				
 				if(stacksInChest.size() < 1) {
-					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.chestSymmetrify.noContents"));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.chestSymmetrify.noContents"));
 					return;
 				}	
 				
@@ -209,11 +209,11 @@ public class PacketChestSymmetrify extends PacketMMT {
 					chest.setInventorySlotContents(key, item.copy());
 				}
 				
-				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.chestSymmetrify.complete"));
+				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.chestSymmetrify.complete"));
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 }

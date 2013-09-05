@@ -51,7 +51,7 @@ public class PacketBuildLeftClick extends PacketMMT {
 			DataStorage.setPlayerLeftClick(player, x, y, z);
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 

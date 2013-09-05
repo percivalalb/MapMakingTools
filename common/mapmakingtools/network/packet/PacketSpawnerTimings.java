@@ -86,7 +86,7 @@ public class PacketSpawnerTimings extends PacketMMT {
 				int entityCapNO;
 				int detectionRadiusNO;
 				if(!FilterHelper.isNumber(minDelay) || !FilterHelper.isNumber(maxDelay) || !FilterHelper.isNumber(spawnRadius) || !FilterHelper.isNumber(spawnCount) || !FilterHelper.isNumber(entityCap) || !FilterHelper.isNumber(detectionRange)) {
-					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.creeperExplosion.notInt"));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.creeperExplosion.notInt"));
 					return;
 				}
 				minDelayNO = FilterHelper.getNumber(minDelay);
@@ -102,11 +102,11 @@ public class PacketSpawnerTimings extends PacketMMT {
 				SpawnerHelper.setEntityCap(tile, entityCapNO);
 				SpawnerHelper.setDetectionRadius(tile, detectionRadiusNO);
 				
-				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.spawnerTimings.complete"));
+				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.spawnerTimings.complete"));
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 }

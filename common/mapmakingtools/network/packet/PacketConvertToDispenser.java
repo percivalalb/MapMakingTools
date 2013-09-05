@@ -80,11 +80,11 @@ public class PacketConvertToDispenser extends PacketMMT {
 						}
 					}
 				}
-				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.convertToDispenser.complete"));
+				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.convertToDispenser.complete"));
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 

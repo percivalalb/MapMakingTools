@@ -36,7 +36,7 @@ public class GuiButtonCancel extends GuiButton {
     {
         if (this.drawButton)
         {
-            par1Minecraft.func_110434_K().func_110577_a(resourceLocation);
+            par1Minecraft.getTextureManager().bindTexture(resourceLocation);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.field_82253_i = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
             short short1 = 219;

@@ -20,7 +20,7 @@ public class ItemAxe extends net.minecraft.item.ItemAxe {
 	
     public ItemAxe() {
         super(15, EnumToolMaterial.WOOD);
-        this.func_111206_d("wood_axe");
+        this.setTextureName("wood_axe");
         this.setUnlocalizedName("hatchetWood");
     }
     

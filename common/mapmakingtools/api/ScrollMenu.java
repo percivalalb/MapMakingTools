@@ -111,7 +111,7 @@ public abstract class ScrollMenu {
 	
 	public void drawGuiContainerBackgroundLayer(int xMouse, int yMouse, float particleTicks) {
 	    this.clip();
-        ClientHelper.mc.func_110434_K().func_110577_a(ResourceReference.screenScroll);
+        ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenScroll);
         int var9;
         for(var9 = 0; var9 < list.size(); ++var9) {
     		int row = (var9 - (var9 % numberOfColumns)) / numberOfColumns;

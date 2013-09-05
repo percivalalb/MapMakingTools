@@ -61,15 +61,15 @@ public class PacketBabyMonster extends PacketMMT {
 				boolean isAdult = !SpawnerHelper.getBabyMonster(tile);
 				SpawnerHelper.setToBabyMonster(spawner, isAdult);
 				if(isAdult) {
-					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.adultMonster.complete"));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.adultMonster.complete"));
 				}
 				else {
-					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.babyMonster.complete"));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.babyMonster.complete"));
 				}
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 }

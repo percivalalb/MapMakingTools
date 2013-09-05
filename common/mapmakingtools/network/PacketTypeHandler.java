@@ -29,6 +29,7 @@ import mapmakingtools.network.packet.PacketOpenFilterMenuClientServer;
 import mapmakingtools.network.packet.PacketOpenFilterMenuServerClient;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
 import mapmakingtools.network.packet.PacketPotionSpawner;
+import mapmakingtools.network.packet.PacketQuickBuild;
 import mapmakingtools.network.packet.PacketRemoveEntityFromWorld;
 import mapmakingtools.network.packet.PacketSignEdit;
 import mapmakingtools.network.packet.PacketSkullModify;
@@ -51,6 +52,7 @@ public enum PacketTypeHandler {
 	OPEN_ITEM_EDITOR(PacketOpenItemEditor.class),
 	BUILD_LEFT_CLICK(PacketBuildLeftClick.class),
 	BUILD_RIGHT_CLICK(PacketBuildRightClick.class),
+	QUICK_BUILD(PacketQuickBuild.class),
 	FLY(PacketFly.class),
 	BEACON_MODIFY(PacketBeaconModify.class),
 	FILL_INVENTORY(PacketFillInventory.class),

@@ -6,6 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 
+/**
+ * @author ProPercivalalb
+ */
 public class GuiSmallButton extends GuiButton {
     
 	public GuiSmallButton(int id, int xPosition, int yPosition, int width, int height, String text) {
@@ -16,7 +19,7 @@ public class GuiSmallButton extends GuiButton {
     public void drawButton(Minecraft minecraft, int i, int j) {
         if(drawButton) {
         	FontRenderer fontRenderer = minecraft.fontRenderer;
-        	minecraft.func_110434_K().func_110577_a(field_110332_a);
+        	minecraft.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
             int hoverState = getHoverState(flag);

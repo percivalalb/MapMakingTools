@@ -121,7 +121,7 @@ public class GuiBeacon extends GuiScreen {
 
     protected void drawGuiBackground() {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.func_110434_K().func_110577_a(ResourceReference.screenSmall);
+        this.mc.getTextureManager().bindTexture(ResourceReference.screenSmall);
         int var2 = (this.width - 100) / 2;
         int var3 = (this.height - 50) / 2;
         this.drawTexturedModalRect(var2 - 100 + 30, var3 - 50 + 30 + 5, 0, 0, 240, 100);

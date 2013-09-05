@@ -167,7 +167,7 @@ public class MapMakingTools {
 		RotationManager.registerRotationHandler(Block.stairsNetherBrick.blockID, new RotationStairs());
 		RotationManager.registerRotationHandler(Block.stairsSandStone.blockID, new RotationStairs());
 		RotationManager.registerRotationHandler(Block.stairsNetherQuartz.blockID, new RotationStairs());
-		RotationManager.registerRotationHandler(Block.field_111038_cB.blockID, new RotationHayBale());
+		RotationManager.registerRotationHandler(Block.hay.blockID, new RotationHayBale());
 		RotationManager.registerRotationHandler(Block.signPost.blockID, new RotationSignPost());
 		RotationManager.registerRotationHandler(Block.signWall.blockID, new RotationSignWall());
 		RotationManager.registerRotationHandler(Block.rail.blockID, new RotationVanillaTrack());

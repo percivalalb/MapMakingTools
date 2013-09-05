@@ -80,11 +80,11 @@ public class PacketConvertToDropper extends PacketMMT {
 						}
 					}
 				}
-				player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.convertToDropper.complete"));
+				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.convertToDropper.complete"));
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 

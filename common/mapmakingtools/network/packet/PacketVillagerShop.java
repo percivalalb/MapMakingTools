@@ -87,11 +87,11 @@ public class PacketVillagerShop extends PacketMMT {
 			        				input2 = null;
 			        			}
 			        			if(input1 == null) {
-			        				player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.villagerShop.inputNull", new Object[0]));
+			        				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.villagerShop.inputNull", new Object[0]));
 			        				return;
 			        			}
 			        			if(output == null) {
-			        				player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.villagerShop.outputNull", new Object[0]));
+			        				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.villagerShop.outputNull", new Object[0]));
 			        				return;
 			        			}
 			        			MerchantRecipe recipe = new MerchantRecipe(input1, input2, output);
@@ -100,7 +100,7 @@ public class PacketVillagerShop extends PacketMMT {
 			        		}
 			        		ReflectionHelper.setField(EntityVillager.class, villager, 5, recipeList);
 			        		
-			        		player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.villagerShop.complete", new Object[0]));
+			        		player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.villagerShop.complete", new Object[0]));
 			        	}
 			        }
 				}

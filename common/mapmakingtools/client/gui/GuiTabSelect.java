@@ -14,6 +14,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 
+/**
+ * @author ProPercivalalb
+ */
 public class GuiTabSelect extends GuiButton {
     
 	private Minecraft mc = Minecraft.getMinecraft();
@@ -32,12 +35,12 @@ public class GuiTabSelect extends GuiButton {
     public void drawButton(Minecraft minecraft, int i, int j) {
         if(this.drawButton) {
         	FontRenderer fontRenderer = minecraft.fontRenderer;
-        	minecraft.func_110434_K().func_110577_a(ResourceReference.tabs);
+        	minecraft.getTextureManager().bindTexture(ResourceReference.tabs);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int difference = isSelected ? 32 : 30;
             this.drawTexturedModalRect(xPosition + (isSelected && type == ButtonType.RIGHT ? -2 : 0), yPosition, 0 + (isSelected ? 30 : 0), 28 * (type == ButtonType.LEFT ? 1 : 0), difference, 27 * (type == ButtonType.LEFT ? 2 : 1));//top left
             Icon icon = filter.getDisplayIcon();
-            minecraft.func_110434_K().func_110577_a(TextureMap.field_110576_c);
+            minecraft.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
             if(icon != null) {
             	this.drawTexturedModelRectFromIcon(xPosition + 5 + (type == ButtonType.LEFT ? 3 : 0), yPosition + 5, icon, 16, 16);
             }

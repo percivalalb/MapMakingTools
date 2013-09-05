@@ -74,7 +74,7 @@ public class PacketMobVelocity extends PacketMMT {
 				double yMotionNO;
 				double zMotionNO;
 				if(!FilterHelper.isDouble(xMotion) || !FilterHelper.isDouble(yMotion) || !FilterHelper.isDouble(zMotion)) {
-					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("filter.creeperExplosion.notInt"));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.creeperExplosion.notInt"));
 					return;
 				}
 				xMotionNO = FilterHelper.getDouble(xMotion);
@@ -82,11 +82,11 @@ public class PacketMobVelocity extends PacketMMT {
 				zMotionNO = FilterHelper.getDouble(zMotion);
 				SpawnerHelper.setMotion(tile, xMotionNO, yMotionNO, zMotionNO);
 			
-				player.sendChatToPlayer(ChatMessageComponent.func_111082_b("filter.mobVelocity.complete", new Object[] {xMotion, yMotion, zMotion}));
+				player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.mobVelocity.complete", new Object[] {xMotion, yMotion, zMotion}));
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 }

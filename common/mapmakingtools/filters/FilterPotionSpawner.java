@@ -142,7 +142,7 @@ public class FilterPotionSpawner implements IFilter {
 	@Override
 	public boolean drawBackground(GuiFilterMenu gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.func_110434_K().func_110577_a(ResourceReference.screenOneSlot);
+		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenOneSlot);
 		int k = (gui.width - gui.xSize()) / 2;
 		int l = (gui.height - 104) / 2;
 		gui.drawTexturedModalRect(k, l, 0, 0, gui.xSize(), 104);

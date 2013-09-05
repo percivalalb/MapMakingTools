@@ -21,16 +21,16 @@ public class TextureHelper {
 	 * @param fallBack The local fall back texture
 	 */
     public static void bindPlayerTexture(String imageUrl) {
-    	ResourceLocation resourcelocation = AbstractClientPlayer.field_110314_b;
+    	ResourceLocation resourcelocation = AbstractClientPlayer.locationStevePng;
 
         if (imageUrl != null && imageUrl.length() > 0) {
-            resourcelocation = AbstractClientPlayer.func_110305_h(imageUrl);
-            AbstractClientPlayer.func_110304_a(resourcelocation, imageUrl);
+            resourcelocation = AbstractClientPlayer.getLocationSkull(imageUrl);
+            AbstractClientPlayer.getDownloadImageSkin(resourcelocation, imageUrl);
         }
-    	TextureManager texturemanager = mc.func_110434_K();
+    	TextureManager texturemanager = mc.getTextureManager();
 
         if (texturemanager != null) {
-             texturemanager.func_110577_a(resourcelocation);
+             texturemanager.bindTexture(resourcelocation);
         }
     }
     

@@ -83,7 +83,7 @@ public class PacketOpenFilterMenuClientServer extends PacketMMT {
 				}
 				else {
 					EntityPlayer taskPlayer = WrenchTasks.getPlayerTaskEntity(player.worldObj, entityId);
-					player.sendChatToPlayer(ChatMessageComponent.func_111082_b("error.wrenchTask.entity", new Object[] {taskPlayer.getTranslatedEntityName()}));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("error.wrenchTask.entity", new Object[] {taskPlayer.getTranslatedEntityName()}));
 				}
 			}
 			else {
@@ -93,12 +93,12 @@ public class PacketOpenFilterMenuClientServer extends PacketMMT {
 				}
 				else {
 					EntityPlayer taskPlayer = WrenchTasks.getPlayerTaskBlock(player.worldObj,  x, y, z);
-					player.sendChatToPlayer(ChatMessageComponent.func_111082_b("error.wrenchTask.block", new Object[] {taskPlayer.getTranslatedEntityName()}));
+					player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("error.wrenchTask.block", new Object[] {taskPlayer.getTranslatedEntityName()}));
 				}
 			}
 		}
 		else {
-			player.sendChatToPlayer(ChatMessageComponent.func_111077_e("advMode.creativeModeNeed"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));
 		}
 	}
 
