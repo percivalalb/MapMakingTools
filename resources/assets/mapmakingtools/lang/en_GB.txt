@@ -58,7 +58,7 @@ filter.creeperExplosion.complete=Changed the creeper explosion properties.
 filter.creeperExplosion.notInt=That is not a valid integer.
 filter.mobVelocity.complete=Mob spawned will have a motion x = %s, y = %s, z = %s.
 filter.adultMonster.complete=Spawner set to spawn adults.
-filter.babyMonster.complete=Spawner set to spawn babys.
+filter.babyMonster.complete=Spawner set to spawn babies.
 filter.itemSpawner.complete=Set the spawner to spawn %s.
 filter.potionSpawner.complete=Changed the potion that the spawner spawns.
 filter.mobArmor.complete=Changed the armor the mob wears.
@@ -67,10 +67,12 @@ filter.villagerShop.complete=Created a custom Villager Shop.
 filter.chestSymmetrify.complete=Made the chests contents look as symmetrical as possible!
 filter.signEdit.complete=Succesfully edited a sign.
 
-filter.chestSymmetrify.noContents=The chest must contant some items.
+filter.chestSymmetrify.noContents=The chest must contain some items.
 filter.villagerShop.inputNull=At least 1 input has to contain an item.
 filter.villagerShop.outputNull=The output has to contain an item.
 error.wrenchTask.entity=%s is already editing this entity.
 error.wrenchTask.block=%s is already editing this block.
+
+itemeditor.closeNoItem=The item you were editing has been removed from you inventory :/
 
 entity.FireworksRocketEntity.name=Firework

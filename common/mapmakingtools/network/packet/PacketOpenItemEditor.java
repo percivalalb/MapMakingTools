@@ -19,20 +19,31 @@ import mapmakingtools.network.PacketTypeHandler;
 
 public class PacketOpenItemEditor extends PacketMMT {
 	
+	private int slotNo;
+	
 	public PacketOpenItemEditor() {
 		super(PacketTypeHandler.OPEN_ITEM_EDITOR, false);
 	}
+	
+	public PacketOpenItemEditor(int slotNo) {
+		this();
+		this.slotNo = slotNo;
+	}
 
 	@Override
-	public void readData(DataInputStream data) throws IOException {}
+	public void readData(DataInputStream data) throws IOException {
+		this.slotNo = data.readInt();
+	}
 
 	@Override
-	public void writeData(DataOutputStream dos) throws IOException {}
+	public void writeData(DataOutputStream dos) throws IOException {
+		dos.writeInt(slotNo);
+	}
 
 	@Override
 	public void execute(INetworkManager network, EntityPlayer player) {
 		if(GeneralHelper.inCreative(player)) {
-			player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_ITEM_EDITOR, player.worldObj, 0, 0, 0);
+			player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_ITEM_EDITOR, player.worldObj, slotNo, 0, 0);
 		}
 		else {
 			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("advMode.creativeModeNeed"));

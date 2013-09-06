@@ -11,8 +11,8 @@ import net.minecraft.inventory.Container;
 
 public class GuiItemEditor extends GuiContainer {
 	
-	public GuiItemEditor(EntityPlayer player) {
-		super(new ContainerItemEditor(player));
+	public GuiItemEditor(EntityPlayer player, int slotNo) {
+		super(new ContainerItemEditor(player, slotNo));
 		this.xSize = 175;
 		this.ySize = 132;
 	}

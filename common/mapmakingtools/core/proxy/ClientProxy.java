@@ -1,9 +1,12 @@
 package mapmakingtools.core.proxy;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.core.handler.MMTKeyHandler;
 import mapmakingtools.core.handler.ScreenRenderHandler;
+import mapmakingtools.core.handler.TickHandler;
 import mapmakingtools.core.handler.WorldOverlayHandler;
 import mapmakingtools.core.helper.MobSpawnerType;
 import mapmakingtools.filters.FilterBabyMonster;
@@ -106,5 +109,6 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new WorldOverlayHandler());
 		MinecraftForge.EVENT_BUS.register(new ScreenRenderHandler());
 		KeyBindingRegistry.registerKeyBinding(new MMTKeyHandler());
+		TickRegistry.registerTickHandler(new TickHandler(), Side.CLIENT);
 	}
 }

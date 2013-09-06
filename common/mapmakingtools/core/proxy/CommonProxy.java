@@ -46,7 +46,7 @@ public class CommonProxy implements IGuiHandler {
 		if(ID == GUI_ID_SPAWNER_SETTING) {} //Do nothing on server
 		else if(ID == GUI_ID_SKULL_NAME) {} //Do nothing on server
 		else if(ID == GUI_ID_ITEM_EDITOR) {
-			return new ContainerItemEditor(player);
+			return new ContainerItemEditor(player, x);
 		}
 		else if(ID == GUI_ID_FILTERS_1) {
 		    List<IServerFilter> filters = FilterManager.getApplicableServerFilters(player, world, x, y, z);
@@ -74,7 +74,7 @@ public class CommonProxy implements IGuiHandler {
 			return new GuiSkull(player);
 		}
 		else if(ID == GUI_ID_ITEM_EDITOR) {
-			return new GuiItemEditor(player);
+			return new GuiItemEditor(player, x);
 		}
 		else if(ID == GUI_ID_FILTERS_1) {
 		    List<IFilter> filters = FilterManager.getApplicableFilters(player, world, x, y, z);

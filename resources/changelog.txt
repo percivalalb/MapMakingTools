@@ -16,6 +16,7 @@ v2.0.3a (Please note Forge #850 or higher is now needed to run map making tools)
 * Fixed Quick Build Item opening some GUI's when right clicking, which was annoying 
 * Fixed weird TileEntity behaver after being pasted
 * Fixed the items in the villager shop editor flashing from one item to another on opening the GUI (For real!)
+* Fixed some spelling mistakes
 
 v2.0.2b
 * Fixed crash with sign edit
