@@ -77,7 +77,7 @@ public class PacketOpenFilterMenuClientServer extends PacketMMT {
 	public void execute(INetworkManager network, EntityPlayer player) {
 		if(GeneralHelper.inCreative(player)) {
 			if(mode == Mode.ENTITY) {
-				if(WrenchTasks.getPlayerTaskEntity(player.worldObj, entityId).username.equalsIgnoreCase(player.username) || !WrenchTasks.isThereTaskEntity(player.worldObj, entityId)) {
+				if(!WrenchTasks.isThereTaskEntity(player.worldObj, entityId) || WrenchTasks.getPlayerTaskEntity(player.worldObj, entityId).username.equalsIgnoreCase(player.username)) {
 					PacketTypeHandler.populatePacketAndSendToClient(new PacketOpenFilterMenuServerClient(player.worldObj, entityId), (EntityPlayerMP)player);
 					player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_FILTERS_2, player.worldObj, entityId, 0, 0);
 				}
@@ -87,7 +87,7 @@ public class PacketOpenFilterMenuClientServer extends PacketMMT {
 				}
 			}
 			else {
-				if(WrenchTasks.getPlayerTaskBlock(player.worldObj, x, y, z).username.equalsIgnoreCase(player.username) || !WrenchTasks.isThereTaskBlock(player.worldObj, x, y, z)) {
+				if(!WrenchTasks.isThereTaskBlock(player.worldObj, x, y, z) || WrenchTasks.getPlayerTaskBlock(player.worldObj, x, y, z).username.equalsIgnoreCase(player.username)) {
 					PacketTypeHandler.populatePacketAndSendToClient(new PacketOpenFilterMenuServerClient(player.worldObj, x, y, z), (EntityPlayerMP)player);
 					player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_FILTERS_1, player.worldObj, x, y, z);	
 				}
