@@ -10,6 +10,8 @@ Update List Key
 v2.0.3a (Please note Forge #850 or higher is now needed to run map making tools)
 + Made the Fill Inventory like the potion setter on mob spawners and so can put unlimted stacks of items in inventories that contain extra data
 + Added the ability to set the amount of uses the recipe can be used in a villager shop
++ Added the ability to edit item name and damage, hover over item in inventory and click 'M' to edit the item
++ Added a //setbiome <biome> command which you can set the biome of anywhere if selected with Quick Build Item
 
 # Removed some debug messages
 
@@ -17,6 +19,7 @@ v2.0.3a (Please note Forge #850 or higher is now needed to run map making tools)
 * Fixed weird TileEntity behaver after being pasted
 * Fixed the items in the villager shop editor flashing from one item to another on opening the GUI (For real!)
 * Fixed some spelling mistakes
+* Fixed the wrench saying you are editing a block/entity when you are not editing it, meaning you would have to relog to fix. 
 
 v2.0.2b
 * Fixed crash with sign edit

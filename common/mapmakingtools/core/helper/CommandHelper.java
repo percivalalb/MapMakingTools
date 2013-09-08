@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.common.base.Strings;
+
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionHealth;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.biome.BiomeGenBase;
 
 /**
  * @author ProPercivalalb
@@ -15,47 +18,73 @@ import net.minecraft.server.MinecraftServer;
 public class CommandHelper {
 
 	//Potion Command
-	private static Map<Integer, String> intToStringMapping = new HashMap<Integer, String>();
-	private static Map<String, Integer> stringToIntMapping = new HashMap<String, Integer>();
+	private static Map<Integer, String> intToStringMappingPotion = new HashMap<Integer, String>();
+	private static Map<String, Integer> stringToIntMappingPotion = new HashMap<String, Integer>();
 	
 	private static void addPotion(Potion potion, String name) {
-		if(intToStringMapping.containsKey(potion.id)) return;
-		intToStringMapping.put(potion.id, name.toLowerCase());
-		stringToIntMapping.put(name.toLowerCase(), potion.id);
+		if(intToStringMappingPotion.containsKey(potion.id)) return;
+		intToStringMappingPotion.put(potion.id, name);
+		stringToIntMappingPotion.put(name.toLowerCase(), potion.id);
 	}
 	
 	private static void initPotions() {
-		addPotion(Potion.moveSpeed, "speed");
-		addPotion(Potion.moveSlowdown, "slowness");
-		addPotion(Potion.digSpeed, "haste");
-		addPotion(Potion.digSlowdown, "miningfatigue");
-		addPotion(Potion.damageBoost, "strength");
-		addPotion(Potion.heal, "heal");
-		addPotion(Potion.harm, "harm");
-		addPotion(Potion.jump, "jump");
-		addPotion(Potion.confusion, "confusion");
-		addPotion(Potion.regeneration, "regeneration");
-		addPotion(Potion.resistance, "resistance");
-		addPotion(Potion.fireResistance, "fireresistance");
+		addPotion(Potion.moveSpeed, "Speed");
+		addPotion(Potion.moveSlowdown, "Slowness");
+		addPotion(Potion.digSpeed, "Haste");
+		addPotion(Potion.digSlowdown, "MiningFatigue");
+		addPotion(Potion.damageBoost, "Strength");
+		addPotion(Potion.heal, "Heal");
+		addPotion(Potion.harm, "Harm");
+		addPotion(Potion.jump, "Jump");
+		addPotion(Potion.confusion, "Confusion");
+		addPotion(Potion.regeneration, "Regeneration");
+		addPotion(Potion.resistance, "Resistance");
+		addPotion(Potion.fireResistance, "FireResistance");
 		addPotion(Potion.waterBreathing, "waterbreathing");
-		addPotion(Potion.invisibility, "invisibility");
-		addPotion(Potion.blindness, "blindness");
-		addPotion(Potion.nightVision, "nightvision");
-		addPotion(Potion.hunger, "hunger");
-		addPotion(Potion.weakness, "weakness");
-		addPotion(Potion.poison, "poison");
-		addPotion(Potion.wither, "wither");
-		addPotion(Potion.field_76434_w, "healthboost");
-		addPotion(Potion.field_76444_x, "absorption");
-		addPotion(Potion.field_76443_y, "saturation");
+		addPotion(Potion.invisibility, "Invisibility");
+		addPotion(Potion.blindness, "Blindness");
+		addPotion(Potion.nightVision, "Nightvision");
+		addPotion(Potion.hunger, "Hunger");
+		addPotion(Potion.weakness, "Weakness");
+		addPotion(Potion.poison, "Poison");
+		addPotion(Potion.wither, "Wither");
+		addPotion(Potion.field_76434_w, "Healthboost");
+		addPotion(Potion.field_76444_x, "Absorption");
+		addPotion(Potion.field_76443_y, "Saturation");
 	}
 	public static String[] getPotionNames() {
-		return intToStringMapping.values().toArray(new String[] {});
+		return intToStringMappingPotion.values().toArray(new String[] {});
 	}
 	public static int getPotionIdFromString(String name) {
 		name.toLowerCase();
-		if(!stringToIntMapping.containsKey(name)) return -1;
-		return stringToIntMapping.get(name);
+		if(!stringToIntMappingPotion.containsKey(name)) return -1;
+		return stringToIntMappingPotion.get(name);
+	}
+	
+	//Biome Command
+	private static Map<Integer, String> intToStringMappingBiome = new HashMap<Integer, String>();
+	private static Map<String, Integer> stringToIntMappingBiome = new HashMap<String, Integer>();
+		
+	private static void addBiome(BiomeGenBase biome, String name) {
+		if(intToStringMappingBiome.containsKey(biome.biomeID)) return;
+		intToStringMappingBiome.put(biome.biomeID, name.toLowerCase());
+		stringToIntMappingBiome.put(name.toLowerCase(), biome.biomeID);
+	}
+		
+	private static void initBiomes() {
+		for(int i = 0; i < BiomeGenBase.biomeList.length; ++i) {
+			BiomeGenBase biome = BiomeGenBase.biomeList[i];
+			if(biome != null && !Strings.isNullOrEmpty(biome.biomeName))
+				addBiome(biome, biome.biomeName.replaceAll(" ", ""));
+		}
+	}
+	public static String[] getBiomeNames() {
+		return intToStringMappingBiome.values().toArray(new String[] {});
+	}
+	public static int getBiomeIdFromString(String name) {
+		name.toLowerCase();
+		if(!stringToIntMappingBiome.containsKey(name)) return -1;
+		return stringToIntMappingBiome.get(name);
 	}
 	
 	//End
@@ -68,5 +97,6 @@ public class CommandHelper {
 	
 	static {
 		initPotions();
+		initBiomes();
 	}
 }

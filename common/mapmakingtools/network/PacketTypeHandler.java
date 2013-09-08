@@ -9,6 +9,7 @@ import mapmakingtools.core.helper.LogHelper;
 import mapmakingtools.lib.Reference;
 import mapmakingtools.network.packet.PacketBabyMonster;
 import mapmakingtools.network.packet.PacketBeaconModify;
+import mapmakingtools.network.packet.PacketBiomeUpdate;
 import mapmakingtools.network.packet.PacketBuildLeftClick;
 import mapmakingtools.network.packet.PacketBuildRightClick;
 import mapmakingtools.network.packet.PacketChestSymmetrify;
@@ -18,6 +19,7 @@ import mapmakingtools.network.packet.PacketCreeperProperties;
 import mapmakingtools.network.packet.PacketFillInventory;
 import mapmakingtools.network.packet.PacketFilterPageMenu;
 import mapmakingtools.network.packet.PacketFly;
+import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import mapmakingtools.network.packet.PacketItemSpawner;
 import mapmakingtools.network.packet.PacketMMT;
 import mapmakingtools.network.packet.PacketMaxVillagerRecipes;
@@ -50,6 +52,7 @@ public enum PacketTypeHandler {
 	
 	SKULL_MODIFY(PacketSkullModify.class),
 	OPEN_ITEM_EDITOR(PacketOpenItemEditor.class),
+	ITEM_EDITOR_UPDATE(PacketItemEditorUpdate.class),
 	BUILD_LEFT_CLICK(PacketBuildLeftClick.class),
 	BUILD_RIGHT_CLICK(PacketBuildRightClick.class),
 	QUICK_BUILD(PacketQuickBuild.class),
@@ -76,7 +79,8 @@ public enum PacketTypeHandler {
 	VILLAGER_RECIPE_AMOUNR(PacketVillagerRecipeAmounts.class),
 	CHEST_SYMMETRIFY(PacketChestSymmetrify.class),
 	REMOVE_ENTITY_FROM_WORLD(PacketRemoveEntityFromWorld.class),
-	SIGN_EDIT(PacketSignEdit.class);
+	SIGN_EDIT(PacketSignEdit.class),
+	BIOME_UPDATE(PacketBiomeUpdate.class);
 	
     private Class<? extends PacketMMT> clazz;
 

@@ -43,7 +43,7 @@ public class MMTKeyHandler extends KeyHandler {
 
     @Override
     public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {
-    	if(!tickEnd && mc.currentScreen instanceof GuiContainer) {
+    	if(kb == openItemEditor && !tickEnd && mc.currentScreen instanceof GuiContainer) {
     		GuiContainer container = (GuiContainer)mc.currentScreen;
             int xMouse = Mouse.getX() * container.width / this.mc.displayWidth;
             int yMouse = container.height - Mouse.getY() * container.height / this.mc.displayHeight - 1;
@@ -54,8 +54,16 @@ public class MMTKeyHandler extends KeyHandler {
                 if (slot.inventory instanceof InventoryPlayer && isPointInRegion(container, slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, xMouse, yMouse) && slot.func_111238_b()) {
                 	if(slot.getHasStack()) {
                 		ItemStack stack = slot.getStack();
-                		LogHelper.logDebug(stack.getDisplayName());
-                    	PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenItemEditor(slot.getSlotIndex()));
+                		int index = 0;
+                		for(int i = 0; i < ((InventoryPlayer)slot.inventory).getSizeInventory(); ++i) {
+                			ItemStack playerStack = ((InventoryPlayer)slot.inventory).getStackInSlot(i);
+                			if(stack == playerStack) {
+                				index = i;
+                			}
+                		}
+                		
+                		LogHelper.logDebug(stack.getDisplayName() + " " + index);
+                    	PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenItemEditor(index));
                 	}
                 }
             }

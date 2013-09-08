@@ -1,5 +1,6 @@
 package mapmakingtools.inventory;
 
+import mapmakingtools.core.helper.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -15,10 +16,11 @@ public class ContainerItemEditor extends Container {
 	
 	public ContainerItemEditor(EntityPlayer player, int slotNo) {
 		this.slotNo = slotNo;
+		LogHelper.logDebug("" + slotNo + "  ");
 		byte b0 = 51;
 		int i;
 
-		this.addSlotToContainer(new Slot(player.inventory, slotNo, 9, 9) {
+		this.addSlotToContainer(new Slot(player.inventory, slotNo, 10, 10) {
 			@Override 
 			public boolean isItemValid(ItemStack stack) {
 			    return false;
@@ -43,10 +45,6 @@ public class ContainerItemEditor extends Container {
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		if(player != null && player.inventory.getStackInSlot(slotNo) != null) {
-			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("itemeditor.closeNoItem", new Object[0]));
-			return false;
-		}
 		return true;
 	}
 }

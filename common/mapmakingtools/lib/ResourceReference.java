@@ -22,6 +22,7 @@ public class ResourceReference {
 	public static final ResourceLocation tabs = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("tab.png"));
 
 	public static final ResourceLocation itemEditor = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("item_Editor.png"));
+	public static final ResourceLocation itemEditorSlot = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("item_Editor_slot.png"));
 
 	public static final ResourceLocation transparentBackground = new ResourceLocation("mapmakingtools", TextureHelper.getGuiTexturePath("transparent_background.png"));
 }

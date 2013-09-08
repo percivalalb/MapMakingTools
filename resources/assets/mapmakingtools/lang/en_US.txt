@@ -28,6 +28,9 @@ commands.build.replace.usage=//replace <blockId:blockMeta> <blockId:blockMeta>
 commands.build.chunkDoesNotExist=A chunk you have selected does not exist, and has failed to complete this command.
 commands.build.combinespawners.usage=//combinespawners
 commands.killentities.usage=//killentites <type>
+commands.build.setbiome.usage=//setbiome <biome>
+commands.build.setbiome.notFound=The biome '%s' is not valid.
+commands.build.setbiome.complete=Set the selected area to the biome '%s'.
 
 advMode.creativeModeNeed=Must be in creative mode
 

@@ -32,7 +32,7 @@ public abstract class ScrollMenu {
 	
 	public GuiScreen screen;
 	public List<String> list;
-	private ScaledResolution scaling = null;
+	protected ScaledResolution scaling = null;
     public int scrollY = 0;
     private int scrollHeight = 0;
     private int listHeight = 0;
@@ -222,14 +222,7 @@ public abstract class ScrollMenu {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
-	private void clip() {
-        int var3 = (placementX + xOffset + 9) * scaling.getScaleFactor();
-        int var4 = (placementY - yOffset + 22) * scaling.getScaleFactor();
-        int var5 = screenSizeX * scaling.getScaleFactor();
-        int var6 = screenSizeY * scaling.getScaleFactor();
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor(var3, var4, var5, var6);
-    }
+	public abstract void clip();
 	
 	private boolean mouseInRadioButton(int xMouse, int yMouse, int buttonIndex) {
 		int row = (buttonIndex - (buttonIndex % numberOfColumns)) / numberOfColumns;

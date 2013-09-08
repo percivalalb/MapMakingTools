@@ -13,6 +13,8 @@ import mapmakingtools.core.helper.QuickBuildHelper;
 import mapmakingtools.core.util.CachedBlockPlacement;
 import mapmakingtools.core.util.DataStorage;
 import mapmakingtools.lib.NBTData;
+import mapmakingtools.network.PacketTypeHandler;
+import mapmakingtools.network.packet.PacketBiomeUpdate;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -30,6 +32,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerManager;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
@@ -68,6 +71,15 @@ public class CommandSetBiome extends CommandBase {
     		throw new CommandException("commands.build.postionsNotSelected", new Object[0]);
     	}
     	
+    	if(par2ArrayOfStr.length != 1)
+    		throw new WrongUsageException("commands.build.setbiome.usage", new Object[0]);
+    	
+    	int id = CommandHelper.getBiomeIdFromString(par2ArrayOfStr[0]);
+    	
+        if (id == -1 || BiomeGenBase.biomeList[id] == null) {
+            throw new NumberInvalidException("commands.build.setbiome.notFound", new Object[] {par2ArrayOfStr[0]});
+        }
+    	
     	int secMinX = DataStorage.getSelectedPosFromPlayer(player)[0];
     	int secMinY = DataStorage.getSelectedPosFromPlayer(player)[1];
     	int secMinZ = DataStorage.getSelectedPosFromPlayer(player)[2];
@@ -96,25 +108,15 @@ public class CommandSetBiome extends CommandBase {
 		try {
 			for(int x = minX; x < maxX; ++x) {
 				for(int z = minZ; z < maxZ; ++z) {
-					
-					 if (world.getChunkProvider().chunkExists(x, z)) {
-				            Chunk chunk = world.getChunkFromBlockCoords(x, z);
-			                byte[] biomevals = chunk.getBiomeArray();
-				            if ((chunk != null) && (chunk.isChunkLoaded)) {
-				                biomevals[((z & 0xF) << 4 | x & 0xF)] = (byte)BiomeGenBase.desert.biomeID;
-				            }
-				            chunk.setBiomeArray(biomevals);
-				            chunk.setChunkModified();
-				        }
-					/**
 					Chunk chunk = world.getChunkFromBlockCoords(x, z);
 					byte[] biomes = chunk.getBiomeArray();
-					biomes[((z & 0xF) << 4 | x & 0xF)] = (byte)BiomeGenBase.desert.biomeID;
+					biomes[((z & 0xF) << 4 | x & 0xF)] = (byte)id;
 					chunk.setBiomeArray(biomes);
 					chunk.setChunkModified();
 					int y = world.getTopSolidOrLiquidBlock(x, z);
 					world.markBlockForUpdate(x, y, z);
-					**/
+					MinecraftServer server = MinecraftServer.getServer();
+					server.getConfigurationManager().sendToAllNear(x + 0.5D, y + 0.5D, z + 0.5D, 256 * 256, player.worldObj.provider.dimensionId, PacketTypeHandler.populatePacket(new PacketBiomeUpdate(x, z, id)));
 				} 
 			}
 		}
@@ -122,13 +124,15 @@ public class CommandSetBiome extends CommandBase {
 			e.printStackTrace();
 			throw new CommandException("commands.build.chunkDoesNotExist", new Object[0]);
 		}
+		
+		player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.build.setbiome.complete", par2ArrayOfStr[0]));
     }
 
     @Override
     public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
     	switch(par2ArrayOfStr.length) {
     		case 1: 
-    			return null;
+    			return getListOfStringsMatchingLastWord(par2ArrayOfStr, CommandHelper.getBiomeNames());
     	}
     	return null;
     }

@@ -105,6 +105,16 @@ public class FilterMobType implements IFilter {
 		            	return listStr;
 		            return StatCollector.translateToLocal(unlocalised);
 				}
+
+				@Override
+				public void clip() {
+					 int var3 = (placementX + xOffset + 9) * scaling.getScaleFactor();
+				        int var4 = (placementY - yOffset + 22) * scaling.getScaleFactor();
+				        int var5 = screenSizeX * scaling.getScaleFactor();
+				        int var6 = screenSizeY * scaling.getScaleFactor();
+				        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+				        GL11.glScissor(var3, var4, var5, var6);
+				}
 			};
 		else 
 			menu = this.copy(gui);
@@ -138,6 +148,16 @@ public class FilterMobType implements IFilter {
 	            if(!unlocalised.equalsIgnoreCase(listStr))
 	            	return listStr;
 	            return StatCollector.translateToLocal(unlocalised);
+			}
+			
+			@Override
+			public void clip() {
+				 int var3 = (placementX + xOffset + 9) * scaling.getScaleFactor();
+			        int var4 = (placementY - yOffset + 22) * scaling.getScaleFactor();
+			        int var5 = screenSizeX * scaling.getScaleFactor();
+			        int var6 = screenSizeY * scaling.getScaleFactor();
+			        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+			        GL11.glScissor(var3, var4, var5, var6);
 			}
 		};
 		copy.setSelected(menu.selected);
