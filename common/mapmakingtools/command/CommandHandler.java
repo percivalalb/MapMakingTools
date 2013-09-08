@@ -29,7 +29,7 @@ public class CommandHandler {
         event.registerServerCommand(new CommandPlayerStatue());
         event.registerServerCommand(new CommandSetBiome());
         event.registerServerCommand(new CommandCombineSpawners());
-        //event.registerServerCommand(new CommandFloatingIsland());
+        event.registerServerCommand(new CommandFloatingIsland());
         //Mod Commands
         event.registerServerCommand(new CommandConvertStructure());
         //Entity Commands

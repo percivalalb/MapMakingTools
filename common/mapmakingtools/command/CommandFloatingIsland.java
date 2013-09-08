@@ -74,16 +74,16 @@ public class CommandFloatingIsland extends CommandBase {
     		
 			ArrayList<CachedBlockPlacement> list = new ArrayList<CachedBlockPlacement>();
 			int blocks = 0;
-			float chance = Float.parseFloat("2") / 100F;
+			float chance = Float.parseFloat("100") / 100F;
 			for(int y = minY; y < minY + 2; ++y) {
 				for(int x = minX; x < maxX; ++x) {
 					for(int z = minZ; z < maxZ; ++z) {
 						
-						if(world.getBlockId(x - 1, y, z) != 0 && world.getBlockId(x+1, y, z) != 0 && world.getBlockId(x, y, z-1) != 0 && world.getBlockId(x-1, y, z+1) != 0 && world.rand.nextFloat() > chance) {
+						if(world.getBlockId(x-1, y+1, z) != 0 && world.getBlockId(x+1, y+1, z) != 0 && world.getBlockId(x, y+1, z-1) != 0 && world.getBlockId(x-1, y+1, z+1) != 0) {
 							++blocks;
 							CachedBlockPlacement undo = new CachedBlockPlacement(world, x, y, z);
 							list.add(undo);
-							world.setBlock(x, y, z, 0, 0, 2);
+							world.setBlock(x, y, z, world.getBlockId(x, y+1, z), world.getBlockMetadata(x, y+1, z), 2);
 							++blocks;
 						}
 					} 
