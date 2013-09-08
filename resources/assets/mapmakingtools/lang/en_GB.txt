@@ -51,7 +51,7 @@ filter.villagerShop=Villager Shop
 filter.chestSymmetrify=Chest Symmetrify
 filter.signEdit=Sign Edit
 filter.mobHealth=Mob Health
-filter.commandBlockName=CommandBlock Alias
+filter.commandBlockName=Command Block Alias
 
 filter.fillInventory.complete=Set the contents of this inventory to %s.
 filter.convertToDropper.complete=Converted Dispenser to Dropper.

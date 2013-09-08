@@ -67,6 +67,7 @@ public class GuiFilterMenu extends GuiContainer {
     /** The page varibles **/
     public static int currentPage = 1;
     int maxPages = 1;
+    private ArrayList<GuiTextField> textList = new ArrayList<GuiTextField>();
 
     public GuiFilterMenu(EntityPlayer player, int x, int y, int z, List<IFilter> filters, List<IServerFilter> serverFilters) {
        	this(player, filters, serverFilters);
@@ -126,6 +127,9 @@ public class GuiFilterMenu extends GuiContainer {
     	if(current != null) {
     		current.updateScreen(this);
     	}
+    	for(GuiTextField field : textList) {
+			field.updateCursorCounter();
+		}
     }
 
     @Override
@@ -133,6 +137,7 @@ public class GuiFilterMenu extends GuiContainer {
     	super.initGui();
         Keyboard.enableRepeatEvents(true);
         this.buttonList.clear();
+        this.textList.clear();
         int k = (this.width - this.xSize()) / 2;
         int l = (this.height - this.ySize()) / 2;
 
@@ -266,13 +271,19 @@ public class GuiFilterMenu extends GuiContainer {
                 this.mc.setIngameFocus();
         	}
         }
+        for(GuiTextField field : textList) {
+			field.textboxKeyTyped(var1, var2);
+		}
     }
 
     @Override
-    protected void mouseClicked(int var1, int var2, int var3) {
-        super.mouseClicked(var1, var2, var3);
+    protected void mouseClicked(int xMouse, int yMouse, int mouseButton) {
+        super.mouseClicked(xMouse, yMouse, mouseButton);
         if(current != null) {
-			current.mouseClicked(this, var1, var2, var3);
+			current.mouseClicked(this, xMouse, yMouse, mouseButton);
+		}
+        for(GuiTextField field : textList) {
+			field.mouseClicked(xMouse, yMouse, mouseButton);
 		}
     }
 
@@ -295,6 +306,9 @@ public class GuiFilterMenu extends GuiContainer {
 			this.fontRenderer.drawString("Minecraft Filters", (int)((k + 10) / scale), (int)((l + 15) / scale), 0);
 			GL11.glPopMatrix();
 		}
+		   for(GuiTextField field : textList) {
+	        	field.drawTextBox();
+	        }
 	}
 	
 	@Override
@@ -436,6 +450,10 @@ public class GuiFilterMenu extends GuiContainer {
 	
 	public List getButtonList() {
 		return this.buttonList;
+	}
+	
+	public List getTextFieldList() {
+		return this.textList;
 	}
 	
 	public void setYSize(int par1) {
