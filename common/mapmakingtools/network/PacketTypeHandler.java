@@ -13,6 +13,7 @@ import mapmakingtools.network.packet.PacketBiomeUpdate;
 import mapmakingtools.network.packet.PacketBuildLeftClick;
 import mapmakingtools.network.packet.PacketBuildRightClick;
 import mapmakingtools.network.packet.PacketChestSymmetrify;
+import mapmakingtools.network.packet.PacketCommandBlockAlias;
 import mapmakingtools.network.packet.PacketConvertToDispenser;
 import mapmakingtools.network.packet.PacketConvertToDropper;
 import mapmakingtools.network.packet.PacketCreeperProperties;
@@ -80,7 +81,8 @@ public enum PacketTypeHandler {
 	CHEST_SYMMETRIFY(PacketChestSymmetrify.class),
 	REMOVE_ENTITY_FROM_WORLD(PacketRemoveEntityFromWorld.class),
 	SIGN_EDIT(PacketSignEdit.class),
-	BIOME_UPDATE(PacketBiomeUpdate.class);
+	BIOME_UPDATE(PacketBiomeUpdate.class),
+	COMMAND_BLOCK_NAME(PacketCommandBlockAlias.class);
 	
     private Class<? extends PacketMMT> clazz;
 

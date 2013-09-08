@@ -11,6 +11,7 @@ import mapmakingtools.core.handler.WorldOverlayHandler;
 import mapmakingtools.core.helper.MobSpawnerType;
 import mapmakingtools.filters.FilterBabyMonster;
 import mapmakingtools.filters.FilterChestSymmetrify;
+import mapmakingtools.filters.FilterCommandBlockAlias;
 import mapmakingtools.filters.FilterConvertToDispenser;
 import mapmakingtools.filters.FilterConvertToDropper;
 import mapmakingtools.filters.FilterCreeperExplosion;
@@ -47,6 +48,7 @@ public class ClientProxy extends CommonProxy {
 		FilterManager.registerFilter(new FilterItemSpawner());
 		FilterManager.registerFilter(new FilterChestSymmetrify());
 		FilterManager.registerFilter(new FilterEditSign());
+		FilterManager.registerFilter(new FilterCommandBlockAlias());
 		
 		//Entities
 		FilterManager.registerFilter(new FilterVillagerShop());
