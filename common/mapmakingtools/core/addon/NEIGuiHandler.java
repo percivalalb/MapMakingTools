@@ -3,6 +3,7 @@ package mapmakingtools.core.addon;
 import java.util.List;
 
 import mapmakingtools.client.gui.GuiFilterMenu;
+import mapmakingtools.client.gui.GuiItemEditor;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import codechicken.nei.VisiblityData;
@@ -13,7 +14,7 @@ public class NEIGuiHandler implements INEIGuiHandler {
 
 	@Override
 	public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) { 
-		if(gui instanceof GuiFilterMenu) {
+		if(gui instanceof GuiFilterMenu || gui instanceof GuiItemEditor) {
 			currentVisibility.showNEI = false;
 		}
 		return currentVisibility;
