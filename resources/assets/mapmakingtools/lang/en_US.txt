@@ -52,6 +52,7 @@ filter.chestSymmetrify=Chest Symmetrify
 filter.signEdit=Sign Edit
 filter.mobHealth=Mob Health
 filter.commandBlockName=Command Block Alias
+filter.frameDropChance=Frame Drop Chance
 
 filter.fillInventory.complete=Set the contents of this inventory to %s.
 filter.convertToDropper.complete=Converted Dispenser to Dropper.

@@ -17,6 +17,7 @@ import mapmakingtools.filters.FilterConvertToDropper;
 import mapmakingtools.filters.FilterCreeperExplosion;
 import mapmakingtools.filters.FilterEditSign;
 import mapmakingtools.filters.FilterFillInventory;
+import mapmakingtools.filters.FilterFrameDropChance;
 import mapmakingtools.filters.FilterItemSpawner;
 import mapmakingtools.filters.FilterMobArmor;
 import mapmakingtools.filters.FilterMobMaxHealth;
@@ -53,6 +54,7 @@ public class ClientProxy extends CommonProxy {
 		//Entities
 		FilterManager.registerFilter(new FilterVillagerShop());
 		FilterManager.registerFilter(new FilterMobMaxHealth());
+		FilterManager.registerFilter(new FilterFrameDropChance());
 		
 		MobSpawnerType.add("Item");
 		MobSpawnerType.add("XPOrb");

@@ -1,10 +1,11 @@
 Map Making Tools
 
-v2.0.2b - 1675 Downloads
+v2.0.3a - 332 Downloads
+v2.0.2b - 1863 Downloads
 v2.0.2a - 18 Downloads
-v2.0.1a - 794 Downloads
-v2.0.0a - 6852 Downloads
-v1.5.0a - 13216 Downloads
+v2.0.1a - 804 Downloads
+v2.0.0a - 6894 Downloads
+v1.5.0a - 13457 Downloads
 v1.4.0a - 21463 Downloads
 v1.3.1a - 3358 Downloads
 v1.3.0a - 1270 Downloads
@@ -12,4 +13,4 @@ v1.2.0a - 1161 Downloads
 v1.1.0a - 3103 Downloads
 v1.0.0a - 7488 Downloads
 
-Total = 58018 Downloads
+Total = 61211 Downloads
