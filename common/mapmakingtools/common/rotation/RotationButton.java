@@ -22,7 +22,7 @@ public class RotationButton implements IPasteRotate {
         int newDirection = (direction + QuickBuildHelper.getTypeFromRotation(rotation)) & 3;
         LogHelper.logDebug("Old Direction: " + direction);
         LogHelper.logDebug("New Direction: " + newDirection);
-		world.setBlockMetadataWithNotify(x, y, z, directions[newDirection][isPressed ? 1 : 0], 2);
+		world.setBlockMetadataWithNotify(x, y, z, directions[newDirection][isPressed ? 1 : 0], 3);
 	}
 
 	public int metaToListType(int meta) {

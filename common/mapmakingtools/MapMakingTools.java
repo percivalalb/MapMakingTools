@@ -15,9 +15,12 @@ import mapmakingtools.api.manager.FlippedManager;
 import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.command.CommandHandler;
+import mapmakingtools.common.flipped.FlippedChest;
+import mapmakingtools.common.flipped.FlippedHopper;
 import mapmakingtools.common.flipped.FlippedRedstoneComparator;
 import mapmakingtools.common.flipped.FlippedRedstoneRepeater;
 import mapmakingtools.common.flipped.FlippedStoneSlab;
+import mapmakingtools.common.flipped.FlippedTorch;
 import mapmakingtools.common.flipped.FlippedWoodenSlab;
 import mapmakingtools.common.killentities.KillAll;
 import mapmakingtools.common.killentities.KillAnimals;
@@ -208,6 +211,13 @@ public class MapMakingTools {
 		FlippedManager.registerFlippedHandler(Block.redstoneRepeaterActive.blockID, new FlippedRedstoneRepeater());
 		FlippedManager.registerFlippedHandler(Block.redstoneComparatorIdle.blockID, new FlippedRedstoneComparator());
 		FlippedManager.registerFlippedHandler(Block.redstoneComparatorActive.blockID, new FlippedRedstoneComparator());
+		FlippedManager.registerFlippedHandler(Block.chest.blockID, new FlippedChest());
+		FlippedManager.registerFlippedHandler(Block.chestTrapped.blockID, new FlippedChest());
+		FlippedManager.registerFlippedHandler(Block.enderChest.blockID, new FlippedChest());
+		FlippedManager.registerFlippedHandler(Block.hopperBlock.blockID, new FlippedHopper());
+		FlippedManager.registerFlippedHandler(Block.torchWood.blockID, new FlippedTorch());
+		FlippedManager.registerFlippedHandler(Block.torchRedstoneIdle.blockID, new FlippedTorch());
+		FlippedManager.registerFlippedHandler(Block.torchRedstoneActive.blockID, new FlippedTorch());
 		
 		ForceKillManager.registerHandler("all", new KillAll());
 		ForceKillManager.registerHandler("enderman", new KillGeneric(EntityEnderman.class));
