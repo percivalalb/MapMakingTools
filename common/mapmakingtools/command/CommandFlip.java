@@ -1,6 +1,7 @@
 package mapmakingtools.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mapmakingtools.core.helper.CommandHelper;
@@ -35,6 +36,7 @@ public class CommandFlip extends CommandBase {
 	@Override
     public String getCommandName() {
         return "/flip";
+        
     }
 
 	@Override
@@ -58,6 +60,24 @@ public class CommandFlip extends CommandBase {
     	if(!DataStorage.hasSelectedPostions(var3)) {
     		throw new CommandException("commands.build.postionsNotSelected", new Object[0]);
     	}
+    	
+    	if(par2ArrayOfStr.length != 1)
+    		throw new WrongUsageException("commands.build.flip.usage", new Object[0]);
+    	
+    	if(!par2ArrayOfStr[0].equalsIgnoreCase(getModeNames().get(0)) && !par2ArrayOfStr[0].equalsIgnoreCase(getModeNames().get(1)) && !par2ArrayOfStr[0].equalsIgnoreCase(getModeNames().get(2))) {
+    		throw new CommandException("commands.build.flip.flipModeError", new Object[] {par2ArrayOfStr[0]});
+    	}
+   
+    	int flipMode = -1;
+    	
+    	for(String str : getModeNames()) {
+    		if(str.equalsIgnoreCase(par2ArrayOfStr[0])) {
+    			flipMode = getModeNames().indexOf(str);
+    		}	
+    	}
+    	
+    	if(flipMode == -1)
+    		throw new CommandException("commands.build.flip.flipModeError", new Object[] {par2ArrayOfStr[0]}); 
     	
     	int secMinX = DataStorage.getSelectedPosFromPlayer(var3)[0];
     	int secMinY = DataStorage.getSelectedPosFromPlayer(var3)[1];
@@ -84,18 +104,22 @@ public class CommandFlip extends CommandBase {
 			}
 		}
 		
-		DataStorage.flip(var3, list, 0, minX, minY, minZ, maxX, maxY, maxZ);
+		DataStorage.flip(var3, list, flipMode, minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @Override
     public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
     	switch(par2ArrayOfStr.length) {
     		case 1: 
-    			return null;
+    			return getListOfStringsMatchingLastWord(par2ArrayOfStr, getModeNames().toArray(new String[] {}));
     	}
     	return null;
     }
 
+    
+    public static List<String> getModeNames() {
+    	return Arrays.asList("yVertically", "xHorizontal", "zHorizontal");
+    }
 
     @Override
     public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {

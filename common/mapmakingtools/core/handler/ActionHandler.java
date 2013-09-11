@@ -46,7 +46,7 @@ public class ActionHandler {
 
 	@ForgeSubscribe
 	public void rightClick(PlayerInteractEvent event) {
-		//LogHelper.logDebug("Metadata: " + event.entityPlayer.worldObj.getBlockMetadata(event.x, event.y, event.z));
+		LogHelper.logDebug("Metadata: " + event.entityPlayer.worldObj.getBlockMetadata(event.x, event.y, event.z));
 		
 		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
 			if(!event.entityPlayer.worldObj.isRemote) {

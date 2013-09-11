@@ -31,6 +31,8 @@ commands.killentities.usage=//killentites <type>
 commands.build.setbiome.usage=//setbiome <biome>
 commands.build.setbiome.notFound=The biome '%s' is not valid.
 commands.build.setbiome.complete=Set the selected area to the biome '%s'.
+commands.build.flip.usage=//flip <mode>
+commands.build.flip.flipModeError=The mode '%s' is not recognised.
 
 advMode.creativeModeNeed=Must be in creative mode
 

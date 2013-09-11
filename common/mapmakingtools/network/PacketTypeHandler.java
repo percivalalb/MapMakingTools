@@ -20,6 +20,7 @@ import mapmakingtools.network.packet.PacketCreeperProperties;
 import mapmakingtools.network.packet.PacketFillInventory;
 import mapmakingtools.network.packet.PacketFilterPageMenu;
 import mapmakingtools.network.packet.PacketFly;
+import mapmakingtools.network.packet.PacketFrameDropChance;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import mapmakingtools.network.packet.PacketItemSpawner;
 import mapmakingtools.network.packet.PacketMMT;
@@ -82,7 +83,8 @@ public enum PacketTypeHandler {
 	REMOVE_ENTITY_FROM_WORLD(PacketRemoveEntityFromWorld.class),
 	SIGN_EDIT(PacketSignEdit.class),
 	BIOME_UPDATE(PacketBiomeUpdate.class),
-	COMMAND_BLOCK_NAME(PacketCommandBlockAlias.class);
+	COMMAND_BLOCK_NAME(PacketCommandBlockAlias.class),
+	FRAME_DROP_CHANCE(PacketFrameDropChance.class);
 	
     private Class<? extends PacketMMT> clazz;
 

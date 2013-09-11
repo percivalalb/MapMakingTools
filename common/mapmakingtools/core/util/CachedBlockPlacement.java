@@ -1,5 +1,6 @@
 package mapmakingtools.core.util;
 
+import mapmakingtools.api.manager.FlippedManager;
 import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.core.helper.TileEntityHelper;
 import mapmakingtools.core.helper.WorldHelper;
@@ -8,7 +9,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -105,7 +109,12 @@ public class CachedBlockPlacement {
 		this.clearTileEntity(world, x, y, z);
 		WorldHelper.setBlockCheaply(world, x, y, z, blockId, blockMeta); 		//Sets the block data with no block update
 		TileEntityHelper.placeTileEntity(tileEntity, world, x, y, z); 			//Places the copied #TileEntity at the classes x, y, z
-		
+		if(!world.isRemote && tileEntity != null) { 
+			MinecraftServer server = MinecraftServer.getServer();
+			Packet packet = tileEntity.getDescriptionPacket();
+			if(packet != null) 
+				server.getConfigurationManager().sendToAllNear(x + 0.5D, y + 0.5D, z + 0.5D, 256 * 256, world.provider.dimensionId, packet);
+		}
 		return replacementCache; 												//Returns the replacement cache
 	}
 	
@@ -142,12 +151,16 @@ public class CachedBlockPlacement {
 		WorldHelper.setBlockCheaply(player.worldObj, posX + newX, posY + newY, posZ + newZ, blockId, blockMeta); 		//Sets the block data with no block update
 		TileEntityHelper.placeTileEntity(tileEntity, player.worldObj, posX + newX, posY + newY, posZ + newZ); 			//Places the copied #TileEntity at the classes x, y, z
 		RotationManager.onBlockRotation(this, blockId, player.worldObj, posX + newX, posY + newY, posZ + newZ, rotation);
-		
+		if(!world.isRemote && tileEntity != null) { 
+			MinecraftServer server = MinecraftServer.getServer();
+			Packet packet = tileEntity.getDescriptionPacket();
+			if(packet != null) 
+				server.getConfigurationManager().sendToAllNear(x + 0.5D, y + 0.5D, z + 0.5D, 256 * 256, world.provider.dimensionId, packet);
+		}
 		return replacementCache; 												//Returns the replacement cache
 	}
 	
 	public CachedBlockPlacement setCachedBlockReletiveToFlipped(EntityPlayer player, int flipMode, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) { 
-
 		int newX = x;
 		int newY = y;
 		int newZ = z;
@@ -157,24 +170,26 @@ public class CachedBlockPlacement {
 		
 		switch(flipMode) {
 		case 0: //Y Axis
-			int distFromBottom = x - minY;
-			newY = maxY - distFromBottom;
+			newY = maxY - (y - minY) - 1;
 			break;
 		case 1: // X Axis
-			newX = -backUpZ;
-			newZ = backUpX;
+			newX = maxX - (x - minX) - 1;
 			break;
 		case 2: //Z Axis
-			newX = -backUpX;
-			newZ = -backUpZ;
+			newZ = maxZ - (z - minZ) - 1;
 			break;
 		}
 		CachedBlockPlacement replacementCache = new CachedBlockPlacement(player.worldObj, newX, newY, newZ); //Creates a new Instance with the changes to the block at the classes, x, y, z
 		this.clearTileEntity(world, newX, newY, newZ);
 		WorldHelper.setBlockCheaply(player.worldObj, newX, newY, newZ, blockId, blockMeta); 		//Sets the block data with no block update
 		TileEntityHelper.placeTileEntity(tileEntity, player.worldObj, newX, newY, newZ); 			//Places the copied #TileEntity at the classes x, y, z
-		//RotationManager.onBlockRotation(this, blockId, player.worldObj, posX + newX, posY + newY, posZ + newZ, rotation);
-		
+		FlippedManager.onBlockFlipped(this, blockId, player.worldObj, newX, newY, newZ, flipMode);
+		if(!world.isRemote && tileEntity != null) { 
+			MinecraftServer server = MinecraftServer.getServer();
+			Packet packet = tileEntity.getDescriptionPacket();
+			if(packet != null) 
+				server.getConfigurationManager().sendToAllNear(x + 0.5D, y + 0.5D, z + 0.5D, 256 * 256, world.provider.dimensionId, packet);
+		}
 		return replacementCache; 												//Returns the replacement cache
 	} 
 }

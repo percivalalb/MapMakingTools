@@ -11,9 +11,14 @@ import net.minecraftforge.event.ForgeSubscribe;
 import com.google.common.eventbus.Subscribe;
 
 import mapmakingtools.api.manager.FilterManager;
+import mapmakingtools.api.manager.FlippedManager;
 import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.command.CommandHandler;
+import mapmakingtools.common.flipped.FlippedRedstoneComparator;
+import mapmakingtools.common.flipped.FlippedRedstoneRepeater;
+import mapmakingtools.common.flipped.FlippedStoneSlab;
+import mapmakingtools.common.flipped.FlippedWoodenSlab;
 import mapmakingtools.common.killentities.KillAll;
 import mapmakingtools.common.killentities.KillAnimals;
 import mapmakingtools.common.killentities.KillGeneric;
@@ -196,6 +201,13 @@ public class MapMakingTools {
 		RotationManager.registerRotationHandler(Block.redstoneRepeaterActive.blockID, new RotationRedstoneRepeater());
 		RotationManager.registerRotationHandler(Block.redstoneComparatorIdle.blockID, new RotationRedstoneComparator());
 		RotationManager.registerRotationHandler(Block.redstoneComparatorActive.blockID, new RotationRedstoneComparator());
+		
+		FlippedManager.registerFlippedHandler(Block.stoneSingleSlab.blockID, new FlippedStoneSlab());
+		FlippedManager.registerFlippedHandler(Block.woodSingleSlab.blockID, new FlippedWoodenSlab());
+		FlippedManager.registerFlippedHandler(Block.redstoneRepeaterIdle.blockID, new FlippedRedstoneRepeater());
+		FlippedManager.registerFlippedHandler(Block.redstoneRepeaterActive.blockID, new FlippedRedstoneRepeater());
+		FlippedManager.registerFlippedHandler(Block.redstoneComparatorIdle.blockID, new FlippedRedstoneComparator());
+		FlippedManager.registerFlippedHandler(Block.redstoneComparatorActive.blockID, new FlippedRedstoneComparator());
 		
 		ForceKillManager.registerHandler("all", new KillAll());
 		ForceKillManager.registerHandler("enderman", new KillGeneric(EntityEnderman.class));

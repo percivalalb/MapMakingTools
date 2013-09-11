@@ -24,13 +24,16 @@ import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
 import mapmakingtools.api.IFilter;
 import mapmakingtools.client.gui.GuiFilterMenu;
+import mapmakingtools.client.gui.GuiValueSlider;
 import mapmakingtools.core.helper.ClientHelper;
 import mapmakingtools.core.helper.QuickBuildHelper;
+import mapmakingtools.core.helper.ReflectionHelper;
 import mapmakingtools.core.helper.TextureHelper;
 import mapmakingtools.network.PacketTypeHandler;
 import mapmakingtools.network.packet.PacketConvertToDispenser;
 import mapmakingtools.network.packet.PacketConvertToDropper;
 import mapmakingtools.network.packet.PacketFillInventory;
+import mapmakingtools.network.packet.PacketFrameDropChance;
 
 /**
  * @author ProPercivalalb
@@ -67,14 +70,32 @@ public class FilterFrameDropChance implements IFilter {
 		return false;
 	}
 
-    private GuiButton btn_covert;
+    private GuiValueSlider slider_chance;
+    private GuiButton btn_ok;
+    private GuiButton btn_cancel;
     
 	@Override
 	public void initGui(GuiFilterMenu gui) {
         int k = (gui.width - gui.xSize()) / 2;
         int l = (gui.height - gui.ySize()) / 2;
-        this.btn_covert = new GuiButton(0, k + 20, l + 37, 200, 20, "Convert to Dispenser");
-        gui.getButtonList().add(this.btn_covert);
+        this.btn_ok = new GuiButton(0, k + 140, l + 70, 60, 20, "OK");
+        this.btn_cancel = new GuiButton(1, k + 40, l + 70, 60, 20, "Cancel");
+        this.slider_chance = new GuiValueSlider(2, k + 20, l + 37, 200, 20, "100%", 1.0D, 0.0D, 1.0D) {
+			@Override
+			public void onValueChange(double value) {
+				this.displayString = Math.round(value * 100) + "%";
+			}
+        };
+        gui.getButtonList().add(this.slider_chance);
+        gui.getButtonList().add(this.btn_ok);
+        gui.getButtonList().add(this.btn_cancel);
+        
+		Entity entity = gui.entityPlayer.worldObj.getEntityByID(gui.entityId);
+		if(entity instanceof EntityItemFrame) {
+			EntityItemFrame frame = (EntityItemFrame)entity;
+			this.slider_chance.sliderValue = ReflectionHelper.getField(EntityItemFrame.class, Float.TYPE, frame, 0);
+			this.slider_chance.onValueChange(this.slider_chance.getValue());
+		}
 	}
 
 	@Override
@@ -103,7 +124,7 @@ public class FilterFrameDropChance implements IFilter {
 	public void keyTyped(GuiFilterMenu gui, char var1, int var2) {
 
         if (var2 == Keyboard.KEY_RETURN) {
-            gui.actionPerformed(btn_covert);
+            gui.actionPerformed(slider_chance);
         }
 
         if (var2 == Keyboard.KEY_ESCAPE) {
@@ -117,9 +138,11 @@ public class FilterFrameDropChance implements IFilter {
 		if (var1.enabled) {
             switch (var1.id) {
                 case 0:
-                	PacketTypeHandler.populatePacketAndSendToServer(new PacketConvertToDispenser(gui.x, gui.y, gui.z));
+                	PacketTypeHandler.populatePacketAndSendToServer(new PacketFrameDropChance(gui.entityId, (int)Math.round(this.slider_chance.getValue() * 100)));
+                case 1:
                 	ClientHelper.mc.displayGuiScreen(null);
                     ClientHelper.mc.setIngameFocus();
+                    break;
             }
         }
 	}
