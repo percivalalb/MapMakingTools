@@ -14,5 +14,5 @@ Short list of included features...
   Fill dispensers with a click of a button
   Edit an item name and lore choosing colour and text (Coming Soon)
   Many more, download the mod to make your adventure map a reality!
-
+  
 All these features are only available when you have forge and the mod installed. This mod is meant for the creation of custom maps and then when the map you create is opened in a minecraft environment that is without the mod, all the edits you made to the world will still exist.
