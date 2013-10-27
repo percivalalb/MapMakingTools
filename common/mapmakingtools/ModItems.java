@@ -15,7 +15,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.ItemData;
 import mapmakingtools.core.helper.LogHelper;
 import mapmakingtools.core.helper.ReflectionHelper;
-import mapmakingtools.item.ItemAxe;
+import mapmakingtools.item.ItemEdit;
 import mapmakingtools.item.ItemWrench;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
@@ -27,13 +27,8 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class ModItems {
 
-	public static Item wrench;
-	
 	public static void inti() {
-		wrench = new ItemWrench(7803).setUnlocalizedName("mapmaking.wrench");
-		GameRegistry.registerItem(wrench, "mapmaking.wrench");
-		
-		overrideItem(Item.axeWood, "mapmakingtools.item.ItemAxe", new Class[]{});
+		overrideItem(Item.axeWood, "mapmakingtools.item.ItemEdit", new Class[]{});
 	}
 	
 	public static void overrideItem(Item oldItem, String itemClassPath, Class<?>[] classParam, Object... param) {

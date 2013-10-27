@@ -11,6 +11,7 @@ v2.0.4a (Please note Forge #857 or higher is now needed to run map making tools)
 + Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping! 
 + Started work on a new filter to edit the chance of the item dropping from an Item Frame.
 
+* Fixed a equals method derp
 * Fixed tile entities not sending there information to the client when being pasted, flipped etc
 
 v2.0.3a (Please note Forge #850 or higher is now needed to run map making tools)

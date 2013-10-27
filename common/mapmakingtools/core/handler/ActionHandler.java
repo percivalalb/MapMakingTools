@@ -19,6 +19,7 @@ import mapmakingtools.core.helper.PlayerHelper;
 import mapmakingtools.core.helper.SpawnerHelper;
 import mapmakingtools.core.proxy.CommonProxy;
 import mapmakingtools.core.util.DataStorage;
+import mapmakingtools.item.ItemEdit;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.lib.NBTData;
 import mapmakingtools.network.PacketTypeHandler;
@@ -48,7 +49,7 @@ public class ActionHandler {
 	public void rightClick(PlayerInteractEvent event) {
 		LogHelper.logDebug("Metadata: " + event.entityPlayer.worldObj.getBlockMetadata(event.x, event.y, event.z));
 		
-		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
+		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.LEFT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM) && !ItemEdit.isWrench(event.entityPlayer.getHeldItem())) {
 			if(!event.entityPlayer.worldObj.isRemote) {
 				DataStorage.setPlayerLeftClick(event.entityPlayer, event.x, event.y, event.z);
 				String message = "Postion 1 set at (" + event.x + ", " + event.y + ", " + event.z + ")";
@@ -83,7 +84,7 @@ public class ActionHandler {
 				event.setCanceled(true);
 			}
 		}
-		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.RIGHT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) {
+		if(event.entityPlayer.capabilities.isCreativeMode && event.action == Action.RIGHT_CLICK_BLOCK && ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM) && !ItemEdit.isWrench(event.entityPlayer.getHeldItem())) {
 			PacketTypeHandler.populatePacketAndSendToServer(new PacketQuickBuild(event.x, event.y, event.z));
 			event.setCanceled(true);
 		}
@@ -94,11 +95,11 @@ public class ActionHandler {
 			    if(event.entityPlayer.worldObj.isRemote) {
 			    	FMLCommonHandler.instance().showGuiScreen(new GuiSkull(event.entityPlayer));
 			    }
-			}//Compiler
+			}
 		}
 		
 		if(event.action == Action.RIGHT_CLICK_BLOCK) {
-			if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench)) {
+			if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Item.axeWood) && ItemEdit.isWrench(event.entityPlayer.getHeldItem())) {
 				event.setCanceled(true);
 				PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenuClientServer(event.x, event.y, event.z));
 			}
@@ -109,11 +110,13 @@ public class ActionHandler {
 	public void entityInteract(EntityInteractEvent event) {
 		if(event.target == null || event.target.isDead) return;
 
-		if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench) && event.entityPlayer.worldObj.isRemote) {
-			PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenuClientServer(event.target.entityId));
-		}
-		if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), ModItems.wrench) && !event.entityPlayer.worldObj.isRemote) {
-			event.setCanceled(true);
+		if(ItemStackHelper.isItem(event.entityPlayer.getHeldItem(), Item.axeWood) && ItemEdit.isWrench(event.entityPlayer.getHeldItem())) {
+			if(event.entityPlayer.worldObj.isRemote) {
+				PacketTypeHandler.populatePacketAndSendToServer(new PacketOpenFilterMenuClientServer(event.target.entityId));
+			}
+			if(!event.entityPlayer.worldObj.isRemote) {
+				event.setCanceled(true);
+			}
 		}
 	}
 }
