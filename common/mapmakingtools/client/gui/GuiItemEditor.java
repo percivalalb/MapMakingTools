@@ -37,7 +37,7 @@ public class GuiItemEditor extends GuiContainer {
 	
 	private static GuiTextField itemNameField;
 	private static GuiTextField itemDamageField;
-	//private static GuiListSlot scrollList;
+	private static GuiListSlot scrollList;
 	
 	public GuiItemEditor(EntityPlayer player, int slotNo) {
 		super(new ContainerItemEditor(player, slotNo));
@@ -88,7 +88,7 @@ public class GuiItemEditor extends GuiContainer {
     	    	return bool;
     	    }
     	};
-    	//this.scrollList = new GuiListSlot(mc, this.guiLeft + 20, this.guiTop + 18, 40, 40,  15);
+    	this.scrollList = new GuiListSlot(this);
     	this.itemDamageField.setMaxStringLength(7);
     	
     	this.itemNameField.setFocused(false);
@@ -114,7 +114,7 @@ public class GuiItemEditor extends GuiContainer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	    GL11.glScaled(getScaleFactor(), getScaleFactor(), getScaleFactor());
 		super.drawScreen(par1, par2, par3);
-		//this.scrollList.drawScreen(par1, par2, par3);
+		this.scrollList.drawScreen(par1, par2, par3);
 		GL11.glPopMatrix();
     }
 	
@@ -147,12 +147,12 @@ public class GuiItemEditor extends GuiContainer {
 	public float getScaleFactor() {
 		int scale = resolution.getScaleFactor();
 		if(scale == 1)
-			return 1;
+			return 1F;
 		if(scale == 2)
-			return 1;
+			return 1F;
 		if(scale == 3)
-			return 1F / 3F * 2;
-		return 1;
+			return 1F / 3F * 2F;
+		return 1F;
 	}
 	
 	@Override

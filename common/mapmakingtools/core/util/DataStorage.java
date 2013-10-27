@@ -185,10 +185,8 @@ public class DataStorage {
 		list.set(3, x);
 		list.set(4, y);
 		list.set(5, z);
-		LogHelper.logDebug("Set values right click");
 		if(!player.worldObj.isRemote) {
 			PacketTypeHandler.populatePacketAndSendToClient(new PacketBuildRightClick(x, y, z), (EntityPlayerMP)player);
-			LogHelper.logDebug("Send Packet right click");
 		}
 	}
 	

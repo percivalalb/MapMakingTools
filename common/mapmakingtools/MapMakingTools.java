@@ -116,7 +116,7 @@ import cpw.mods.fml.relauncher.Side;
  * The Main Mod Class.
  */
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.MOD_DEPENDENCIES)
-@NetworkMod(clientSideRequired = false, serverSideRequired = true)
+@NetworkMod(clientSideRequired = false, serverSideRequired = false)
 public class MapMakingTools {
 
 	@Instance(value = Reference.MOD_ID)
@@ -152,7 +152,7 @@ public class MapMakingTools {
 		
 		try {
             BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/symbol.txt"))); 
-            sectionSign = paramReader.readLine();
+            this.sectionSign = paramReader.readLine();
 		}
 		catch(Exception e) {}
 	}

@@ -166,7 +166,7 @@ public class WrenchTasks {
 	 */
 	public boolean isInWorld(World world) {
 		int checkingDim = world.provider.dimensionId;
-		int currentDim = world.provider.dimensionId;
+		int currentDim = worldObj.provider.dimensionId;
 		return checkingDim == currentDim;
 	}
 	
@@ -176,9 +176,9 @@ public class WrenchTasks {
 			WrenchTasks target = (WrenchTasks)obj;
 			switch(mode) {
 			case BLOCK:
-				return target.isInWorld(worldObj) && target.x == x && target.y == y && target.z == z;
+				return target.isInWorld(target.worldObj) && target.x == x && target.y == y && target.z == z;
 			case ENTITY:
-				return target.isInWorld(worldObj) && target.entityId == entityId;
+				return target.isInWorld(target.worldObj) && target.entityId == entityId;
 			}
 		}
 		return false;
