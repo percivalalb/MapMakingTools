@@ -109,7 +109,7 @@ public class ItemEdit extends net.minecraft.item.ItemAxe {
     
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-    	if((player.capabilities.isCreativeMode && Constants.QUICK_BUILD_ITEM == Item.axeWood.itemID) && itemstack != null && itemstack.itemID == Item.axeWood.itemID) {
+    	if((player.capabilities.isCreativeMode && Constants.QUICK_BUILD_ITEM == Item.axeWood.itemID) && itemstack != null && itemstack.itemID == Item.axeWood.itemID && !this.isWrench(itemstack)) {
     		return true;
     	}
         return false;

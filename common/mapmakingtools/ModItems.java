@@ -16,7 +16,6 @@ import cpw.mods.fml.common.registry.ItemData;
 import mapmakingtools.core.helper.LogHelper;
 import mapmakingtools.core.helper.ReflectionHelper;
 import mapmakingtools.item.ItemEdit;
-import mapmakingtools.item.ItemWrench;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
