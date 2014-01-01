@@ -1,0 +1,86 @@
+commands.potion.usage=/potion <add:set> <potion> <level> <duration> [splash:drink] [colour] or /potion clear
+commands.potion.notFound=That is not a potion.
+commands.potion.modeNotFound='%s' is not a mode.
+commands.potion.handHeldItem=You must be holding a potion for the command to work.
+commands.potion.success=%s edited a potion.
+commands.build.blockIdMeta.wrong=The block '%s' is not formated correctly.
+commands.build.postionsNotSelected=You need make to selections before you can complete this command.
+commands.build.blockId.wrong=The ID %s is not a registered block.
+commands.build.nothingToUndo=There is nothing to undo.
+commands.build.nothingToRedo=There is nothing to redo.
+commands.build.rotationNot90=The angle must be a multiple of 90.
+commands.fly.usage=/fly <speed>
+commands.convertToJava.usage=//convert-to-java <filename>
+commands.clearPostions.usage=//clearselections
+commands.build.copy.usage=//copy
+commands.build.paste.usage=//paste
+commands.build.undo.usage=//undo
+commands.build.redo.usage=//redo
+commands.build.floor.usage=//floor <blockId:blockMeta>
+commands.build.pos1.usage=//pos1 or //pos1 [x] [y] [z]
+commands.build.pos2.usage=//pos2 or //pos2 [x] [y] [z]
+commands.build.roof.usage=//roof <blockId:blockMeta>
+commands.build.rotate.usage=//rotate <rotation>
+commands.build.nothingToRotate=You must copy something before using //rotate
+commands.build.set.usage=//set <blockId:blockMeta>
+commands.build.walls.usage=//walls <blockId:blockMeta>
+commands.build.replace.usage=//replace <blockId:blockMeta> <blockId:blockMeta>
+commands.build.chunkDoesNotExist=A chunk you have selected does not exist, and has failed to complete this command.
+commands.build.combinespawners.usage=//combinespawners
+commands.killentities.usage=//killentites <type>
+commands.build.setbiome.usage=//setbiome <biome>
+commands.build.setbiome.notFound=The biome '%s' is not valid.
+commands.build.setbiome.complete=Set the selected area to the biome '%s'.
+commands.build.flip.usage=//flip <mode>
+commands.build.flip.flipModeError=The mode '%s' is not recognised.
+
+advMode.creativeModeNeed=Must be in creative mode
+
+item.mapmaking.wrench.name=Wrench
+filter.fillInventory=Fill Inventory
+filter.convertToDropper=Convert to Dropper
+filter.convertToDispenser=Convert to Dispenser
+filter.mobSpawnerType=Mob Type
+filter.babyMonster=Baby Monster
+filter.creeperExplosion=Creeper Explosion Properties
+filter.spawnerTimings=Spawner Timings
+filter.mobVelocity=Entity Velocity
+filter.position=Entity Spawn Location
+filter.mobArmor=Mob Armor
+filter.changePotion=Potion Selection
+filter.changeItem=Item Selection
+filter.villagerShop=Villager Shop
+filter.chestSymmetrify=Chest Symmetrify
+filter.signEdit=Sign Edit
+filter.mobHealth=Mob Health
+filter.commandBlockName=Command Block Alias
+filter.frameDropChance=Frame Drop Chance
+
+filter.fillInventory.complete=Set the contents of this inventory to %s.
+filter.convertToDropper.complete=Converted Dispenser to Dropper.
+filter.convertToDispenser.complete=Converted Dropper to Dispenser.
+filter.mobSpawnerType.complete=Changed the spawner to spawn %s, this has also reset the other properties. 
+filter.babyMonster.complete=NEED TO DO.
+filter.creeperExplosion.complete=Changed the creeper explosion properties.
+filter.creeperExplosion.notInt=That is not a valid integer.
+filter.mobVelocity.complete=Mob spawned will have a motion x = %s, y = %s, z = %s.
+filter.adultMonster.complete=Spawner set to spawn adults.
+filter.babyMonster.complete=Spawner set to spawn babies.
+filter.itemSpawner.complete=Set the spawner to spawn %s.
+filter.potionSpawner.complete=Changed the potion that the spawner spawns.
+filter.mobArmor.complete=Changed the armor the mob wears.
+filter.spawnerTimings.complete=Changed the spawner properties.
+filter.villagerShop.complete=Created a custom Villager Shop.
+filter.chestSymmetrify.complete=Made the chests contents look as symmetrical as possible!
+filter.signEdit.complete=Succesfully edited a sign.
+filter.commandBlockName.complete=Set command blocks alias to '%s'.
+
+filter.chestSymmetrify.noContents=The chest must contain some items.
+filter.villagerShop.inputNull=At least 1 input has to contain an item.
+filter.villagerShop.outputNull=The output has to contain an item.
+error.wrenchTask.entity=%s is already editing this entity.
+error.wrenchTask.block=%s is already editing this block.
+
+itemeditor.closeNoItem=The item you were editing has been removed from you inventory :/
+
+entity.FireworksRocketEntity.name=Firework
