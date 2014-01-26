@@ -13,6 +13,7 @@ import mapmakingtools.tools.filter.MobArmorClientFilter;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
 import mapmakingtools.tools.filter.MobTypeClientFilter;
 import mapmakingtools.tools.filter.MobTypeServerFilter;
+import mapmakingtools.tools.filter.SpawnerFilterProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLLog;
@@ -61,7 +62,9 @@ public class CommonProxy implements IGuiHandler {
 
 	public void registerFilters() {
     	FilterManager.registerFilter(FillInventoryClientFilter.class, FillInventoryServerFilter.class);
-    	FilterManager.registerFilter(MobArmorClientFilter.class, MobArmorServerFilter.class);
     	FilterManager.registerFilter(MobTypeClientFilter.class, MobTypeServerFilter.class);
+    	FilterManager.registerFilter(MobArmorClientFilter.class, MobArmorServerFilter.class);
+    	
+    	FilterManager.registerProvider(SpawnerFilterProvider.class);
 	}
 }

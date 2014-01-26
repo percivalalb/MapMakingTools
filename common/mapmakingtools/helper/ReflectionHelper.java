@@ -1,6 +1,11 @@
 package mapmakingtools.helper;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 
 /**
  * @author ProPercivalalb
@@ -73,7 +78,7 @@ public class ReflectionHelper {
 	public static <T> T getField(Class<?> class1, Class<T> fieldType, Object instance, String fieldName) {
 		try {
 	         Field field = getField(class1, fieldName);
-	         return (T) field.get(instance);
+	         return (T)field.get(instance);
 	    }
 	    catch(Exception e) {
 	        e.printStackTrace();
@@ -115,4 +120,26 @@ public class ReflectionHelper {
             e.printStackTrace();
         }
     }
+	
+	public static <T> Constructor<T> getConstructor(Class<T> class1, Class<?>... args) {
+		try {
+			Constructor<T> constructor = class1.getConstructor(args);
+			constructor.setAccessible(true);
+			return constructor;
+		} 
+		catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static <T> T invokeConstructor(Constructor<T> constructor, Object... args) {
+		try {
+			return constructor.newInstance(args);
+		} 
+		catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		} 
+	}
 }

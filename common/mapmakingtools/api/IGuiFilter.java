@@ -3,6 +3,8 @@ package mapmakingtools.api;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb
@@ -20,6 +22,8 @@ public interface IGuiFilter {
 	public int getY();
 	public int getZ();
 	public int getEntityId();
+	public World getWorld();
+	public EntityPlayer getPlayer();
 	public List getLabelList();
 	public List getButtonList();
 	public List getTextBoxList();

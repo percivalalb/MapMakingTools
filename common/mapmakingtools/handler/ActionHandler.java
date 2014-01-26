@@ -38,8 +38,6 @@ public class ActionHandler {
 		int y = event.y;
 		int z = event.z;
 		int side = event.face;
-		if(world.isRemote)
-			ChannelOutBoundHandler.sendPacketToServer(new PacketTest());
 		
 		switch(event.action) {
 		case LEFT_CLICK_BLOCK:

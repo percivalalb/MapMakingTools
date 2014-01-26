@@ -49,17 +49,6 @@ public class MobArmorServerFilter extends IFilterServer {
 	}
 	
 	@Override
-	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity tile = world.func_147438_o(x, y, z);
-		if(tile instanceof TileEntityMobSpawner) {
-			String id = SpawnerUtil.getMobId(((TileEntityMobSpawner)tile).func_145881_a());
-			if(id.equals("Zombie") || id.equals("PigZombie") || id.equals("Skeleton"))
-				return true;
-		}
-		return super.isApplicable(player, world, x, y, z);
-	}
-	
-	@Override
 	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer par1EntityPlayer, int par2) {
 		ItemStack itemstack = null;
 	    Slot slot = (Slot)container.getInventorySlots().get(par2);

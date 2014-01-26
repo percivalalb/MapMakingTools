@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.world.World;
 import mapmakingtools.api.IFilterClient;
+import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
@@ -17,7 +18,7 @@ import mapmakingtools.util.SpawnerUtil;
 /**
  * @author ProPercivalalb
  */
-public class MobArmorClientFilter extends IFilterClient {
+public class MobArmorClientFilter extends IFilterClientSpawner {
 
 	public GuiButton btnOk;
 	
@@ -30,17 +31,6 @@ public class MobArmorClientFilter extends IFilterClient {
 	public String getIconPath() {
 		return "mapmakingtools:mobArmor";
 	}
-
-	@Override
-	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity tile = world.func_147438_o(x, y, z);
-		if(tile instanceof TileEntityMobSpawner) {
-			String id = SpawnerUtil.getMobId(((TileEntityMobSpawner)tile).func_145881_a());
-			if(id.equals("Zombie") || id.equals("PigZombie") || id.equals("Skeleton"))
-				return true;
-		}
-		return super.isApplicable(player, world, x, y, z);
-	}
 	
 	@Override
 	public void initGui(IGuiFilter gui) {
@@ -50,6 +40,7 @@ public class MobArmorClientFilter extends IFilterClient {
         int topY = (gui.getHeight() - 151) / 2;
         this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
+        this.addMinecartButtons(gui, topX, topY);
 	}
 
 	@Override

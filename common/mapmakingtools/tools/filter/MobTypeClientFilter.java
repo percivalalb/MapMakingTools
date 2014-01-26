@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import mapmakingtools.api.IFilterClient;
+import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.api.MobSpawnerType;
 import mapmakingtools.api.ScrollMenu;
@@ -21,7 +22,7 @@ import mapmakingtools.tools.filter.packet.PacketMobType;
 /**
  * @author ProPercivalalb
  */
-public class MobTypeClientFilter extends IFilterClient {
+public class MobTypeClientFilter extends IFilterClientSpawner {
 
 	public GuiButton btnOk;
 	public ScrollMenu menu;
@@ -36,14 +37,6 @@ public class MobTypeClientFilter extends IFilterClient {
 		return "mapmakingtools:mobType";
 	}
 
-	@Override
-	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity tile = world.func_147438_o(x, y, z);
-		if(tile instanceof TileEntityMobSpawner)
-			return true;
-		return super.isApplicable(player, world, x, y, z);
-	}
-	
 	@Override
 	public void initGui(final IGuiFilter gui) {
 		super.initGui(gui);
@@ -70,6 +63,7 @@ public class MobTypeClientFilter extends IFilterClient {
         
         this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
         //gui.getButtonList().add(this.btnOk);
+        this.addMinecartButtons(gui, topX, topY);
 	}
 
 	@Override

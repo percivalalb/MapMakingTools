@@ -55,7 +55,7 @@ public abstract class ScrollMenu {
             	else
             		this.listHeight += this.listHeight % 14 - 4;
             }
-        	FMLLog.info("" + this.listHeight);
+        	
             this.scrollHeight = (int)((double)this.height / (double)(this.listHeight + this.height) * (double)this.height);
 
             if (this.scrollHeight <= 0 || this.scrollHeight >= height) {

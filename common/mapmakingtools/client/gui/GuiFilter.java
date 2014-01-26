@@ -30,6 +30,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb
@@ -54,6 +55,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		this.field_146999_f = 302;
         this.field_147000_g = 100;
         this.filterList = filters;
+        this.player = player;
         this.maxPages = (this.filterList.size() + (filterList.size() % 6)) / 6;
         
         //If the last selected filter is not in this new gui reset it
@@ -142,13 +144,13 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
-    		else if(listBt instanceof GuiSmallButton) {
-    			GuiSmallButton button = (GuiSmallButton)listBt;
-        		if(button.isMouseAbove(xMouse, yMouse)) {
-        			List<String> list = this.filterCurrent.getFilterInfo();
-        			this.drawHoveringText(list, xMouse, yMouse);
-        		}
-    		}
+    		//else if(listBt instanceof GuiSmallButton) {
+    		//	GuiSmallButton button = (GuiSmallButton)listBt;
+        	//	if(button.isMouseAbove(xMouse, yMouse)) {
+        	//		List<String> list = this.filterCurrent.getFilterInfo();
+        	//		this.drawHoveringText(list, xMouse, yMouse);
+        	//	}
+    		//}
     		//if(listBt instanceof GuiButtonCancel) {
     		//	GuiButtonCancel tab = (GuiButtonCancel)listBt;
         	//	if(tab.isMouseAbove(xMouse, yMouse)) {
@@ -441,6 +443,16 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	@Override
 	public int getEntityId() {
 		return this.entityId;
+	}
+	
+	@Override
+	public World getWorld() {
+		return this.player.worldObj;
+	}
+
+	@Override
+	public EntityPlayer getPlayer() {
+		return this.player;
 	}
     
 	@Override
