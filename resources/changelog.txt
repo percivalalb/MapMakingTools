@@ -7,7 +7,19 @@ Update List Key
 (*) A bug fix
 (/) Other
 
-v2.0.4a (Please note Forge #857 or higher is now needed to run map making tools)
+v2.1.0a
++ Updated to 1.7.2 - Entire mod recoded to be more efficient and compatible with 1.7
+
++ Shift while using the quick build item to not select the block you click but the block adjacent to the side you click on
++ As well as the outline of the area selected you can now see the 2 blocks you selected to make the out line
++ The selected area from the quick build system will now save when the world restarts and load back to how it was
+
+# Selected areas using the axe are now dimension unique
+
+* Fixed the wrench being able to take damage
+* Fixed possible graphical glitches in the mob type filter
+
+v2.0.4a (Never released, content pushed to the 1.7 version)
 + Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping! 
 + Started work on a new filter to edit the chance of the item dropping from an Item Frame.
 
