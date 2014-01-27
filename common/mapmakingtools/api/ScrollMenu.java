@@ -50,7 +50,7 @@ public abstract class ScrollMenu {
         	this.listHeight = MathHelper.floor_double(this.strRefrence.size() / this.noColumns) * 14 - this.height;
 	
         	if(this.listHeight % 14 != 0) {
-            	if(this.noColumns == 3 || this.noColumns == 4)
+            	if(this.strRefrence.size() % this.noColumns == 1)
             		this.listHeight += 14 + this.listHeight % 14 - 4;
             	else
             		this.listHeight += this.listHeight % 14 - 4;

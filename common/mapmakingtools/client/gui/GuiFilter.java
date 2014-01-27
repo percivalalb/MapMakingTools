@@ -30,6 +30,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 /**
@@ -141,6 +142,11 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         		GuiTabSelect button = (GuiTabSelect)listBt;
         		if(button.isMouseAbove(xMouse, yMouse)) {
         			List<String> list = Arrays.asList(button.filter.getFilterName());
+        			if(button.filter.showErrorIcon(this)) {
+        				String errorMessage = button.filter.getErrorMessage(this);
+        				if(errorMessage != null)
+        					list.add(errorMessage);
+        			}
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
@@ -185,22 +191,22 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         int topY = (this.field_146295_m - this.yFakeSize()) / 2;
 
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 6) {
-            this.field_146292_n.add(new GuiTabSelect(150, topX - 29, topY + 9, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 6)));
+            this.field_146292_n.add(new GuiTabSelect(150, topX - 29, topY + 9, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 6), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 5) {
-        	this.field_146292_n.add(new GuiTabSelect(151, topX - 29, topY + 36, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 5)));
+        	this.field_146292_n.add(new GuiTabSelect(151, topX - 29, topY + 36, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 5), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 4) {
-        	this.field_146292_n.add(new GuiTabSelect(152, topX - 29, topY + 63, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 4)));
+        	this.field_146292_n.add(new GuiTabSelect(152, topX - 29, topY + 63, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 4), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 3) {
-        	this.field_146292_n.add(new GuiTabSelect(153, topX + xFakeSize() - 1, topY + 9, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 3)));
+        	this.field_146292_n.add(new GuiTabSelect(153, topX + xFakeSize() - 1, topY + 9, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 3), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 2) {
-        	this.field_146292_n.add(new GuiTabSelect(154, topX + xFakeSize() - 1, topY + 36, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 2)));
+        	this.field_146292_n.add(new GuiTabSelect(154, topX + xFakeSize() - 1, topY + 36, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 2), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 1) {
-        	this.field_146292_n.add(new GuiTabSelect(155, topX + xFakeSize() - 1, topY + 63, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 1)));
+        	this.field_146292_n.add(new GuiTabSelect(155, topX + xFakeSize() - 1, topY + 63, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 1), this));
         }
         
         if(this.filterList.size() > 6) {
@@ -219,7 +225,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	this.field_146292_n.add(new GuiSmallButton(156, topX + 5, realtopY + 4, 13, 12, "?"));
         
         if(filterCurrent != null && filterCurrent.hasUpdateButton())
-        	this.field_146292_n.add(new GuiSmallButton(157, topX + 5, realtopY + 4, 13, 12, "" + (char)8595));
+        	this.field_146292_n.add(new GuiSmallButton(157, topX + 5, realtopY + 4, 8, 8, "" + (char)8595));
         
         for(int i = 0; i < this.field_146292_n.size(); ++i) {
     		if(this.field_146292_n.get(i) instanceof GuiTabSelect) {

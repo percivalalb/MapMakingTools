@@ -2,6 +2,7 @@ package mapmakingtools.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import mapmakingtools.api.FilterManager;
 import mapmakingtools.api.IFilter;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.helper.ClientHelper;
@@ -22,12 +23,14 @@ public class GuiTabSelect extends GuiButton {
 	public boolean isSelected;
 	public ButtonType type;
 	public IFilterClient filter;
+	public GuiFilter gui;
 	
-	public GuiTabSelect(int id, int xPosition, int yPosition, ButtonType type, IFilterClient filter) {
+	public GuiTabSelect(int id, int xPosition, int yPosition, ButtonType type, IFilterClient filter, GuiFilter gui) {
         super(id, xPosition, yPosition, 29, 27, "");
         this.isSelected = false;
         this.type = type;
         this.filter = filter;
+        this.gui = gui;
     }
     
     @Override
@@ -42,6 +45,9 @@ public class GuiTabSelect extends GuiButton {
             mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
             if(icon != null) {
             	this.drawTexturedModelRectFromIcon(this.field_146128_h + 5 + (type == ButtonType.LEFT ? 3 : 0), this.field_146129_i + 5, icon, 16, 16);
+            }
+            if(filter.showErrorIcon(gui)) {
+            	this.drawTexturedModelRectFromIcon(this.field_146128_h + 5 + (type == ButtonType.LEFT ? 3 : 0), this.field_146129_i + 5, FilterManager.errorIcon, 16, 16);
             }
     	}
 	}

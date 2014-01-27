@@ -1,13 +1,21 @@
 package mapmakingtools.tools.filter;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.FMLLog;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
@@ -76,6 +84,27 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public void updateButtonClicked() {
 		
+	}
+	
+	@Override
+	public boolean showErrorIcon(IGuiFilter gui) { 
+		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getX(), gui.getY(), gui.getZ());
+		if(!(tile instanceof TileEntityMobSpawner))
+			return true;
+		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		
+		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.func_145881_a());
+		WeightedRandomMinecart randomMinecart = minecarts.get(minecartIndex);
+		String mobId = randomMinecart.minecartName;
+		if(mobId.equals("Zombie") || mobId.equals("PigZombie") || mobId.equals("Skeleton")) {
+			return false;
+		}
+		
+		return true; 
+	}
+	
+	public String getErrorMessage(IGuiFilter gui) { 
+		return EnumChatFormatting.RED + StatCollector.translateToLocal("mapmakingtools.filter.mobArmor.error");
 	}
 	
 	@Override

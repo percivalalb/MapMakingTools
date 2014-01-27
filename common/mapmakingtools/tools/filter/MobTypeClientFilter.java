@@ -26,6 +26,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 
 	public GuiButton btnOk;
 	public ScrollMenu menu;
+	public static int selected = MobSpawnerType.getSpawnerMobs().indexOf("Pig");
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -53,6 +54,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 
 			@Override
 			public void onSetButton() {
+				MobTypeClientFilter.selected = this.selected;
 				ChannelOutBoundHandler.sendPacketToServer(new PacketMobType(gui.getX(), gui.getY(), gui.getZ(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
             	ClientHelper.mc.func_147108_a((GuiScreen)null);
         		ClientHelper.mc.setIngameFocus();
@@ -60,6 +62,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
         	
         };
         this.menu.initGui();
+        this.menu.selected = selected;
         
         this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
         //gui.getButtonList().add(this.btnOk);

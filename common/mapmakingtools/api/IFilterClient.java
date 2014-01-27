@@ -32,6 +32,8 @@ public abstract class IFilterClient extends IFilter {
 	public List<String> getFilterInfo() { return null; }
 	public boolean hasUpdateButton() { return false; }
 	public void updateButtonClicked() {}
+	public boolean showErrorIcon(IGuiFilter gui) { return false; }
+	public String getErrorMessage(IGuiFilter gui) { return null; }
 	
 	private IFilterServer serverFilter;
 	
@@ -43,4 +45,5 @@ public abstract class IFilterClient extends IFilter {
 	public final IFilterServer getServerFilter() {
 		return this.serverFilter;
 	}
+	
 }

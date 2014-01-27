@@ -39,6 +39,7 @@ public class ItemEdit extends ItemAxe {
     	super.registerIcons(iconRegistry);
     	this.wrenchIcon = iconRegistry.registerIcon("mapmakingtools:wrench");
     	FilterManager.registerIcons(iconRegistry);
+    	FilterManager.errorIcon = iconRegistry.registerIcon("mapmakingtools:error");
     }
     
     @Override

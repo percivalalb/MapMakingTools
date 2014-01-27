@@ -10,6 +10,7 @@ import mapmakingtools.tools.filter.MobArmorClientFilter;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 /**
@@ -20,6 +21,7 @@ public class FilterManager {
 	private static final List<IFilterClient> clientMap = new ArrayList<IFilterClient>();
 	private static final List<IFilterServer> serverMap = new ArrayList<IFilterServer>();
 	private static final List<IFilterProvider> providerMap = new ArrayList<IFilterProvider>();
+	public static IIcon errorIcon;
 	
 	public static void registerFilter(Class<? extends IFilterClient> filterClient, Class<? extends IFilterServer> filterServer) {
 		try {
