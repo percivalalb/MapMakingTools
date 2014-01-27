@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
@@ -37,7 +38,7 @@ public class FillInventoryClientFilter extends IFilterClient {
 
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity tileEntity = world.func_147438_o(x, y, z);
+		TileEntity tileEntity = FakeWorldManager.getTileEntity(world, x, y, z);
 		if(tileEntity != null && tileEntity instanceof IInventory)
 			return true;
 		return super.isApplicable(player, world, x, y, z);

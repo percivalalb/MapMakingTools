@@ -25,13 +25,15 @@ public class PacketMobType extends MMTPacket {
 
 	public int x, y, z;
 	public String mobId;
+	public int minecartIndex;
 	
 	public PacketMobType() {}
-	public PacketMobType(int x, int y, int z, String mobId) {
+	public PacketMobType(int x, int y, int z, String mobId, int minecartIndex) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.mobId = mobId;
+		this.minecartIndex = minecartIndex;
 	}
 
 	@Override
@@ -40,6 +42,7 @@ public class PacketMobType extends MMTPacket {
 		this.y = data.readInt();
 		this.z = data.readInt();
 		this.mobId = data.readUTF();
+		this.minecartIndex = data.readInt();
 	}
 
 	@Override
@@ -48,6 +51,7 @@ public class PacketMobType extends MMTPacket {
 		dos.writeInt(y);
 		dos.writeInt(z);
 		dos.writeUTF(mobId);
+		dos.writeInt(minecartIndex);
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public class PacketMobType extends MMTPacket {
 		TileEntity tile = player.worldObj.func_147438_o(x, y, z);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-			SpawnerUtil.setMobId(spawner.func_145881_a(), this.mobId);
+			SpawnerUtil.setMobId(spawner.func_145881_a(), this.mobId, this.minecartIndex);
 			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobType.complete", this.mobId);

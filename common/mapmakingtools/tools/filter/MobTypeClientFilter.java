@@ -53,7 +53,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 
 			@Override
 			public void onSetButton() {
-				ChannelOutBoundHandler.sendPacketToServer(new PacketMobType(gui.getX(), gui.getY(), gui.getZ(), this.strRefrence.get(this.selected)));
+				ChannelOutBoundHandler.sendPacketToServer(new PacketMobType(gui.getX(), gui.getY(), gui.getZ(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
             	ClientHelper.mc.func_147108_a((GuiScreen)null);
         		ClientHelper.mc.setIngameFocus();
 			}
@@ -77,6 +77,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
 	}
 	

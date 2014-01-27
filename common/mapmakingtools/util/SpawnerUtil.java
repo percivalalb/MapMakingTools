@@ -31,9 +31,18 @@ public class SpawnerUtil {
 		return ReflectionHelper.getField(mobIdField, String.class, spawnerLogic);
 	}
 
-	public static void setMobId(MobSpawnerBaseLogic spawnerLogic, String mobId) {//, int minecartIndex) {
-		//minecartIndex = minecartIndex == -1 ? spawnerLogic.: 
-		ReflectionHelper.setField(mobIdField, spawnerLogic, mobId);
+	public static void setMobId(MobSpawnerBaseLogic spawnerLogic, String mobId, int minecartIndex) {
+		if(minecartIndex == -1)
+			ReflectionHelper.setField(mobIdField, spawnerLogic, mobId);
+		else {
+			confirmHasRandomMinecart(spawnerLogic);
+			WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+			NBTTagCompound data = randomMinecart.func_98220_a();
+			data.setString("Type", mobId);
+			WeightedRandomMinecart newRandomMinecart = spawnerLogic.new WeightedRandomMinecart(data);
+			ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).set(minecartIndex, newRandomMinecart);
+			spawnerLogic.setRandomMinecart(newRandomMinecart);
+		}
 	}
 	
 	public static ItemStack[] getMobArmor(MobSpawnerBaseLogic spawnerLogic) {

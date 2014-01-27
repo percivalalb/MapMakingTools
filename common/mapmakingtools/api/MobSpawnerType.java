@@ -77,6 +77,6 @@ public class MobSpawnerType {
 		addToList("VillagerGolem");
 		addToList("Villager");
 		addToList("EnderCrystal");
-		addToList("EntityHorse");
+		//TODO Fix crash addToList("EntityHorse");
 	}
 }

@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.PacketHelper;
 import mapmakingtools.network.ChannelOutBoundHandler;
@@ -38,7 +39,7 @@ public class PacketUpdateBlock extends MMTPacket {
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException{
+	public void write(DataOutputStream dos) throws IOException {
 		dos.writeInt(this.x);
 		dos.writeInt(this.y);
 		dos.writeInt(this.z);
@@ -53,7 +54,7 @@ public class PacketUpdateBlock extends MMTPacket {
 		if(tileEntity == null)
 			return;
 		
-		tileEntity.func_145839_a(this.tagCompound);
+		FakeWorldManager.putTileEntity(tileEntity, world, x, y, z, tagCompound);
 		
 		ChannelOutBoundHandler.sendPacketToServer(new PacketEditBlock(this.x, this.y, this.z));
 	}

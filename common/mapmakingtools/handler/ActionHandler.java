@@ -11,10 +11,12 @@ import mapmakingtools.network.packet.PacketUpdateEntity;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
+import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
@@ -98,6 +100,10 @@ public class ActionHandler {
 				else if(ItemEdit.isAxe(item) && ItemEdit.isWrench(item)) {
 					TileEntity tileEntity = world.func_147438_o(x, y, z);
 					if(tileEntity != null) {
+						if(tileEntity instanceof TileEntityMobSpawner) 
+							SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).func_145881_a());
+						
+						
 						ChannelOutBoundHandler.sendPacketToClient(player, new PacketUpdateBlock(tileEntity, x, y, z));
 						event.setCanceled(true);
 					}

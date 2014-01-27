@@ -42,7 +42,6 @@ public class SpawnerFilterProvider implements IFilterProvider {
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		SpawnerUtil.confirmHasRandomMinecart(spawner.func_145881_a());
 		SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 		
 		for(WeightedRandomMinecart randomMinecart : SpawnerUtil.getRandomMinecarts(spawner.func_145881_a())) {
