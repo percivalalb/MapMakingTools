@@ -15,8 +15,8 @@ public class ActionStorage {
 	private ArrayList<ArrayList<CachedBlock>> cachedUndo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<ArrayList<CachedBlock>> cachedRedo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<CachedBlock> cachedCopy = new ArrayList<CachedBlock>();
-	private int rotationValue = -1;
-	private int flippingValue = -1;
+	private int rotationValue = 0;
+	private int flippingValue = 0;
 	
 	public ActionStorage() {}
 	public ActionStorage(EntityPlayer player) {
@@ -41,7 +41,7 @@ public class ActionStorage {
 	
 	public void addCopy(ArrayList<CachedBlock> list) {
 		this.cachedCopy = list;
-		this.rotationValue = -1;
+		this.rotationValue = 0;
 	}
 	
 	public void addRedo(ArrayList<CachedBlock> list) {
@@ -87,33 +87,51 @@ public class ActionStorage {
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		NBTTagList list1 = new NBTTagList();
-		for(ArrayList<CachedBlock> undos : this.cachedUndo) {
-			NBTTagCompound tag1 = new NBTTagCompound();
-			tag1.setInteger("count", undos.size());
-
-			for(int i = 0; i < undos.size(); ++i)
-				tag1.setTag("" + i, undos.get(i).writeToNBT(new NBTTagCompound()));
-			
-			list1.appendTag(tag1);
-		}
-		tag.setTag("cachedUndo", list1);
+		tag.setInteger("rotationValue", this.rotationValue);
+		tag.setInteger("flippingValue", this.flippingValue);
 		
-		NBTTagList list2 = new NBTTagList();
-		for(ArrayList<CachedBlock> redos : this.cachedRedo) {
-			NBTTagCompound tag1 = new NBTTagCompound();
-			tag1.setInteger("count", redos.size());
+		//Cached Undo list
+		NBTTagList undoList = new NBTTagList();
+		for(ArrayList<CachedBlock> undos : this.cachedUndo) {
+			NBTTagCompound undoData = new NBTTagCompound();
 			
-			for(int i = 0; i < redos.size(); ++i)
-				tag1.setTag("" + i, redos.get(i).writeToNBT(new NBTTagCompound()));
+			undoData.setInteger("count", undos.size());
+			for(int i = 0; i < undos.size(); ++i)
+				undoData.setTag("" + i, undos.get(i).writeToNBT(new NBTTagCompound()));
 			
-			list2.appendTag(tag1);
+			undoList.appendTag(undoData);
 		}
-		tag.setTag("cachedRedo", list2);
+		tag.setTag("cachedUndo", undoList);
+		
+		//Cached Redo list
+		NBTTagList redoList = new NBTTagList();
+		for(ArrayList<CachedBlock> redos : this.cachedRedo) {
+			NBTTagCompound redoData = new NBTTagCompound();
+			
+			redoData.setInteger("count", redos.size());
+			for(int i = 0; i < redos.size(); ++i)
+				redoData.setTag("" + i, redos.get(i).writeToNBT(new NBTTagCompound()));
+			
+			redoList.appendTag(redoData);
+		}
+		tag.setTag("cachedRedo", redoList);
+		
+		//Cached Copy
+		NBTTagCompound copyData = new NBTTagCompound();
+		
+		copyData.setInteger("count", this.cachedCopy.size());
+		for(int i = 0; i < this.cachedCopy.size(); ++i)
+			copyData.setTag("" + i, this.cachedCopy.get(i).writeToNBT(new NBTTagCompound()));
+		
+		tag.setTag("cachedCopy", copyData);
+		
 		return tag;
 	}
 	
 	public ActionStorage readFromNBT(NBTTagCompound tag) {
+		this.rotationValue = tag.getInteger("rotationValue");
+		this.flippingValue = tag.getInteger("flippingValue");
+		
 		if(tag.hasKey("cachedUndo")) {
 			NBTTagList list1 = (NBTTagList)tag.getTag("cachedUndo");
 			for(int i = 0; i < list1.tagCount(); ++i) {
@@ -135,6 +153,15 @@ public class ActionStorage {
 				this.cachedRedo.add(list);
 			}
 		}
+		
+		if(tag.hasKey("cachedCopy")) {
+			ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
+			NBTTagCompound copyData = tag.getCompoundTag("cachedCopy");
+			
+			for(int i = 0; i < copyData.getInteger("count"); ++i)
+				list.add(new CachedBlock(copyData.getCompoundTag("" + i)));
+		}
+		
 		return this;
 	}
 }
