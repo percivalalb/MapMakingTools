@@ -45,16 +45,45 @@ public class SpawnerUtil {
 		}
 	}
 	
-	public static ItemStack[] getMobArmor(MobSpawnerBaseLogic spawnerLogic) {
+	public static void setMobArmor(MobSpawnerBaseLogic spawnerLogic, ItemStack helment, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack heldItem, int minecartIndex) {
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		
+		NBTTagList nbttaglist = new NBTTagList();
+		NBTTagCompound nbttagcompound1;
+		//Held Item
+		nbttagcompound1 = new NBTTagCompound();
+		if(heldItem != null) heldItem.writeToNBT(nbttagcompound1);
+		nbttaglist.appendTag(nbttagcompound1);
+		//Boots
+		nbttagcompound1 = new NBTTagCompound();
+		if(boots != null) boots.writeToNBT(nbttagcompound1);
+		nbttaglist.appendTag(nbttagcompound1);
+		//Leggings
+		nbttagcompound1 = new NBTTagCompound();
+		if(leggings != null) leggings.writeToNBT(nbttagcompound1);
+		nbttaglist.appendTag(nbttagcompound1);
+		//Chest
+		nbttagcompound1 = new NBTTagCompound();
+		if(chestplate != null) chestplate.writeToNBT(nbttagcompound1);
+		nbttaglist.appendTag(nbttagcompound1);
+		//Helmet
+		nbttagcompound1 = new NBTTagCompound();
+		if(helment != null) helment.writeToNBT(nbttagcompound1);
+		nbttaglist.appendTag(nbttagcompound1);
+		tag.setTag("Equipment", nbttaglist);
+		spawnerLogic.setRandomMinecart(randomMinecart);
+	}
+	
+	public static ItemStack[] getMobArmor(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		ItemStack[] equipment = new ItemStack[5];
-		if(spawnerLogic.getRandomMinecart() != null) {
-			NBTTagCompound tag =  spawnerLogic.getRandomMinecart().field_98222_b;
-			if (tag.hasKey("Equipment")) {
-				NBTTagList nbttaglist = (NBTTagList)tag.getTag("Equipment");
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		if (tag.hasKey("Equipment")) {
+			NBTTagList nbttaglist = (NBTTagList)tag.getTag("Equipment");
 
-		        for (int i = 0; i < equipment.length; ++i) {
-		            equipment[i] = ItemStack.loadItemStackFromNBT((NBTTagCompound)nbttaglist.func_150305_b(i));
-		        }
+		    for (int i = 0; i < equipment.length; ++i) {
+		    	equipment[i] = ItemStack.loadItemStackFromNBT((NBTTagCompound)nbttaglist.func_150305_b(i));
 		    }
 		}
 		return equipment;

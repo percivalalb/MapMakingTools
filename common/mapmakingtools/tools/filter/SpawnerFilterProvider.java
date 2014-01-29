@@ -28,11 +28,8 @@ public class SpawnerFilterProvider implements IFilterProvider {
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		for(WeightedRandomMinecart randomMinecart : SpawnerUtil.getRandomMinecarts(spawner.func_145881_a())) {
-			filterList.add(FilterManager.getClientFilterFromClass(MobTypeClientFilter.class));
-			filterList.add(FilterManager.getClientFilterFromClass(MobArmorClientFilter.class));
-			FMLLog.info("Client cart  " + randomMinecart.minecartName + " " + randomMinecart);
-		}
+		filterList.add(FilterManager.getClientFilterFromClass(MobTypeClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(MobArmorClientFilter.class));
 	}
 
 	@Override
@@ -44,11 +41,8 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		
 		SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 		
-		for(WeightedRandomMinecart randomMinecart : SpawnerUtil.getRandomMinecarts(spawner.func_145881_a())) {
-			filterList.add(FilterManager.getServerFilterFromClass(MobTypeServerFilter.class));
-			filterList.add(FilterManager.getServerFilterFromClass(MobArmorServerFilter.class));
-			FMLLog.info("Server cart  " + randomMinecart.minecartName + " " + randomMinecart);
-		}
+		filterList.add(FilterManager.getServerFilterFromClass(MobTypeServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(MobArmorServerFilter.class));
 	}
 
 	@Override

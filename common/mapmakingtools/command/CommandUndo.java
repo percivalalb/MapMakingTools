@@ -5,20 +5,21 @@ import java.util.List;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb
  */
-public class CommandClearPoints extends CommandBase {
+public class CommandUndo extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "/clearpoints";
+		return "/undo";
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class CommandClearPoints extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.command.clearpoints.usage";
+		return "mapmakingtools.command.build.undo.usage";
 	}
 
 	@Override
@@ -37,27 +38,29 @@ public class CommandClearPoints extends CommandBase {
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		if(param.length == 1)
-			player = getPlayer(player, param[0]);
-		
+		World world = player.worldObj;
 		PlayerData data = WorldData.getPlayerData(player);
-		data.setFirstPoint(-1, -1, -1);
-		data.setSecondPoint(-1, -1, -1);
-		data.sendUpdateToClient();
+		
+		if(!data.getActionStorage().hasSomethingToUndo())
+			throw new CommandException("mapmakingtools.commands.build.hasnotingtoundo", new Object[0]);
+		
+		int blocksChanged = data.getActionStorage().undo();
+		
+		if(blocksChanged > 0) {
+			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.undo.complete", "" + blocksChanged);
+			chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
+			player.func_145747_a(chatComponent);
+		}
 	}
 
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, this.getPlayers()) : null;
-    }
-
-    protected String[] getPlayers() {
-        return MinecraftServer.getServer().getAllUsernames();
+        return null;
     }
 
     @Override
     public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
-        return par2 == 0;
+        return false;
     }
 	
 	@Override

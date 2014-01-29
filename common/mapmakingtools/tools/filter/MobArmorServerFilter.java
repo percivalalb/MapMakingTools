@@ -221,9 +221,9 @@ public class MobArmorServerFilter extends IFilterServer {
 		public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
 		    this.contents[par1] = par2ItemStack;
 
-		    //if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit()) {
-		    //    par2ItemStack.stackSize = this.getInventoryStackLimit();
-		    //}
+		    if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit()) {
+		        par2ItemStack.stackSize = this.getInventoryStackLimit();
+		    }
 		}
 
 		@Override
@@ -258,7 +258,7 @@ public class MobArmorServerFilter extends IFilterServer {
 
 		@Override
 		public String func_145825_b() {
-			return "Fill Inventory";
+			return "Mob Armor";
 		}
 
 		@Override

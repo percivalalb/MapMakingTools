@@ -22,13 +22,13 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * @author ProPercivalalb
  */
-public class PacketMobArmorUpdate extends MMTPacket {
+public class PacketMobArmor extends MMTPacket {
 
 	public int x, y, z;
 	public int minecartIndex;
 	
-	public PacketMobArmorUpdate() {}
-	public PacketMobArmorUpdate(int x, int y, int z, int minecartIndex) {
+	public PacketMobArmor() {}
+	public PacketMobArmor(int x, int y, int z, int minecartIndex) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -63,12 +63,11 @@ public class PacketMobArmorUpdate extends MMTPacket {
 				if(tile instanceof TileEntityMobSpawner) {
 					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
-					ItemStack[] mobArmor = SpawnerUtil.getMobArmor(spawner.func_145881_a(), this.minecartIndex);
-					for(int i = 0; i < mobArmor.length; ++i) {
-						filterCurrent.getInventory(container).contents[i] = mobArmor[i];
-				    }
+					ItemStack[] stack = filterCurrent.getInventory(container).contents; 
+					SpawnerUtil.setMobArmor(spawner.func_145881_a(), stack[4], stack[3], stack[2], stack[1], stack[0], this.minecartIndex);
+					SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 					
-				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.update");
+				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.complete");
 					chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
 					player.func_145747_a(chatComponent);
 				}

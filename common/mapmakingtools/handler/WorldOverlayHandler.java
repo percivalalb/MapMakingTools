@@ -54,8 +54,7 @@ public class WorldOverlayHandler {
         GL11.glPopMatrix();
 	}
 
-	public void drawSelectionBox(EntityPlayer player, float particleTicks, AxisAlignedBB boundingBox)
-    {
+	public void drawSelectionBox(EntityPlayer player, float particleTicks, AxisAlignedBB boundingBox) {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_LIGHTING); //Make the line see thought blocks
         GL11.glDepthMask(false);
@@ -88,10 +87,12 @@ public class WorldOverlayHandler {
         } 
         else {
         	this.drawOutlinedBoundingBox(boundingBox.getOffsetBoundingBox(-d0, -d1, -d2));
-        	PlayerData data = ClientData.playerData;
-        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-        	this.drawBoundingBox(AxisAlignedBB.getBoundingBox(data.getFirstPoint().getX(), data.getFirstPoint().getY(), data.getFirstPoint().getZ(), data.getFirstPoint().getX() + 1, data.getFirstPoint().getY() + 1, data.getFirstPoint().getZ() + 1).getOffsetBoundingBox(-d0, -d1, -d2));
-        	this.drawBoundingBox(AxisAlignedBB.getBoundingBox(data.getSecondPoint().getX(), data.getSecondPoint().getY(), data.getSecondPoint().getZ(), data.getSecondPoint().getX() + 1, data.getSecondPoint().getY() + 1, data.getSecondPoint().getZ() + 1).getOffsetBoundingBox(-d0, -d1, -d2));
+        	if(Constants.RENDER_SELECTED_POSITION) {
+	        	PlayerData data = ClientData.playerData;
+	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+	        	this.drawBoundingBox(AxisAlignedBB.getBoundingBox(data.getFirstPoint().getX(), data.getFirstPoint().getY(), data.getFirstPoint().getZ(), data.getFirstPoint().getX() + 1, data.getFirstPoint().getY() + 1, data.getFirstPoint().getZ() + 1).getOffsetBoundingBox(-d0, -d1, -d2));
+	        	this.drawBoundingBox(AxisAlignedBB.getBoundingBox(data.getSecondPoint().getX(), data.getSecondPoint().getY(), data.getSecondPoint().getZ(), data.getSecondPoint().getX() + 1, data.getSecondPoint().getY() + 1, data.getSecondPoint().getZ() + 1).getOffsetBoundingBox(-d0, -d1, -d2));
+        	}
         }
         GL11.glEnable(GL11.GL_DEPTH_TEST); //Make the line see thought blocks
         GL11.glDepthMask(true);

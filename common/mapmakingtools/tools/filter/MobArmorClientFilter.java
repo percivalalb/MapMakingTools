@@ -21,6 +21,10 @@ import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.ChannelOutBoundHandler;
+import mapmakingtools.tools.filter.packet.PacketMobArmor;
+import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
+import mapmakingtools.tools.filter.packet.PacketMobType;
 import mapmakingtools.util.SpawnerUtil;
 
 /**
@@ -49,6 +53,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
         this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
         this.addMinecartButtons(gui, topX, topY);
+        this.onMinecartIndexChange(gui);
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		if (button.field_146124_l) {
             switch (button.field_146127_k) {
                 case 0:
-                	//PacketTypeHandler.populatePacketAndSendToServer(new PacketMobArmor(gui.x, gui.y, gui.z));
+                	ChannelOutBoundHandler.sendPacketToServer(new PacketMobArmor(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
                 	ClientHelper.mc.func_147108_a((GuiScreen)null);
             		ClientHelper.mc.setIngameFocus();
                     break;
@@ -77,13 +82,29 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	}
 	
 	@Override
-	public boolean hasUpdateButton() { 
+	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
+        int topY = (gui.getHeight() - 151) / 2;
+		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+	}
+	
+	@Override
+	public void onMinecartIndexChange(IGuiFilter gui) {
+		if(this.showErrorIcon(gui))
+			this.btnOk.field_146124_l = false;
+		else
+			this.btnOk.field_146124_l = true;
+	}
+	
+	@Override
+	public boolean hasUpdateButton(IGuiFilter gui) {
 		return true;
 	}
 	
 	@Override
-	public void updateButtonClicked() {
-		
+	public void updateButtonClicked(IGuiFilter gui) {
+		if(!showErrorIcon(gui))
+			ChannelOutBoundHandler.sendPacketToServer(new PacketMobArmorUpdate(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
 	}
 	
 	@Override
@@ -103,6 +124,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		return true; 
 	}
 	
+	@Override
 	public String getErrorMessage(IGuiFilter gui) { 
 		return EnumChatFormatting.RED + StatCollector.translateToLocal("mapmakingtools.filter.mobArmor.error");
 	}

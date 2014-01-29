@@ -69,7 +69,7 @@ public class FillInventoryClientFilter extends IFilterClient {
 	}
 	
 	@Override
-	public List<String> getFilterInfo() { 
+	public List<String> getFilterInfo(IGuiFilter gui) { 
 		return Arrays.asList(this.getFilterName(), "Check it out", "wow!"); 
 	}
 	

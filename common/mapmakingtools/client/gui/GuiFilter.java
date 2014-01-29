@@ -141,7 +141,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     		if(listBt instanceof GuiTabSelect) {
         		GuiTabSelect button = (GuiTabSelect)listBt;
         		if(button.isMouseAbove(xMouse, yMouse)) {
-        			List<String> list = Arrays.asList(button.filter.getFilterName());
+        			List<String> list = new ArrayList<String>();
+        			list.add(button.filter.getFilterName());
         			if(button.filter.showErrorIcon(this)) {
         				String errorMessage = button.filter.getErrorMessage(this);
         				if(errorMessage != null)
@@ -177,6 +178,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	//	}
     		//}
     	}
+		if(filterCurrent != null)
+			filterCurrent.drawToolTips(this, xMouse, yMouse);
 		GL11.glTranslatef((float)this.field_147003_i, (float)this.field_147009_r, 0.0F);
     }
 
@@ -221,10 +224,10 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         
         int realtopY = (this.field_146295_m - this.field_147000_g) / 2;
         
-        if(filterCurrent != null && filterCurrent.getFilterInfo() != null)
+        if(filterCurrent != null && filterCurrent.getFilterInfo(this) != null)
         	this.field_146292_n.add(new GuiSmallButton(156, topX + 5, realtopY + 4, 13, 12, "?"));
         
-        if(filterCurrent != null && filterCurrent.hasUpdateButton())
+        if(filterCurrent != null && filterCurrent.hasUpdateButton(this))
         	this.field_146292_n.add(new GuiSmallButton(157, topX + 5, realtopY + 4, 8, 8, "" + (char)8595));
         
         for(int i = 0; i < this.field_146292_n.size(); ++i) {
@@ -274,7 +277,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
             		}
             		break;
             	case 149:
-            		if(this.currentPage < maxPages) {
+            		if(this.currentPage <= maxPages) {
             			++currentPage;
             			this.initGui();
             		}
@@ -289,7 +292,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
                 		unSelectBut((GuiTabSelect)button);
                 	break;
                 case 157:
-                	filterCurrent.updateButtonClicked();
+                	filterCurrent.updateButtonClicked(this);
                 default:
             }
         }

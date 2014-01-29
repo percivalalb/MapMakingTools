@@ -31,7 +31,7 @@ public class WorldData {
 			PLAYER_POINTS.put(username, new PlayerData(player));
 		
 		if(PLAYER_POINTS.get(username).player == null)
-			PLAYER_POINTS.get(username).player = player;
+			PLAYER_POINTS.get(username).setPlayer(player);
 		
 		return PLAYER_POINTS.get(username);
 	}

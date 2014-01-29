@@ -2,8 +2,6 @@ package mapmakingtools.tools;
 
 import java.util.Hashtable;
 
-import cpw.mods.fml.common.FMLLog;
-
 import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
@@ -18,16 +16,22 @@ public class PlayerData {
 
 	private Hashtable<Integer, SelectedPoint> pos1 = new Hashtable<Integer, SelectedPoint>();
 	private Hashtable<Integer, SelectedPoint> pos2 = new Hashtable<Integer, SelectedPoint>();
+	private ActionStorage actionStorage = new ActionStorage();
 	
-	public EntityPlayer player = null;
-	public String username = "";
+	public EntityPlayer player;
+	public String username;
 	
 	public PlayerData() {}
 	public PlayerData(EntityPlayer player) {
 		this.player = player;
 		this.username = player.getCommandSenderName();
+		this.actionStorage = new ActionStorage(player);
 	}
 	
+	public void setPlayer(EntityPlayer player) {
+		this.player = player;
+		this.actionStorage.setPlayer(player);
+	}
 	
 	public SelectedPoint getFirstPoint() {
 		int id = player.worldObj.provider.dimensionId;		
@@ -44,12 +48,7 @@ public class PlayerData {
 	}
 	
 	public int getBlockCount() {
-		int blocks = 0;
-		for(int x = getMinX(); x <= getMaxX(); ++x)
-			for(int y = getMinY(); y <= getMaxY(); ++y)
-				for(int z = getMinZ(); z <= getMaxZ(); ++z)
-					++blocks;
-		return blocks;
+		return (getMaxX() - getMinX() + 1) * (getMaxZ() - getMinZ() + 1) * (getMaxY() - getMinY() + 1);
 	}
 	
 	public boolean hasSelectedPoints() {
@@ -73,6 +72,10 @@ public class PlayerData {
 		ChannelOutBoundHandler.sendPacketToClient(this.player, new PacketSetPoint2(this.getSecondPoint().getX(), this.getSecondPoint().getY(), this.getSecondPoint().getZ()));
 	}
 	
+	public ActionStorage getActionStorage() {
+		return this.actionStorage;
+	}
+	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		NBTTagList list1 = new NBTTagList();
 		NBTTagList list2 = new NBTTagList();
@@ -94,6 +97,7 @@ public class PlayerData {
 		tag.setString("username", this.username);
 		tag.setTag("firstPoint", list1);
 		tag.setTag("secondPoint", list2);
+		tag.setTag("actionStorage", actionStorage.writeToNBT(new NBTTagCompound()));
 		
 		return tag;
 	}
@@ -115,6 +119,7 @@ public class PlayerData {
 		}
 		
 		this.username = tag.getString("username");
+		this.actionStorage.readFromNBT(tag.getCompoundTag("actionStorage"));
 		return this;
 	}
 	

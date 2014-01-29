@@ -13,6 +13,7 @@ v2.1.0a
 + Shift while using the quick build item to not select the block you click but the block adjacent to the side you click on
 + As well as the outline of the area selected you can now see the 2 blocks you selected to make the out line
 + The selected area from the quick build system will now save when the world restarts and load back to how it was
++ Undo, redo and copied areas will be saved on world unload
 
 # Selected areas using the axe are now dimension unique
 

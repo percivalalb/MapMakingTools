@@ -19,7 +19,10 @@ public enum PacketType {
 	PHANTOM_INFINITY(PacketPhantomInfinity.class),
 	FILL_INVENTORY(PacketFillInventory.class),
 	MOB_TYPE(PacketMobType.class),
-	MOB_ARMOR_UPDATE(PacketMobArmorUpdate.class);
+	MOB_ARMOR(PacketMobArmor.class),
+	MOB_ARMOR_UPDATE(PacketMobArmorUpdate.class),
+	MOB_ARMOR_REMOVE_INDEX(PacketMobArmorRemoveIndex.class),
+	MOB_ARMOR_ADD_INDEX(PacketMobArmorAddIndex.class);
 	
 	private Class<? extends MMTPacket> packetClass;
 	

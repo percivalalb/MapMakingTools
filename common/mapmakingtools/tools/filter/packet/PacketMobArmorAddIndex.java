@@ -3,6 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
@@ -14,21 +15,25 @@ import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.WeightedRandom;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketMobArmorUpdate extends MMTPacket {
+public class PacketMobArmorAddIndex extends MMTPacket {
 
 	public int x, y, z;
 	public int minecartIndex;
 	
-	public PacketMobArmorUpdate() {}
-	public PacketMobArmorUpdate(int x, int y, int z, int minecartIndex) {
+	public PacketMobArmorAddIndex() {}
+	public PacketMobArmorAddIndex(int x, int y, int z, int minecartIndex) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -59,19 +64,22 @@ public class PacketMobArmorUpdate extends MMTPacket {
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
-			if(container.filterCurrent instanceof MobArmorServerFilter) {
-				if(tile instanceof TileEntityMobSpawner) {
-					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
-					ItemStack[] mobArmor = SpawnerUtil.getMobArmor(spawner.func_145881_a(), this.minecartIndex);
-					for(int i = 0; i < mobArmor.length; ++i) {
-						filterCurrent.getInventory(container).contents[i] = mobArmor[i];
-				    }
+			if(tile instanceof TileEntityMobSpawner) {
+				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					
-				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.update");
-					chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-					player.func_145747_a(chatComponent);
-				}
+				List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.func_145881_a());
+				NBTTagCompound data = new NBTTagCompound();
+				data.setInteger("Weight", 1);
+				data.setString("Type", "Pig");
+				data.setTag("Properties", new NBTTagCompound());
+				WeightedRandomMinecart randomMinecart = spawner.func_145881_a().new WeightedRandomMinecart(data);
+				minecarts.add(randomMinecart);
+				spawner.func_145881_a().setRandomMinecart(randomMinecart);
+				SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+					
+				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.addIndex");
+				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
+				player.func_145747_a(chatComponent);
 			}
 		}
 	}

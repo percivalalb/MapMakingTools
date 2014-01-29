@@ -82,6 +82,9 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
+		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
+        int topY = (gui.getHeight() - 135) / 2;
+		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override

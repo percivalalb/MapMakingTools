@@ -1,6 +1,5 @@
 package mapmakingtools.tools;
 
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -8,9 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class SelectedPoint {
 
-	private int x;
-	private int y;
-	private int z;
+	private int x, y, z;
 	
 	public SelectedPoint(int defaultValue) { this.setPoint(defaultValue, defaultValue, defaultValue); }
 	public SelectedPoint(int x, int y, int z) { this.setPoint(x, y, z); }
