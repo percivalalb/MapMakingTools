@@ -91,24 +91,22 @@ public class ActionStorage {
 		for(ArrayList<CachedBlock> undos : this.cachedUndo) {
 			NBTTagCompound tag1 = new NBTTagCompound();
 			tag1.setInteger("count", undos.size());
-			int i = 0;
-			for(CachedBlock undo : undos) {
-				tag1.setTag("" + i, undo.writeToNBT(new NBTTagCompound()));
-				++i;
-			}
+
+			for(int i = 0; i < undos.size(); ++i)
+				tag1.setTag("" + i, undos.get(i).writeToNBT(new NBTTagCompound()));
+			
 			list1.appendTag(tag1);
 		}
 		tag.setTag("cachedUndo", list1);
 		
 		NBTTagList list2 = new NBTTagList();
-		for(ArrayList<CachedBlock> undos : this.cachedRedo) {
+		for(ArrayList<CachedBlock> redos : this.cachedRedo) {
 			NBTTagCompound tag1 = new NBTTagCompound();
-			tag1.setInteger("count", undos.size());
-			int i = 0;
-			for(CachedBlock undo : undos) {
-				tag1.setTag("" + i, undo.writeToNBT(new NBTTagCompound()));
-				++i;
-			}
+			tag1.setInteger("count", redos.size());
+			
+			for(int i = 0; i < redos.size(); ++i)
+				tag1.setTag("" + i, redos.get(i).writeToNBT(new NBTTagCompound()));
+			
 			list2.appendTag(tag1);
 		}
 		tag.setTag("cachedRedo", list2);
