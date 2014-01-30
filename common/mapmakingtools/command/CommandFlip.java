@@ -1,6 +1,7 @@
 package mapmakingtools.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mapmakingtools.tools.CachedBlock;
@@ -12,24 +13,18 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb
  */
-public class CommandRoof extends CommandBase {
+public class CommandFlip extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "/roof";
+		return "/flip";
 	}
 
 	@Override
@@ -39,7 +34,7 @@ public class CommandRoof extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.commands.build.roof.usage";
+		return "mapmakingtools.commands.build.rotate.usage";
 	}
 
 	@Override
@@ -54,46 +49,55 @@ public class CommandRoof extends CommandBase {
 		if(!data.hasSelectedPoints())
 			throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 		
+		
 		if(param.length < 1)
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		else {
-			Block block = func_147180_g(sender, param[0]);
-			int meta = 0;
+			int flipIndex = -1;
+			String flipMode = param[0];
 			
-			if(param.length == 2)
-				meta = parseInt(sender, param[1]);
+			for(String str : getModeNames())
+	    		if(str.equalsIgnoreCase(flipMode))
+	    			flipIndex = getModeNames().indexOf(str);
+
+			if(flipIndex == -1)
+				throw new CommandException("mapmakingtools.commands.build.flipmodeerror", new Object[] {flipMode});
+				
 			
-			String displayName = Block.func_149682_b(block) != 0 ? new ItemStack(block, 1, meta).getDisplayName() : StatCollector.translateToLocal("mapmakingtools.commands.build.air");
-			
-			int maxY = data.getMaxY();
+			data.getActionStorage().setFlipping(flipIndex);
+
 			ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
-			int blocks = 0;
 			
 			for(int x = data.getMinX(); x <= data.getMaxX(); ++x) {
-				for(int z = data.getMinZ(); z <= data.getMaxZ(); ++z) {
-					CachedBlock undo = new CachedBlock(world, x, maxY, z);
-					world.func_147465_d(x, maxY, z, block, meta, 2);
-					list.add(undo);
-					++blocks;
+				for(int y = data.getMinY(); y <= data.getMaxY(); ++y) {
+					for(int z = data.getMinZ(); z <= data.getMaxZ(); ++z) {
+						CachedBlock undo = new CachedBlock(world, x, y, z);
+						list.add(undo);
+					}
 				}
 			}
 
-			data.getActionStorage().addUndo(list);
+			int blocksChanged = data.getActionStorage().flip(list);
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.roof.complete", "" + blocks, displayName);
-			chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-			player.func_145747_a(chatComponent);
-			
+			if(blocksChanged > 0) {
+				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.flip.complete", "" + blocksChanged);
+				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
+				player.func_145747_a(chatComponent);
+			}
 		}
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, Block.field_149771_c.func_148742_b()) : null;
+	public List addTabCompletionOptions(ICommandSender sender, String[] param) {
+        return param.length == 1 ? getListOfStringsFromIterableMatchingLastWord(param, getModeNames()) : null;
     }
+	
+	public static List<String> getModeNames() {
+		return Arrays.asList("yVertically", "xHorizontal", "zHorizontal");
+	}
 
     @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
+    public boolean isUsernameIndex(String[] param, int index) {
         return false;
     }
 	

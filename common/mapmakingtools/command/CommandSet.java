@@ -39,7 +39,7 @@ public class CommandSet extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.command.build.set.usage";
+		return "mapmakingtools.commands.build.set.usage";
 	}
 
 	@Override

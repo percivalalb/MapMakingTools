@@ -16,7 +16,7 @@ public class PlayerData {
 
 	private Hashtable<Integer, SelectedPoint> pos1 = new Hashtable<Integer, SelectedPoint>();
 	private Hashtable<Integer, SelectedPoint> pos2 = new Hashtable<Integer, SelectedPoint>();
-	private ActionStorage actionStorage = new ActionStorage();
+	private ActionStorage actionStorage = new ActionStorage(this);
 	
 	public EntityPlayer player;
 	public String username;
@@ -25,7 +25,7 @@ public class PlayerData {
 	public PlayerData(EntityPlayer player) {
 		this.player = player;
 		this.username = player.getCommandSenderName();
-		this.actionStorage = new ActionStorage(player);
+		this.actionStorage = new ActionStorage(this, player);
 	}
 	
 	public void setPlayer(EntityPlayer player) {

@@ -28,7 +28,7 @@ public class CommandClearPoints extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.command.clearpoints.usage";
+		return "mapmakingtools.commands.clearpoints.usage";
 	}
 
 	@Override

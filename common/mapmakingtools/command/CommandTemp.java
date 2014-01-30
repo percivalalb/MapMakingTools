@@ -21,7 +21,7 @@ public class CommandTemp extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.command.temp.usage";
+		return "mapmakingtools.commands.temp.usage";
 	}
 
 	@Override

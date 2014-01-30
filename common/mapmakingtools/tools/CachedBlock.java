@@ -38,6 +38,10 @@ public class CachedBlock {
 		}
 	}
 	
+	public void clearTileEntity(World world, int x, int y, int z) {
+		world.func_147475_p(x, y, z);
+	}
+	
 	public CachedBlock setCachedBlock() { 
 		CachedBlock replacementCache = new CachedBlock(this);
 		this.clearTileEntity(this.orginalWorld, this.x, this.y, this.z);
@@ -47,8 +51,24 @@ public class CachedBlock {
 		return replacementCache;
 	}
 	
-	public void clearTileEntity(World world, int x, int y, int z) {
-		world.func_147475_p(x, y, z);
+	public CachedBlock setCachedBlockReletiveToFlipped(PlayerData data, int flipMode) { 
+		int newX = this.x, newY = this.y, newZ = this.z;
+		
+		if(flipMode == 1)
+			newX = data.getMaxX() - (this.x - data.getMinX());
+		else if(flipMode == 2)
+			newZ = data.getMaxZ() - (this.z - data.getMinZ());
+		else if(flipMode == 0)
+			newY = data.getMaxY() - (this.y - data.getMinY());
+	
+		CachedBlock replacementCache = new CachedBlock(this.orginalWorld, newX, newY, newZ);
+		this.clearTileEntity(this.orginalWorld, newX, newY, newZ);
+		this.orginalWorld.func_147465_d(newX, newY, newZ, this.block, this.meta, 2);
+		if(this.tileEntity != null)
+			this.orginalWorld.func_147455_a(newX, newY, newZ, this.tileEntity);
+		//FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
+
+		return replacementCache;
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {

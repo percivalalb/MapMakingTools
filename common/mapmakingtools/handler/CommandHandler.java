@@ -16,5 +16,7 @@ public class CommandHandler {
         event.registerServerCommand(new CommandFloor());
         event.registerServerCommand(new CommandUndo());
         event.registerServerCommand(new CommandRedo());
+        event.registerServerCommand(new CommandRotate());
+        event.registerServerCommand(new CommandFlip());
     }
 }

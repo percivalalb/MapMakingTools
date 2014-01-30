@@ -39,7 +39,7 @@ public class CommandFloor extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.command.build.floor.usage";
+		return "mapmakingtools.commands.build.floor.usage";
 	}
 
 	@Override

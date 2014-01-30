@@ -1,20 +1,26 @@
 mapmakingtools.chat.quickbuild.blocks.count.positive=%s block(s) selected.
 mapmakingtools.chat.quickbuild.blocks.count.negative=0 block(s) selected.
 
-mapmakingtools.command.clearpoints.usage=//clearpoints
-mapmakingtools.command.build.roof.usage=//roof <block> [meta]
-mapmakingtools.command.build.floor.usage=//floor <block> [meta]
-mapmakingtools.command.build.undo.usage=//undo
-mapmakingtools.command.build.redo.usage=//redo
+mapmakingtools.commands.clearpoints.usage=//clearpoints
+mapmakingtools.commands.build.roof.usage=//roof <block> [meta]
+mapmakingtools.commands.build.floor.usage=//floor <block> [meta]
+mapmakingtools.commands.build.undo.usage=//undo
+mapmakingtools.commands.build.redo.usage=//redo
+mapmakingtools.commands.build.rotate.usage=//rotate <rotation>
+mapmakingtools.commands.build.flip.usage=//flip <mode>
 
 mapmakingtools.commands.build.postionsnotselected=You need make to selections before you can complete this command.
 mapmakingtools.commands.build.hasnotingtoundo=There is nothing to undo.
 mapmakingtools.commands.build.hasnotingtoredo=There is nothing to redo.
+mapmakingtools.commands.build.nothingtorotate=You must copy something before using //rotate
+mapmakingtools.commands.build.rotationnot90=The angle must be a multiple of 90.
+mapmakingtools.commands.build.flipmodeerror=The mode '%s' is not recognised.
 
 mapmakingtools.commands.build.roof.complete=%s block(s) have been changed to %s.
 mapmakingtools.commands.build.floor.complete=%s block(s) have been changed to %s.
 mapmakingtools.commands.build.undo.complete=%s block(s) have been undone.
 mapmakingtools.commands.build.redo.complete=%s block(s) have been redone.
+mapmakingtools.commands.build.rotate.complete=Next area pasted will be at %s degrees.
 
 mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown

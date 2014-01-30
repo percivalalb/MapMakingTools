@@ -1,6 +1,5 @@
 package mapmakingtools.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.tools.PlayerData;
@@ -8,6 +7,7 @@ import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -16,11 +16,11 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class CommandRedo extends CommandBase {
+public class CommandRotate extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "/redo";
+		return "/rotate";
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class CommandRedo extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.commands.build.redo.usage";
+		return "mapmakingtools.commands.build.rotate.usage";
 	}
 
 	@Override
@@ -42,15 +42,25 @@ public class CommandRedo extends CommandBase {
 		World world = player.worldObj;
 		PlayerData data = WorldData.getPlayerData(player);
 		
-		if(!data.getActionStorage().hasSomethingToRedo())
-			throw new CommandException("mapmakingtools.commands.build.hasnotingtoredo", new Object[0]);
+		if(!data.getActionStorage().hasSomethingToPaste())
+			throw new CommandException("mapmakingtools.commands.build.nothingtorotate", new Object[0]);
 		
-		int blocksChanged = data.getActionStorage().redo();
 		
-		if(blocksChanged > 0) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.redo.complete", "" + blocksChanged);
-			chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-			player.func_145747_a(chatComponent);
+		if(param.length < 1)
+			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		else {
+			boolean didChange = data.getActionStorage().setRotation(parseInt(sender, param[0]));
+			
+			if(didChange) {
+				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.rotate.complete", param[0]);
+				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
+				player.func_145747_a(chatComponent);
+			}
+			else {
+				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.rotationnot90");
+				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
+				player.func_145747_a(chatComponent);
+			}
 		}
 	}
 

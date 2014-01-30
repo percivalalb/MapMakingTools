@@ -29,7 +29,7 @@ public class CommandUndo extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.command.build.undo.usage";
+		return "mapmakingtools.commands.build.undo.usage";
 	}
 
 	@Override

@@ -12,14 +12,16 @@ import net.minecraft.nbt.NBTTagList;
 public class ActionStorage {
 
 	public EntityPlayer player;
+	public PlayerData playerData;
 	private ArrayList<ArrayList<CachedBlock>> cachedUndo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<ArrayList<CachedBlock>> cachedRedo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<CachedBlock> cachedCopy = new ArrayList<CachedBlock>();
 	private int rotationValue = 0;
 	private int flippingValue = 0;
 	
-	public ActionStorage() {}
-	public ActionStorage(EntityPlayer player) {
+	public ActionStorage(PlayerData playerData) { this.playerData = playerData; }
+	public ActionStorage(PlayerData playerData, EntityPlayer player) {
+		this(playerData);
 		this.player = player;
 	}
 	
@@ -52,8 +54,33 @@ public class ActionStorage {
 		this.cachedUndo.add(list);
 	}
 	
+	public boolean setRotation(int rotation) {
+		if(rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270)
+			this.rotationValue = rotation;
+		return this.rotationValue == rotation;
+	}
+	
+	public boolean setFlipping(int flipping) {
+		if(flipping == 0 || flipping == 1 || flipping == 2)
+			this.flippingValue = flipping;
+		return this.flippingValue == flipping;
+	}
+	
 	public void paste() {
 		
+	}
+	
+	public int flip(ArrayList<CachedBlock> list) {
+		if(!this.playerData.hasSelectedPoints())
+			return 0;
+		
+		ArrayList<CachedBlock> newUndo = new ArrayList<CachedBlock>();
+		
+		for(CachedBlock cachedBlock : list)
+			newUndo.add(cachedBlock.setCachedBlockReletiveToFlipped(this.playerData, this.flippingValue));
+		
+		this.cachedUndo.add(newUndo);
+		return newUndo.size();
 	}
 	
 	public int undo() {
