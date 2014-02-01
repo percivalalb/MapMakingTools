@@ -4,11 +4,10 @@ import java.util.List;
 
 import cpw.mods.fml.common.FMLLog;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.IContainerFilter;
 import mapmakingtools.api.IFilterServer;
 import mapmakingtools.api.TargetType;
-import mapmakingtools.helper.ItemStackHelper;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.tools.filter.packet.PacketPhantomInfinity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -70,7 +69,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
         this.inventorySlots.add(slot);
         this.inventoryItemStacks.add((Object)null);
         if(slot instanceof IPhantomSlot)
-        	ChannelOutBoundHandler.sendPacketToClient(player, new PacketPhantomInfinity(slot.getSlotIndex(), ((IPhantomSlot)slot).isUnlimited()));
+        	MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), ((IPhantomSlot)slot).isUnlimited()), player);
         return slot;
     }
 	
@@ -154,7 +153,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
 				phantomSlot.setIsUnlimited(false);
-				ChannelOutBoundHandler.sendPacketToClient(player, new PacketPhantomInfinity(slot.getSlotIndex(), false));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
 			
 			if(stackSize < 1 && !phantomSlot.isUnlimited()) {
@@ -162,7 +161,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), true);
 				phantomSlot.setIsUnlimited(true);
-				ChannelOutBoundHandler.sendPacketToClient(player, new PacketPhantomInfinity(slot.getSlotIndex(), true));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), true), player);
 			}
 			slotStack.stackSize = stackSize;
 			if(stackSize < 1) {
@@ -170,7 +169,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
 				phantomSlot.setIsUnlimited(false);
-				ChannelOutBoundHandler.sendPacketToClient(player, new PacketPhantomInfinity(slot.getSlotIndex(), false));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
 		}
 

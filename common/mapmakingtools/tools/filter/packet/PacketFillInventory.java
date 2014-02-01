@@ -1,12 +1,15 @@
 package mapmakingtools.tools.filter.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
-import mapmakingtools.network.packet.MMTPacket;
+import mapmakingtools.network.packet.IPacket;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +22,7 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * @author ProPercivalalb
  */
-public class PacketFillInventory extends MMTPacket {
+public class PacketFillInventory extends IPacket {
 
 	public int x, y, z;
 	
@@ -31,17 +34,17 @@ public class PacketFillInventory extends MMTPacket {
 	}
 
 	@Override
-	public void read(DataInputStream data) throws IOException {
-		this.x = data.readInt();
-		this.y = data.readInt();
-		this.z = data.readInt();
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		this.x = bytes.readInt();
+		this.y = bytes.readInt();
+		this.z = bytes.readInt();
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(x);
-		dos.writeInt(y);
-		dos.writeInt(z);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		bytes.writeInt(x);
+		bytes.writeInt(y);
+		bytes.writeInt(z);
 	}
 
 	@Override

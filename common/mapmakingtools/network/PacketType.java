@@ -24,17 +24,17 @@ public enum PacketType {
 	MOB_ARMOR_REMOVE_INDEX(PacketMobArmorRemoveIndex.class),
 	MOB_ARMOR_ADD_INDEX(PacketMobArmorAddIndex.class);
 	
-	private Class<? extends MMTPacket> packetClass;
+	public Class<? extends IPacket> packetClass;
 	
-	PacketType(Class<? extends MMTPacket> packetClass) {
+	PacketType(Class<? extends IPacket> packetClass) {
 		this.packetClass = packetClass;
 	}
 	
-	public MMTPacket createInstance() throws Exception {
+	public IPacket createInstance() throws Exception {
 		return this.packetClass.newInstance();
 	}
 	
-	public static int getIdFromPacket(MMTPacket packet) {
+	public static int getIdFromPacket(IPacket packet) {
 		for(PacketType type : values()) {
 			if(type.packetClass.equals(packet.getClass()))
 				return type.ordinal();

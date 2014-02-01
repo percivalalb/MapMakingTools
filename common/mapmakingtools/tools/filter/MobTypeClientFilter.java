@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
@@ -16,7 +17,6 @@ import mapmakingtools.api.MobSpawnerType;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 
 /**
@@ -55,7 +55,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 			@Override
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.selected;
-				ChannelOutBoundHandler.sendPacketToServer(new PacketMobType(gui.getX(), gui.getY(), gui.getZ(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobType(gui.getX(), gui.getY(), gui.getZ(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
             	ClientHelper.mc.func_147108_a((GuiScreen)null);
         		ClientHelper.mc.setIngameFocus();
 			}

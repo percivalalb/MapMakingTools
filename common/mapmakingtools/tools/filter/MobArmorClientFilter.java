@@ -15,16 +15,15 @@ import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
-import mapmakingtools.tools.filter.packet.PacketMobType;
 import mapmakingtools.util.SpawnerUtil;
 
 /**
@@ -73,7 +72,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		if (button.field_146124_l) {
             switch (button.field_146127_k) {
                 case 0:
-                	ChannelOutBoundHandler.sendPacketToServer(new PacketMobArmor(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
+                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmor(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
                 	ClientHelper.mc.func_147108_a((GuiScreen)null);
             		ClientHelper.mc.setIngameFocus();
                     break;
@@ -104,7 +103,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public void updateButtonClicked(IGuiFilter gui) {
 		if(!showErrorIcon(gui))
-			ChannelOutBoundHandler.sendPacketToServer(new PacketMobArmorUpdate(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
+			MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorUpdate(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
 	}
 	
 	@Override

@@ -2,7 +2,7 @@ package mapmakingtools.tools;
 
 import java.util.Hashtable;
 
-import mapmakingtools.network.ChannelOutBoundHandler;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
 import net.minecraft.entity.player.EntityPlayer;
@@ -68,8 +68,8 @@ public class PlayerData {
 	}
 	
 	public void sendUpdateToClient() {
-		ChannelOutBoundHandler.sendPacketToClient(this.player, new PacketSetPoint1(this.getFirstPoint().getX(), this.getFirstPoint().getY(), this.getFirstPoint().getZ()));
-		ChannelOutBoundHandler.sendPacketToClient(this.player, new PacketSetPoint2(this.getSecondPoint().getX(), this.getSecondPoint().getY(), this.getSecondPoint().getZ()));
+		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(this.getFirstPoint().getX(), this.getFirstPoint().getY(), this.getFirstPoint().getZ()), this.player);
+		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(this.getSecondPoint().getX(), this.getSecondPoint().getY(), this.getSecondPoint().getZ()), this.player);
 	}
 	
 	public ActionStorage getActionStorage() {

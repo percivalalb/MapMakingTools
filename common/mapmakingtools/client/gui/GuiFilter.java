@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.common.FMLLog;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FilterManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IGuiFilter;
@@ -19,7 +20,6 @@ import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.network.packet.PacketSelectedFilter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -64,7 +64,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	filterCurrent = null;
         else {
         	int index = this.filterList.indexOf(filterCurrent);
-        	ChannelOutBoundHandler.sendPacketToServer(new PacketSelectedFilter(index));
+        	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketSelectedFilter(index));
 			this.getContainerFilter().setSelected(index);
         }
 	}
@@ -235,7 +235,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         		GuiTabSelect tab = (GuiTabSelect)(GuiButton)this.field_146292_n.get(i);
         		if(tab.filter == filterCurrent) {
         			int index = this.filterList.indexOf(filterCurrent);
-                	ChannelOutBoundHandler.sendPacketToServer(new PacketSelectedFilter(index));
+        			MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketSelectedFilter(index));
         			this.getContainerFilter().setSelected(index);
         			tab.isSelected = true;
         		}

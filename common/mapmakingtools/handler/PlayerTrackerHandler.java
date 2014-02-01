@@ -1,6 +1,5 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
 import mapmakingtools.tools.PlayerData;

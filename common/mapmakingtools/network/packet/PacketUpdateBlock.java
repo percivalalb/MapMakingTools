@@ -1,13 +1,16 @@
 package mapmakingtools.network.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.PacketHelper;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -16,7 +19,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class PacketUpdateBlock extends MMTPacket {
+public class PacketUpdateBlock extends IPacket {
 
 	public int x, y, z;
 	public NBTTagCompound tagCompound;
@@ -31,19 +34,19 @@ public class PacketUpdateBlock extends MMTPacket {
 	}
 	
 	@Override
-	public void read(DataInputStream dis) throws IOException {
-		this.x = dis.readInt();
-		this.y = dis.readInt();
-		this.z = dis.readInt();
-		this.tagCompound = PacketHelper.readNBTTagCompound(dis);
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		this.x = bytes.readInt();
+		this.y = bytes.readInt();
+		this.z = bytes.readInt();
+		this.tagCompound = PacketHelper.readNBTTagCompound(bytes);
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(this.x);
-		dos.writeInt(this.y);
-		dos.writeInt(this.z);
-		PacketHelper.writeNBTTagCompound(this.tagCompound, dos);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		bytes.writeInt(this.x);
+		bytes.writeInt(this.y);
+		bytes.writeInt(this.z);
+		PacketHelper.writeNBTTagCompound(this.tagCompound, bytes);
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public class PacketUpdateBlock extends MMTPacket {
 		
 		FakeWorldManager.putTileEntity(tileEntity, world, x, y, z, tagCompound);
 		
-		ChannelOutBoundHandler.sendPacketToServer(new PacketEditBlock(this.x, this.y, this.z));
+		MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketEditBlock(this.x, this.y, this.z));
 	}
 
 }

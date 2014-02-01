@@ -20,7 +20,7 @@ import mapmakingtools.handler.PlayerTrackerHandler;
 import mapmakingtools.handler.WorldOverlayHandler;
 import mapmakingtools.handler.WorldSaveHandler;
 import mapmakingtools.lib.Reference;
-import mapmakingtools.network.ChannelInBoundHandler;
+import mapmakingtools.network.NetworkManager;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.filter.*;
 
@@ -33,6 +33,8 @@ public class MapMakingTools {
 	@SidedProxy(clientSide = Reference.SP_CLIENT, serverSide = Reference.SP_SERVER)
     public static CommonProxy proxy;
 	
+	public static NetworkManager NETWORK_MANAGER;
+	
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	instance = this;
@@ -43,8 +45,8 @@ public class MapMakingTools {
     
     @EventHandler
     public void onInit(FMLInitializationEvent event) {
+    	NETWORK_MANAGER = new NetworkManager(Reference.CHANNEL_NAME);
     	NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-    	NetworkRegistry.INSTANCE.newChannel(Reference.CHANNEL_NAME, new ChannelInBoundHandler());
     	MinecraftForge.EVENT_BUS.register(new ActionHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldSaveHandler());
     	FMLCommonHandler.instance().bus().register(new PlayerTrackerHandler());

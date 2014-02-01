@@ -1,17 +1,21 @@
 package mapmakingtools.network.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.FMLLog;
 
+import net.minecraft.entity.player.EntityPlayer;
 import mapmakingtools.tools.ClientData;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSetPoint2 extends MMTPacket {
+public class PacketSetPoint2 extends IPacket {
 
 	public int x;
 	public int y;
@@ -25,21 +29,22 @@ public class PacketSetPoint2 extends MMTPacket {
 	}
 	
 	@Override
-	public void read(DataInputStream dis) throws IOException {
-		this.x = dis.readInt();
-		this.y = dis.readInt();
-		this.z = dis.readInt();
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes)  {
+		this.x = bytes.readInt();
+		this.y = bytes.readInt();
+		this.z = bytes.readInt();
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException{
-		dos.writeInt(this.x);
-		dos.writeInt(this.y);
-		dos.writeInt(this.z);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) {
+		bytes.writeInt(this.x);
+		bytes.writeInt(this.y);
+		bytes.writeInt(this.z);
 	}
 
 	@Override
 	public void execute(EntityPlayer player) {
+		FMLLog.info("Recive 2 , " + x + " " + y + " " + z);
 		ClientData.playerData.setSecondPoint(x, y, z);
 	}
 

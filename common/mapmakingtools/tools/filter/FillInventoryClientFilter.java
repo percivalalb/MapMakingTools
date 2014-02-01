@@ -11,12 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
 
 /**
@@ -60,7 +60,7 @@ public class FillInventoryClientFilter extends IFilterClient {
 		if (button.field_146124_l) {
             switch (button.field_146127_k) {
                 case 0:
-                	ChannelOutBoundHandler.sendPacketToServer(new PacketFillInventory(gui.getX(), gui.getY(), gui.getZ()));
+                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketFillInventory(gui.getX(), gui.getY(), gui.getZ()));
                 	ClientHelper.mc.func_147108_a((GuiScreen)null);
             		ClientHelper.mc.setIngameFocus();
                 	break;

@@ -1,12 +1,15 @@
 package mapmakingtools.network.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.PacketHelper;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +18,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class PacketUpdateEntity extends MMTPacket {
+public class PacketUpdateEntity extends IPacket {
 
 	public int entityId;
 	public NBTTagCompound tagCompound;
@@ -28,15 +31,15 @@ public class PacketUpdateEntity extends MMTPacket {
 	}
 	
 	@Override
-	public void read(DataInputStream dis) throws IOException {
-		this.entityId = dis.readInt();
-		this.tagCompound = PacketHelper.readNBTTagCompound(dis);
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		this.entityId = bytes.readInt();
+		this.tagCompound = PacketHelper.readNBTTagCompound(bytes);
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException{
-		dos.writeInt(this.entityId);
-		PacketHelper.writeNBTTagCompound(this.tagCompound, dos);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		bytes.writeInt(this.entityId);
+		PacketHelper.writeNBTTagCompound(this.tagCompound, bytes);
 	}
 
 	@Override
@@ -49,7 +52,7 @@ public class PacketUpdateEntity extends MMTPacket {
 		
 		entity.readFromNBT(this.tagCompound);
 		
-		ChannelOutBoundHandler.sendPacketToServer(new PacketEditEntity(entity));
+		MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketEditEntity(entity));
 	}
 
 }

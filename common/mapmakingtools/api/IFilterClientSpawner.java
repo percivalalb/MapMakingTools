@@ -5,11 +5,11 @@ import java.util.List;
 
 import cpw.mods.fml.common.FMLLog;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.client.gui.GuiMinecartIndexButton;
 import mapmakingtools.client.gui.GuiSmallButton;
 import mapmakingtools.client.gui.GuiTabSelect;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
 import mapmakingtools.tools.filter.packet.PacketMobArmorRemoveIndex;
@@ -85,7 +85,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				}
 				minecarts.remove(button.field_146127_k - 200);
 				this.addMinecartButtons(gui, topX, topY);
-				ChannelOutBoundHandler.sendPacketToServer(new PacketMobArmorRemoveIndex(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorRemoveIndex(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
 			}
 			
 		}
@@ -112,7 +112,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				minecarts.add(randomMinecart);
 				
 				this.addMinecartButtons(gui, topX, topY);
-				ChannelOutBoundHandler.sendPacketToServer(new PacketMobArmorAddIndex(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorAddIndex(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
 			}
 		}
 	}

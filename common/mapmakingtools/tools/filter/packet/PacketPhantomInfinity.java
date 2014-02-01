@@ -1,12 +1,15 @@
 package mapmakingtools.tools.filter.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.container.IUnlimitedInventory;
-import mapmakingtools.network.packet.MMTPacket;
+import mapmakingtools.network.packet.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -14,7 +17,7 @@ import net.minecraft.inventory.Slot;
 /**
  * @author ProPercivalalb
  */
-public class PacketPhantomInfinity extends MMTPacket {
+public class PacketPhantomInfinity extends IPacket {
 
 	public int slotIndex;
 	public boolean isUnlimited;
@@ -26,15 +29,15 @@ public class PacketPhantomInfinity extends MMTPacket {
 	}
 
 	@Override
-	public void read(DataInputStream dis) throws IOException {
-		this.slotIndex = dis.readInt();
-		this.isUnlimited = dis.readBoolean();
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes)  {
+		this.slotIndex = bytes.readInt();
+		this.isUnlimited = bytes.readBoolean();
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(slotIndex);
-		dos.writeBoolean(isUnlimited);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		bytes.writeInt(slotIndex);
+		bytes.writeBoolean(isUnlimited);
 	}
 
 	@Override

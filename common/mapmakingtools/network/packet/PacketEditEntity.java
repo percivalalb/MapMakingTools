@@ -1,5 +1,8 @@
 package mapmakingtools.network.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author ProPercivalalb
  */
-public class PacketEditEntity extends MMTPacket {
+public class PacketEditEntity extends IPacket {
 
 	public int entityId;
 	
@@ -22,13 +25,13 @@ public class PacketEditEntity extends MMTPacket {
 	}
 	
 	@Override
-	public void read(DataInputStream dis) throws IOException {
-		this.entityId = dis.readInt();
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes) {
+		this.entityId = bytes.readInt();
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(this.entityId);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes)  {
+		bytes.writeInt(this.entityId);
 	}
 
 	@Override

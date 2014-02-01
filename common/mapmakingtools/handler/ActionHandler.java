@@ -1,8 +1,8 @@
 package mapmakingtools.handler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.item.ItemEdit;
-import mapmakingtools.network.ChannelOutBoundHandler;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
 import mapmakingtools.network.packet.PacketTest;
@@ -54,7 +54,7 @@ public class ActionHandler {
 					z += (player.isSneaking() ? Facing.offsetsZForSide[side] : 0);
 					
 					if(playerData.setFirstPoint(x, y, z)) {
-						ChannelOutBoundHandler.sendPacketToClient(player, new PacketSetPoint1(x, y, z));
+						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(x, y, z), player);
 						if(playerData.hasSelectedPoints()) {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
 							chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
@@ -83,7 +83,7 @@ public class ActionHandler {
 					z += (player.isSneaking() ? Facing.offsetsZForSide[side] : 0);
 					
 					if(playerData.setSecondPoint(x, y, z)) {
-						ChannelOutBoundHandler.sendPacketToClient(player, new PacketSetPoint2(x, y, z));
+						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(x, y, z), player);
 						if(playerData.hasSelectedPoints()) {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
 							chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
@@ -104,7 +104,7 @@ public class ActionHandler {
 							SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).func_145881_a());
 						
 						
-						ChannelOutBoundHandler.sendPacketToClient(player, new PacketUpdateBlock(tileEntity, x, y, z));
+						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketUpdateBlock(tileEntity, x, y, z), player);
 						event.setCanceled(true);
 					}
 				}
@@ -128,7 +128,7 @@ public class ActionHandler {
 		
 		if(ItemEdit.isAxe(item) && ItemEdit.isWrench(item)) {
 			if(!world.isRemote) {
-				ChannelOutBoundHandler.sendPacketToClient(player, new PacketUpdateEntity(entity));
+				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketUpdateEntity(entity), player);
 				event.setCanceled(true);
 			}
 		}

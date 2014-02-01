@@ -1,5 +1,8 @@
 package mapmakingtools.network.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author ProPercivalalb
  */
-public class PacketSelectedFilter extends MMTPacket {
+public class PacketSelectedFilter extends IPacket {
 
 	public int selected;
 	
@@ -20,13 +23,13 @@ public class PacketSelectedFilter extends MMTPacket {
 	}
 
 	@Override
-	public void read(DataInputStream dis) throws IOException {
-		this.selected = dis.readInt();
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes)  {
+		this.selected = bytes.readInt();
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(selected);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) {
+		bytes.writeInt(selected);
 	}
 
 	@Override

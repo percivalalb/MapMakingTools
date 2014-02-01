@@ -1,5 +1,8 @@
 package mapmakingtools.tools.filter.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,7 +10,7 @@ import java.util.List;
 
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
-import mapmakingtools.network.packet.MMTPacket;
+import mapmakingtools.network.packet.IPacket;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
@@ -27,7 +30,7 @@ import net.minecraft.util.WeightedRandom;
 /**
  * @author ProPercivalalb
  */
-public class PacketMobArmorAddIndex extends MMTPacket {
+public class PacketMobArmorAddIndex extends IPacket {
 
 	public int x, y, z;
 	public int minecartIndex;
@@ -41,19 +44,19 @@ public class PacketMobArmorAddIndex extends MMTPacket {
 	}
 
 	@Override
-	public void read(DataInputStream data) throws IOException {
-		this.x = data.readInt();
-		this.y = data.readInt();
-		this.z = data.readInt();
-		this.minecartIndex = data.readInt();
+	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		this.x = bytes.readInt();
+		this.y = bytes.readInt();
+		this.z = bytes.readInt();
+		this.minecartIndex = bytes.readInt();
 	}
 
 	@Override
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(x);
-		dos.writeInt(y);
-		dos.writeInt(z);
-		dos.writeInt(minecartIndex);
+	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+		bytes.writeInt(x);
+		bytes.writeInt(y);
+		bytes.writeInt(z);
+		bytes.writeInt(minecartIndex);
 	}
 
 	@Override
