@@ -53,7 +53,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 		for(WeightedRandomMinecart randomMinecart : minecarts) {
 			GuiMinecartIndexButton button = new GuiMinecartIndexButton(200 + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
 			if(i != minecartIndex)
-				button.field_146124_l = false;
+				button.enabled = false;
 			minecartButtons.add(button);
 			gui.getButtonList().add(button);
 			++i;
@@ -71,8 +71,8 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 		if(mouseButton == 2) {
 			GuiButton button = null;
 			for(GuiButton tempButton : gui.getButtonList()) {
-				if(tempButton.field_146127_k >= 200 && tempButton.field_146127_k <= 200 + minecartsCount) {
-					if(!tempButton.func_146116_c(ClientHelper.mc, xMouse, yMouse))
+				if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
+					if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
 						continue;
 					if(minecarts.size() <= 1)
 						break;
@@ -83,7 +83,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				for(GuiButton tempButton2 : this.minecartButtons) {
 					gui.getButtonList().remove(tempButton2);
 				}
-				minecarts.remove(button.field_146127_k - 200);
+				minecarts.remove(button.id - 200);
 				this.addMinecartButtons(gui, topX, topY);
 				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorRemoveIndex(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
 			}
@@ -92,8 +92,8 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 		else if(mouseButton == 1) {
 			GuiButton button = null;
 			for(GuiButton tempButton : gui.getButtonList()) {
-				if(tempButton.field_146127_k >= 200 && tempButton.field_146127_k <= 200 + minecartsCount) {
-					if(!tempButton.func_146116_c(ClientHelper.mc, xMouse, yMouse))
+				if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
+					if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
 						continue;
 					if(minecarts.size() >= 17)
 						break;
@@ -127,11 +127,11 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.func_145881_a());
 		
 		for(GuiButton tempButton : gui.getButtonList()) {
-			if(tempButton.field_146127_k >= 200 && tempButton.field_146127_k <= 200 + minecartsCount) {
-				if(!tempButton.func_146116_c(ClientHelper.mc, xMouse, yMouse))
+			if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
+				if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
 					continue;
 				List<String> list = new ArrayList<String>();
-    			list.add(minecarts.get(tempButton.field_146127_k - 200).minecartName);
+    			list.add(minecarts.get(tempButton.id - 200).entityTypeName);
 
     			gui.drawHoveringText(list, xMouse, yMouse);
 			}
@@ -140,14 +140,14 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 	
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
-		if(button.field_146127_k >= 200 && button.field_146127_k <= 200 + minecartsCount) {
-			minecartIndex = button.field_146127_k - 200;
+		if(button.id >= 200 && button.id <= 200 + minecartsCount) {
+			minecartIndex = button.id - 200;
 			for(GuiButton tempButton : gui.getButtonList()) {
-				if(tempButton.field_146127_k >= 200 && tempButton.field_146127_k <= 200 + minecartsCount) {
-					if(tempButton.field_146127_k - 200 != minecartIndex)
-						tempButton.field_146124_l = false;
+				if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
+					if(tempButton.id - 200 != minecartIndex)
+						tempButton.enabled = false;
 					else {
-						tempButton.field_146124_l = true;
+						tempButton.enabled = true;
 						this.onMinecartIndexChange(gui);
 					}
 				}

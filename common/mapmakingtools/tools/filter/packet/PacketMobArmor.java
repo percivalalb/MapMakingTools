@@ -58,7 +58,7 @@ public class PacketMobArmor extends IPacket {
 	public void execute(EntityPlayer player) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.func_147438_o(x, y, z);
+		TileEntity tile = player.worldObj.getTileEntity(x, y, z);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -71,8 +71,8 @@ public class PacketMobArmor extends IPacket {
 					SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 					
 				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.complete");
-					chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-					player.func_145747_a(chatComponent);
+					chatComponent.getChatStyle().setItalic(true);
+					player.addChatMessage(chatComponent);
 				}
 			}
 		}

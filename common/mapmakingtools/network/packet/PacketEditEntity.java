@@ -21,7 +21,7 @@ public class PacketEditEntity extends IPacket {
 	
 	public PacketEditEntity() {}
 	public PacketEditEntity(Entity entity) {
-		this.entityId = entity.func_145782_y();
+		this.entityId = entity.getEntityId();
 	}
 	
 	@Override

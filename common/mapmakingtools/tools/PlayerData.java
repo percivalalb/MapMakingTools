@@ -107,13 +107,13 @@ public class PlayerData {
 		NBTTagList list2 = (NBTTagList)tag.getTag("secondPoint");
 		
 		for(int i = 0; i < list1.tagCount(); ++i) {
-			NBTTagCompound tag1 = list1.func_150305_b(i);
+			NBTTagCompound tag1 = list1.getCompoundTagAt(i);
 			int dim = tag1.getInteger("dim");
 			pos1.put(dim, new SelectedPoint(-1).readFromNBT(tag1.getCompoundTag("point")));
 		}
 		
 		for(int i = 0; i < list2.tagCount(); ++i) {
-			NBTTagCompound tag2 = list2.func_150305_b(i);
+			NBTTagCompound tag2 = list2.getCompoundTagAt(i);
 			int dim = tag2.getInteger("dim");
 			pos2.put(dim, new SelectedPoint(-1).readFromNBT(tag2.getCompoundTag("point")));
 		}

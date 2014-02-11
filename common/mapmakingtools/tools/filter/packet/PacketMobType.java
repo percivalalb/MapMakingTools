@@ -62,15 +62,15 @@ public class PacketMobType extends IPacket {
 	public void execute(EntityPlayer player) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.func_147438_o(x, y, z);
+		TileEntity tile = player.worldObj.getTileEntity(x, y, z);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			SpawnerUtil.setMobId(spawner.func_145881_a(), this.mobId, this.minecartIndex);
 			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobType.complete", this.mobId);
-			chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-			player.func_145747_a(chatComponent);
+			chatComponent.getChatStyle().setItalic(true);
+			player.addChatMessage(chatComponent);
 		}
 	}
 

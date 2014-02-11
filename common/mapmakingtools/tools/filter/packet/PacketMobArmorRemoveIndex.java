@@ -62,7 +62,7 @@ public class PacketMobArmorRemoveIndex extends IPacket {
 	public void execute(EntityPlayer player) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.func_147438_o(x, y, z);
+		TileEntity tile = player.worldObj.getTileEntity(x, y, z);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -72,13 +72,13 @@ public class PacketMobArmorRemoveIndex extends IPacket {
 				List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.func_145881_a());
 				WeightedRandomMinecart minecart = minecarts.get(this.minecartIndex);
 				minecarts.remove(this.minecartIndex);
-				if(spawner.func_145881_a().getRandomMinecart() == minecart)
-					spawner.func_145881_a().setRandomMinecart((MobSpawnerBaseLogic.WeightedRandomMinecart)WeightedRandom.getRandomItem(spawner.func_145881_a().getSpawnerWorld().rand, minecarts));
+				if(spawner.func_145881_a().getRandomEntity() == minecart)
+					spawner.func_145881_a().setRandomEntity((MobSpawnerBaseLogic.WeightedRandomMinecart)WeightedRandom.getRandomItem(spawner.func_145881_a().getSpawnerWorld().rand, minecarts));
 				SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 					
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.removeIndex");
-				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-				player.func_145747_a(chatComponent);
+				chatComponent.getChatStyle().setItalic(true);
+				player.addChatMessage(chatComponent);
 			}
 		}
 	}

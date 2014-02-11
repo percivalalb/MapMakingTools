@@ -57,11 +57,10 @@ public class FillInventoryClientFilter extends IFilterClient {
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
-		if (button.field_146124_l) {
-            switch (button.field_146127_k) {
+		if (button.enabled) {
+            switch (button.id) {
                 case 0:
                 	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketFillInventory(gui.getX(), gui.getY(), gui.getZ()));
-                	ClientHelper.mc.func_147108_a((GuiScreen)null);
             		ClientHelper.mc.setIngameFocus();
                 	break;
             }

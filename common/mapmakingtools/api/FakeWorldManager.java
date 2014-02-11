@@ -20,7 +20,7 @@ public class FakeWorldManager {
 			List<Integer> key = Arrays.asList(world.provider.dimensionId, x, y, z);
 			
 			TileEntity newTileEntity = tileEntity.getClass().newInstance();
-			newTileEntity.func_145839_a(dataRecived);
+			newTileEntity.readFromNBT(dataRecived);
 			fakeTileEntities.put(key, newTileEntity);
 		}
 		catch(Exception e) {

@@ -63,7 +63,7 @@ public class PacketMobArmorAddIndex extends IPacket {
 	public void execute(EntityPlayer player) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.func_147438_o(x, y, z);
+		TileEntity tile = player.worldObj.getTileEntity(x, y, z);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -77,12 +77,12 @@ public class PacketMobArmorAddIndex extends IPacket {
 				data.setTag("Properties", new NBTTagCompound());
 				WeightedRandomMinecart randomMinecart = spawner.func_145881_a().new WeightedRandomMinecart(data);
 				minecarts.add(randomMinecart);
-				spawner.func_145881_a().setRandomMinecart(randomMinecart);
+				spawner.func_145881_a().setRandomEntity(randomMinecart);
 				SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 					
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.addIndex");
-				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-				player.func_145747_a(chatComponent);
+				chatComponent.getChatStyle().setItalic(true);
+				player.addChatMessage(chatComponent);
 			}
 		}
 	}

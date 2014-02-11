@@ -30,7 +30,7 @@ public class PacketUpdateBlock extends IPacket {
 		this.y = y;
 		this.z = z;
 		this.tagCompound = new NBTTagCompound();
-		tileEntity.func_145841_b(this.tagCompound);
+		tileEntity.writeToNBT(this.tagCompound);
 	}
 	
 	@Override
@@ -52,12 +52,12 @@ public class PacketUpdateBlock extends IPacket {
 	@Override
 	public void execute(EntityPlayer player) {
 		World world = ClientHelper.mc.theWorld;
-		TileEntity tileEntity = world.func_147438_o(this.x, this.y, this.z);
+		TileEntity tileEntity = world.getTileEntity(this.x, this.y, this.z);
 		
 		if(tileEntity == null)
 			return;
 		
-		FakeWorldManager.putTileEntity(tileEntity, world, x, y, z, tagCompound);
+		FakeWorldManager.putTileEntity(tileEntity, world, this.x, this.y, this.z, this.tagCompound);
 		
 		MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketEditBlock(this.x, this.y, this.z));
 	}

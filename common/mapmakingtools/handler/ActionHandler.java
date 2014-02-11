@@ -57,13 +57,13 @@ public class ActionHandler {
 						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(x, y, z), player);
 						if(playerData.hasSelectedPoints()) {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
-							chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
-							player.func_145747_a(chatComponent);
+							chatComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
+							player.addChatMessage(chatComponent);
 						}
 						else {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
-							chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.RED);
-							player.func_145747_a(chatComponent);
+							chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+							player.addChatMessage(chatComponent);
 						}
 						event.setCanceled(true);
 					}
@@ -86,19 +86,19 @@ public class ActionHandler {
 						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(x, y, z), player);
 						if(playerData.hasSelectedPoints()) {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
-							chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
-							player.func_145747_a(chatComponent);
+							chatComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
+							player.addChatMessage(chatComponent);
 						}
 						else {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
-							chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.RED);
-							player.func_145747_a(chatComponent);
+							chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+							player.addChatMessage(chatComponent);
 						}
 						event.setCanceled(true);
 					}
 				}
 				else if(ItemEdit.isAxe(item) && ItemEdit.isWrench(item)) {
-					TileEntity tileEntity = world.func_147438_o(x, y, z);
+					TileEntity tileEntity = world.getTileEntity(x, y, z);
 					if(tileEntity != null) {
 						if(tileEntity instanceof TileEntityMobSpawner) 
 							SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).func_145881_a());

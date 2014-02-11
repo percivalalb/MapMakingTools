@@ -39,7 +39,7 @@ public class FillInventoryServerFilter extends IFilterServer {
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity tileEntity = world.func_147438_o(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if(tileEntity != null && tileEntity instanceof IInventory)
 			return true;
 		return super.isApplicable(player, world, x, y, z);
@@ -54,7 +54,7 @@ public class FillInventoryServerFilter extends IFilterServer {
 	public void readFromNBT(NBTTagCompound tag) {
 		NBTTagList list = (NBTTagList)tag.getTag("playerData");
 		for(int i = 0; i < list.tagCount(); ++i) {
-			NBTTagCompound data = list.func_150305_b(i);
+			NBTTagCompound data = list.getCompoundTagAt(i);
 			String username = data.getString("username");
 			boolean isUnlimited = data.getBoolean("isUnlimited");
 			if(data.hasKey("item")) {
@@ -161,23 +161,11 @@ public class FillInventoryServerFilter extends IFilterServer {
 		}
 
 		@Override
-		public void onInventoryChanged() {
-			
-		}
+		public void markDirty() {}
 
 		@Override
 		public boolean isUseableByPlayer(EntityPlayer entityplayer) {
 			return true;
-		}
-
-		@Override
-		public void openChest() {
-			
-		}
-
-		@Override
-		public void closeChest() {
-			
 		}
 
 		@Override
@@ -186,12 +174,18 @@ public class FillInventoryServerFilter extends IFilterServer {
 		}
 
 		@Override
-		public String func_145825_b() {
+		public void openInventory() {}
+
+		@Override
+		public void closeInventory() {}
+		
+		@Override
+		public String getInventoryName() {
 			return "Fill Inventory";
 		}
 
 		@Override
-		public boolean func_145818_k_() {
+		public boolean hasCustomInventoryName() {
 			return true;
 		}
 

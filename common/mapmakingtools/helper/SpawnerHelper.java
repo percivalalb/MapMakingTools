@@ -49,7 +49,7 @@ public class SpawnerHelper {
 	}
 	
 	public static Entity getNewEntityFromSpawner(World world, int x, int y, int z) {
-		TileEntity tile = world.func_147438_o(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		MobSpawnerBaseLogic mobSpawnerLogic = getSpawnerLogic(tile);
 		if(mobSpawnerLogic != null) {
 			return mobSpawnerLogic.func_98281_h();
@@ -158,7 +158,7 @@ public class SpawnerHelper {
 		TileEntityMobSpawner newSpawner = null;
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-			spawner.func_145831_w().func_147455_a(spawner.field_145851_c, spawner.field_145848_d, spawner.field_145849_e, newSpawner = new TileEntityMobSpawner());
+			spawner.func_145831_w().setTileEntity(spawner.field_145851_c, spawner.field_145848_d, spawner.field_145849_e, newSpawner = new TileEntityMobSpawner());
 			mobSpawnerLogic = getSpawnerLogic(newSpawner);
 		}
 		if(mobSpawnerLogic != null) { 

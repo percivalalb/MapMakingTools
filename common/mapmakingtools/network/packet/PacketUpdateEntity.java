@@ -25,7 +25,7 @@ public class PacketUpdateEntity extends IPacket {
 	
 	public PacketUpdateEntity() {}
 	public PacketUpdateEntity(Entity entity) {
-		this.entityId = entity.func_145782_y();
+		this.entityId = entity.getEntityId();
 		this.tagCompound = new NBTTagCompound();
 		entity.writeToNBT(this.tagCompound);
 	}

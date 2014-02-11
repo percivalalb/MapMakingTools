@@ -88,7 +88,7 @@ public class WorldData {
 			//Read Data
 			NBTTagList list = (NBTTagList)data.getTag("playerPoints");
 			for(int i = 0; i < list.tagCount(); ++i) {
-				NBTTagCompound tag = list.func_150305_b(i);
+				NBTTagCompound tag = list.getCompoundTagAt(i);
 				PLAYER_POINTS.put(tag.getString("username"), new PlayerData().readFromNBT(tag));
 			}
 			

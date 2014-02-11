@@ -115,7 +115,7 @@ public class PacketHelper {
         if (short1 >= 0) {
             byte b0 = bytes.readByte();
             short short2 = bytes.readShort();
-            itemstack = new ItemStack(Item.func_150899_d(short1), b0, short2);
+            itemstack = new ItemStack(Item.getItemById(short1), b0, short2);
             itemstack.stackTagCompound = readNBTTagCompound(bytes);
         }
 
@@ -130,7 +130,7 @@ public class PacketHelper {
         	bytes.writeShort(-1);
         }
         else {
-        	bytes.writeShort(Item.func_150891_b(item.getItem()));
+        	bytes.writeShort(Item.getIdFromItem(item.getItem()));
         	bytes.writeByte(item.stackSize);
         	bytes.writeShort(item.getItemDamage());
             NBTTagCompound nbttagcompound = null;

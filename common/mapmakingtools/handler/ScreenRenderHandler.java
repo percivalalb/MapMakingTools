@@ -52,7 +52,7 @@ public class ScreenRenderHandler {
     			
 	    		if(ClientHelper.mc.currentScreen instanceof GuiChat) {
 	    			GuiChat chat = (GuiChat)ClientHelper.mc.currentScreen;
-	    			int chatPostion = ReflectionHelper.getField(GuiChat.class, GuiTextField.class, chat, 8).func_146198_h();
+	    			int chatPostion = ReflectionHelper.getField(GuiChat.class, GuiTextField.class, chat, 8).getCursorPosition();
 	    			boolean isHovering = false;
 	    			
 	    			ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.mc.gameSettings, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);

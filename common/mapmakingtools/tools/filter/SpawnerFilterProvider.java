@@ -23,7 +23,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 
 	@Override
 	public void addFilterClientToBlockList(EntityPlayer player, World world, int x, int y, int z, List<IFilterClient> filterList) {
-		TileEntity tile = world.func_147438_o(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
@@ -34,7 +34,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 
 	@Override
 	public void addFilterServerToBlockList(EntityPlayer player, World world, int x, int y, int z, List<IFilterServer> filterList) {
-		TileEntity tile = world.func_147438_o(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;

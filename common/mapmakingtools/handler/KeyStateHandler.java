@@ -32,7 +32,7 @@ public class KeyStateHandler {
     }
     
     private void keyTick(boolean tickEnd) {
-    	int keyCode = keyItemEditor.func_151463_i();
+    	int keyCode = keyItemEditor.getKeyCode();
         boolean state = (keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode));
         if (state != keyDown) {
             if (state && !tickEnd) {
@@ -45,11 +45,11 @@ public class KeyStateHandler {
                     final int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;
                     final int yMouse = j - Mouse.getY() * j / ClientHelper.mc.displayHeight - 1;
             		
-                    //int xMouse = Mouse.getX() * container.field_146295_m / ClientHelper.mc.displayWidth;
-                    //int yMouse = container.field_146294_l - Mouse.getY() * container.field_146294_l / ClientHelper.mc.displayHeight - 1;
+                    //int xMouse = Mouse.getX() * container.height / ClientHelper.mc.displayWidth;
+                    //int yMouse = container.width - Mouse.getY() * container.width / ClientHelper.mc.displayHeight - 1;
                 	FMLLog.info("" + xMouse + " " + yMouse);
-            		for (int j1 = 0; j1 < container.field_147002_h.inventorySlots.size(); ++j1) {
-                        Slot slot = (Slot)container.field_147002_h.inventorySlots.get(j1);
+            		for (int j1 = 0; j1 < container.inventorySlots.inventorySlots.size(); ++j1) {
+                        Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
                         
                         if (slot.inventory instanceof InventoryPlayer && isPointInRegion(container, slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, xMouse, yMouse) && slot.func_111238_b()) {
                         	if(slot.getHasStack()) {

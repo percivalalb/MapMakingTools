@@ -67,7 +67,7 @@ public class ItemEdit extends ItemAxe {
     
     public static boolean isAxe(ItemStack stack) {
     	if(stack != null)
-    		return Item.func_150891_b(stack.getItem()) == Item.func_150891_b(ModItems.editItem);
+    		return Item.getIdFromItem(stack.getItem()) == Item.getIdFromItem(ModItems.editItem);
     	return false;
     }
     
@@ -77,7 +77,7 @@ public class ItemEdit extends ItemAxe {
     }
     
     @Override
-    public void func_150895_a(Item item, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List par3List) {
     	if(par2CreativeTabs == this.getCreativeTabs()[0])
     		par3List.add(new ItemStack(item, 1, 0));
     	
@@ -111,7 +111,7 @@ public class ItemEdit extends ItemAxe {
     
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-    	if((PlayerAccess.canEdit(player) && Constants.QUICK_BUILD_ITEM == Item.func_150891_b(Items.wooden_axe)) && itemstack != null && !ItemEdit.isWrench(itemstack)) {
+    	if((PlayerAccess.canEdit(player) && Constants.QUICK_BUILD_ITEM == Item.getIdFromItem(Items.wooden_axe)) && itemstack != null && !ItemEdit.isWrench(itemstack)) {
     		return true;
     	}
         return false;

@@ -28,26 +28,26 @@ public class CachedBlock {
 		this.y = y;
 		this.z = z;
 		this.orginalWorld = world;
-		this.block = world.func_147439_a(x, y, z);
+		this.block = world.getBlock(x, y, z);
 		this.meta = world.getBlockMetadata(x, y, z);
-		TileEntity tileEntity = world.func_147438_o(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if(tileEntity != null) {
 			NBTTagCompound tagCompound = new NBTTagCompound();
-			tileEntity.func_145841_b(tagCompound);
-			this.tileEntity = TileEntity.func_145827_c(tagCompound);
+			tileEntity.writeToNBT(tagCompound);
+			this.tileEntity = TileEntity.createAndLoadEntity(tagCompound);
 		}
 	}
 	
 	public void clearTileEntity(World world, int x, int y, int z) {
-		world.func_147475_p(x, y, z);
+		world.removeTileEntity(x, y, z);
 	}
 	
 	public CachedBlock setCachedBlock() { 
 		CachedBlock replacementCache = new CachedBlock(this);
 		this.clearTileEntity(this.orginalWorld, this.x, this.y, this.z);
-		this.orginalWorld.func_147465_d(this.x, this.y, this.z, this.block, this.meta, 2);
+		this.orginalWorld.setBlock(this.x, this.y, this.z, this.block, this.meta, 2);
 		if(this.tileEntity != null)
-			this.orginalWorld.func_147455_a(this.x, this.y, this.z, this.tileEntity);
+			this.orginalWorld.setTileEntity(this.x, this.y, this.z, this.tileEntity);
 		return replacementCache;
 	}
 	
@@ -63,9 +63,9 @@ public class CachedBlock {
 	
 		CachedBlock replacementCache = new CachedBlock(this.orginalWorld, newX, newY, newZ);
 		this.clearTileEntity(this.orginalWorld, newX, newY, newZ);
-		this.orginalWorld.func_147465_d(newX, newY, newZ, this.block, this.meta, 2);
+		this.orginalWorld.setBlock(newX, newY, newZ, this.block, this.meta, 2);
 		if(this.tileEntity != null)
-			this.orginalWorld.func_147455_a(newX, newY, newZ, this.tileEntity);
+			this.orginalWorld.setTileEntity(newX, newY, newZ, this.tileEntity);
 		//FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
 
 		return replacementCache;
@@ -76,11 +76,11 @@ public class CachedBlock {
 		tag.setInteger("x", this.x);
 		tag.setInteger("y", this.y);
 		tag.setInteger("z", this.z);
-		tag.setString("block", Block.field_149771_c.func_148750_c(this.block));
+		tag.setString("block", Block.blockRegistry.getNameForObject(this.block));
 		tag.setInteger("meta", this.meta);
 		if(this.tileEntity != null) {
 			NBTTagCompound tileEntityData = new NBTTagCompound();
-			this.tileEntity.func_145841_b(tileEntityData);
+			this.tileEntity.writeToNBT(tileEntityData);
 			tag.setTag("tileEntity", tileEntityData);
 		}
 		return tag;
@@ -91,10 +91,10 @@ public class CachedBlock {
 		this.x = tag.getInteger("x");
 		this.y = tag.getInteger("y");
 		this.z = tag.getInteger("z");
-		this.block = Block.func_149684_b(tag.getString("block"));
+		this.block = Block.getBlockFromName(tag.getString("block"));
 		this.meta = tag.getInteger("meta");
 		if(tag.hasKey("tileEntity"))
-			this.tileEntity = TileEntity.func_145827_c(tag.getCompoundTag("tileEntity"));
+			this.tileEntity = TileEntity.createAndLoadEntity(tag.getCompoundTag("tileEntity"));
 		return this;
 	}
 	

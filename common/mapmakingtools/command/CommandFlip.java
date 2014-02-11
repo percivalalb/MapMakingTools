@@ -81,8 +81,8 @@ public class CommandFlip extends CommandBase {
 			
 			if(blocksChanged > 0) {
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.flip.complete", "" + blocksChanged);
-				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-				player.func_145747_a(chatComponent);
+				chatComponent.getChatStyle().setItalic(true);
+				player.addChatMessage(chatComponent);
 			}
 		}
 	}

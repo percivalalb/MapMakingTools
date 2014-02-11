@@ -163,7 +163,7 @@ public class ActionStorage {
 			NBTTagList list1 = (NBTTagList)tag.getTag("cachedUndo");
 			for(int i = 0; i < list1.tagCount(); ++i) {
 				ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
-				NBTTagCompound tag1 = list1.func_150305_b(i);
+				NBTTagCompound tag1 = list1.getCompoundTagAt(i);
 				for(int j = 0; j < tag1.getInteger("count"); ++j)
 					list.add(new CachedBlock(tag1.getCompoundTag("" + j)));
 				this.cachedUndo.add(list);
@@ -174,7 +174,7 @@ public class ActionStorage {
 			NBTTagList list1 = (NBTTagList)tag.getTag("cachedRedo");
 			for(int i = 0; i < list1.tagCount(); ++i) {
 				ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
-				NBTTagCompound tag1 = list1.func_150305_b(i);
+				NBTTagCompound tag1 = list1.getCompoundTagAt(i);
 				for(int j = 0; j < tag1.getInteger("count"); ++j)
 					list.add(new CachedBlock(tag1.getCompoundTag("" + j)));
 				this.cachedRedo.add(list);

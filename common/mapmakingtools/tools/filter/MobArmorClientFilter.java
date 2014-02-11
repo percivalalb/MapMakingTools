@@ -69,11 +69,10 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
-		if (button.field_146124_l) {
-            switch (button.field_146127_k) {
+		if (button.enabled) {
+            switch (button.id) {
                 case 0:
                 	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmor(gui.getX(), gui.getY(), gui.getZ(), IFilterClientSpawner.minecartIndex));
-                	ClientHelper.mc.func_147108_a((GuiScreen)null);
             		ClientHelper.mc.setIngameFocus();
                     break;
             }
@@ -90,9 +89,9 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public void onMinecartIndexChange(IGuiFilter gui) {
 		if(this.showErrorIcon(gui))
-			this.btnOk.field_146124_l = false;
+			this.btnOk.enabled = false;
 		else
-			this.btnOk.field_146124_l = true;
+			this.btnOk.enabled = true;
 	}
 	
 	@Override
@@ -115,7 +114,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		
 		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.func_145881_a());
 		WeightedRandomMinecart randomMinecart = minecarts.get(minecartIndex);
-		String mobId = randomMinecart.minecartName;
+		String mobId = randomMinecart.entityTypeName;
 		if(mobId.equals("Zombie") || mobId.equals("PigZombie") || mobId.equals("Skeleton")) {
 			return false;
 		}

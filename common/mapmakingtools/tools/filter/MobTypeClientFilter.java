@@ -56,7 +56,6 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.selected;
 				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobType(gui.getX(), gui.getY(), gui.getZ(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
-            	ClientHelper.mc.func_147108_a((GuiScreen)null);
         		ClientHelper.mc.setIngameFocus();
 			}
         	
@@ -90,11 +89,10 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
-		if (button.field_146124_l) {
-            switch (button.field_146127_k) {
+		if (button.enabled) {
+            switch (button.id) {
                 case 0:
                 	//PacketTypeHandler.populatePacketAndSendToServer(new PacketMobArmor(gui.x, gui.y, gui.z));
-                	ClientHelper.mc.func_147108_a((GuiScreen)null);
             		ClientHelper.mc.setIngameFocus();
                     break;
             }

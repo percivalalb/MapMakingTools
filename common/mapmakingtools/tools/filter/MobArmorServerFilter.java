@@ -114,12 +114,12 @@ public class MobArmorServerFilter extends IFilterServer {
 	public void readFromNBT(NBTTagCompound tag) {
 		NBTTagList list = (NBTTagList)tag.getTag("playerData");
 		for(int i = 0; i < list.tagCount(); ++i) {
-			NBTTagCompound data = list.func_150305_b(i);
+			NBTTagCompound data = list.getCompoundTagAt(i);
 			String username = data.getString("username");
 			NBTTagList nbttaglist = (NBTTagList)data.getTag("items");
 
 	        for (int k = 0; k < nbttaglist.tagCount(); ++k) {
-	            NBTTagCompound nbttagcompound1 = nbttaglist.func_150305_b(k);
+	            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(k);
 
 	            this.getInventory(username).contents[k] = ItemStack.loadItemStackFromNBT(nbttagcompound1.getCompoundTag("item"));
 	            this.getInventory(username).umlimited[k] = nbttagcompound1.getBoolean("isUnlimited");
@@ -232,7 +232,7 @@ public class MobArmorServerFilter extends IFilterServer {
 		}
 
 		@Override
-		public void onInventoryChanged() {
+		public void markDirty() {
 			
 		}
 
@@ -242,14 +242,10 @@ public class MobArmorServerFilter extends IFilterServer {
 		}
 
 		@Override
-		public void openChest() {
-			
-		}
+		public void openInventory() {}
 
 		@Override
-		public void closeChest() {
-			
-		}
+		public void closeInventory() {}
 
 		@Override
 		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
@@ -257,12 +253,12 @@ public class MobArmorServerFilter extends IFilterServer {
 		}
 
 		@Override
-		public String func_145825_b() {
+		public String getInventoryName() {
 			return "Mob Armor";
 		}
 
 		@Override
-		public boolean func_145818_k_() {
+		public boolean hasCustomInventoryName() {
 			return true;
 		}
 

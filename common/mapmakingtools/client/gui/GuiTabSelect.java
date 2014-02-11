@@ -34,25 +34,25 @@ public class GuiTabSelect extends GuiButton {
     }
     
     @Override
-    public void func_146112_a(Minecraft mc, int i, int j) {
-        if(this.field_146125_m) {
+    public void drawButton(Minecraft mc, int i, int j) {
+        if(this.visible) {
         	FontRenderer fontRenderer = mc.fontRenderer;
         	mc.getTextureManager().bindTexture(ResourceReference.tabs);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int difference = isSelected ? 32 : 30;
-            this.drawTexturedModalRect(this.field_146128_h + (isSelected && type == ButtonType.RIGHT ? -2 : 0), this.field_146129_i, 0 + (isSelected ? 30 : 0), 28 * (type == ButtonType.LEFT ? 1 : 0), difference, 27 * (type == ButtonType.LEFT ? 2 : 1));//top left
+            this.drawTexturedModalRect(this.xPosition + (isSelected && type == ButtonType.RIGHT ? -2 : 0), this.yPosition, 0 + (isSelected ? 30 : 0), 28 * (type == ButtonType.LEFT ? 1 : 0), difference, 27 * (type == ButtonType.LEFT ? 2 : 1));//top left
             IIcon icon = this.filter.getDisplayIcon();
             mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
             if(icon != null) {
-            	this.drawTexturedModelRectFromIcon(this.field_146128_h + 5 + (type == ButtonType.LEFT ? 3 : 0), this.field_146129_i + 5, icon, 16, 16);
+            	this.drawTexturedModelRectFromIcon(this.xPosition + 5 + (type == ButtonType.LEFT ? 3 : 0), this.yPosition + 5, icon, 16, 16);
             }
             if(filter.showErrorIcon(gui)) {
-            	this.drawTexturedModelRectFromIcon(this.field_146128_h + 5 + (type == ButtonType.LEFT ? 3 : 0), this.field_146129_i + 5, FilterManager.errorIcon, 16, 16);
+            	this.drawTexturedModelRectFromIcon(this.xPosition + 5 + (type == ButtonType.LEFT ? 3 : 0), this.yPosition + 5, FilterManager.errorIcon, 16, 16);
             }
     	}
 	}
     
     public boolean isMouseAbove(int mouseX, int mouseY) {
-    	return this.func_146116_c(ClientHelper.mc, mouseX, mouseY);
+    	return this.mousePressed(ClientHelper.mc, mouseX, mouseY);
     }
 }

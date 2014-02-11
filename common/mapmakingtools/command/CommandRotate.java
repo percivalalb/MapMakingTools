@@ -53,13 +53,13 @@ public class CommandRotate extends CommandBase {
 			
 			if(didChange) {
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.rotate.complete", param[0]);
-				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-				player.func_145747_a(chatComponent);
+				chatComponent.getChatStyle().setItalic(true);
+				player.addChatMessage(chatComponent);
 			}
 			else {
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.rotationnot90");
-				chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-				player.func_145747_a(chatComponent);
+				chatComponent.getChatStyle().setItalic(true);
+				player.addChatMessage(chatComponent);
 			}
 		}
 	}

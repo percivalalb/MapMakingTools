@@ -57,7 +57,7 @@ public class CommandSet extends CommandBase {
 		if(param.length < 1)
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		else {
-			Block block = func_147180_g(sender, param[0]);
+			Block block = getBlockByText(sender, param[0]);
 			int meta = 0;
 			
 			if(param.length == 2)
@@ -70,7 +70,7 @@ public class CommandSet extends CommandBase {
 				for(int y = data.getMinY(); y <= data.getMaxY(); ++y) {
 					for(int z = data.getMinZ(); z <= data.getMaxZ(); ++z) {
 						CachedBlock undo = new CachedBlock(world, x, y, z);
-						world.func_147465_d(x, y, z, block, meta, 2);
+						world.setBlock(x, y, z, block, meta, 2);
 						list.add(undo);
 						++blocks;
 					}
@@ -80,15 +80,15 @@ public class CommandSet extends CommandBase {
 			data.getActionStorage().addUndo(list);
 
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.set.complete", "" + blocks, param[0]);
-			chatComponent.func_150256_b().func_150238_a(EnumChatFormatting.ITALIC);
-			player.func_145747_a(chatComponent);
+			chatComponent.getChatStyle().setItalic(true);
+			player.addChatMessage(chatComponent);
 			
 		}
 	}
 
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, Block.field_149771_c.func_148742_b()) : null;
+        return par2ArrayOfStr.length == 1 ? getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, Block.blockRegistry.getKeys()) : null;
     }
 
     @Override
