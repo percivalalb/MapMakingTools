@@ -8,6 +8,10 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -42,11 +46,8 @@ public class KeyStateHandler {
             	    final ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.mc.gameSettings, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
                     int i = scaledresolution.getScaledWidth();
                     int j = scaledresolution.getScaledHeight();
-                    final int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;
-                    final int yMouse = j - Mouse.getY() * j / ClientHelper.mc.displayHeight - 1;
-            		
-                    //int xMouse = Mouse.getX() * container.height / ClientHelper.mc.displayWidth;
-                    //int yMouse = container.width - Mouse.getY() * container.width / ClientHelper.mc.displayHeight - 1;
+                    int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;
+                    int yMouse = j - Mouse.getY() * j / ClientHelper.mc.displayHeight - 1;
                 	FMLLog.info("" + xMouse + " " + yMouse);
             		for (int j1 = 0; j1 < container.inventorySlots.inventorySlots.size(); ++j1) {
                         Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
@@ -57,6 +58,25 @@ public class KeyStateHandler {
                         		int index = slot.getSlotIndex();
                         		
                             	FMLLog.info(stack.getDisplayName() + " " + index);
+ 
+                            	
+                            	NBTBase nbtbase;
+								try {
+									nbtbase = JsonToNBT.func_150315_a(String.valueOf(stack.stackTagCompound));
+								
+	
+	                                if (!(nbtbase instanceof NBTTagCompound))
+	                                {
+	                                   // notifyAdmins(par1ICommandSender, "commands.give.tagError", new Object[] {"Not a valid tag"});
+	                                    return;
+	                                }
+	                              	FMLLog.info(String.valueOf(nbtbase));
+	                                stack.setTagCompound((NBTTagCompound)nbtbase);
+								}
+								catch (NBTException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
                         	}
                         }
             		}

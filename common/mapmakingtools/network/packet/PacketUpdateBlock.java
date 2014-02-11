@@ -11,6 +11,7 @@ import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.PacketHelper;
+import mapmakingtools.network.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -34,19 +35,19 @@ public class PacketUpdateBlock extends IPacket {
 	}
 	
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		this.x = bytes.readInt();
-		this.y = bytes.readInt();
-		this.z = bytes.readInt();
-		this.tagCompound = PacketHelper.readNBTTagCompound(bytes);
+	public void read(DataInputStream data) throws IOException {
+		this.x = data.readInt();
+		this.y = data.readInt();
+		this.z = data.readInt();
+		this.tagCompound = PacketHelper.readNBTTagCompound(data);
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		bytes.writeInt(this.x);
-		bytes.writeInt(this.y);
-		bytes.writeInt(this.z);
-		PacketHelper.writeNBTTagCompound(this.tagCompound, bytes);
+	public void write(DataOutputStream data) throws IOException {
+		data.writeInt(this.x);
+		data.writeInt(this.y);
+		data.writeInt(this.z);
+		PacketHelper.writeNBTTagCompound(this.tagCompound, data);
 	}
 
 	@Override

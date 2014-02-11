@@ -59,7 +59,9 @@ public class CommonProxy implements IGuiHandler {
 
 	public void registerHandlers() {}
 	public void onPreLoad() {}
-
+	public EntityPlayer getClientPlayer() { return null; }
+	
+	
 	public void registerFilters() {
     	FilterManager.registerFilter(FillInventoryClientFilter.class, FillInventoryServerFilter.class);
     	FilterManager.registerFilter(MobTypeClientFilter.class, MobTypeServerFilter.class);

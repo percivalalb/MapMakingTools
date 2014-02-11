@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.container.IUnlimitedInventory;
-import mapmakingtools.network.packet.IPacket;
+import mapmakingtools.network.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -29,15 +29,15 @@ public class PacketPhantomInfinity extends IPacket {
 	}
 
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes)  {
-		this.slotIndex = bytes.readInt();
-		this.isUnlimited = bytes.readBoolean();
+	public void read(DataInputStream data) throws IOException {
+		this.slotIndex = data.readInt();
+		this.isUnlimited = data.readBoolean();
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		bytes.writeInt(slotIndex);
-		bytes.writeBoolean(isUnlimited);
+	public void write(DataOutputStream data) throws IOException {
+		data.writeInt(slotIndex);
+		data.writeBoolean(isUnlimited);
 	}
 
 	@Override

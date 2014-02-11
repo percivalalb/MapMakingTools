@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.network.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -23,13 +24,13 @@ public class PacketSelectedFilter extends IPacket {
 	}
 
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes)  {
-		this.selected = bytes.readInt();
+	public void read(DataInputStream data) throws IOException {
+		this.selected = data.readInt();
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes) {
-		bytes.writeInt(selected);
+	public void write(DataOutputStream data) throws IOException {
+		data.writeInt(selected);
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import java.util.List;
 
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
-import mapmakingtools.network.packet.IPacket;
+import mapmakingtools.network.IPacket;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
@@ -43,19 +43,19 @@ public class PacketMobArmorRemoveIndex extends IPacket {
 	}
 
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		this.x = bytes.readInt();
-		this.y = bytes.readInt();
-		this.z = bytes.readInt();
-		this.minecartIndex = bytes.readInt();
+	public void read(DataInputStream data) throws IOException {
+		this.x = data.readInt();
+		this.y = data.readInt();
+		this.z = data.readInt();
+		this.minecartIndex = data.readInt();
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		bytes.writeInt(x);
-		bytes.writeInt(y);
-		bytes.writeInt(z);
-		bytes.writeInt(minecartIndex);
+	public void write(DataOutputStream data) throws IOException {
+		data.writeInt(this.x);
+		data.writeInt(this.y);
+		data.writeInt(this.z);
+		data.writeInt(this.minecartIndex);
 	}
 
 	@Override

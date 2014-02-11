@@ -1,9 +1,12 @@
 package mapmakingtools.proxy;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import mapmakingtools.handler.GuiOpenHandler;
 import mapmakingtools.handler.KeyStateHandler;
 import mapmakingtools.handler.ScreenRenderHandler;
 import mapmakingtools.handler.WorldOverlayHandler;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -23,5 +26,11 @@ public class ClientProxy extends CommonProxy {
     	FMLCommonHandler.instance().bus().register(new KeyStateHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldOverlayHandler());
     	MinecraftForge.EVENT_BUS.register(new ScreenRenderHandler());
+    	MinecraftForge.EVENT_BUS.register(new GuiOpenHandler());
+	}
+	
+	@Override
+	public EntityPlayer getClientPlayer() {
+		return FMLClientHandler.instance().getClientPlayerEntity();
 	}
 }

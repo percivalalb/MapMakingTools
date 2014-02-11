@@ -10,6 +10,7 @@ import java.io.IOException;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.PacketHelper;
+import mapmakingtools.network.IPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,15 +32,15 @@ public class PacketUpdateEntity extends IPacket {
 	}
 	
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		this.entityId = bytes.readInt();
-		this.tagCompound = PacketHelper.readNBTTagCompound(bytes);
+	public void read(DataInputStream data) throws IOException {
+		this.entityId = data.readInt();
+		this.tagCompound = PacketHelper.readNBTTagCompound(data);
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
-		bytes.writeInt(this.entityId);
-		PacketHelper.writeNBTTagCompound(this.tagCompound, bytes);
+	public void write(DataOutputStream data) throws IOException {
+		data.writeInt(this.entityId);
+		PacketHelper.writeNBTTagCompound(this.tagCompound, data);
 	}
 
 	@Override

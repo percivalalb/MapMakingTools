@@ -1,17 +1,17 @@
 package mapmakingtools.network;
 
-import java.io.IOException;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.PacketBuffer;
-import mapmakingtools.helper.PacketHelper;
-import mapmakingtools.network.packet.IPacket;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+import mapmakingtools.MapMakingTools;
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 
 /**
  * @author ProPercivalalb
@@ -25,29 +25,36 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket>{
 
     @Override
     public void encodeInto(ChannelHandlerContext ctx, IPacket msg, ByteBuf bytes) throws Exception {
-    	FMLLog.info("encode");
+    	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	DataOutputStream dos = new DataOutputStream(bos);
+    	
     	if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-    		PacketHelper.writeString(FMLClientHandler.instance().getClientPlayerEntity().getCommandSenderName(), bytes);
-        	 
-    	msg.write(ctx, bytes);
+        	dos.writeUTF(MapMakingTools.proxy.getClientPlayer().getCommandSenderName());
+
+    	msg.write(dos);
+    	bytes.writeBytes(bos.toByteArray());
     }
 
     @Override
     public void decodeInto(ChannelHandlerContext ctx, ByteBuf bytes, IPacket msg)  {
-    	FMLLog.info("decode");
 		try {
+			byte[] data = new byte[bytes.capacity()];
+			bytes.readBytes(data);
+
+			ByteArrayInputStream bis = new ByteArrayInputStream(data);
+	        DataInputStream dis = new DataInputStream(bis);
+	
 			EntityPlayer player;
-				
-			if(FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-				player = FMLClientHandler.instance().getClientPlayerEntity();
-			}
+			
+			if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+				player = MapMakingTools.proxy.getClientPlayer();
 			else
-				player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(PacketHelper.readString(256, bytes));
-				
-			msg.read(ctx, bytes);
+				player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(dis.readUTF());
+
+			msg.read(dis);
 			msg.execute(player);
 		} 
-    	 catch (IOException e) {
+    	catch(Exception e) {
 			e.printStackTrace();
 		}
     }

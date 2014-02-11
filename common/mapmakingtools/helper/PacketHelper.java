@@ -2,14 +2,16 @@ package mapmakingtools.helper;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-
-import com.google.common.base.Charsets;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+
+import com.google.common.base.Charsets;
 
 /**
  * @author ProPercivalalb
@@ -17,9 +19,8 @@ import net.minecraft.nbt.NBTTagCompound;
 public class PacketHelper {
 
 	public static void writeNBTTagCompound(NBTTagCompound tagCompound, ByteBuf bytes) throws IOException {
-        if (tagCompound == null) {
+        if (tagCompound == null)
         	bytes.writeShort(-1);
-        }
         else {
             byte[] data = CompressedStreamTools.compress(tagCompound);
             bytes.writeShort((short)data.length);
@@ -27,12 +28,21 @@ public class PacketHelper {
         }
     }
 	
+	public static void writeNBTTagCompound(NBTTagCompound tagCompound, DataOutputStream dos) throws IOException {
+        if (tagCompound == null)
+        	dos.writeShort(-1);
+        else {
+            byte[] data = CompressedStreamTools.compress(tagCompound);
+            dos.writeShort((short)data.length);
+            dos.write(data);
+        }
+    }
+	
 	public static void writeString(String string, ByteBuf bytes) throws IOException {
         byte[] abyte = string.getBytes(Charsets.UTF_8);
 
-        if (abyte.length > 32767) {
+        if (abyte.length > 32767)
             throw new IOException("String too big (was " + string.length() + " bytes encoded, max " + 32767 + ")");
-        }
         else {
         	writeSpecialBytes(abyte.length, bytes);
         	bytes.writeBytes(abyte);
@@ -53,57 +63,55 @@ public class PacketHelper {
         int j = 0;
         byte b0;
 
-        do
-        {
+        do {
             b0 = bytes.readByte();
             i |= (b0 & 127) << j++ * 7;
 
             if (j > 5)
-            {
                 throw new RuntimeException("VarInt too big");
-            }
         }
         while ((b0 & 128) == 128);
 
         return i;
     }
 	
-	public static String readString(int maxLength, ByteBuf bytes) throws IOException
-    {
+	public static String readString(int maxLength, ByteBuf bytes) throws IOException {
         int j = readSpecialByte(bytes);
 
         if (j > maxLength * 4)
-        {
             throw new IOException("The received encoded string buffer length is longer than maximum allowed (" + j + " > " + maxLength * 4 + ")");
-        }
         else if (j < 0)
-        {
             throw new IOException("The received encoded string buffer length is less than zero! Weird string!");
-        }
-        else
-        {
+        else {
             String s = new String(bytes.readBytes(j).array(), Charsets.UTF_8);
 
             if (s.length() > maxLength)
-            {
                 throw new IOException("The received string length is longer than maximum allowed (" + j + " > " + maxLength + ")");
-            }
             else
-            {
                 return s;
-            }
         }
     }
 	
 	public static NBTTagCompound readNBTTagCompound(ByteBuf bytes) throws IOException {
 	    short length = bytes.readShort();
 
-	    if (length < 0) {
+	    if (length < 0)
 	        return null;
-	    }
 	    else {
 	        byte[] data = new byte[length];
 	        bytes.readBytes(data);
+	        return CompressedStreamTools.decompress(data);
+	    }
+	}
+	
+	public static NBTTagCompound readNBTTagCompound(DataInputStream dis) throws IOException {
+	    short length = dis.readShort();
+
+	    if (length < 0)
+	        return null;
+	    else {
+	        byte[] data = new byte[length];
+	        dis.readFully(data);
 	        return CompressedStreamTools.decompress(data);
 	    }
 	}

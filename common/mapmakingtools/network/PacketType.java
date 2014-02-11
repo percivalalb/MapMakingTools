@@ -34,15 +34,10 @@ public enum PacketType {
 		return this.packetClass.newInstance();
 	}
 	
-	public static int getIdFromPacket(IPacket packet) {
-		for(PacketType type : values()) {
-			if(type.packetClass.equals(packet.getClass()))
-				return type.ordinal();
-		}
+	public static byte getIdFromClass(Class<? extends IPacket> packetClass) {
+		for(PacketType type : values())
+			if(type.packetClass == packetClass)
+				return (byte)type.ordinal();
 		return -1;
-	}
-	
-	public static PacketType getPacketFromId(int id) {
-		return values()[id];
 	}
 }

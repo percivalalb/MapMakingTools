@@ -1,5 +1,6 @@
 package mapmakingtools.handler;
 
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.item.ItemEdit;

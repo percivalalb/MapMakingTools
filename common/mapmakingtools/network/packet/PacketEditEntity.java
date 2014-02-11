@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.network.IPacket;
 import mapmakingtools.proxy.CommonProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,13 +26,13 @@ public class PacketEditEntity extends IPacket {
 	}
 	
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes) {
-		this.entityId = bytes.readInt();
+	public void read(DataInputStream data) throws IOException {
+		this.entityId = data.readInt();
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes)  {
-		bytes.writeInt(this.entityId);
+	public void write(DataOutputStream data) throws IOException {
+		data.writeInt(this.entityId);
 	}
 
 	@Override

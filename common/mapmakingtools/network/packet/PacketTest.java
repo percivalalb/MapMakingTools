@@ -7,6 +7,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mapmakingtools.network.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.FMLLog;
 
@@ -18,12 +19,12 @@ public class PacketTest extends IPacket {
 	public PacketTest() {}
 	
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf bytes)  {
+	public void read(DataInputStream data) throws IOException {
 		
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf bytes) {
+	public void write(DataOutputStream data) throws IOException {
 		
 	}
 

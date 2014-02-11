@@ -45,7 +45,7 @@ public class MapMakingTools {
     
     @EventHandler
     public void onInit(FMLInitializationEvent event) {
-    	NETWORK_MANAGER = new NetworkManager(Reference.CHANNEL_NAME);
+    	NETWORK_MANAGER = new NetworkManager();
     	NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     	MinecraftForge.EVENT_BUS.register(new ActionHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldSaveHandler());
