@@ -221,5 +221,5 @@ public abstract class ScrollMenu {
 	
 	public abstract void onSetButton();
 	
-	public abstract String getDisplayString(String unlocalised);
+	public abstract String getDisplayString(String listStr);
 }

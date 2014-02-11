@@ -48,8 +48,10 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
         this.menu = new ScrollMenu((GuiScreen)gui, topX + 8, topY + 19, 208, 108, 2, MobSpawnerType.getSpawnerMobs()) {
 
 			@Override
-			public String getDisplayString(String unlocalised) {
-				return StatCollector.translateToLocal(unlocalised);
+			public String getDisplayString(String listStr) {
+				String unlocalised = String.format("entity.%s.name", listStr);
+				String localised = StatCollector.translateToLocal(unlocalised);
+				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
 			}
 
 			@Override
