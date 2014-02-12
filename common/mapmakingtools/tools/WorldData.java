@@ -5,14 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Hashtable;
 
-import com.google.common.base.Strings;
-
 import mapmakingtools.api.FilterManager;
 import mapmakingtools.api.IFilterServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb

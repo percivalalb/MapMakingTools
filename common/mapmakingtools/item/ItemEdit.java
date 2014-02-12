@@ -2,8 +2,6 @@ package mapmakingtools.item;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mapmakingtools.ModItems;
 import mapmakingtools.api.FilterManager;
 import mapmakingtools.lib.Constants;
@@ -19,6 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author ProPercivalalb

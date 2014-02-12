@@ -16,7 +16,6 @@ import mapmakingtools.tools.filter.MobTypeServerFilter;
 import mapmakingtools.tools.filter.SpawnerFilterProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 /**

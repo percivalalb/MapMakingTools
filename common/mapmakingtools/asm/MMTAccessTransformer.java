@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cpw.mods.fml.common.asm.transformers.AccessTransformer;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 /**
  * @author ProPercivalalb

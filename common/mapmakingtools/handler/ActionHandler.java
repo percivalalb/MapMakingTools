@@ -1,12 +1,9 @@
 package mapmakingtools.handler;
 
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.item.ItemEdit;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
-import mapmakingtools.network.packet.PacketTest;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.network.packet.PacketUpdateEntity;
 import mapmakingtools.tools.PlayerAccess;
@@ -18,14 +15,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Facing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb

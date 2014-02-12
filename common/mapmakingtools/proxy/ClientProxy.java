@@ -1,11 +1,11 @@
 package mapmakingtools.proxy;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import mapmakingtools.handler.GuiOpenHandler;
 import mapmakingtools.handler.KeyStateHandler;
 import mapmakingtools.handler.ScreenRenderHandler;
 import mapmakingtools.handler.WorldOverlayHandler;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;

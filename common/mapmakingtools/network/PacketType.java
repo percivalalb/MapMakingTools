@@ -1,7 +1,20 @@
 package mapmakingtools.network;
 
-import mapmakingtools.network.packet.*;
-import mapmakingtools.tools.filter.packet.*;
+import mapmakingtools.network.packet.PacketEditBlock;
+import mapmakingtools.network.packet.PacketEditEntity;
+import mapmakingtools.network.packet.PacketSelectedFilter;
+import mapmakingtools.network.packet.PacketSetPoint1;
+import mapmakingtools.network.packet.PacketSetPoint2;
+import mapmakingtools.network.packet.PacketTest;
+import mapmakingtools.network.packet.PacketUpdateBlock;
+import mapmakingtools.network.packet.PacketUpdateEntity;
+import mapmakingtools.tools.filter.packet.PacketFillInventory;
+import mapmakingtools.tools.filter.packet.PacketMobArmor;
+import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
+import mapmakingtools.tools.filter.packet.PacketMobArmorRemoveIndex;
+import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
+import mapmakingtools.tools.filter.packet.PacketMobType;
+import mapmakingtools.tools.filter.packet.PacketPhantomInfinity;
 
 /**
  * @author ProPercivalalb

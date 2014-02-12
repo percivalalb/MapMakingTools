@@ -3,6 +3,10 @@ package mapmakingtools.tools.filter;
 import java.util.Hashtable;
 import java.util.Map;
 
+import mapmakingtools.api.IContainerFilter;
+import mapmakingtools.api.IFilterServer;
+import mapmakingtools.container.IUnlimitedInventory;
+import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -11,10 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import mapmakingtools.api.IContainerFilter;
-import mapmakingtools.api.IFilterServer;
-import mapmakingtools.container.IUnlimitedInventory;
-import mapmakingtools.container.SlotFake;
 
 /**
  * @author ProPercivalalb

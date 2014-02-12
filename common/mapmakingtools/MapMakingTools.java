@@ -1,5 +1,12 @@
 package mapmakingtools;
 
+import mapmakingtools.handler.ActionHandler;
+import mapmakingtools.handler.CommandHandler;
+import mapmakingtools.handler.PlayerTrackerHandler;
+import mapmakingtools.handler.WorldSaveHandler;
+import mapmakingtools.lib.Reference;
+import mapmakingtools.network.NetworkManager;
+import mapmakingtools.proxy.CommonProxy;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -11,18 +18,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-
-import mapmakingtools.api.FilterManager;
-import mapmakingtools.handler.ActionHandler;
-import mapmakingtools.handler.CommandHandler;
-import mapmakingtools.handler.KeyStateHandler;
-import mapmakingtools.handler.PlayerTrackerHandler;
-import mapmakingtools.handler.WorldOverlayHandler;
-import mapmakingtools.handler.WorldSaveHandler;
-import mapmakingtools.lib.Reference;
-import mapmakingtools.network.NetworkManager;
-import mapmakingtools.proxy.CommonProxy;
-import mapmakingtools.tools.filter.*;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.MOD_DEPENDENCIES)
 public class MapMakingTools {

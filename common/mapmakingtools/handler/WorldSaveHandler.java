@@ -1,11 +1,9 @@
 package mapmakingtools.handler;
 
-import java.io.File;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mapmakingtools.tools.WorldData;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb

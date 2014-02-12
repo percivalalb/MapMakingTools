@@ -7,8 +7,6 @@ import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 
 /**

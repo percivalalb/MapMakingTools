@@ -1,25 +1,18 @@
 package mapmakingtools.handler;
 
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
-
-import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
-import mapmakingtools.tools.WorldData;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb

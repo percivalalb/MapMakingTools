@@ -2,8 +2,6 @@ package mapmakingtools.container;
 
 import java.util.List;
 
-import cpw.mods.fml.common.FMLLog;
-
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.IContainerFilter;
 import mapmakingtools.api.IFilterServer;

@@ -7,14 +7,12 @@ import java.util.List;
 import mapmakingtools.tools.CachedBlock;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 /**

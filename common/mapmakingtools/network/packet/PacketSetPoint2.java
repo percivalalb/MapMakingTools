@@ -1,17 +1,13 @@
 package mapmakingtools.network.packet;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import cpw.mods.fml.common.FMLLog;
-
-import net.minecraft.entity.player.EntityPlayer;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.tools.ClientData;
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb

@@ -1,6 +1,5 @@
 package mapmakingtools.asm;
 
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 /**

@@ -2,19 +2,16 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import cpw.mods.fml.common.FMLLog;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.world.World;
 import mapmakingtools.api.FilterManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterProvider;
 import mapmakingtools.api.IFilterServer;
 import mapmakingtools.util.SpawnerUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb

@@ -2,22 +2,8 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.FMLLog;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FakeWorldManager;
-import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
@@ -25,6 +11,14 @@ import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
 import mapmakingtools.util.SpawnerUtil;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

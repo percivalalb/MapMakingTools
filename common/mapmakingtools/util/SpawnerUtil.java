@@ -1,11 +1,8 @@
 package mapmakingtools.util;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import cpw.mods.fml.common.FMLLog;
 
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.helper.ServerHelper;
@@ -18,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb

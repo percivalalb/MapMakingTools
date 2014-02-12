@@ -1,6 +1,14 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.command.*;
+import mapmakingtools.command.CommandClearPoints;
+import mapmakingtools.command.CommandFlip;
+import mapmakingtools.command.CommandFloor;
+import mapmakingtools.command.CommandRedo;
+import mapmakingtools.command.CommandRoof;
+import mapmakingtools.command.CommandRotate;
+import mapmakingtools.command.CommandSet;
+import mapmakingtools.command.CommandTemp;
+import mapmakingtools.command.CommandUndo;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**

@@ -12,8 +12,6 @@ import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.FMLLog;
-
 /**
  * @author ProPercivalalb
  */

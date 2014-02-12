@@ -1,16 +1,6 @@
 package mapmakingtools.tools.filter;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.api.MobSpawnerType;
@@ -18,6 +8,11 @@ import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.filter.packet.PacketMobType;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.StatCollector;
+
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

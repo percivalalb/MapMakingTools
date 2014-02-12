@@ -1,19 +1,19 @@
 package mapmakingtools;
 
-import java.util.BitSet;
 import java.util.Map;
 
-import com.google.common.collect.BiMap;
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
-import cpw.mods.fml.common.registry.GameData;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.item.ItemEdit;
 import net.minecraft.item.Item;
 import net.minecraft.util.ObjectIntIdentityMap;
 import net.minecraft.util.RegistryNamespaced;
 import net.minecraft.util.RegistrySimple;
+
+import com.google.common.collect.BiMap;
+
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
+import cpw.mods.fml.common.registry.GameData;
 
 /**
  * @author ProPercivalalb
@@ -25,7 +25,6 @@ public class ModItems {
 	
 	public static void inti() {
 		replace(WOODEN_AXE, editItem = new ItemEdit());
-		
 	}
 	
 	public static void replace(String name, Item thing) {

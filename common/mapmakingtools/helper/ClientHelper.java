@@ -1,8 +1,8 @@
 package mapmakingtools.helper;
 
+import net.minecraft.client.Minecraft;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.client.Minecraft;
 
 /**
  * @author ProPercivalalb

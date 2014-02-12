@@ -3,22 +3,17 @@ package mapmakingtools.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLLog;
-
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.client.gui.GuiMinecartIndexButton;
-import mapmakingtools.client.gui.GuiSmallButton;
-import mapmakingtools.client.gui.GuiTabSelect;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
 import mapmakingtools.tools.filter.packet.PacketMobArmorRemoveIndex;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 
 /**
  * @author ProPercivalalb

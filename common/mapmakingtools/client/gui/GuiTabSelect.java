@@ -1,9 +1,6 @@
 package mapmakingtools.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.api.FilterManager;
-import mapmakingtools.api.IFilter;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
@@ -11,9 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

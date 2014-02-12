@@ -1,6 +1,5 @@
 package mapmakingtools.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.tools.PlayerData;
@@ -10,7 +9,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 /**

@@ -1,26 +1,16 @@
 package mapmakingtools.tools.filter.packet;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import mapmakingtools.container.ContainerFilter;
-import mapmakingtools.container.IPhantomSlot;
-import mapmakingtools.helper.PacketHelper;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.tools.PlayerAccess;
-import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 
 /**
  * @author ProPercivalalb

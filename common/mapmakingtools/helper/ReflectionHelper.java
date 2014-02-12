@@ -2,10 +2,6 @@ package mapmakingtools.helper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 
 /**
  * @author ProPercivalalb

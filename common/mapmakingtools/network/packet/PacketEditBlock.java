@@ -1,8 +1,5 @@
 package mapmakingtools.network.packet;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,13 +7,7 @@ import java.io.IOException;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.proxy.CommonProxy;
-import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 
 /**
  * @author ProPercivalalb
