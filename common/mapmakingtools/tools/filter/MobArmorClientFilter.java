@@ -7,6 +7,7 @@ import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
+import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
@@ -86,6 +87,11 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 			this.btnOk.enabled = false;
 		else
 			this.btnOk.enabled = true;
+	}
+	
+	@Override
+	public List<String> getFilterInfo(IGuiFilter gui) {
+		return TextHelper.splitInto(140, gui.getFont(), EnumChatFormatting.GREEN + this.getFilterName(), StatCollector.translateToLocal("mapmakingtools.filter.mobArmor.info"));
 	}
 	
 	@Override

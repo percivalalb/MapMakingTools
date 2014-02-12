@@ -145,13 +145,13 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
-    		//else if(listBt instanceof GuiSmallButton) {
-    		//	GuiSmallButton button = (GuiSmallButton)listBt;
-        	//	if(button.isMouseAbove(xMouse, yMouse)) {
-        	//		List<String> list = this.filterCurrent.getFilterInfo();
-        	//		this.drawHoveringText(list, xMouse, yMouse);
-        	//	}
-    		//}
+    		else if(listBt instanceof GuiSmallButton && listBt.id == 156) {
+    			GuiSmallButton button = (GuiSmallButton)listBt;
+        		if(button.isMouseAbove(xMouse, yMouse)) {
+        			List<String> list = this.filterCurrent.getFilterInfo(this);
+        			this.drawHoveringText(list, xMouse, yMouse);
+        		}
+    		}
     		//if(listBt instanceof GuiButtonCancel) {
     		//	GuiButtonCancel tab = (GuiButtonCancel)listBt;
         	//	if(tab.isMouseAbove(xMouse, yMouse)) {
@@ -222,7 +222,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	this.buttonList.add(new GuiSmallButton(156, topX + 5, realtopY + 4, 13, 12, "?"));
         
         if(filterCurrent != null && filterCurrent.hasUpdateButton(this))
-        	this.buttonList.add(new GuiSmallButton(157, topX + 5, realtopY + 4, 8, 8, "" + (char)8595));
+        	this.buttonList.add(new GuiSmallButton(157, topX + 20, realtopY + 4, 8, 8, "" + (char)8595));
         
         for(int i = 0; i < this.buttonList.size(); ++i) {
     		if(this.buttonList.get(i) instanceof GuiTabSelect) {

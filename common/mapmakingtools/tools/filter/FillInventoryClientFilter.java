@@ -1,6 +1,5 @@
 package mapmakingtools.tools.filter;
 
-import java.util.Arrays;
 import java.util.List;
 
 import mapmakingtools.MapMakingTools;
@@ -8,12 +7,15 @@ import mapmakingtools.api.FakeWorldManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
+import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -67,8 +69,8 @@ public class FillInventoryClientFilter extends IFilterClient {
 	}
 	
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) { 
-		return Arrays.asList(this.getFilterName(), "Check it out", "wow!"); 
+	public List<String> getFilterInfo(IGuiFilter gui) {
+		return TextHelper.splitInto(140, gui.getFont(), EnumChatFormatting.GREEN + this.getFilterName(), StatCollector.translateToLocal("mapmakingtools.filter.fillinventory.info"));
 	}
 	
 	@Override

@@ -64,7 +64,7 @@ public class PacketFillInventory extends IPacket {
 			    		}
 			    		((IInventory)tile).setInventorySlotContents(var8, newStack);
 			    	}
-			    	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.fillInventory.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
+			    	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.fillinventory.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
 					chatComponent.getChatStyle().setItalic(true);
 					player.addChatMessage(chatComponent);
 				}

@@ -1,15 +1,19 @@
 package mapmakingtools.tools.filter;
 
+import java.util.List;
+
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.IFilterClientSpawner;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.api.MobSpawnerType;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.helper.ClientHelper;
+import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -65,6 +69,11 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
         this.addMinecartButtons(gui, topX, topY);
 	}
 
+	@Override
+	public List<String> getFilterInfo(IGuiFilter gui) {
+		return TextHelper.splitInto(140, gui.getFont(), EnumChatFormatting.GREEN + this.getFilterName(), StatCollector.translateToLocal("mapmakingtools.filter.mobType.info"));
+	}
+	
 	@Override
 	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);

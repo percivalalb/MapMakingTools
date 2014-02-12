@@ -27,17 +27,21 @@ mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown
 
 mapmakingtools.filter.fillinventory.name=Fill Inventory
-mapmakingtools.filter.fillInventory.complete=Set the contents of this inventory to %s.
+mapmakingtools.filter.fillinventory.complete=Set the contents of this inventory to %s.
+mapmakingtools.filter.fillinventory.info=Fills all slots in the selected inventory to the given item and the stacksize. Note that you can left beyond 0 to take the stacksize to unlimited. This sets the stacksize to -1, therefore in inventories such as dispensers and hoppers this will make them never run out.
 mapmakingtools.filter.mobArmor.name=Mob Armor
 mapmakingtools.filter.mobArmor.complete=Set mob armor
 mapmakingtools.filter.mobArmor.update=Updated mob armor from reality
 mapmakingtools.filter.mobArmor.removeIndex=Removed a minecart from the list
 mapmakingtools.filter.mobArmor.addIndex=Added a minecart to the list
+mapmakingtools.filter.mobArmor.error=Error: Invalid mob
+mapmakingtools.filter.mobArmor.info=This filter is only available on Zombie, PigZombie and Skeleton. It sets the armor and held item the mob will spawn with.
 mapmakingtools.filter.mobType.name=Mob Type
 mapmakingtools.filter.mobType.complete=Changed the spawner to spawn %s.
-mapmakingtools.filter.mobArmor.error=Error: Invalid mob
+mapmakingtools.filter.mobType.info=Changes the current selected 'minecart index' entity type to a given entity type.
 mapmakingtools.filter.customgive.name=Custom Give
 mapmakingtools.filter.customgive.complete=Command block set to %s
+mapmakingtools.filter.customgive.info=Allows you to create your item and then convert it to a /give command with meta and nbt derived from the item in text form.
 
 mapmakingtools.key.category=Map Making Tools
 mapmakingtools.key.itemEditor=ItemEditor
