@@ -8,6 +8,7 @@ import mapmakingtools.network.packet.PacketSetPoint2;
 import mapmakingtools.network.packet.PacketTest;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.network.packet.PacketUpdateEntity;
+import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
@@ -35,7 +36,8 @@ public enum PacketType {
 	MOB_ARMOR(PacketMobArmor.class),
 	MOB_ARMOR_UPDATE(PacketMobArmorUpdate.class),
 	MOB_ARMOR_REMOVE_INDEX(PacketMobArmorRemoveIndex.class),
-	MOB_ARMOR_ADD_INDEX(PacketMobArmorAddIndex.class);
+	MOB_ARMOR_ADD_INDEX(PacketMobArmorAddIndex.class),
+	CUSTOM_GIVE(PacketCustomGive.class);
 	
 	public Class<? extends IPacket> packetClass;
 	

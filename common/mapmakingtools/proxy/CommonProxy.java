@@ -7,6 +7,8 @@ import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterServer;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.tools.filter.CustomGiveClientFilter;
+import mapmakingtools.tools.filter.CustomGiveServerFilter;
 import mapmakingtools.tools.filter.FillInventoryClientFilter;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import mapmakingtools.tools.filter.MobArmorClientFilter;
@@ -65,6 +67,8 @@ public class CommonProxy implements IGuiHandler {
     	FilterManager.registerFilter(FillInventoryClientFilter.class, FillInventoryServerFilter.class);
     	FilterManager.registerFilter(MobTypeClientFilter.class, MobTypeServerFilter.class);
     	FilterManager.registerFilter(MobArmorClientFilter.class, MobArmorServerFilter.class);
+    	FilterManager.registerFilter(CustomGiveClientFilter.class, CustomGiveServerFilter.class);
+    	
     	
     	FilterManager.registerProvider(SpawnerFilterProvider.class);
 	}

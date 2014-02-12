@@ -21,6 +21,7 @@ mapmakingtools.commands.build.floor.complete=%s block(s) have been changed to %s
 mapmakingtools.commands.build.undo.complete=%s block(s) have been undone.
 mapmakingtools.commands.build.redo.complete=%s block(s) have been redone.
 mapmakingtools.commands.build.rotate.complete=Next area pasted will be at %s degrees.
+mapmakingtools.commands.build.flip.complete=%s block(s) have been flipped.
 
 mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown
@@ -35,6 +36,8 @@ mapmakingtools.filter.mobArmor.addIndex=Added a minecart to the list
 mapmakingtools.filter.mobType.name=Mob Type
 mapmakingtools.filter.mobType.complete=Changed the spawner to spawn %s.
 mapmakingtools.filter.mobArmor.error=Error: Invalid mob
+mapmakingtools.filter.customgive.name=Custom Give
+mapmakingtools.filter.customgive.complete=Command block set to %s
 
 mapmakingtools.key.category=Map Making Tools
 mapmakingtools.key.itemEditor=ItemEditor

@@ -60,23 +60,7 @@ public class KeyStateHandler {
                             	FMLLog.info(stack.getDisplayName() + " " + index);
  
                             	
-                            	NBTBase nbtbase;
-								try {
-									nbtbase = JsonToNBT.func_150315_a(String.valueOf(stack.stackTagCompound));
-								
-	
-	                                if (!(nbtbase instanceof NBTTagCompound))
-	                                {
-	                                   // notifyAdmins(par1ICommandSender, "commands.give.tagError", new Object[] {"Not a valid tag"});
-	                                    return;
-	                                }
-	                              	FMLLog.info(String.valueOf(nbtbase));
-	                                stack.setTagCompound((NBTTagCompound)nbtbase);
-								}
-								catch (NBTException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
+                            	
                         	}
                         }
             		}
