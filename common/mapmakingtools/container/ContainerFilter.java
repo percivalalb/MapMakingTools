@@ -175,7 +175,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	}
 
 	@Override
-	public List getInventorySlots() {
+	public List<Slot> getInventorySlots() {
 		return this.inventorySlots;
 	}
 

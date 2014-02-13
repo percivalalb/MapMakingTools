@@ -19,6 +19,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -50,9 +51,7 @@ public class ScreenRenderHandler {
 	    			
 	    			int rowCount = 1;
 	    			int columnCount = 1;
-	    			
-	    			
-	    			
+	
 	    			
 	    			GL11.glPushMatrix();
 	    			//GL11.glEnable(GL11.GL_SCISSOR_TEST);

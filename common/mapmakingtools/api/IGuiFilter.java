@@ -18,6 +18,7 @@ public interface IGuiFilter {
 	public int yFakeSize();
 	public int getWidth();
 	public int getHeight();
+	public IContainerFilter getFilterContainer();
 	public void setYSize(int newYSize);
 	public void drawHoveringText(List text, int mouseX, int mouseY);
 	

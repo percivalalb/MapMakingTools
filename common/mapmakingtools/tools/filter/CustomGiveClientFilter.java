@@ -4,6 +4,7 @@ import java.util.List;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FakeWorldManager;
+import mapmakingtools.api.IContainerFilter;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
@@ -11,7 +12,10 @@ import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.EnumChatFormatting;
@@ -26,6 +30,9 @@ import org.lwjgl.opengl.GL11;
 public class CustomGiveClientFilter extends IFilterClient {
 
 	public GuiButton btnOk;
+	public GuiTextField tempCommand;
+	public ItemStack lastStack = null;
+	public String lastText = "";
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -52,7 +59,13 @@ public class CustomGiveClientFilter extends IFilterClient {
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 104) / 2;
         this.btnOk = new GuiButton(0, topX + 20, topY + 61, 20, 20, "OK");
+        this.tempCommand = new GuiTextField(gui.getFont(), gui.getWidth() / 2 - 150, topY + 110, 300, 20);
+        this.tempCommand.setMaxStringLength(32767);
+        this.tempCommand.setEnabled(false);
+        this.tempCommand.setText(this.lastText);
+        
         gui.getButtonList().add(this.btnOk);
+        gui.getTextBoxList().add(this.tempCommand);
 	}
 	
 	@Override
@@ -66,6 +79,36 @@ public class CustomGiveClientFilter extends IFilterClient {
                 	break;
             }
         }
+	}
+	
+	@Override
+	public void updateScreen(IGuiFilter gui) {
+		IContainerFilter container = gui.getFilterContainer();
+		ItemStack stack = container.getInventorySlots().get(0).getStack();
+		
+		if(!(ItemStack.areItemStacksEqual(stack, this.lastStack) && ItemStack.areItemStackTagsEqual(stack, this.lastStack))) {
+			
+			if(stack != null) {
+				String command = "/give @p";
+				command += " " + Item.itemRegistry.getNameForObject(stack.getItem());
+				command += " " + stack.stackSize;
+				command += " " + stack.getItemDamage();
+				
+				if(stack.hasTagCompound())
+					command += " " + String.valueOf(stack.stackTagCompound);
+				this.tempCommand.setText(command);
+				this.lastText = command;
+				this.lastStack = stack.copy();
+				this.tempCommand.setCursorPositionZero();
+			}
+			else {
+				this.tempCommand.setText("");
+				this.lastText = "";
+				this.lastStack = null;
+				this.tempCommand.setCursorPositionZero();
+			}
+			
+		}
 	}
 	
 	@Override

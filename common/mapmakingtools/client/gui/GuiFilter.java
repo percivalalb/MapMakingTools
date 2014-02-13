@@ -6,6 +6,7 @@ import java.util.List;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.FilterManager;
+import mapmakingtools.api.IContainerFilter;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IGuiFilter;
 import mapmakingtools.api.TargetType;
@@ -26,6 +27,8 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -312,7 +315,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	filterCurrent.mouseClicked(this, xMouse, yMouse, mouseButton);
        
         for(int i = 0; i < this.textboxList.size(); ++i)
-        	((GuiTextField)textboxList.get(i)).mouseClicked(xMouse, yMouse, mouseButton);
+        	((GuiTextField)this.textboxList.get(i)).mouseClicked(xMouse, yMouse, mouseButton);
     }
     
     public ContainerFilter getContainerFilter() {
@@ -483,5 +486,10 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	@Override
 	public void drawTexturedModalRectangle(int par1, int par2, int par3, int par4, int par5, int par6) {
 		this.drawTexturedModalRect(par1, par2, par3, par4, par5, par6);
+	}
+
+	@Override
+	public IContainerFilter getFilterContainer() {
+		return (IContainerFilter)this.inventorySlots;
 	}
 }

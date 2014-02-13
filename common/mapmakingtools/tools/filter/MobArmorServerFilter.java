@@ -57,42 +57,32 @@ public class MobArmorServerFilter extends IFilterServer {
 	        	wasPhantomSlot = true;
 	        	int j = 5 + ((ItemArmor)itemstack.getItem()).armorType;
 	                
-	            if (!container.mergeItemStacks(itemstack1, j, j + 1, false)) {
+	            if (!container.mergeItemStacks(itemstack1, j, j + 1, false))
 	                return null;
-	            }
 	        }
 	        else if(par2 >= 9 && par2 < 45 && !(itemstack.getItem() instanceof ItemArmor) && !((Slot)container.getInventorySlots().get(4)).getHasStack()) {
 	        	wasPhantomSlot = true;
-	        	if (!container.mergeItemStacks(itemstack1, 4, 4 + 1, false)) {
+	        	if (!container.mergeItemStacks(itemstack1, 4, 4 + 1, false))
 	                return null;
-	            }
 	        }
 	        else if (par2 >= 36 && par2 < 45) {
-	            if (!container.mergeItemStacks(itemstack1, 9, 36, false)) {
+	            if (!container.mergeItemStacks(itemstack1, 9, 36, false))
 	                return null;
-	            }
 	        }
 	        else if (!container.mergeItemStacks(itemstack1, 36, 45, false))
-	        {
 	            return null;
-	        }
 	          
 	        if(!wasPhantomSlot) {
-	        	if(itemstack1.stackSize == 0) {
+	        	if(itemstack1.stackSize == 0)
 	        		slot.putStack((ItemStack)null);
-	        	}
-	            else {
+	            else
 	            	slot.onSlotChanged();
-	            }
 	        }
-	        else {
+	        else
 	        	itemstack1.stackSize = itemstack.stackSize;
-	        }
 	            
 	        if (itemstack1.stackSize == itemstack.stackSize)
-	        {
 	            return null;
-	        }
 
 	        slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
 	    }

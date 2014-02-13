@@ -13,7 +13,7 @@ public interface IContainerFilter {
 
 	public void addSlot(Slot slot);
 	public EntityPlayer getPlayer();
-	public List getInventorySlots();
+	public List<Slot> getInventorySlots();
 	public boolean mergeItemStacks(ItemStack itemstack1, int j, int i, boolean b);
 
 }

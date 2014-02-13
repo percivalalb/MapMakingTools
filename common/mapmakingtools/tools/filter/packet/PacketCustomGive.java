@@ -4,23 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import cpw.mods.fml.common.FMLLog;
-
 import mapmakingtools.container.ContainerFilter;
-import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.CustomGiveServerFilter;
-import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
