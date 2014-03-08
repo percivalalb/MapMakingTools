@@ -13,8 +13,12 @@ import mapmakingtools.tools.filter.CustomGiveClientFilter;
 import mapmakingtools.tools.filter.CustomGiveServerFilter;
 import mapmakingtools.tools.filter.FillInventoryClientFilter;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
+import mapmakingtools.tools.filter.ItemSpawnerClientFilter;
+import mapmakingtools.tools.filter.ItemSpawnerServerFilter;
 import mapmakingtools.tools.filter.MobArmorClientFilter;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
+import mapmakingtools.tools.filter.MobPositionClientFilter;
+import mapmakingtools.tools.filter.MobPositionServerFilter;
 import mapmakingtools.tools.filter.MobTypeClientFilter;
 import mapmakingtools.tools.filter.MobTypeServerFilter;
 import mapmakingtools.tools.filter.SpawnerFilterProvider;
@@ -68,10 +72,11 @@ public class CommonProxy implements IGuiHandler {
 	public void registerFilters() {
     	FilterManager.registerFilter(FillInventoryClientFilter.class, FillInventoryServerFilter.class);
     	FilterManager.registerFilter(MobTypeClientFilter.class, MobTypeServerFilter.class);
+    	FilterManager.registerFilter(MobPositionClientFilter.class, MobPositionServerFilter.class);
     	FilterManager.registerFilter(MobArmorClientFilter.class, MobArmorServerFilter.class);
     	FilterManager.registerFilter(CommandBlockAliasClientFilter.class, CommandBlockAliasServerFilter.class);
     	FilterManager.registerFilter(CustomGiveClientFilter.class, CustomGiveServerFilter.class);
-    	
+    	FilterManager.registerFilter(ItemSpawnerClientFilter.class, ItemSpawnerServerFilter.class);
     	
     	FilterManager.registerProvider(SpawnerFilterProvider.class);
 	}

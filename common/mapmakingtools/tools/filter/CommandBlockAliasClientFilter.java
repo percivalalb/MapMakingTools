@@ -52,9 +52,8 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
 	@Override
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
-		gui.setYSize(104);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 104) / 2;
+        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
         this.fld_alias = new GuiTextFieldNonInteractable(gui.getFont(), topX + 20, topY +  45, 200, 20);
         this.fld_alias.setMaxStringLength(32);
         this.btn_ok = new GuiButton(0, topX + 140, topY + 70, 60, 20, "OK");
@@ -128,7 +127,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
 	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 104) / 2;
+        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
         gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
 	}
 	

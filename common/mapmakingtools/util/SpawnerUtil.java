@@ -8,6 +8,7 @@ import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.helper.ServerHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -41,6 +42,14 @@ public class SpawnerUtil {
 			ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).set(minecartIndex, newRandomMinecart);
 			spawnerLogic.setRandomEntity(newRandomMinecart);
 		}
+	}
+	
+	public static void setItemType(MobSpawnerBaseLogic spawnerLogic, ItemStack item, int minecartIndex) {
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		tag.setTag("Item", item.writeToNBT(new NBTTagCompound()));
+		
+		spawnerLogic.setRandomEntity(randomMinecart);
 	}
 	
 	public static void setMobArmor(MobSpawnerBaseLogic spawnerLogic, ItemStack helment, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack heldItem, int minecartIndex) {
@@ -87,11 +96,37 @@ public class SpawnerUtil {
 		return equipment;
 	}
 	
+	public static double getPositionX(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		NBTTagList posList = tag.getTagList("Pos", 6);
+		return posList.func_150309_d(0);
+	}
+	
+	public static double getPositionY(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		NBTTagList posList = tag.getTagList("Pos", 6);
+		return posList.func_150309_d(1);
+	}
+	
+	public static double getPositionZ(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		NBTTagList posList = tag.getTagList("Pos", 6);
+		return posList.func_150309_d(2);
+	}
+	
+	public static boolean isSpawnPositionRandom(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = randomMinecart.field_98222_b;
+		return tag.hasKey("Pos", 6);
+	}
+	
+	
 	public static void confirmHasRandomMinecart(MobSpawnerBaseLogic spawnerLogic) {
-		if(spawnerLogic.getRandomEntity() != null) {
-			FMLLog.info("Has Random minecart");
+		if(spawnerLogic.getRandomEntity() != null)
 			return;
-		}
 		
 		NBTTagCompound data = new NBTTagCompound();
 		data.setInteger("Weight", 1);

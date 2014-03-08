@@ -63,7 +63,7 @@ public class CustomGiveClientFilter extends IFilterClient {
         this.tempCommand.setMaxStringLength(32767);
         this.tempCommand.setEnabled(false);
         this.tempCommand.setText(this.lastText);
-        
+        this.tempCommand.setCursorPositionZero();
         gui.getButtonList().add(this.btnOk);
         gui.getTextBoxList().add(this.tempCommand);
 	}

@@ -11,10 +11,12 @@ import mapmakingtools.network.packet.PacketUpdateEntity;
 import mapmakingtools.tools.filter.packet.PacketCommandBlockAlias;
 import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
+import mapmakingtools.tools.filter.packet.PacketItemSpawner;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
 import mapmakingtools.tools.filter.packet.PacketMobArmorRemoveIndex;
 import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
+import mapmakingtools.tools.filter.packet.PacketMobPosition;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import mapmakingtools.tools.filter.packet.PacketPhantomInfinity;
 
@@ -39,7 +41,9 @@ public enum PacketType {
 	MOB_ARMOR_REMOVE_INDEX(PacketMobArmorRemoveIndex.class),
 	MOB_ARMOR_ADD_INDEX(PacketMobArmorAddIndex.class),
 	CUSTOM_GIVE(PacketCustomGive.class),
-	COMMAND_BLOCK_ALIAS(PacketCommandBlockAlias.class);
+	COMMAND_BLOCK_ALIAS(PacketCommandBlockAlias.class),
+	ITEM_SPAWNER(PacketItemSpawner.class),
+	MOB_POSITION(PacketMobPosition.class);
 	
 	public Class<? extends IPacket> packetClass;
 	

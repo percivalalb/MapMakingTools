@@ -9,24 +9,29 @@ import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
+import mapmakingtools.tools.filter.ItemSpawnerServerFilter;
+import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketFillInventory extends IPacket {
+public class PacketItemSpawner extends IPacket {
 
 	public int x, y, z;
+	public int minecartIndex;
 	
-	public PacketFillInventory() {}
-	public PacketFillInventory(int x, int y, int z) {
+	public PacketItemSpawner() {}
+	public PacketItemSpawner(int x, int y, int z, int minecartIndex) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.minecartIndex = minecartIndex;
 	}
 
 	@Override
@@ -34,6 +39,7 @@ public class PacketFillInventory extends IPacket {
 		this.x = data.readInt();
 		this.y = data.readInt();
 		this.z = data.readInt();
+		this.minecartIndex = data.readInt();
 	}
 
 	@Override
@@ -41,6 +47,7 @@ public class PacketFillInventory extends IPacket {
 		data.writeInt(this.x);
 		data.writeInt(this.y);
 		data.writeInt(this.z);
+		data.writeInt(this.minecartIndex);
 	}
 
 	@Override
@@ -51,19 +58,15 @@ public class PacketFillInventory extends IPacket {
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
-			if(container.filterCurrent instanceof FillInventoryServerFilter) {
+			if(container.filterCurrent instanceof ItemSpawnerServerFilter) {
 				
-				FillInventoryServerFilter filterCurrent = (FillInventoryServerFilter)container.filterCurrent;
-				if (tile instanceof IInventory) {
+				ItemSpawnerServerFilter filterCurrent = (ItemSpawnerServerFilter)container.filterCurrent;
+				if (tile instanceof TileEntityMobSpawner) {
+					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					
-			    	for(int var8 = 0; var8 < ((IInventory)tile).getSizeInventory(); ++var8) {
-			    		ItemStack newStack = null;
-			    		if(container.getSlot(0).getStack() != null) {
-			    			newStack = container.getSlot(0).getStack().copy();
-			    			newStack.stackSize = ((IPhantomSlot)container.getSlot(0)).isUnlimited() ? -1 : container.getSlot(0).getStack().stackSize;
-			    		}
-			    		((IInventory)tile).setInventorySlotContents(var8, newStack);
-			    	}
+					ItemStack item = container.getSlot(0).getStack().copy();
+					SpawnerUtil.setItemType(spawner.func_145881_a(), item, this.minecartIndex);
+					SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 			    	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.fillinventory.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
 					chatComponent.getChatStyle().setItalic(true);
 					player.addChatMessage(chatComponent);

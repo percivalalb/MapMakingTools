@@ -213,6 +213,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	this.buttonList.add(new GuiButton(148, topX + xFakeSize() + 3,  topY - 15, 20, 20, "<"));
         	this.buttonList.add(new GuiButton(149, topX + xFakeSize() + 26, topY - 15, 20, 20, ">"));
         }
+
+        this.setYSize(100);
         
         if(filterCurrent != null)
         	filterCurrent.initGui(this);
