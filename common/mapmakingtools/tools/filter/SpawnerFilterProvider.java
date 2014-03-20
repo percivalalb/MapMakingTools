@@ -26,6 +26,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
 		filterList.add(FilterManager.getClientFilterFromClass(MobTypeClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(SpawnerTimingClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(MobPositionClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(MobArmorClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(ItemSpawnerClientFilter.class));
@@ -41,6 +42,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
 		
 		filterList.add(FilterManager.getServerFilterFromClass(MobTypeServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(SpawnerTimingServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(MobPositionServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(MobArmorServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(ItemSpawnerServerFilter.class));

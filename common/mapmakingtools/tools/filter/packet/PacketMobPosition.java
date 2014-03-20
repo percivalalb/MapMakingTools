@@ -59,7 +59,7 @@ public class PacketMobPosition extends IPacket {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		TileEntity tile = player.worldObj.getTileEntity(x, y, z);
+		TileEntity tile = player.worldObj.getTileEntity(this.x, this.y, this.z);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			double xMotionNO;

@@ -36,6 +36,7 @@ public class MapMakingTools {
     	proxy.onPreLoad();
     	ModItems.inti();
     	proxy.registerFilters();
+    	proxy.registerFlipped();
     }
     
     @EventHandler

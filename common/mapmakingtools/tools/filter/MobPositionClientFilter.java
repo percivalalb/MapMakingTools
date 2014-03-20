@@ -153,11 +153,6 @@ public class MobPositionClientFilter extends IFilterClientSpawner {
 	}
 	
 	@Override
-	public String getErrorMessage(IGuiFilter gui) { 
-		return EnumChatFormatting.RED + StatCollector.translateToLocal("mapmakingtools.filter.mobposition.error");
-	}
-	
-	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenMedium);

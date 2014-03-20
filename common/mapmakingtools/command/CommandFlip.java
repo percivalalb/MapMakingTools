@@ -32,7 +32,7 @@ public class CommandFlip extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.commands.build.rotate.usage";
+		return "mapmakingtools.commands.build.flip.usage";
 	}
 
 	@Override

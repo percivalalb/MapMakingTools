@@ -1,6 +1,9 @@
 package mapmakingtools.tools;
 
+import cpw.mods.fml.common.FMLLog;
+import mapmakingtools.api.FlippedManager;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -36,9 +39,12 @@ public class CachedBlock {
 			tileEntity.writeToNBT(tagCompound);
 			this.tileEntity = TileEntity.createAndLoadEntity(tagCompound);
 		}
+		if(Block.blockRegistry.getNameForObject(block) == Block.blockRegistry.getNameForObject(Blocks.dropper))
+			FMLLog.info("Meta: %d", meta);
 	}
 	
 	public void clearTileEntity(World world, int x, int y, int z) {
+		world.setBlock(x, y, z, Blocks.air, 0, 2);
 		world.removeTileEntity(x, y, z);
 	}
 	
@@ -66,7 +72,7 @@ public class CachedBlock {
 		this.orginalWorld.setBlock(newX, newY, newZ, this.block, this.meta, 2);
 		if(this.tileEntity != null)
 			this.orginalWorld.setTileEntity(newX, newY, newZ, this.tileEntity);
-		//FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
+		FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
 
 		return replacementCache;
 	}
