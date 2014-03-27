@@ -21,6 +21,7 @@ import net.minecraft.util.Facing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -37,6 +38,8 @@ public class ActionHandler {
 		int y = event.y;
 		int z = event.z;
 		int side = event.face;
+		
+		FMLLog.info("" + world.getBlockMetadata(x, y, z));
 		
 		switch(event.action) {
 		case LEFT_CLICK_BLOCK:

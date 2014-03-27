@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiButton;
  */
 public class GuiButtonTextColour extends GuiButton {
 
-	public int textColourIndex = TextColour.BLACK.ordinal();
+	public int textColourIndex = TextColour.GOLD.ordinal();
 	private Minecraft mc = Minecraft.getMinecraft();
 	
 	public GuiButtonTextColour(int id, int xPosition, int yPosition, int width, int height) {

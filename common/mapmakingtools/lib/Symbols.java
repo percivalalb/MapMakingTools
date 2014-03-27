@@ -5,5 +5,5 @@ package mapmakingtools.lib;
  */
 public class Symbols {
 
-	public static final String colourSymbol = String.valueOf((char)8198);
+	public static final String selectionSign = String.valueOf((char)167);
 }

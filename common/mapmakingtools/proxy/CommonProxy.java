@@ -7,7 +7,9 @@ import mapmakingtools.api.FlippedManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterServer;
 import mapmakingtools.client.gui.GuiFilter;
+import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.tools.filter.CommandBlockAliasClientFilter;
 import mapmakingtools.tools.filter.CommandBlockAliasServerFilter;
 import mapmakingtools.tools.filter.CustomGiveClientFilter;
@@ -59,6 +61,7 @@ public class CommonProxy implements IGuiHandler {
 
 	public static final int ID_FILTER_BLOCK = 0;
 	public static final int ID_FILTER_ENTITY = 1;
+	public static final int GUI_ID_ITEM_EDITOR = 2;
 	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -71,6 +74,9 @@ public class CommonProxy implements IGuiHandler {
 			List<IFilterServer> filterList = FilterManager.getServerEntitiesFilters(player, world.getEntityByID(x));
 			if(filterList.size() > 0)
 				return new ContainerFilter(filterList, player).setEntityId(x);
+		}
+		else if(ID == GUI_ID_ITEM_EDITOR) {
+			return new ContainerItemEditor(player, x);
 		}
 		return null;
 	}
@@ -86,6 +92,9 @@ public class CommonProxy implements IGuiHandler {
 			List<IFilterClient> filterList = FilterManager.getClientEntitiesFilters(player, world.getEntityByID(x));
 			if(filterList.size() > 0)
 				return new GuiFilter(filterList, player, x);
+		}
+		else if(ID == GUI_ID_ITEM_EDITOR) {
+			return new GuiItemEditor(player, x);
 		}
 		return null;
 	}

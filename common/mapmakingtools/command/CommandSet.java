@@ -64,6 +64,7 @@ public class CommandSet extends CommandBase {
 					for(int z = data.getMinZ(); z <= data.getMaxZ(); ++z) {
 						CachedBlock undo = new CachedBlock(world, x, y, z);
 						world.setBlock(x, y, z, block, meta, 2);
+						world.setBlockMetadataWithNotify(x, y, z, meta, 2);
 						list.add(undo);
 						++blocks;
 					}

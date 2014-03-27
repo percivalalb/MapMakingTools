@@ -2,6 +2,7 @@ package mapmakingtools.tools;
 
 import cpw.mods.fml.common.FMLLog;
 import mapmakingtools.api.FlippedManager;
+import mapmakingtools.handler.EntityJoinWorldHandler;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,8 +40,8 @@ public class CachedBlock {
 			tileEntity.writeToNBT(tagCompound);
 			this.tileEntity = TileEntity.createAndLoadEntity(tagCompound);
 		}
-		if(Block.blockRegistry.getNameForObject(block) == Block.blockRegistry.getNameForObject(Blocks.dropper))
-			FMLLog.info("Meta: %d", meta);
+		//if(Block.blockRegistry.getNameForObject(block) == Block.blockRegistry.getNameForObject(Blocks.dropper))
+		//	FMLLog.info("Meta: %d", meta);
 	}
 	
 	public void clearTileEntity(World world, int x, int y, int z) {
@@ -51,7 +52,8 @@ public class CachedBlock {
 	public CachedBlock setCachedBlock() { 
 		CachedBlock replacementCache = new CachedBlock(this);
 		this.clearTileEntity(this.orginalWorld, this.x, this.y, this.z);
-		this.orginalWorld.setBlock(this.x, this.y, this.z, this.block, this.meta, 2);
+		this.orginalWorld.setBlock(this.x, this.y, this.z, this.block, 0, 2);
+		this.orginalWorld.setBlockMetadataWithNotify(this.x, this.y, this.z, this.meta, 2);
 		if(this.tileEntity != null)
 			this.orginalWorld.setTileEntity(this.x, this.y, this.z, this.tileEntity);
 		return replacementCache;
@@ -68,12 +70,16 @@ public class CachedBlock {
 			newY = data.getMaxY() - (this.y - data.getMinY());
 	
 		CachedBlock replacementCache = new CachedBlock(this.orginalWorld, newX, newY, newZ);
+		//Stops any entities being destroyed from the block break
+		EntityJoinWorldHandler.shouldSpawnEntities = false;
 		this.clearTileEntity(this.orginalWorld, newX, newY, newZ);
-		this.orginalWorld.setBlock(newX, newY, newZ, this.block, this.meta, 2);
+		this.orginalWorld.setBlock(newX, newY, newZ, this.block, 0, 2);
+		this.orginalWorld.setBlockMetadataWithNotify(newX, newY, newZ, this.meta, 2);
 		if(this.tileEntity != null)
 			this.orginalWorld.setTileEntity(newX, newY, newZ, this.tileEntity);
 		FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
-
+		EntityJoinWorldHandler.shouldSpawnEntities = true;
+		
 		return replacementCache;
 	}
 	

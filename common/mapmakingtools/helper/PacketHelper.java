@@ -2,7 +2,9 @@ package mapmakingtools.helper;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -25,16 +27,6 @@ public class PacketHelper {
             byte[] data = CompressedStreamTools.compress(tagCompound);
             bytes.writeShort((short)data.length);
             bytes.writeBytes(data);
-        }
-    }
-	
-	public static void writeNBTTagCompound(NBTTagCompound tagCompound, DataOutputStream dos) throws IOException {
-        if (tagCompound == null)
-        	dos.writeShort(-1);
-        else {
-            byte[] data = CompressedStreamTools.compress(tagCompound);
-            dos.writeShort((short)data.length);
-            dos.write(data);
         }
     }
 	
@@ -104,18 +96,6 @@ public class PacketHelper {
 	    }
 	}
 	
-	public static NBTTagCompound readNBTTagCompound(DataInputStream dis) throws IOException {
-	    short length = dis.readShort();
-
-	    if (length < 0)
-	        return null;
-	    else {
-	        byte[] data = new byte[length];
-	        dis.readFully(data);
-	        return CompressedStreamTools.decompress(data);
-	    }
-	}
-	
 	public static ItemStack readItemStack(ByteBuf bytes) throws IOException {
         ItemStack itemstack = null;
         short short1 = bytes.readShort();
@@ -130,9 +110,6 @@ public class PacketHelper {
         return itemstack;
     }
 
-    /**
-     * Writes the ItemStack's ID (short), then size (byte), then damage. (short)
-     */
     public static void writeItemStack(ItemStack item, ByteBuf bytes) throws IOException {
         if (item == null) {
         	bytes.writeShort(-1);
@@ -148,6 +125,68 @@ public class PacketHelper {
             }
 
             writeNBTTagCompound(nbttagcompound, bytes);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public static ItemStack readItemStack(DataInput dataInput) throws IOException {
+        ItemStack itemstack = null;
+        short short1 = dataInput.readShort();
+
+        if (short1 >= 0) {
+            byte b0 = dataInput.readByte();
+            short short2 = dataInput.readShort();
+            itemstack = new ItemStack(Item.getItemById(short1), b0, short2);
+            itemstack.stackTagCompound = readNBTTagCompound(dataInput);
+        }
+
+        return itemstack;
+    }
+
+    public static void writeItemStack(ItemStack item, DataOutput dataOutput) throws IOException {
+        if (item == null) {
+        	dataOutput.writeShort(-1);
+        }
+        else {
+        	dataOutput.writeShort(Item.getIdFromItem(item.getItem()));
+        	dataOutput.writeByte(item.stackSize);
+        	dataOutput.writeShort(item.getItemDamage());
+            NBTTagCompound nbttagcompound = null;
+
+            if (item.getItem().isDamageable() || item.getItem().getShareTag()) {
+                nbttagcompound = item.stackTagCompound;
+            }
+
+            writeNBTTagCompound(nbttagcompound, dataOutput);
+        }
+    }
+    
+	public static NBTTagCompound readNBTTagCompound(DataInput dataInput) throws IOException {
+	    short length = dataInput.readShort();
+
+	    if (length < 0)
+	        return null;
+	    else {
+	        byte[] data = new byte[length];
+	        dataInput.readFully(data);
+	        return CompressedStreamTools.decompress(data);
+	    }
+	}
+    
+    public static void writeNBTTagCompound(NBTTagCompound tagCompound, DataOutput dataOutput) throws IOException {
+        if (tagCompound == null)
+        	dataOutput.writeShort(-1);
+        else {
+            byte[] data = CompressedStreamTools.compress(tagCompound);
+            dataOutput.writeShort((short)data.length);
+            dataOutput.write(data);
         }
     }
 }

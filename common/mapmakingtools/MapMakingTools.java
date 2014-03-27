@@ -2,6 +2,7 @@ package mapmakingtools;
 
 import mapmakingtools.handler.ActionHandler;
 import mapmakingtools.handler.CommandHandler;
+import mapmakingtools.handler.EntityJoinWorldHandler;
 import mapmakingtools.handler.PlayerTrackerHandler;
 import mapmakingtools.handler.WorldSaveHandler;
 import mapmakingtools.lib.Reference;
@@ -45,6 +46,7 @@ public class MapMakingTools {
     	NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     	MinecraftForge.EVENT_BUS.register(new ActionHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldSaveHandler());
+    	MinecraftForge.EVENT_BUS.register(new EntityJoinWorldHandler());
     	FMLCommonHandler.instance().bus().register(new PlayerTrackerHandler());
     	proxy.registerHandlers();
     }

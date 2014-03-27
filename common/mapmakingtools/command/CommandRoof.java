@@ -69,6 +69,7 @@ public class CommandRoof extends CommandBase {
 				for(int z = data.getMinZ(); z <= data.getMaxZ(); ++z) {
 					CachedBlock undo = new CachedBlock(world, x, maxY, z);
 					world.setBlock(x, maxY, z, block, meta, 2);
+					world.setBlockMetadataWithNotify(x, maxY, z, meta, 2);
 					list.add(undo);
 					++blocks;
 				}

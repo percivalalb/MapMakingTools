@@ -3,8 +3,6 @@ package mapmakingtools.tools.flipped;
 import java.util.Arrays;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLLog;
-
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

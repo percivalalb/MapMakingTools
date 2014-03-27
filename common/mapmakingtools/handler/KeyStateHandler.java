@@ -1,7 +1,10 @@
 package mapmakingtools.handler;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.ReflectionHelper;
+import mapmakingtools.network.packet.PacketItemEditorUpdate;
+import mapmakingtools.network.packet.PacketOpenItemEditor;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
@@ -49,13 +52,15 @@ public class KeyStateHandler {
                         Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
                         
                         if (slot.inventory instanceof InventoryPlayer && isPointInRegion(container, slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, xMouse, yMouse) && slot.func_111238_b()) {
+                        	InventoryPlayer playerInventory = (InventoryPlayer)slot.inventory;
                         	if(slot.getHasStack()) {
                         		ItemStack stack = slot.getStack();
                         		int index = slot.getSlotIndex();
-                        		
+                        		if(index >= 36)
+                        			index -= 36;
                             	FMLLog.info(stack.getDisplayName() + " " + index);
  
-                            	
+                            	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketOpenItemEditor(index));
                             	
                         	}
                         }
@@ -64,7 +69,6 @@ public class KeyStateHandler {
             }
             else if(!tickEnd) {
             	//Key Released
-            	FMLLog.info("Released");
             }
             if (tickEnd)
                 keyDown = state;

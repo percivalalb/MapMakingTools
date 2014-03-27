@@ -2,6 +2,8 @@ package mapmakingtools.network;
 
 import mapmakingtools.network.packet.PacketEditBlock;
 import mapmakingtools.network.packet.PacketEditEntity;
+import mapmakingtools.network.packet.PacketItemEditorUpdate;
+import mapmakingtools.network.packet.PacketOpenItemEditor;
 import mapmakingtools.network.packet.PacketSelectedFilter;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
@@ -32,6 +34,8 @@ public enum PacketType {
 	UPDATE_ENTITY(PacketUpdateEntity.class),
 	EDIT_BLOCK(PacketEditBlock.class),
 	EDIT_ENTITY(PacketEditEntity.class),
+	OPEN_ITEM_EDITOR(PacketOpenItemEditor.class),
+	UPDATE_ITEM_EDITOR(PacketItemEditorUpdate.class),
 	SELECTED_FILTER(PacketSelectedFilter.class),
 	PHANTOM_INFINITY(PacketPhantomInfinity.class),
 	FILL_INVENTORY(PacketFillInventory.class),

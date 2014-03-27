@@ -4,6 +4,7 @@ import mapmakingtools.command.CommandClearPoints;
 import mapmakingtools.command.CommandFlip;
 import mapmakingtools.command.CommandFloor;
 import mapmakingtools.command.CommandRedo;
+import mapmakingtools.command.CommandReplace;
 import mapmakingtools.command.CommandRoof;
 import mapmakingtools.command.CommandRotate;
 import mapmakingtools.command.CommandSet;
@@ -26,5 +27,6 @@ public class CommandHandler {
         event.registerServerCommand(new CommandRedo());
         event.registerServerCommand(new CommandRotate());
         event.registerServerCommand(new CommandFlip());
+        event.registerServerCommand(new CommandReplace());
     }
 }

@@ -8,6 +8,7 @@ mapmakingtools.commands.build.undo.usage=//undo
 mapmakingtools.commands.build.redo.usage=//redo
 mapmakingtools.commands.build.rotate.usage=//rotate <rotation>
 mapmakingtools.commands.build.flip.usage=//flip <mode>
+mapmakingtools.commands.build.replace.usage=//replace <block> <block> [meta] [meta] 
 
 mapmakingtools.commands.build.postionsnotselected=You need make to selections before you can complete this command.
 mapmakingtools.commands.build.hasnotingtoundo=There is nothing to undo.
@@ -22,6 +23,7 @@ mapmakingtools.commands.build.undo.complete=%s block(s) have been undone.
 mapmakingtools.commands.build.redo.complete=%s block(s) have been redone.
 mapmakingtools.commands.build.rotate.complete=Next area pasted will be at %s degrees.
 mapmakingtools.commands.build.flip.complete=%s block(s) have been flipped.
+mapmakingtools.commands.build.replace.complete=%s block(s) have been replaced.
 
 mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown

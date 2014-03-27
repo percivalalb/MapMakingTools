@@ -1,8 +1,5 @@
 package mapmakingtools.tools.flipped;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -12,12 +9,17 @@ import mapmakingtools.api.IPasteFlip;
  * @author ProPercivalalb
  */
 public class FlippedWoodenSlab implements IPasteFlip {
-
-	/** Meta of block at different rotations, NORTH-EAST-SOUTH-WEST **/
-	public static List<Integer> DIRECTIONS = Arrays.asList();
 	
 	@Override
 	public void onFlip(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, int flipMode) {
-		
+		if(flipMode == 0) {
+			int newMeta = meta;
+			
+			if(meta >= 8)
+				newMeta -= 8;
+			if(meta <= 7)
+				newMeta += 8;
+			world.setBlockMetadataWithNotify(x, y, z, newMeta, 2);
+		}
 	}
 }

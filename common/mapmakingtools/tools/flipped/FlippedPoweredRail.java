@@ -21,10 +21,10 @@ public class FlippedPoweredRail implements IPasteFlip {
 		if(flipMode == 0) 
 			return;
 		
-		int indexOf = DIRECTIONS.indexOf(meta);
+		int indexOf = DIRECTIONS.lastIndexOf(meta);
 		int direction = (indexOf - indexOf % 4) / 4;
 		int type = indexOf % 4;
-			
+		//TODO
 		if(flipMode == 1 && (direction == 1 || direction == 3) && !(type == 1 || type == 3)) 
 			return;
 		if(flipMode == 2 && (direction == 0 || direction == 2) && !(type == 1 || type == 3)) 
@@ -34,7 +34,7 @@ public class FlippedPoweredRail implements IPasteFlip {
 		if(flipMode == 2 && (direction == 1 || direction == 3)  && (type == 1 || type == 3)) 
 			return;
 			
-		direction += 4;
+		direction += 2;
 		direction %= 4;
 					
 		world.setBlockMetadataWithNotify(x, y, z, DIRECTIONS.get(direction * 4 + type), 2);
