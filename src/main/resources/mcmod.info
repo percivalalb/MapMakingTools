@@ -1,10 +1,16 @@
-[{
-	"modid": "MapMakingTools",
-	"name": "Map Making Tools",
-	"description": "Very useful for making custom adventure maps.",
-	"version": "v2.0.4a",
-	"mcversion": "1.6.2",
-	"updateUrl": "http://www.minecraftforum.net/topic/1652014-/",
-	"authors": [ "ProPercivalalb" ],
-	"credits": "Authored By ProPercivalalb"
-}]
+[
+{
+  "modid": "examplemod",
+  "name": "Example Mod",
+  "description": "Example placeholder mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["ExampleDude"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

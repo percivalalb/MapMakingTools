@@ -2,6 +2,7 @@ package mapmakingtools.tools;
 
 import cpw.mods.fml.common.FMLLog;
 import mapmakingtools.api.FlippedManager;
+import mapmakingtools.api.RotationManager;
 import mapmakingtools.handler.EntityJoinWorldHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +33,10 @@ public class CachedBlock {
 	}
 	
 	public CachedBlock(World world, int x, int y, int z, EntityPlayer player) {
-		this(world, x - MathHelper.floor_double(player.posX), y - MathHelper.floor_double(player.posY), z - MathHelper.floor_double(player.posZ));
+		this(world, x, y, z);
+		this.x -= MathHelper.floor_double(player.posX);
+		this.y -= MathHelper.floor_double(player.posY);		
+		this.z -= MathHelper.floor_double(player.posZ);
 	}
 	
 	public CachedBlock(World world, int x, int y, int z) {
@@ -95,15 +99,14 @@ public class CachedBlock {
 		CachedBlock replacementCache = new CachedBlock(data.player.worldObj, posX + newX, posY + newY, posZ + newZ);
 		//Stops any entities being destroyed from the block break
 		EntityJoinWorldHandler.shouldSpawnEntities = false;
-		FMLLog.info("%d, %d, %d",  posX + newX, posY + newY, posZ + newZ); 
 		this.clearTileEntity(data.player.worldObj, posX + newX, posY + newY, posZ + newZ);
 		data.player.worldObj.setBlock(posX + newX, posY + newY, posZ + newZ, this.block, 0, 2);
 		data.player.worldObj.setBlockMetadataWithNotify(posX + newX, posY + newY, posZ + newZ, this.meta, 2);
 		if(this.tileEntity != null)
 			data.player.worldObj.setTileEntity(posX + newX, posY + newY, posZ + newZ, this.tileEntity);
-		//RotationManager.onBlockRotation(this, blockId, player.worldObj, posX + newX, posY + newY, posZ + newZ, rotation);
-	
+		RotationManager.onBlockRotation(this.block, this.meta, this.tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, rotation);
 		EntityJoinWorldHandler.shouldSpawnEntities = true;
+		
 		return replacementCache; 												
 	}
 	
