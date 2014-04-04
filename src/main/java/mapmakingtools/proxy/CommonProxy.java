@@ -6,6 +6,7 @@ import mapmakingtools.api.FilterManager;
 import mapmakingtools.api.FlippedManager;
 import mapmakingtools.api.IFilterClient;
 import mapmakingtools.api.IFilterServer;
+import mapmakingtools.api.RotationManager;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.container.ContainerFilter;
@@ -48,6 +49,30 @@ import mapmakingtools.tools.flipped.FlippedTrapdoor;
 import mapmakingtools.tools.flipped.FlippedTripwireSource;
 import mapmakingtools.tools.flipped.FlippedVanillaTrack;
 import mapmakingtools.tools.flipped.FlippedWoodenSlab;
+import mapmakingtools.tools.rotation.RotationAnvil;
+import mapmakingtools.tools.rotation.RotationBed;
+import mapmakingtools.tools.rotation.RotationButton;
+import mapmakingtools.tools.rotation.RotationChest;
+import mapmakingtools.tools.rotation.RotationDispenser;
+import mapmakingtools.tools.rotation.RotationDropper;
+import mapmakingtools.tools.rotation.RotationFenceGate;
+import mapmakingtools.tools.rotation.RotationFurnace;
+import mapmakingtools.tools.rotation.RotationHayBale;
+import mapmakingtools.tools.rotation.RotationHopper;
+import mapmakingtools.tools.rotation.RotationLadder;
+import mapmakingtools.tools.rotation.RotationPoweredRail;
+import mapmakingtools.tools.rotation.RotationPumpkin;
+import mapmakingtools.tools.rotation.RotationQuatzPillar;
+import mapmakingtools.tools.rotation.RotationRedstoneComparator;
+import mapmakingtools.tools.rotation.RotationRedstoneRepeater;
+import mapmakingtools.tools.rotation.RotationSignPost;
+import mapmakingtools.tools.rotation.RotationSignWall;
+import mapmakingtools.tools.rotation.RotationStairs;
+import mapmakingtools.tools.rotation.RotationTorch;
+import mapmakingtools.tools.rotation.RotationTrapdoor;
+import mapmakingtools.tools.rotation.RotationTripwireSource;
+import mapmakingtools.tools.rotation.RotationVanillaLog;
+import mapmakingtools.tools.rotation.RotationVanillaTrack;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -116,6 +141,62 @@ public class CommonProxy implements IGuiHandler {
     	
     	FilterManager.registerProvider(SpawnerFilterProvider.class);
 	}
+	
+
+	public void registerRotation() {
+		RotationManager.registerRotationHandler(Blocks.log, new RotationVanillaLog());
+		RotationManager.registerRotationHandler(Blocks.log2, new RotationVanillaLog());
+		RotationManager.registerRotationHandler(Blocks.quartz_block, new RotationQuatzPillar());
+		RotationManager.registerRotationHandler(Blocks.furnace, new RotationFurnace());
+		RotationManager.registerRotationHandler(Blocks.lit_furnace, new RotationFurnace());
+		RotationManager.registerRotationHandler(Blocks.dropper, new RotationDropper());
+		RotationManager.registerRotationHandler(Blocks.dispenser, new RotationDispenser());
+		RotationManager.registerRotationHandler(Blocks.chest, new RotationChest());
+		RotationManager.registerRotationHandler(Blocks.trapped_chest, new RotationChest());
+		RotationManager.registerRotationHandler(Blocks.ender_chest, new RotationChest());
+		RotationManager.registerRotationHandler(Blocks.anvil, new RotationAnvil());
+		RotationManager.registerRotationHandler(Blocks.oak_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.spruce_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.birch_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.jungle_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.acacia_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.dark_oak_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.brick_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.stone_brick_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.stone_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.nether_brick_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.sandstone_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.quartz_stairs, new RotationStairs());
+		RotationManager.registerRotationHandler(Blocks.hay_block, new RotationHayBale());
+		RotationManager.registerRotationHandler(Blocks.standing_sign, new RotationSignPost());
+		RotationManager.registerRotationHandler(Blocks.wall_sign, new RotationSignWall());
+		RotationManager.registerRotationHandler(Blocks.rail, new RotationVanillaTrack());
+		RotationManager.registerRotationHandler(Blocks.golden_rail, new RotationPoweredRail());
+		RotationManager.registerRotationHandler(Blocks.detector_rail, new RotationPoweredRail());
+		RotationManager.registerRotationHandler(Blocks.activator_rail, new RotationPoweredRail());
+		RotationManager.registerRotationHandler(Blocks.hopper, new RotationHopper());
+		RotationManager.registerRotationHandler(Blocks.bed, new RotationBed());
+		RotationManager.registerRotationHandler(Blocks.trapdoor, new RotationTrapdoor());
+		RotationManager.registerRotationHandler(Blocks.fence_gate, new RotationFenceGate());
+		RotationManager.registerRotationHandler(Blocks.pumpkin, new RotationPumpkin());
+		RotationManager.registerRotationHandler(Blocks.lit_pumpkin, new RotationPumpkin());
+		RotationManager.registerRotationHandler(Blocks.wooden_button, new RotationButton());
+		RotationManager.registerRotationHandler(Blocks.stone_button, new RotationButton());
+		RotationManager.registerRotationHandler(Blocks.tripwire_hook, new RotationTripwireSource());
+		//TODO Complete door rotation
+		//RotationManager.registerRotationHandler(Blocks.doorWood, new RotationDoor());
+		//RotationManager.registerRotationHandler(Blocks.doorIron, new RotationDoor());
+		//RotationManager.registerRotationHandler(Blocks.pistonBase, new RotationPistonBase());
+		//RotationManager.registerRotationHandler(Blocks.pistonStickyBase, new RotationPistonBase());
+		RotationManager.registerRotationHandler(Blocks.ladder, new RotationLadder());
+		RotationManager.registerRotationHandler(Blocks.torch, new RotationTorch());
+		RotationManager.registerRotationHandler(Blocks.unlit_redstone_torch, new RotationTorch());
+		RotationManager.registerRotationHandler(Blocks.redstone_torch, new RotationTorch());
+		RotationManager.registerRotationHandler(Blocks.unpowered_repeater, new RotationRedstoneRepeater());
+		RotationManager.registerRotationHandler(Blocks.powered_repeater, new RotationRedstoneRepeater());
+		RotationManager.registerRotationHandler(Blocks.unpowered_comparator, new RotationRedstoneComparator());
+		RotationManager.registerRotationHandler(Blocks.powered_comparator, new RotationRedstoneComparator());
+	}
 
 	public void registerFlipped() {
 		FlippedManager.registerFlippedHandler(Blocks.stone_slab, new FlippedStoneSlab());
@@ -162,5 +243,6 @@ public class CommonProxy implements IGuiHandler {
 		FlippedManager.registerFlippedHandler(Blocks.detector_rail, new FlippedPoweredRail());
 		FlippedManager.registerFlippedHandler(Blocks.activator_rail, new FlippedPoweredRail());
 		//TODO FlippedManager.registerFlippedHandler(Block.bed, new FlippedBed());
+		//TODO Logs, Logs2
 	}
 }

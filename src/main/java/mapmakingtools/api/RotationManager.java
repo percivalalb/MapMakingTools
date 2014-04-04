@@ -15,10 +15,10 @@ import net.minecraft.world.World;
  */
 public class RotationManager {
 	
-	private static final Map<Integer, IPasteRotate> map = new Hashtable<Integer, IPasteRotate>();
+	private static final Map<String, IPasteRotate> map = new Hashtable<String, IPasteRotate>();
 	
-	public static void registerRotationHandler(int blockId, IPasteRotate handler) {
-		map.put(blockId, handler);
+	public static void registerRotationHandler(Block block, IPasteRotate handler) {
+		map.put(Block.blockRegistry.getNameForObject(block), handler);
 	}
 	
 	public static void onBlockRotation(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, int rotation) {

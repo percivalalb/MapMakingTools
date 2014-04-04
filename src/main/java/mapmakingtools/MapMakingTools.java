@@ -36,7 +36,8 @@ public class MapMakingTools {
     	instance = this;
     	proxy.onPreLoad();
     	ModItems.inti();
-    	proxy.registerFilters();
+    	proxy.registerFilters();  
+    	proxy.registerRotation();
     	proxy.registerFlipped();
     }
     
