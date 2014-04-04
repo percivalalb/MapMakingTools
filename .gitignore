@@ -2,6 +2,14 @@
 ## Eclipse
 #################
 
+.gradle/
+gradle/
+eclipse/
+build/
+gradlew
+gradlew.bat
+build.txt
+
 *.pydevproject
 .project
 .metadata
