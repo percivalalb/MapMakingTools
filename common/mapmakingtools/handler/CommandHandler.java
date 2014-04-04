@@ -1,8 +1,12 @@
 package mapmakingtools.handler;
 
 import mapmakingtools.command.CommandClearPoints;
+import mapmakingtools.command.CommandCopy;
 import mapmakingtools.command.CommandFlip;
 import mapmakingtools.command.CommandFloor;
+import mapmakingtools.command.CommandPaste;
+import mapmakingtools.command.CommandPos1;
+import mapmakingtools.command.CommandPos2;
 import mapmakingtools.command.CommandRedo;
 import mapmakingtools.command.CommandReplace;
 import mapmakingtools.command.CommandRoof;
@@ -28,5 +32,9 @@ public class CommandHandler {
         event.registerServerCommand(new CommandRotate());
         event.registerServerCommand(new CommandFlip());
         event.registerServerCommand(new CommandReplace());
+        event.registerServerCommand(new CommandCopy());
+        event.registerServerCommand(new CommandPaste());
+        event.registerServerCommand(new CommandPos1());
+        event.registerServerCommand(new CommandPos2());
     }
 }

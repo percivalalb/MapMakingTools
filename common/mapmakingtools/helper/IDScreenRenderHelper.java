@@ -23,8 +23,8 @@ public class IDScreenRenderHelper {
 	}
 	
 	public static void addStack(int blockId, int blockMeta) {
-		ItemStack res = new ItemStack(Block.func_149729_e(blockId), 1, blockMeta);
-		stacksDisplay.add(res);
+		//ItemStack res = new ItemStack(Block.func_149729_e(blockId), 1, blockMeta);
+		//stacksDisplay.add(res);
 	}
 	
 	static {

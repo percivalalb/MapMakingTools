@@ -9,6 +9,10 @@ mapmakingtools.commands.build.redo.usage=//redo
 mapmakingtools.commands.build.rotate.usage=//rotate <rotation>
 mapmakingtools.commands.build.flip.usage=//flip <mode>
 mapmakingtools.commands.build.replace.usage=//replace <block> <block> [meta] [meta] 
+mapmakingtools.commands.build.copy.usage=//copy
+mapmakingtools.commands.build.paste.usage//paste
+mapmakingtools.commands.build.pos1.usage=//pos1
+mapmakingtools.commands.build.pos2.usage=//pos2
 
 mapmakingtools.commands.build.postionsnotselected=You need make to selections before you can complete this command.
 mapmakingtools.commands.build.hasnotingtoundo=There is nothing to undo.
@@ -16,6 +20,7 @@ mapmakingtools.commands.build.hasnotingtoredo=There is nothing to redo.
 mapmakingtools.commands.build.nothingtorotate=You must copy something before using //rotate
 mapmakingtools.commands.build.rotationnot90=The angle must be a multiple of 90.
 mapmakingtools.commands.build.flipmodeerror=The mode '%s' is not recognised.
+mapmakingtools.commands.build.nothingtopaste=You have nothing in the buffer to paste.
 
 mapmakingtools.commands.build.roof.complete=%s block(s) have been changed to %s.
 mapmakingtools.commands.build.floor.complete=%s block(s) have been changed to %s.
@@ -24,6 +29,8 @@ mapmakingtools.commands.build.redo.complete=%s block(s) have been redone.
 mapmakingtools.commands.build.rotate.complete=Next area pasted will be at %s degrees.
 mapmakingtools.commands.build.flip.complete=%s block(s) have been flipped.
 mapmakingtools.commands.build.replace.complete=%s block(s) have been replaced.
+mapmakingtools.commands.build.copy.complete=%s block(s) copied.
+mapmakingtools.commands.build.paste.complete=%s block(s) have been pasted.
 
 mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown

@@ -198,12 +198,12 @@ public class ItemStackHelper {
 	 //Other more specific NBT data
 	 public static void setPotionEffects(ItemStack itemStack, int id, int level, int duration, boolean ambient) {
 		 makeSureItemHasTagCompound(itemStack);
-		 NBTTagList var4 = (NBTTagList)itemStack.stackTagCompound.getTag(NBTData.POTION_TAG);
+		 /**NBTTagList var4 = (NBTTagList)itemStack.stackTagCompound.getTag(NBTData.POTION_TAG);
 		 NBTTagCompound var5 = new NBTTagCompound();
 		 var5.setByte(NBTData.POTION_ID, (byte)id);
 		 var5.setByte(NBTData.POTION_AMPLIFIER, (byte)(level - 1));
 		 var5.setInteger(NBTData.POTION_DURATION, duration * 20);
 		 var5.setBoolean(NBTData.POTION_AMBIENT, ambient);
-		 var4.appendTag(var5);
+		 var4.appendTag(var5);**/
 	 }
 }

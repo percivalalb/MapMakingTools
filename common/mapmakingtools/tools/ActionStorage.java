@@ -2,6 +2,8 @@ package mapmakingtools.tools;
 
 import java.util.ArrayList;
 
+import cpw.mods.fml.common.FMLLog;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -41,9 +43,10 @@ public class ActionStorage {
 		return this.cachedRedo.size() > 0;
 	}
 	
-	public void addCopy(ArrayList<CachedBlock> list) {
+	public int addCopy(ArrayList<CachedBlock> list) {
 		this.cachedCopy = list;
 		this.rotationValue = 0;
+		return list.size();
 	}
 	
 	public void addRedo(ArrayList<CachedBlock> list) {
@@ -66,8 +69,18 @@ public class ActionStorage {
 		return this.flippingValue == flipping;
 	}
 	
-	public void paste() {
+	public int paste() {
+		if(!this.hasSomethingToPaste())
+			return 0;
 		
+		FMLLog.info("paste");
+		ArrayList<CachedBlock> newUndo = new ArrayList<CachedBlock>();
+		
+		for(CachedBlock cachedBlock : this.cachedCopy)
+			newUndo.add(cachedBlock.setCachedBlockReletiveToRotated(this.playerData, this.rotationValue));
+		
+		this.cachedUndo.add(newUndo);
+		return newUndo.size();
 	}
 	
 	public int flip(ArrayList<CachedBlock> list) {

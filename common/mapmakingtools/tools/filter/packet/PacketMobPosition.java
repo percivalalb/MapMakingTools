@@ -58,7 +58,7 @@ public class PacketMobPosition extends IPacket {
 	public void execute(EntityPlayer player) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		
+		/**
 		TileEntity tile = player.worldObj.getTileEntity(this.x, this.y, this.z);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
@@ -81,6 +81,6 @@ public class PacketMobPosition extends IPacket {
 			SpawnerHelper.setPosition(tile, xMotionNO, yMotionNO, zMotionNO);
 			
 			player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("filter.mo.complete"));
-		}
+		}**/
 	}
 }

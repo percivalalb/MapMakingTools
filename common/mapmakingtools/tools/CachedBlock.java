@@ -4,9 +4,11 @@ import cpw.mods.fml.common.FMLLog;
 import mapmakingtools.api.FlippedManager;
 import mapmakingtools.handler.EntityJoinWorldHandler;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -21,10 +23,16 @@ public class CachedBlock {
 	public int meta;
 	public TileEntity tileEntity;
 	
-	public CachedBlock(NBTTagCompound tag) { this.readFromNBT(tag); }
+	public CachedBlock(NBTTagCompound tag) { 
+		this.readFromNBT(tag); 
+	}
 	
 	public CachedBlock(CachedBlock cache) {
 		this(cache.orginalWorld, cache.x, cache.y, cache.z);
+	}
+	
+	public CachedBlock(World world, int x, int y, int z, EntityPlayer player) {
+		this(world, x - MathHelper.floor_double(player.posX), y - MathHelper.floor_double(player.posY), z - MathHelper.floor_double(player.posZ));
 	}
 	
 	public CachedBlock(World world, int x, int y, int z) {
@@ -40,8 +48,6 @@ public class CachedBlock {
 			tileEntity.writeToNBT(tagCompound);
 			this.tileEntity = TileEntity.createAndLoadEntity(tagCompound);
 		}
-		//if(Block.blockRegistry.getNameForObject(block) == Block.blockRegistry.getNameForObject(Blocks.dropper))
-		//	FMLLog.info("Meta: %d", meta);
 	}
 	
 	public void clearTileEntity(World world, int x, int y, int z) {
@@ -57,6 +63,48 @@ public class CachedBlock {
 		if(this.tileEntity != null)
 			this.orginalWorld.setTileEntity(this.x, this.y, this.z, this.tileEntity);
 		return replacementCache;
+	}
+	
+	public CachedBlock setCachedBlockReletiveToRotated(PlayerData data, int rotation) { 
+		int posX = MathHelper.floor_double(data.player.posX);
+		int posY = MathHelper.floor_double(data.player.posY);
+		int posZ = MathHelper.floor_double(data.player.posZ);
+		int newX = x;
+		int newY = y;
+		int newZ = z;
+		int backUpX = x;
+		int backUpY = y;
+		int backUpZ = z;
+		
+		switch(rotation) {
+		case 0:
+			break;
+		case 90:
+			newX = -backUpZ;
+			newZ = backUpX;
+			break;
+		case 180:
+			newX = -backUpX;
+			newZ = -backUpZ;
+			break;
+		case 270:
+			newX = backUpZ;
+			newZ = -backUpX;
+			break;
+		}
+		CachedBlock replacementCache = new CachedBlock(data.player.worldObj, posX + newX, posY + newY, posZ + newZ);
+		//Stops any entities being destroyed from the block break
+		EntityJoinWorldHandler.shouldSpawnEntities = false;
+		FMLLog.info("%d, %d, %d",  posX + newX, posY + newY, posZ + newZ); 
+		this.clearTileEntity(data.player.worldObj, posX + newX, posY + newY, posZ + newZ);
+		data.player.worldObj.setBlock(posX + newX, posY + newY, posZ + newZ, this.block, 0, 2);
+		data.player.worldObj.setBlockMetadataWithNotify(posX + newX, posY + newY, posZ + newZ, this.meta, 2);
+		if(this.tileEntity != null)
+			data.player.worldObj.setTileEntity(posX + newX, posY + newY, posZ + newZ, this.tileEntity);
+		//RotationManager.onBlockRotation(this, blockId, player.worldObj, posX + newX, posY + newY, posZ + newZ, rotation);
+	
+		EntityJoinWorldHandler.shouldSpawnEntities = true;
+		return replacementCache; 												
 	}
 	
 	public CachedBlock setCachedBlockReletiveToFlipped(PlayerData data, int flipMode) { 
