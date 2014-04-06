@@ -109,9 +109,11 @@ public class CachedBlock {
 		data.player.worldObj.setBlockMetadataWithNotify(posX + newX, posY + newY, posZ + newZ, this.meta, 2);
 		if(this.tileEntity != null)
 			data.player.worldObj.setTileEntity(posX + newX, posY + newY, posZ + newZ, this.tileEntity);
-		if(rotation != Rotation._000_)
-			RotationManager.onBlockRotation(this.block, this.meta, this.tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, rotation);
-		
+		try {
+			if(rotation != Rotation._000_)
+				RotationManager.onBlockRotation(this.block, this.meta, this.tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, rotation);
+		}
+		catch(Exception e) {}
 		EntityJoinWorldHandler.shouldSpawnEntities = true;
 		
 		return replacementCache; 												
@@ -135,7 +137,10 @@ public class CachedBlock {
 		this.orginalWorld.setBlockMetadataWithNotify(newX, newY, newZ, this.meta, 2);
 		if(this.tileEntity != null)
 			this.orginalWorld.setTileEntity(newX, newY, newZ, this.tileEntity);
-		FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
+		try {
+			FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
+		}
+		catch(Exception e) {}
 		EntityJoinWorldHandler.shouldSpawnEntities = true;
 		
 		return replacementCache;
