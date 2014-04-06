@@ -21,7 +21,7 @@ public class RotationManager {
 		map.put(Block.blockRegistry.getNameForObject(block), handler);
 	}
 	
-	public static void onBlockRotation(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, int rotation) {
+	public static void onBlockRotation(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, Rotation rotation) {
 		String utfId = Block.blockRegistry.getNameForObject(block);
 		if(map.containsKey(utfId))
 			map.get(utfId).onRotate(block, meta, tileEntity, world, x, y, z, rotation);

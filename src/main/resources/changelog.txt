@@ -19,6 +19,7 @@ v2.1.0a
 
 * Fixed the wrench being able to take damage
 * Fixed possible graphical glitches in the mob type filter
+* Fixed rotation of the breaking anvils reverting them to non-broken ones
 
 v2.0.4a (Never released, content pushed to the 1.7 version)
 + Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping! 

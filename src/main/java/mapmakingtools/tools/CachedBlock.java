@@ -2,6 +2,7 @@ package mapmakingtools.tools;
 
 import cpw.mods.fml.common.FMLLog;
 import mapmakingtools.api.FlippedManager;
+import mapmakingtools.api.Rotation;
 import mapmakingtools.api.RotationManager;
 import mapmakingtools.handler.EntityJoinWorldHandler;
 import net.minecraft.block.Block;
@@ -61,15 +62,19 @@ public class CachedBlock {
 	
 	public CachedBlock setCachedBlock() { 
 		CachedBlock replacementCache = new CachedBlock(this);
+		//Stops any entities being destroyed from the block break
+		EntityJoinWorldHandler.shouldSpawnEntities = false;
 		this.clearTileEntity(this.orginalWorld, this.x, this.y, this.z);
 		this.orginalWorld.setBlock(this.x, this.y, this.z, this.block, 0, 2);
 		this.orginalWorld.setBlockMetadataWithNotify(this.x, this.y, this.z, this.meta, 2);
 		if(this.tileEntity != null)
 			this.orginalWorld.setTileEntity(this.x, this.y, this.z, this.tileEntity);
+		EntityJoinWorldHandler.shouldSpawnEntities = true;
+		
 		return replacementCache;
 	}
 	
-	public CachedBlock setCachedBlockReletiveToRotated(PlayerData data, int rotation) { 
+	public CachedBlock setCachedBlockReletiveToRotated(PlayerData data, Rotation rotation) { 
 		int posX = MathHelper.floor_double(data.player.posX);
 		int posY = MathHelper.floor_double(data.player.posY);
 		int posZ = MathHelper.floor_double(data.player.posZ);
@@ -81,17 +86,17 @@ public class CachedBlock {
 		int backUpZ = z;
 		
 		switch(rotation) {
-		case 0:
+		case _000_:
 			break;
-		case 90:
+		case _090_:
 			newX = -backUpZ;
 			newZ = backUpX;
 			break;
-		case 180:
+		case _180_:
 			newX = -backUpX;
 			newZ = -backUpZ;
 			break;
-		case 270:
+		case _270_:
 			newX = backUpZ;
 			newZ = -backUpX;
 			break;
@@ -104,7 +109,9 @@ public class CachedBlock {
 		data.player.worldObj.setBlockMetadataWithNotify(posX + newX, posY + newY, posZ + newZ, this.meta, 2);
 		if(this.tileEntity != null)
 			data.player.worldObj.setTileEntity(posX + newX, posY + newY, posZ + newZ, this.tileEntity);
-		RotationManager.onBlockRotation(this.block, this.meta, this.tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, rotation);
+		if(rotation != Rotation._000_)
+			RotationManager.onBlockRotation(this.block, this.meta, this.tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, rotation);
+		
 		EntityJoinWorldHandler.shouldSpawnEntities = true;
 		
 		return replacementCache; 												

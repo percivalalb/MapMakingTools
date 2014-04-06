@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cpw.mods.fml.common.FMLLog;
 
+import mapmakingtools.api.Rotation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -18,7 +19,7 @@ public class ActionStorage {
 	private ArrayList<ArrayList<CachedBlock>> cachedUndo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<ArrayList<CachedBlock>> cachedRedo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<CachedBlock> cachedCopy = new ArrayList<CachedBlock>();
-	private int rotationValue = 0;
+	private Rotation rotationValue = Rotation._000_;
 	private int flippingValue = 0;
 	
 	public ActionStorage(PlayerData playerData) { this.playerData = playerData; }
@@ -45,7 +46,7 @@ public class ActionStorage {
 	
 	public int addCopy(ArrayList<CachedBlock> list) {
 		this.cachedCopy = list;
-		this.rotationValue = 0;
+		this.rotationValue = Rotation._000_;
 		return list.size();
 	}
 	
@@ -57,8 +58,8 @@ public class ActionStorage {
 		this.cachedUndo.add(list);
 	}
 	
-	public boolean setRotation(int rotation) {
-		if(rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270)
+	public boolean setRotation(Rotation rotation) {
+		if(rotation != null)
 			this.rotationValue = rotation;
 		return this.rotationValue == rotation;
 	}
@@ -73,7 +74,6 @@ public class ActionStorage {
 		if(!this.hasSomethingToPaste())
 			return 0;
 		
-		FMLLog.info("paste");
 		ArrayList<CachedBlock> newUndo = new ArrayList<CachedBlock>();
 		
 		for(CachedBlock cachedBlock : this.cachedCopy)
@@ -127,7 +127,7 @@ public class ActionStorage {
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		tag.setInteger("rotationValue", this.rotationValue);
+		tag.setInteger("rotationValue", this.rotationValue.getValue());
 		tag.setInteger("flippingValue", this.flippingValue);
 		
 		//Cached Undo list
@@ -169,7 +169,7 @@ public class ActionStorage {
 	}
 	
 	public ActionStorage readFromNBT(NBTTagCompound tag) {
-		this.rotationValue = tag.getInteger("rotationValue");
+		this.rotationValue = Rotation.getRotation(tag.getInteger("rotationValue"));
 		this.flippingValue = tag.getInteger("flippingValue");
 		
 		if(tag.hasKey("cachedUndo")) {

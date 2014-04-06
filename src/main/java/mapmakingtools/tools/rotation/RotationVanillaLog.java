@@ -7,17 +7,19 @@ import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import mapmakingtools.api.IPasteRotate;
+import mapmakingtools.api.Rotation;
 
 /**
  * @author ProPercivalalb
  */
 public class RotationVanillaLog implements IPasteRotate {
-
-	/** Meta of block at different rotations, NORTH-EAST-SOUTH-WEST **/
-	public static List<Integer> DIRECTIONS = Arrays.asList(2, 5, 3, 4);
 	
 	@Override
-	public void onRotate(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, int rotation) {
-		
+	public void onRotate(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, Rotation rotation) {
+		int orientation = meta & 12;
+        int type = meta & 3;
+        if(orientation == 0 || rotation == Rotation._180_) return;
+		orientation = orientation == 4 ? 8 : 4;
+		world.setBlockMetadataWithNotify(x, y, z, type | orientation, 2);
 	}	
 }

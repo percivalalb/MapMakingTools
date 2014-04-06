@@ -60,6 +60,7 @@ import mapmakingtools.tools.rotation.RotationFurnace;
 import mapmakingtools.tools.rotation.RotationHayBale;
 import mapmakingtools.tools.rotation.RotationHopper;
 import mapmakingtools.tools.rotation.RotationLadder;
+import mapmakingtools.tools.rotation.RotationLever;
 import mapmakingtools.tools.rotation.RotationPoweredRail;
 import mapmakingtools.tools.rotation.RotationPumpkin;
 import mapmakingtools.tools.rotation.RotationQuatzPillar;
@@ -196,6 +197,7 @@ public class CommonProxy implements IGuiHandler {
 		RotationManager.registerRotationHandler(Blocks.powered_repeater, new RotationRedstoneRepeater());
 		RotationManager.registerRotationHandler(Blocks.unpowered_comparator, new RotationRedstoneComparator());
 		RotationManager.registerRotationHandler(Blocks.powered_comparator, new RotationRedstoneComparator());
+		RotationManager.registerRotationHandler(Blocks.lever, new RotationLever());
 	}
 
 	public void registerFlipped() {
@@ -242,6 +244,7 @@ public class CommonProxy implements IGuiHandler {
 		FlippedManager.registerFlippedHandler(Blocks.golden_rail, new FlippedPoweredRail());
 		FlippedManager.registerFlippedHandler(Blocks.detector_rail, new FlippedPoweredRail());
 		FlippedManager.registerFlippedHandler(Blocks.activator_rail, new FlippedPoweredRail());
+		//TODO FlippedManager.registerFlippedHandler(Block.lever, mew FlippedLever());
 		//TODO FlippedManager.registerFlippedHandler(Block.bed, new FlippedBed());
 		//TODO Logs, Logs2
 	}

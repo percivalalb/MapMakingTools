@@ -9,6 +9,6 @@ import net.minecraft.world.World;
  */
 public interface IPasteRotate {
 
-	public void onRotate(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, int rotation);
+	public void onRotate(Block block, int meta, TileEntity tileEntity, World world, int x, int y, int z, Rotation rotation);
 
 }

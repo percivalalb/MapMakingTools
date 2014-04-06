@@ -2,6 +2,7 @@ package mapmakingtools.command;
 
 import java.util.List;
 
+import mapmakingtools.api.Rotation;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
@@ -48,7 +49,8 @@ public class CommandRotate extends CommandBase {
 		if(param.length < 1)
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		else {
-			boolean didChange = data.getActionStorage().setRotation(parseInt(sender, param[0]));
+			Rotation rotation = Rotation.getRotation(parseInt(sender, param[0]));
+			boolean didChange = data.getActionStorage().setRotation(rotation);
 			
 			if(didChange) {
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.rotate.complete", param[0]);
