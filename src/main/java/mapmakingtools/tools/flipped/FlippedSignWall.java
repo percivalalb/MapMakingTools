@@ -32,7 +32,7 @@ public class FlippedSignWall implements IPasteFlip {
 		direction += 2;
 		direction %= 4;
 				
-		world.setBlockMetadataWithNotify(x, y, z, DIRECTIONS.get(direction * 4), 2);
+		world.setBlockMetadataWithNotify(x, y, z, DIRECTIONS.get(direction), 2);
 
 	}
 }
