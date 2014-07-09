@@ -49,7 +49,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket>{
 			if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 				player = MapMakingTools.proxy.getClientPlayer();
 			else
-				player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(dis.readUTF());
+				player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(dis.readUTF());
 
 			msg.read(dis);
 			msg.execute(player);

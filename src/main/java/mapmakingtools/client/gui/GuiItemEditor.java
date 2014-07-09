@@ -11,7 +11,10 @@ import org.lwjgl.opengl.GL12;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.ScrollMenu;
+import mapmakingtools.client.gui.button.GuiAdvancedTextField;
+import mapmakingtools.client.gui.textfield.GuiColourTextField;
 import mapmakingtools.container.ContainerItemEditor;
+import mapmakingtools.helper.NumberParse;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.lib.Symbols;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
@@ -47,7 +50,7 @@ public class GuiItemEditor extends GuiContainer {
 	}
 	
 	public ItemStack getStack() {
-		return player.inventory.getStackInSlot(slotIndex);
+		return player.inventory.getStackInSlot(this.slotIndex);
 	}
 	
 	public ItemStack createNewStack() {
@@ -55,19 +58,21 @@ public class GuiItemEditor extends GuiContainer {
 			return null;
 		ItemStack stack = getStack();
 		stack.setStackDisplayName(EnumChatFormatting.RESET + itemNameField.getText());
-		try {
-			stack.setItemDamage(Integer.valueOf(itemDamageField.getText()));
-		}
-		catch(Exception e) {}
+		
+		if(NumberParse.isInteger(this.itemDamageField.getText()))
+			stack.setItemDamage(NumberParse.getInteger(itemDamageField.getText()));
+
 		return stack;
 	}
 
 	@Override
     public void initGui() {
-		this.resolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+    	super.initGui();
+		this.resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
 		this.xSize = this.width - 6;
 		this.ySize = this.height - 26;
-    	super.initGui();
+		int topX = (this.width - this.xSize) / 2;
+        int topY = (this.height - this.ySize) / 2;
     	Keyboard.enableRepeatEvents(true);
     	this.textList.clear();
     	this.itemNameField = new GuiColourTextField(mc.fontRenderer, this.guiLeft + 40, this.guiTop + 18, 80, 12) {
@@ -136,10 +141,14 @@ public class GuiItemEditor extends GuiContainer {
         for(GuiAdvancedTextField field : textList) {
         	field.drawTextBox();
         }
-        for(GuiColourTextField field : textList) {
-        	field.drawToolTip(xMouse, yMouse);
-        }
     }
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int xMouse, int yMouse) {
+		super.drawGuiContainerForegroundLayer(xMouse, yMouse);
+        for(GuiColourTextField field : textList)
+        	field.drawToolTip(xMouse, yMouse);
+	}
 
 	public float getScaleFactor() {
 		int scale = resolution.getScaleFactor();
@@ -157,7 +166,7 @@ public class GuiItemEditor extends GuiContainer {
 		for(GuiAdvancedTextField field : textList) {
 			field.updateCursorCounter();
 		}
-		if(player.inventory.getStackInSlot(slotIndex) == null) {
+		if(this.getStack() == null) {
 			//player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("itemeditor.closeNoItem"));
             this.mc.setIngameFocus();
 		}

@@ -7,6 +7,39 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+v2.2.0a
++ Updated to 1.7.10
+
+# The block helper will now only show when the tab button is down
+
+v2.1.3a
++ Added warning message when creating using //playerstatue because of it can take a while when using big areas e.g. 48x48x99
+
+# The //playerstatue now can be any size if it is a multiply of a 16x16x32 creating some huge statues.
+# Only 10 saves of Undo, redo and copy cache will be saved after the 10th it will override the oldest cache 
+
+* Fixed custom give filter allowing some slots to go infinite when not needed.
+* Fixed quick build sometimes not updating the client
+* Fixed //clearpoints not working
+* Fixed crash on forge versions higher than #1055
+
+v2.1.2a
++ Readded mob velocity filter for mob spawners
++ Readded creeper explosion properties filter for mob spawners
++ Readded baby monster filter for mob spawners
++ Readded chest symmetrify filter for chests
++ Readded convert to dispenser and dropper filter
+
+v2.1.1a
++ Readded the block helper in the chat menu
++ Readded the configuration file to say whether the block helper should be shown
++ Added the new blocks from 1.7 to the block helper
++ Readded version checker
+
+# Changed the //replace command to work better with the block helper: //replace <block> <meta> <block> <meta> 
+
+* Fixed the //playerstatue not working on servers
+
 v2.1.0a
 + Updated to 1.7.2 - Entire mod recoded to be more efficient and compatible with 1.7
 
@@ -14,12 +47,19 @@ v2.1.0a
 + As well as the outline of the area selected you can now see the 2 blocks you selected to make the out line
 + The selected area from the quick build system will now save when the world restarts and load back to how it was
 + Undo, redo and copied areas will be saved on world unload
++ Added information tool tip to most filters
++ Added custom give filter where you can create your item and then convert it all its data to a /give command that command blocks accept (this includes converting nbt data to text)
 
+# Data in filters are now constant and will only change when you click to new button to update your data from the current world
 # Selected areas using the axe are now dimension unique
+# The wrench item is now part of the vanilla wooden axe item allowing you to have people with map makings tools and people without on the same server
+# //setbiome command now uses vanilla packets to send updates the client
+# Changed the command //clearselections name to //clearpoints
 
 * Fixed the wrench being able to take damage
 * Fixed possible graphical glitches in the mob type filter
 * Fixed rotation of the breaking anvils reverting them to non-broken ones
+* //setbiome command is now much better
 
 v2.0.4a (Never released, content pushed to the 1.7 version)
 + Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping! 

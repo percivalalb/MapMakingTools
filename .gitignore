@@ -6,9 +6,17 @@
 gradle/
 eclipse/
 build/
+bin/
+mods/
+logs/
+resourcepacks/
+saves/
+crash-reports/
+config/
+.settings/
 gradlew
 gradlew.bat
-build.txt
+options.txt
 
 *.pydevproject
 .project

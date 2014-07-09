@@ -2,6 +2,10 @@ package mapmakingtools.tools;
 
 import java.util.Hashtable;
 
+import com.google.common.base.Strings;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
@@ -18,33 +22,39 @@ public class PlayerData {
 	private Hashtable<Integer, SelectedPoint> pos2 = new Hashtable<Integer, SelectedPoint>();
 	private ActionStorage actionStorage = new ActionStorage(this);
 	
-	public EntityPlayer player;
 	public String username;
 	
 	public PlayerData() {}
-	public PlayerData(EntityPlayer player) {
-		this.player = player;
-		this.username = player.getCommandSenderName();
-		this.actionStorage = new ActionStorage(this, player);
+	public PlayerData(String username) {
+		this.username = username;
 	}
 	
-	public void setPlayer(EntityPlayer player) {
-		this.player = player;
-		this.actionStorage.setPlayer(player);
+	public EntityPlayer getPlayer() {
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return MapMakingTools.proxy.getClientPlayer();
+		
+		if(Strings.isNullOrEmpty(this.username))
+			return null;
+		
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(this.username);
 	}
 	
 	public SelectedPoint getFirstPoint() {
-		int id = player.worldObj.provider.dimensionId;		
+		int id = this.getPlayer().worldObj.provider.dimensionId;		
 		if(!pos1.keySet().contains(id))
 			pos1.put(id, new SelectedPoint(-1));
 		return pos1.get(id);
 	}
 	
 	public SelectedPoint getSecondPoint() {
-		int id = player.worldObj.provider.dimensionId;
+		int id = this.getPlayer().worldObj.provider.dimensionId;
 		if(!pos2.keySet().contains(id))
 			pos2.put(id, new SelectedPoint(-1));
 		return pos2.get(id);
+	}
+	
+	public int[] getSelectionSize() {
+		return new int[] {this.getMaxX() - this.getMinX() + 1, this.getMaxY() - this.getMinY() + 1, this.getMaxZ() - this.getMinZ() + 1};
 	}
 	
 	public int getBlockCount() {
@@ -56,20 +66,18 @@ public class PlayerData {
 	}
 	
 	public boolean setFirstPoint(int x, int y, int z) {
-		if(y < 0 || y > 256) return false;
 		getFirstPoint().setPoint(x, y, z);
 		return true;
 	}
 	
 	public boolean setSecondPoint(int x, int y, int z) {
-		if(y < 0 || y > 256) return false;
 		getSecondPoint().setPoint(x, y, z);
 		return true;
 	}
 	
 	public void sendUpdateToClient() {
-		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(this.getFirstPoint().getX(), this.getFirstPoint().getY(), this.getFirstPoint().getZ()), this.player);
-		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(this.getSecondPoint().getX(), this.getSecondPoint().getY(), this.getSecondPoint().getZ()), this.player);
+		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(this.getFirstPoint().getX(), this.getFirstPoint().getY(), this.getFirstPoint().getZ()), this.getPlayer());
+		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(this.getSecondPoint().getX(), this.getSecondPoint().getY(), this.getSecondPoint().getZ()), this.getPlayer());
 	}
 	
 	public ActionStorage getActionStorage() {

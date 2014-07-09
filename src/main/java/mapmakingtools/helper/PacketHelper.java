@@ -11,6 +11,7 @@ import java.io.IOException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.base.Charsets;
@@ -92,7 +93,7 @@ public class PacketHelper {
 	    else {
 	        byte[] data = new byte[length];
 	        bytes.readBytes(data);
-	        return CompressedStreamTools.decompress(data);
+	        return CompressedStreamTools.func_152457_a(data, NBTSizeTracker.field_152451_a);
 	    }
 	}
 	
@@ -176,7 +177,7 @@ public class PacketHelper {
 	    else {
 	        byte[] data = new byte[length];
 	        dataInput.readFully(data);
-	        return CompressedStreamTools.decompress(data);
+	        return CompressedStreamTools.func_152457_a(data, NBTSizeTracker.field_152451_a);
 	    }
 	}
     

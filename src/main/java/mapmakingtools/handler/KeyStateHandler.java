@@ -42,7 +42,7 @@ public class KeyStateHandler {
             	//Key Pressed
             	if(ClientHelper.mc.currentScreen instanceof GuiContainer) {
             		GuiContainer container = (GuiContainer)ClientHelper.mc.currentScreen;
-            	    final ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.mc.gameSettings, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
+            	    final ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.mc, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
                     int i = scaledresolution.getScaledWidth();
                     int j = scaledresolution.getScaledHeight();
                     int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;

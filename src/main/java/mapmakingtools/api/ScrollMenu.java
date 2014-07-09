@@ -43,7 +43,7 @@ public abstract class ScrollMenu {
 	}
 	
 	public void initGui() {
-		this.scaling = new ScaledResolution(ClientHelper.mc.gameSettings, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
+		this.scaling = new ScaledResolution(ClientHelper.mc, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
 		if(this.strRefrence.size() > 0) {
         	this.listHeight = MathHelper.floor_double(this.strRefrence.size() / this.noColumns) * 14 - this.height;
 	
