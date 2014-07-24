@@ -171,7 +171,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
 		}
-
+		
 		return stack;
 	}
 

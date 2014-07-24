@@ -49,7 +49,7 @@ public class PacketUpdateBlock extends IPacket {
 
 	@Override
 	public void execute(EntityPlayer player) {
-		World world = ClientHelper.mc.theWorld;
+		World world = ClientHelper.mc.thePlayer.worldObj;
 		TileEntity tileEntity = world.getTileEntity(this.x, this.y, this.z);
 		
 		if(tileEntity == null)

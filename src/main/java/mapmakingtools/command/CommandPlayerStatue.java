@@ -10,8 +10,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import cpw.mods.fml.common.FMLLog;
-
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.thread.PlayerStauteThread;
 import mapmakingtools.tools.CachedBlock;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
@@ -157,6 +157,9 @@ public class CommandPlayerStatue extends CommandBase {
 			warningChatComponet.getChatStyle().setItalic(true);
 			warningChatComponet.getChatStyle().setColor(EnumChatFormatting.RED);
 			player.addChatMessage(warningChatComponet);	
+			
+			Thread thread = new Thread(new PlayerStauteThread());
+			thread.start();
 			
 	    	for(Object[] part : model) {
 	    		int imgX = (Integer)part[0];

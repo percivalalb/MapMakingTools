@@ -1,5 +1,6 @@
 package mapmakingtools.handler;
 
+import mapmakingtools.item.ItemEdit;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
@@ -24,13 +25,7 @@ public class WorldOverlayHandler {
 	
 	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) {
-		//if(!hasCheckedVersion) {
-		//	if(mc.thePlayer != null) {
-		//		VersionHelper.checkVersion(Type.COLOURED);
-		//		this.hasCheckedVersion = true;
-		//	}
-		//}
-		if(!PlayerAccess.canEdit(mc.thePlayer) || !ClientData.playerData.hasSelectedPoints() )//|| (!ItemStackHelper.isItem(mc.thePlayer.getHeldItem(), Constants.QUICK_BUILD_ITEM)) || ItemEdit.isWrench(mc.thePlayer.getHeldItem())) return; 
+		if(!PlayerAccess.canEdit(mc.thePlayer) || !ClientData.playerData.hasSelectedPoints() || !(ItemEdit.isAxe(mc.thePlayer.getHeldItem()) && !ItemEdit.isWrench(mc.thePlayer.getHeldItem())))
 			return;
 		GL11.glPushMatrix();
 		PlayerData data = ClientData.playerData;

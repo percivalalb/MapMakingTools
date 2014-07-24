@@ -1,10 +1,15 @@
 package mapmakingtools.tools;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import cpw.mods.fml.common.FMLLog;
 import mapmakingtools.api.enums.Rotation;
 import mapmakingtools.api.manager.FlippedManager;
 import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.handler.EntityJoinWorldHandler;
+import mapmakingtools.helper.PacketHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -25,8 +30,12 @@ public class CachedBlock {
 	public int meta;
 	public TileEntity tileEntity;
 	
-	public CachedBlock(NBTTagCompound tag) { 
-		this.readFromNBT(tag); 
+	public CachedBlock(NBTTagCompound tag, boolean useWorld) { 
+		this.readFromNBT(tag, useWorld); 
+	}
+	
+	public CachedBlock(DataInputStream tag, boolean useWorld) throws IOException { 
+		this.readFromInputStream(tag, useWorld);
 	}
 	
 	public CachedBlock(CachedBlock cache) {
@@ -53,6 +62,10 @@ public class CachedBlock {
 			tileEntity.writeToNBT(tagCompound);
 			this.tileEntity = TileEntity.createAndLoadEntity(tagCompound);
 		}
+	}
+	
+	public void setWorld(World world) {
+		this.orginalWorld = world;
 	}
 	
 	public void clearTileEntity(World world, int x, int y, int z) {
@@ -146,8 +159,39 @@ public class CachedBlock {
 		return replacementCache;
 	}
 	
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		tag.setInteger("dimension", this.orginalWorld.provider.dimensionId);
+	public void writeToOutputStream(DataOutputStream data, boolean useWorld) throws IOException {
+		if(useWorld)
+			data.writeInt(this.orginalWorld.provider.dimensionId);
+		data.writeInt(this.x);
+		data.writeInt(this.y);
+		data.writeInt(this.z);
+		data.writeUTF(Block.blockRegistry.getNameForObject(this.block));
+		data.writeInt(this.meta);
+		data.writeBoolean(this.tileEntity != null);
+		if(this.tileEntity != null) {
+			NBTTagCompound tileEntityData = new NBTTagCompound();
+			this.tileEntity.writeToNBT(tileEntityData);
+			PacketHelper.writeNBTTagCompound(tileEntityData, data);
+		}
+	}
+	
+	public CachedBlock readFromInputStream(DataInputStream data, boolean useWorld) throws IOException {
+		if(useWorld)
+			this.orginalWorld =  DimensionManager.getWorld(data.readInt());
+		this.x = data.readInt();
+		this.y = data.readInt();
+		this.z = data.readInt();
+		this.block = Block.getBlockFromName(data.readUTF());
+		this.meta = data.readInt();
+		boolean hasTileEntity = data.readBoolean();
+		if(hasTileEntity)
+			this.tileEntity = TileEntity.createAndLoadEntity(PacketHelper.readNBTTagCompound(data));
+		return this;
+	}
+	
+	public NBTTagCompound writeToNBT(NBTTagCompound tag, boolean useWorld) {
+		if(useWorld)
+			tag.setInteger("dimension", this.orginalWorld.provider.dimensionId);
 		tag.setInteger("x", this.x);
 		tag.setInteger("y", this.y);
 		tag.setInteger("z", this.z);
@@ -161,8 +205,9 @@ public class CachedBlock {
 		return tag;
 	}
 	
-	public CachedBlock readFromNBT(NBTTagCompound tag) {
-		this.orginalWorld = DimensionManager.getWorld(tag.getInteger("dimension"));
+	public CachedBlock readFromNBT(NBTTagCompound tag, boolean useWorld) {
+		if(useWorld)
+			this.orginalWorld = DimensionManager.getWorld(tag.getInteger("dimension"));
 		this.x = tag.getInteger("x");
 		this.y = tag.getInteger("y");
 		this.z = tag.getInteger("z");

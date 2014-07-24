@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.Map;
 
+import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.item.ItemEdit;
 import net.minecraft.init.Items;
@@ -55,6 +56,6 @@ public class ModItems {
 		    map.func_148746_a(thing, id);
 		}
 	    
-        FMLLog.info("[MapMakingTools] Replaced %s with a custom verson for use of wrench", name);
+        LogHelper.info("Replaced %s with a custom verson for use of wrench", name);
     }
 }

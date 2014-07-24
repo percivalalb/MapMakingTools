@@ -144,7 +144,7 @@ public class ActionStorage {
 			
 			undoData.setInteger("count", undos.size());
 			for(int i = 0; i < undos.size(); ++i)
-				undoData.setTag("" + i, undos.get(i).writeToNBT(new NBTTagCompound()));
+				undoData.setTag("" + i, undos.get(i).writeToNBT(new NBTTagCompound(), true));
 			
 			undoList.appendTag(undoData);
 		}
@@ -157,7 +157,7 @@ public class ActionStorage {
 			
 			redoData.setInteger("count", redos.size());
 			for(int i = 0; i < redos.size(); ++i)
-				redoData.setTag("" + i, redos.get(i).writeToNBT(new NBTTagCompound()));
+				redoData.setTag("" + i, redos.get(i).writeToNBT(new NBTTagCompound(), true));
 			
 			redoList.appendTag(redoData);
 		}
@@ -168,7 +168,7 @@ public class ActionStorage {
 		
 		copyData.setInteger("count", this.cachedCopy.size());
 		for(int i = 0; i < this.cachedCopy.size(); ++i)
-			copyData.setTag("" + i, this.cachedCopy.get(i).writeToNBT(new NBTTagCompound()));
+			copyData.setTag("" + i, this.cachedCopy.get(i).writeToNBT(new NBTTagCompound(), true));
 		
 		tag.setTag("cachedCopy", copyData);
 		
@@ -185,7 +185,7 @@ public class ActionStorage {
 				ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
 				NBTTagCompound tag1 = list1.getCompoundTagAt(i);
 				for(int j = 0; j < tag1.getInteger("count"); ++j)
-					list.add(new CachedBlock(tag1.getCompoundTag("" + j)));
+					list.add(new CachedBlock(tag1.getCompoundTag("" + j), true));
 				this.cachedUndo.add(list);
 			}
 		}
@@ -196,7 +196,7 @@ public class ActionStorage {
 				ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
 				NBTTagCompound tag1 = list1.getCompoundTagAt(i);
 				for(int j = 0; j < tag1.getInteger("count"); ++j)
-					list.add(new CachedBlock(tag1.getCompoundTag("" + j)));
+					list.add(new CachedBlock(tag1.getCompoundTag("" + j), true));
 				this.cachedRedo.add(list);
 			}
 		}
@@ -206,7 +206,7 @@ public class ActionStorage {
 			NBTTagCompound copyData = tag.getCompoundTag("cachedCopy");
 			
 			for(int i = 0; i < copyData.getInteger("count"); ++i)
-				list.add(new CachedBlock(copyData.getCompoundTag("" + i)));
+				list.add(new CachedBlock(copyData.getCompoundTag("" + i), true));
 		}
 		
 		return this;

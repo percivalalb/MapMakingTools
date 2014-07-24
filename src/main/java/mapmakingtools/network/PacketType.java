@@ -30,6 +30,9 @@ import mapmakingtools.tools.filter.packet.PacketSpawnerTimings;
 import mapmakingtools.tools.filter.packet.PacketBabyMonster;
 import mapmakingtools.tools.filter.packet.PacketVillagerRecipeAmounts;
 import mapmakingtools.tools.filter.packet.PacketVillagerShop;
+import mapmakingtools.tools.worldtransfer.PacketAddArea;
+import mapmakingtools.tools.worldtransfer.PacketPaste;
+import mapmakingtools.tools.worldtransfer.PacketPasteNotify;
 
 /**
  * @author ProPercivalalb
@@ -65,7 +68,10 @@ public enum PacketType {
 	CHEST_SYMMETRITY(PacketChestSymmetrify.class),
 	CONVERT_TO_DISPENSER(PacketConvertToDispenser.class),
 	CONVER_TO_DROPPER(PacketConvertToDropper.class),
-	SKULL_OWNER(PacketSkullModify.class);
+	SKULL_OWNER(PacketSkullModify.class),
+	ADD_AREA(PacketAddArea.class),
+	PASTE(PacketPaste.class),
+	PASTE_NOTIFY(PacketPasteNotify.class);
 	
 	public Class<? extends IPacket> packetClass;
 	

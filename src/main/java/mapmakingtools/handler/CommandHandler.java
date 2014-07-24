@@ -2,8 +2,10 @@ package mapmakingtools.handler;
 
 import mapmakingtools.command.CommandClearPoints;
 import mapmakingtools.command.CommandCopy;
+import mapmakingtools.command.CommandExpand;
 import mapmakingtools.command.CommandFlip;
 import mapmakingtools.command.CommandFloor;
+import mapmakingtools.command.CommandMove;
 import mapmakingtools.command.CommandPaste;
 import mapmakingtools.command.CommandPlayerStatue;
 import mapmakingtools.command.CommandPos1;
@@ -12,11 +14,13 @@ import mapmakingtools.command.CommandRedo;
 import mapmakingtools.command.CommandReplace;
 import mapmakingtools.command.CommandRoof;
 import mapmakingtools.command.CommandRotate;
+import mapmakingtools.command.CommandSelectionSize;
 import mapmakingtools.command.CommandSet;
 import mapmakingtools.command.CommandSetBiome;
-import mapmakingtools.command.CommandTemp;
+import mapmakingtools.command.CommandShrink;
 import mapmakingtools.command.CommandUndo;
 import mapmakingtools.command.CommandWall;
+import mapmakingtools.command.CommandWorldTransfer;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
@@ -25,7 +29,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 public class CommandHandler {
 
     public static void initCommands(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandTemp());
         event.registerServerCommand(new CommandClearPoints());
         event.registerServerCommand(new CommandSet());
         event.registerServerCommand(new CommandRoof());
@@ -42,5 +45,11 @@ public class CommandHandler {
         event.registerServerCommand(new CommandPos2());
         event.registerServerCommand(new CommandSetBiome());
         event.registerServerCommand(new CommandPlayerStatue());
+        event.registerServerCommand(new CommandSelectionSize());
+        event.registerServerCommand(new CommandExpand());
+        event.registerServerCommand(new CommandShrink());
+        event.registerServerCommand(new CommandMove());
+        
+        event.registerServerCommand(new CommandWorldTransfer());
     }
 }

@@ -41,7 +41,6 @@ public class PacketSetPoint1 extends IPacket {
 
 	@Override
 	public void execute(EntityPlayer player) {
-		FMLLog.info("Recive 1 , " + x + " " + y + " " + z);
 		ClientData.playerData.setFirstPoint(x, y, z);
 	}
 

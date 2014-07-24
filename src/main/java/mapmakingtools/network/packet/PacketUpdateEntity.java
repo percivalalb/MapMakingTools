@@ -42,7 +42,7 @@ public class PacketUpdateEntity extends IPacket {
 
 	@Override
 	public void execute(EntityPlayer player) {
-		World world = ClientHelper.mc.theWorld;
+		World world = ClientHelper.mc.thePlayer.worldObj;
 		Entity entity = world.getEntityByID(this.entityId);
 		
 		if(entity == null)

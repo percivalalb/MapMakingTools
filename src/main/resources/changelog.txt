@@ -7,6 +7,31 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+v2.2.1a
++ Added world transfer feature this allows you to copy up to 1000 blocks from any world/server with the mod on
+  The selected areas that you choose to transfer are stored in 'mapmakingtools_worldtransfer.dat'
+  The command '//worldtransfer <mode>' will allow you to access these features
+  '//worldtransfer copy <name>' will save the selected area to your machine under the name you give it
+  '//worldtransfer paste <name>' will paste the selected area with the given name
+  '//worldtransfer gui' will open a gui that shows all your copied areas, from here you can see there name and delete them from the memory
++ Added Russian translation file (thanks to Bonedon_Russian)
++ Finished the English translation for the information button in the filter menu.
++ Added '//selectionsize' command
++ Added '//expand' command
++ Added '//shrink' command
++ Added '//move' command
++ Added a line of text when holding the quick build axe that tells you the size of your currently selected area
++ Added a custom logger under the name 'Map Making Tools'
++ Starting work on making the item editor much better
+
+- Removed the '//temp' command which as used for debugging
+
+# The block helper will now only show when 'SHIFT' key is pressed, is configurable in controls menu - this was to avoid issue with tab completion with commands
+
+* Fixed crash in head gui by temporally removing the player image to the left of the gui  
+* Fixed the outline of the selected area showing even when the axe is not being held
+* Fixed the wrench making you crash on servers
+
 v2.2.0a
 + Updated to 1.7.10
 

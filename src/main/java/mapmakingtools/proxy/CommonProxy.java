@@ -10,8 +10,10 @@ import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiSkull;
+import mapmakingtools.client.gui.GuiWorldTransfer;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.ContainerItemEditor;
+import mapmakingtools.container.ContainerWorldTransfer;
 import mapmakingtools.tools.datareader.BlockList;
 import mapmakingtools.tools.datareader.BlockColourList;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
@@ -108,6 +110,7 @@ public class CommonProxy implements IGuiHandler {
 	public static final int ID_FILTER_ENTITY = 1;
 	public static final int GUI_ID_ITEM_EDITOR = 2;
 	public static final int GUI_ID_SKULL_NAME = 3;
+	public static final int GUI_ID_WORLD_TRANSFER = 4;
 	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -123,6 +126,9 @@ public class CommonProxy implements IGuiHandler {
 		}
 		else if(ID == GUI_ID_ITEM_EDITOR) {
 			return new ContainerItemEditor(player, x);
+		}
+		else if(ID == GUI_ID_WORLD_TRANSFER) {
+			return new ContainerWorldTransfer();
 		}
 		return null;
 	}
@@ -144,6 +150,9 @@ public class CommonProxy implements IGuiHandler {
 		}
 		else if(ID == GUI_ID_SKULL_NAME) {
 			return new GuiSkull(player);
+		}
+		else if(ID == GUI_ID_WORLD_TRANSFER) {
+			return new GuiWorldTransfer();
 		}
 		return null;
 	}

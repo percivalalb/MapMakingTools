@@ -1,5 +1,6 @@
 package mapmakingtools.handler;
 
+import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -7,7 +8,10 @@ import java.util.List;
 
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.ReflectionHelper;
+import mapmakingtools.item.ItemEdit;
+import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.datareader.BlockList;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -41,7 +45,7 @@ public class ScreenRenderHandler {
 	private int INDEX_HISTORY = 1;
 	private boolean hasButtonBeenUp = true;
 	public boolean isHelperOpen = false;
-	RenderItem renderer = new RenderItem();
+	public RenderItem renderer = new RenderItem();
 	public Field chatField = ReflectionHelper.getField(GuiChat.class, 9);
 	
 	@SubscribeEvent
@@ -50,9 +54,33 @@ public class ScreenRenderHandler {
 		int mouseY = event.mouseY;
 		ElementType type = event.type;
 		
-	    if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindPlayerList.getKeyCode()) && PlayerAccess.canSeeBlockIdHelper(ClientHelper.mc.thePlayer)) {
+		if (event.type == RenderGameOverlayEvent.ElementType.HELMET && (ItemEdit.isAxe(ClientHelper.mc.thePlayer.getHeldItem()) && !ItemEdit.isWrench(ClientHelper.mc.thePlayer.getHeldItem())) && PlayerAccess.canEdit(ClientHelper.mc.thePlayer)) {
+    		
+    		PlayerData data = ClientData.playerData;
+    		FontRenderer font = ClientHelper.mc.fontRenderer;
+    		int[] size = data.getSelectionSize();
+    		GL11.glPushMatrix();
+    		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            
+            if(data.hasSelectedPoints())
+            	font.drawStringWithShadow(String.format("Selection Size: %d * %d * %d = %d", size[0], size[1], size[2], data.getBlockCount()), 4, 4, -1);
+            else
+            	font.drawStringWithShadow("Nothing Selected", 4, 4, -1);
+            	
+    		GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            RenderHelper.enableGUIStandardItemLighting();
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+    		GL11.glPopMatrix();
+		}
+		
+		
+	    if (Keyboard.isKeyDown(KeyStateHandler.keyBlockHelper.getKeyCode()) && PlayerAccess.canSeeBlockIdHelper(ClientHelper.mc.thePlayer)) {
 	    	if (event.type == RenderGameOverlayEvent.ElementType.HELMET) {
-    			
+	   
 	    		if(ClientHelper.mc.currentScreen instanceof GuiChat) {
 	    			GuiChat chat = (GuiChat)ClientHelper.mc.currentScreen;
 	    			int chatPostion = ReflectionHelper.getField(chatField, GuiTextField.class, chat).getCursorPosition();

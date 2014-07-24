@@ -2,6 +2,7 @@ package mapmakingtools.handler;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ClientHelper;
+import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
@@ -25,7 +26,8 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
  **/
 public class KeyStateHandler {
 	
-    public static final KeyBinding keyItemEditor = new KeyBinding("mapmakingtools.key.itemEditor", Keyboard.KEY_M, "mapmakingtools.key.category");
+    public static final KeyBinding keyItemEditor = new KeyBinding("mapmakingtools.key.itemeditor", Keyboard.KEY_M, "mapmakingtools.key.category");
+    public static final KeyBinding keyBlockHelper = new KeyBinding("mapmakingtools.key.blockhelper", Keyboard.KEY_LSHIFT, "mapmakingtools.key.category");
 
     protected boolean keyDown;
     
@@ -47,7 +49,7 @@ public class KeyStateHandler {
                     int j = scaledresolution.getScaledHeight();
                     int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;
                     int yMouse = j - Mouse.getY() * j / ClientHelper.mc.displayHeight - 1;
-                	FMLLog.info("" + xMouse + " " + yMouse);
+                    LogHelper.info("MouseX: " + xMouse + " MouseY: " + yMouse);
             		for (int j1 = 0; j1 < container.inventorySlots.inventorySlots.size(); ++j1) {
                         Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
                         
@@ -58,7 +60,7 @@ public class KeyStateHandler {
                         		int index = slot.getSlotIndex();
                         		if(index >= 36)
                         			index -= 36;
-                            	FMLLog.info(stack.getDisplayName() + " " + index);
+                            	LogHelper.info(stack.getDisplayName() + " " + index);
  
                             	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketOpenItemEditor(index));
                             	

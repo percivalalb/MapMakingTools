@@ -13,16 +13,18 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb
  */
-public class CommandPaste extends CommandBase {
+public class CommandSelectionSize extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "/paste";
+		return "/selectionsize";
 	}
 
 	@Override
@@ -32,7 +34,7 @@ public class CommandPaste extends CommandBase {
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "mapmakingtools.commands.build.paste.usage";
+		return "mapmakingtools.commands.build.selectionsize.usage";
 	}
 
 	@Override
@@ -44,14 +46,14 @@ public class CommandPaste extends CommandBase {
 		World world = player.worldObj;
 		PlayerData data = WorldData.getPlayerData(player);
 		
-		if(!data.getActionStorage().hasSomethingToPaste())
-			throw new CommandException("mapmakingtools.commands.build.nothingtopaste", new Object[0]);
-
-		int blocksChanged = data.getActionStorage().paste();
-			
-		if(blocksChanged > 0) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.paste.complete", "" + blocksChanged);
-			chatComponent.getChatStyle().setItalic(true);
+		if(data.hasSelectedPoints()) {
+			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.selectionsize.complete", data.getSelectionSize()[0], data.getSelectionSize()[1], data.getSelectionSize()[2]);
+			chatComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
+			player.addChatMessage(chatComponent);
+		}
+		else {
+			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.selectionsize.nothingselected", data.getSelectionSize()[0], data.getSelectionSize()[1], data.getSelectionSize()[2]);
+			chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
 			player.addChatMessage(chatComponent);
 		}
 	}

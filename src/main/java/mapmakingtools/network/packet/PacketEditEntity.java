@@ -34,7 +34,7 @@ public class PacketEditEntity extends IPacket {
 
 	@Override
 	public void execute(EntityPlayer player) {
-		player.openGui(MapMakingTools.instance, CommonProxy.ID_FILTER_ENTITY, player.worldObj, entityId, 0, 0);
+		player.openGui(MapMakingTools.instance, CommonProxy.ID_FILTER_ENTITY, player.worldObj, this.entityId, 0, 0);
 	}
 
 }

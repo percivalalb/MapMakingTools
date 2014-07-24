@@ -27,6 +27,8 @@ public class ResourceReference {
 
 	public static final ResourceLocation transparentBackground = new ResourceLocation("mapmakingtools", getGuiTexturePath("transparent_background.png"));
 
+	
+	public static final ResourceLocation worldTransfer = new ResourceLocation("mapmakingtools", getGuiTexturePath("worldtransfer.png"));
 
     /**
      * Gets a local gui texture file path.

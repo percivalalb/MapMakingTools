@@ -51,7 +51,7 @@ public class VersionHelper {
             		
             		if(type.equals(UpdateType.BLANK)) {
             			chatStr = "A new " + Reference.MOD_NAME + " version exists (" + newModVersion + ") for Minecraft " + newMCVersion + ". Get it here: " + updateUrl;
-            			FMLLog.info(chatStr);
+            			LogHelper.info(chatStr);
             			return true;
             		}
             		else { 

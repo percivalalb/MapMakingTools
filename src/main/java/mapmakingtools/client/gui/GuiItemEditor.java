@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL12;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.client.gui.button.GuiAdvancedTextField;
+import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.textfield.GuiColourTextField;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.helper.NumberParse;
@@ -19,6 +20,7 @@ import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.lib.Symbols;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
@@ -27,6 +29,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
@@ -41,6 +44,7 @@ public class GuiItemEditor extends GuiContainer {
 	
 	private static GuiColourTextField itemNameField;
 	private static GuiColourTextField itemDamageField;
+	private static GuiButtonData enchantedField;
 	//private static GuiListSlot scrollList;
 	
 	public GuiItemEditor(EntityPlayer player, int slotIndex) {
@@ -58,6 +62,8 @@ public class GuiItemEditor extends GuiContainer {
 			return null;
 		ItemStack stack = getStack();
 		stack.setStackDisplayName(EnumChatFormatting.RESET + itemNameField.getText());
+		if(this.enchantedField.getData() == 1 && stack.hasTagCompound() && stack.stackTagCompound.hasKey("ench", 9)) 
+			stack.stackTagCompound.setTag("ench", new NBTTagList());
 		
 		if(NumberParse.isInteger(this.itemDamageField.getText()))
 			stack.setItemDamage(NumberParse.getInteger(itemDamageField.getText()));
@@ -96,6 +102,9 @@ public class GuiItemEditor extends GuiContainer {
     	this.textList.add(itemNameField);
     	this.textList.add(itemDamageField);
     	//this.scrollList.registerScrollButtons(7, 8);
+    	
+    	this.enchantedField = new GuiButtonData(10, this.guiLeft + 220, this.guiTop + 18, 80, 12, "Enchanted Effect?");
+    	this.buttonList.add(this.enchantedField);
     	
     	ItemStack stack = getStack();
     	if(stack != null) {
@@ -193,6 +202,19 @@ public class GuiItemEditor extends GuiContainer {
     	super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
     }
+	
+	@Override
+	public void actionPerformed(GuiButton button) {
+		if (button.enabled) {
+			switch(button.id) {
+			case 10:
+				((GuiButtonData)button).setData(1);
+				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketItemEditorUpdate(createNewStack(), slotIndex));
+			default:
+				break;
+			}
+		}
+	}
 	
 	@Override
 	protected boolean func_146978_c(int par1, int par2, int par3, int par4, int xMouse, int yMouse) {

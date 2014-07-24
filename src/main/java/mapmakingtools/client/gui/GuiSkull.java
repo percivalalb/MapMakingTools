@@ -8,6 +8,8 @@ import mapmakingtools.MapMakingTools;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.packet.PacketSkullModify;
 import mapmakingtools.tools.item.nbt.SkullNBT;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,16 +17,25 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelSkeletonHead;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.properties.Property;
 
 
 /**
@@ -39,7 +50,7 @@ public class GuiSkull extends GuiScreen {
     private GuiButton btn_cancel;
     private String startText = "";
     private boolean hasPerson = false;
-    private static ModelSkeletonHead modelskeletonhead = new ModelSkeletonHead(0, 0, 64, 32);
+    private static TileEntitySkullRenderer modelskeletonhead = new TileEntitySkullRenderer();
 
     public GuiSkull(EntityPlayer player) {
         this.entityPlayer = player;
@@ -120,23 +131,40 @@ public class GuiSkull extends GuiScreen {
         int var2 = (this.width - 240) / 2;
         int var3 = (this.height - 100) / 2;
         this.drawTexturedModalRect(var2, var3, 0, 0, 240, 100);
-       // String url = "http://skins.minecraft.net/MinecraftSkins/" + StringUtils.stripControlCodes(txt_skullName.getText().trim()) + ".png";
-
-       // TextureHelper.bindPlayerTexture(txt_skullName.getText().trim());
-        //TileEntitySkullRenderer.skullRenderer.func_82393_a(3, 3, 0, ForgeDirection.UP.ordinal(), 3, 3, txt_skullName.getText().trim());
+        /**
         String username = txt_skullName.getText();
-        EntityOtherPlayerMP player = getPlayer(username);
-        byte b0 = player.getDataWatcher().getWatchableObjectByte(16);
-        player.getDataWatcher().updateObject(16, Byte.valueOf((byte)(b0 | 1 << 1)));
-        //player.sho
-		GuiInventory.func_147046_a(var2 - 35, var3 + 90, 40, (float)(var2 - 35 - xMouse), (float)(var3 + 90 - 30 - yMouse), player);
-       
-		/** 
-        GL11.glPushMatrix();
-        GL11.glScalef(1.0F, 1.0F, 1.0F);
-        this.drawTexturedModalRect(var2 - 140 + 30, var3 - 50 + 45 + 5, 32, 64, 32, 64);
-        GL11.glPopMatrix();
+        username = username.equals("") ? "steve" : username;
+        GameProfile gameprofile = new GameProfile((UUID)null, username);
+        TileEntitySkull skull = new TileEntitySkull();
+        skull.blockMetadata = 1;
+        skull.func_145903_a(1);
+        skull.func_152106_a(gameprofile);
+        modelskeletonhead.func_147497_a(TileEntityRendererDispatcher.instance);
+        modelskeletonhead.renderTileEntityAt(skull, 0.0D, 0.0D, 0.0D, 1.0F);
         **/
+    }
+    
+    private void func_152109_d(GameProfile gameprofile2)
+    {
+        if (gameprofile2 != null && !StringUtils.isNullOrEmpty(gameprofile2.getName()))
+        {
+            if (!gameprofile2.isComplete() || gameprofile2.getProperties().containsKey("textures"))
+            {
+                GameProfile gameprofile = MinecraftServer.getServer().func_152358_ax().func_152655_a(gameprofile2.getName());
+
+                if (gameprofile != null)
+                {
+                    Property property = (Property)Iterables.getFirst(gameprofile.getProperties().get("textures"), (Object)null);
+
+                    if (property == null)
+                    {
+                        gameprofile = MinecraftServer.getServer().func_147130_as().fillProfileProperties(gameprofile, true);
+                    }
+
+                    gameprofile2 = gameprofile;
+                }
+            }
+        }
     }
     
     private static Map<String, EntityOtherPlayerMP> playerList = new Hashtable<String, EntityOtherPlayerMP>();
@@ -145,7 +173,7 @@ public class GuiSkull extends GuiScreen {
 		EntityOtherPlayerMP player = playerList.get(username);
 		if(player == null) {
 			username = username.equals("") ? "steve" : username;
-			player = new EntityOtherPlayerMP(mc.theWorld, new GameProfile(UUID.fromString(username), username));
+			//player = new EntityOtherPlayerMP(mc.theWorld, );
 			playerList.put(username, player);
 		}
 		return player;

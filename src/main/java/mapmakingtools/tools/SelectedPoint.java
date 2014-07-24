@@ -38,6 +38,18 @@ public class SelectedPoint {
 		return this.z;
 	}
 	
+	public void moveX(int amount) {
+		this.x += amount;
+	}
+	
+	public void moveY(int amount) {
+		this.y += amount;
+	}
+	
+	public void moveZ(int amount) {
+		this.z += amount;
+	}
+	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		tag.setInteger("x", this.x);
 		tag.setInteger("y", this.y);
