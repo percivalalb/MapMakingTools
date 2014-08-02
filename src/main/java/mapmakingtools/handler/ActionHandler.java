@@ -1,7 +1,6 @@
 package mapmakingtools.handler;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.client.gui.GuiSkull;
 import mapmakingtools.item.ItemEdit;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
@@ -123,16 +122,6 @@ public class ActionHandler {
 		default:
 			break;
 		}
-		
-		if(event.action != Action.LEFT_CLICK_BLOCK && item != null && Item.getIdFromItem(item.getItem()) == Item.getIdFromItem(Items.skull) && item.getItemDamage() == 3) {
-			if(player.isSneaking()) {
-				event.setCanceled(true);
-				if(world.isRemote) {
-					FMLCommonHandler.instance().showGuiScreen(new GuiSkull(player));
-				}
-			}
-		}
-			
 	}
 	
 	@SubscribeEvent

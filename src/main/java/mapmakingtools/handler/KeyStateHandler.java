@@ -6,6 +6,7 @@ import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
+import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
@@ -27,7 +28,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 public class KeyStateHandler {
 	
     public static final KeyBinding keyItemEditor = new KeyBinding("mapmakingtools.key.itemeditor", Keyboard.KEY_M, "mapmakingtools.key.category");
-    public static final KeyBinding keyBlockHelper = new KeyBinding("mapmakingtools.key.blockhelper", Keyboard.KEY_LSHIFT, "mapmakingtools.key.category");
+    public static final KeyBinding keyBlockHelper = new KeyBinding("mapmakingtools.key.blockhelper", Keyboard.KEY_RSHIFT, "mapmakingtools.key.category");
 
     protected boolean keyDown;
     
@@ -42,7 +43,7 @@ public class KeyStateHandler {
         if (state != keyDown) {
             if (state && !tickEnd) {
             	//Key Pressed
-            	if(ClientHelper.mc.currentScreen instanceof GuiContainer) {
+            	if(PlayerAccess.canEdit(ClientHelper.mc.thePlayer) && ClientHelper.mc.currentScreen instanceof GuiContainer) {
             		GuiContainer container = (GuiContainer)ClientHelper.mc.currentScreen;
             	    final ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.mc, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
                     int i = scaledresolution.getScaledWidth();
@@ -60,6 +61,11 @@ public class KeyStateHandler {
                         		int index = slot.getSlotIndex();
                         		if(index >= 36)
                         			index -= 36;
+                        		
+                        		LogHelper.info(stack.getDisplayName() + " " + index);
+                        		if(index >= 5 && index <= 8 && playerInventory.getStackInSlot(36 + 3 - (index - 5)) == stack) {
+                        			index = 36 +  3 - (index - 5);
+                        		}
                             	LogHelper.info(stack.getDisplayName() + " " + index);
  
                             	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketOpenItemEditor(index));

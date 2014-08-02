@@ -6,17 +6,31 @@ import mapmakingtools.api.interfaces.IFilterClient;
 import mapmakingtools.api.interfaces.IFilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.FlippedManager;
+import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.api.manager.RotationManager;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
-import mapmakingtools.client.gui.GuiSkull;
 import mapmakingtools.client.gui.GuiWorldTransfer;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.container.ContainerWorldTransfer;
+import mapmakingtools.tools.attribute.ArmorColourAttribute;
+import mapmakingtools.tools.attribute.BookAttribute;
+import mapmakingtools.tools.attribute.BookEnchantmentAttribute;
+import mapmakingtools.tools.attribute.EnchantmentAttribute;
+import mapmakingtools.tools.attribute.FireworksAttribute;
+import mapmakingtools.tools.attribute.ItemMetaAttribute;
+import mapmakingtools.tools.attribute.ItemNameAttribute;
+import mapmakingtools.tools.attribute.LoreAttribute;
+import mapmakingtools.tools.attribute.PlayerHeadAttribute;
+import mapmakingtools.tools.attribute.PotionAttribute;
+import mapmakingtools.tools.attribute.RepairCostAttribute;
+import mapmakingtools.tools.attribute.StackSizeAttribute;
 import mapmakingtools.tools.datareader.BlockList;
 import mapmakingtools.tools.datareader.BlockColourList;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
+import mapmakingtools.tools.datareader.EnchantmentList;
+import mapmakingtools.tools.datareader.PotionList;
 import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.BabyMonsterClientFilter;
 import mapmakingtools.tools.filter.BabyMonsterServerFilter;
@@ -109,8 +123,7 @@ public class CommonProxy implements IGuiHandler {
 	public static final int ID_FILTER_BLOCK = 0;
 	public static final int ID_FILTER_ENTITY = 1;
 	public static final int GUI_ID_ITEM_EDITOR = 2;
-	public static final int GUI_ID_SKULL_NAME = 3;
-	public static final int GUI_ID_WORLD_TRANSFER = 4;
+	public static final int GUI_ID_WORLD_TRANSFER = 3;
 	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -148,9 +161,6 @@ public class CommonProxy implements IGuiHandler {
 		else if(ID == GUI_ID_ITEM_EDITOR) {
 			return new GuiItemEditor(player, x);
 		}
-		else if(ID == GUI_ID_SKULL_NAME) {
-			return new GuiSkull(player);
-		}
 		else if(ID == GUI_ID_WORLD_TRANSFER) {
 			return new GuiWorldTransfer();
 		}
@@ -165,6 +175,8 @@ public class CommonProxy implements IGuiHandler {
 		BlockColourList.readDataFromFile();
 		SpawnerEntitiesList.readDataFromFile();
 		ChestSymmetrifyData.readDataFromFile();
+		EnchantmentList.readDataFromFile();
+		PotionList.readDataFromFile();
 	}
 	
 	public void registerFilters() {
@@ -191,6 +203,20 @@ public class CommonProxy implements IGuiHandler {
     	FilterManager.registerProvider(SpawnerFilterProvider.class);
 	}
 	
+	public void registerItemAttribute() {
+		ItemEditorManager.registerItemHandler(new ItemNameAttribute());
+		//ItemEditorManager.registerItemHandler(new LoreAttribute());
+		ItemEditorManager.registerItemHandler(new StackSizeAttribute());
+		ItemEditorManager.registerItemHandler(new ItemMetaAttribute());
+		ItemEditorManager.registerItemHandler(new RepairCostAttribute());
+		ItemEditorManager.registerItemHandler(new EnchantmentAttribute());
+		ItemEditorManager.registerItemHandler(new BookEnchantmentAttribute());
+		ItemEditorManager.registerItemHandler(new PotionAttribute());
+		ItemEditorManager.registerItemHandler(new BookAttribute());
+		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
+		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
+		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
+	}
 
 	public void registerRotation() {
 		RotationManager.registerRotationHandler(Blocks.log, new RotationVanillaLog());

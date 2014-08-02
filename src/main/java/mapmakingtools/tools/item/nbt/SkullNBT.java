@@ -17,7 +17,7 @@ public class SkullNBT {
 	
 	public static String getSkullName(ItemStack item) {
 		if(!checkHasTag(item))
-			return "steve";
+			return "";
 		return item.stackTagCompound.getString(SKULL_NAME);
 	}
 

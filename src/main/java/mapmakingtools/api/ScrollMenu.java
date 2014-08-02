@@ -60,6 +60,10 @@ public abstract class ScrollMenu {
                 this.scrollHeight = height;
             }
 		}
+		else {
+			this.listHeight = this.height;
+			this.scrollHeight = this.height;
+		}
 	}
 	
 	public void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
@@ -82,28 +86,26 @@ public abstract class ScrollMenu {
         }
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         
-        if (this.scrollHeight != this.height) {
-            this.drawScrollBar();
-        }
-
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
         RenderHelper.enableStandardItemLighting();
-        GL11.glPopMatrix();
-        GL11.glPushMatrix();
-        RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
+        
+        if (this.scrollHeight != this.height)
+            this.drawScrollBar();
+        
         this.drawScrollList();
+        
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
+        RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
-
+        
         if (this.scrollHeight != this.height) {
             xMouse -= this.xPosition;
             yMouse -= this.yPosition;
 
             if (Mouse.isButtonDown(0)) {
-                if (xMouse >= 208 && xMouse < 225 && yMouse >= 6 && yMouse < 114) {
+                if (xMouse >= this.width - 19 && xMouse < this.width - 2 && yMouse >= 6 && yMouse < this.height - 6) {
                     this.isScrolling = true;
                 }
             }
@@ -143,7 +145,7 @@ public abstract class ScrollMenu {
 	}
 	
 	private void drawScrollBar() {
-		int width = this.xPosition + 227;
+		int width = this.xPosition + this.width;
 		int height = this.yPosition + this.scrollY * (this.height - this.scrollHeight) / this.listHeight;
 	    screen.drawTexturedModalRect(width - 18, height, 0, 144, 15, 1);
 	    int var3;

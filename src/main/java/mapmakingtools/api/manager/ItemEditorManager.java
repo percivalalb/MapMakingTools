@@ -1,6 +1,7 @@
 package mapmakingtools.api.manager;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import mapmakingtools.api.interfaces.IFilterClient;
@@ -23,11 +24,14 @@ public class ItemEditorManager {
 		list.add(handler);
 	}
 	
-	public List<IItemAttribute> getItems(EntityPlayer player, ItemStack stack) {
-		List<IItemAttribute> items = new ArrayList<IItemAttribute>();
+	public static Hashtable<IItemAttribute, Boolean> getItems(EntityPlayer player, ItemStack stack) {
+		Hashtable<IItemAttribute, Boolean> items = new Hashtable<IItemAttribute, Boolean>();
 		for(IItemAttribute item : list)
-			if(item.isApplicable(player, stack))
-				items.add(item);
+			items.put(item, item.isApplicable(player, stack));
 		return items;
+	}
+	
+	public static List<IItemAttribute> getItemList(EntityPlayer player, ItemStack stack) {
+		return list;
 	}
 }

@@ -30,7 +30,7 @@ public class PotionNBT {
 		NBTTagCompound potion = new NBTTagCompound();
 		potion.setByte(POTION_ID, (byte)id);
 		potion.setByte(POTION_AMPLIFIER, (byte)(level - 1));
-		potion.setInteger(POTION_DURATION, duration * 20);
+		potion.setInteger(POTION_DURATION, duration);
 		potion.setBoolean(POTION_AMBIENT, ambient);
 		potionList.appendTag(potion);
 		item.stackTagCompound.setTag(POTION_TAG, potionList);
@@ -42,7 +42,7 @@ public class PotionNBT {
 		NBTTagCompound potion = new NBTTagCompound();
 		potion.setByte(POTION_ID, (byte)id);
 		potion.setByte(POTION_AMPLIFIER, (byte)(level - 1));
-		potion.setInteger(POTION_DURATION, duration * 20);
+		potion.setInteger(POTION_DURATION, duration);
 		potion.setBoolean(POTION_AMBIENT, ambient);
 		potionList.appendTag(potion);
 	}

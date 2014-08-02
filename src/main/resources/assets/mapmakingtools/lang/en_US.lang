@@ -125,6 +125,19 @@ mapmakingtools.filter.converttodispenser.name=Convert to Dispenser
 mapmakingtools.filter.converttodispenser.info=Converts the dropper to a dispenser.
 mapmakingtools.filter.converttodispenser.complete=Converted Dropper to Dispenser.
 
+mapmakingtools.itemattribute.displayname.name=Display Name
+mapmakingtools.itemattribute.lore.name=Lore
+mapmakingtools.itemattribute.stacksize.name=Stack Size
+mapmakingtools.itemattribute.metadata.name=Metadata
+mapmakingtools.itemattribute.repaircost.name=Repair Cost
+mapmakingtools.itemattribute.enchantment.name=Enchantments
+mapmakingtools.itemattribute.bookenchantment.name=Book Ench.
+mapmakingtools.itemattribute.book.name=Written Book
+mapmakingtools.itemattribute.potion.name=Potions
+mapmakingtools.itemattribute.playerhead.name=Player Head
+mapmakingtools.itemattribute.fireworks.name=Fireworks
+mapmakingtools.itemattribute.armorcolour.name=Armor Colour
+
 mapmakingtools.key.category=Map Making Tools
 mapmakingtools.key.itemeditor=ItemEditor
 mapmakingtools.key.blockhelper=BlockHelper

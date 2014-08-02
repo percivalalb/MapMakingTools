@@ -95,6 +95,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 			ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenSmall);
 			this.drawTexturedModalRect(topX, topY, 0, 0, this.xFakeSize(), this.yFakeSize());
 		}
+		
 		if(filterCurrent != null)
 			filterCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
 		else {

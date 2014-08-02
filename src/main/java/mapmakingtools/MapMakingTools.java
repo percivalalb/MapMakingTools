@@ -45,6 +45,7 @@ public class MapMakingTools {
     	proxy.registerFilters();  
     	proxy.registerRotation();
     	proxy.registerFlipped();
+    	proxy.registerItemAttribute();
     }
     
     @EventHandler
