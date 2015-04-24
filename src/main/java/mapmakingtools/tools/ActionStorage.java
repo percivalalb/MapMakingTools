@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cpw.mods.fml.common.FMLLog;
 
-import mapmakingtools.api.enums.Rotation;
+import mapmakingtools.api.enums.MovementType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -18,8 +18,8 @@ public class ActionStorage {
 	private ArrayList<ArrayList<CachedBlock>> cachedUndo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<ArrayList<CachedBlock>> cachedRedo = new ArrayList<ArrayList<CachedBlock>>();
 	private ArrayList<CachedBlock> cachedCopy = new ArrayList<CachedBlock>();
-	private Rotation rotationValue = Rotation._000_;
-	private int flippingValue = 0;
+	private MovementType rotationValue = MovementType._000_;
+	private MovementType flippingValue = MovementType._X_;
 	
 	public ActionStorage(PlayerData playerData) { 
 		this.playerData = playerData;
@@ -39,7 +39,7 @@ public class ActionStorage {
 	
 	public int addCopy(ArrayList<CachedBlock> list) {
 		this.cachedCopy = list;
-		this.rotationValue = Rotation._000_;
+		this.rotationValue = MovementType._000_;
 		return list.size();
 	}
 	
@@ -55,14 +55,14 @@ public class ActionStorage {
 			this.cachedUndo.remove(0);
 	}
 	
-	public boolean setRotation(Rotation rotation) {
+	public boolean setRotation(MovementType rotation) {
 		if(rotation != null)
 			this.rotationValue = rotation;
 		return this.rotationValue == rotation;
 	}
 	
-	public boolean setFlipping(int flipping) {
-		if(flipping == 0 || flipping == 1 || flipping == 2)
+	public boolean setFlipping(MovementType flipping) {
+		if(flipping != null)
 			this.flippingValue = flipping;
 		return this.flippingValue == flipping;
 	}
@@ -134,8 +134,8 @@ public class ActionStorage {
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		tag.setInteger("rotationValue", this.rotationValue.getValue());
-		tag.setInteger("flippingValue", this.flippingValue);
+		tag.setString("rotationValue", this.rotationValue.getMarker());
+		tag.setString("flippingValue", this.flippingValue.getMarker());
 		
 		//Cached Undo list
 		NBTTagList undoList = new NBTTagList();
@@ -176,8 +176,8 @@ public class ActionStorage {
 	}
 	
 	public ActionStorage readFromNBT(NBTTagCompound tag) {
-		this.rotationValue = Rotation.getRotation(tag.getInteger("rotationValue"));
-		this.flippingValue = tag.getInteger("flippingValue");
+		this.rotationValue = MovementType.getRotation(tag.getString("rotationValue"));
+		this.flippingValue = MovementType.getRotation(tag.getString("flippingValue"));
 		
 		if(tag.hasKey("cachedUndo")) {
 			NBTTagList list1 = (NBTTagList)tag.getTag("cachedUndo");

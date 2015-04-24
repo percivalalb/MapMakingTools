@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.enums.Rotation;
+import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.CachedBlock;
@@ -62,7 +62,7 @@ public class PacketPaste extends IPacket {
 		
 		for(CachedBlock cachedBlock : this.list) {
 			cachedBlock.setWorld(player.worldObj);
-			newUndo.add(cachedBlock.setCachedBlockReletiveToRotated(data, Rotation._000_));
+			newUndo.add(cachedBlock.setCachedBlockReletiveToRotated(data, MovementType._000_));
 		}
 		
 		data.getActionStorage().addUndo(newUndo);

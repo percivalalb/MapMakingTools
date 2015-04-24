@@ -50,7 +50,6 @@ public class KeyStateHandler {
                     int j = scaledresolution.getScaledHeight();
                     int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;
                     int yMouse = j - Mouse.getY() * j / ClientHelper.mc.displayHeight - 1;
-                    LogHelper.info("MouseX: " + xMouse + " MouseY: " + yMouse);
             		for (int j1 = 0; j1 < container.inventorySlots.inventorySlots.size(); ++j1) {
                         Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
                         
@@ -62,12 +61,10 @@ public class KeyStateHandler {
                         		if(index >= 36)
                         			index -= 36;
                         		
-                        		LogHelper.info(stack.getDisplayName() + " " + index);
                         		if(index >= 5 && index <= 8 && playerInventory.getStackInSlot(36 + 3 - (index - 5)) == stack) {
                         			index = 36 +  3 - (index - 5);
                         		}
-                            	LogHelper.info(stack.getDisplayName() + " " + index);
- 
+
                             	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketOpenItemEditor(index));
                             	
                         	}

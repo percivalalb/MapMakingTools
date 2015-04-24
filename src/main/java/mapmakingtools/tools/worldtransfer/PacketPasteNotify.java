@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.enums.Rotation;
+import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.CachedBlock;

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.enums.Rotation;
+import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.network.IPacket;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.CachedBlock;
@@ -28,10 +28,12 @@ public class PacketAddArea extends IPacket {
 
 	public String name;
 	public boolean override;
+	public int index;
 	public ArrayList<CachedBlock> list;
+	public EntityPlayer player;
 	
 	public PacketAddArea() {}
-	public PacketAddArea(String name, boolean override, ArrayList<CachedBlock> list) {
+	public PacketAddArea(String name, boolean override, int index, EntityPlayer player, ArrayList<CachedBlock> list) {
 		this.name = name;
 		this.override = override;
 		this.list = list;
@@ -43,7 +45,7 @@ public class PacketAddArea extends IPacket {
 		this.override = data.readBoolean();
 		this.list = new ArrayList<CachedBlock>();
 		int size = data.readInt();
-		for(int i = 0; i < size; ++i)
+		for(int i = 0; i < size && data.available() > 0; ++i)
 			this.list.add(new CachedBlock(data, false));
 	}
 
@@ -51,9 +53,17 @@ public class PacketAddArea extends IPacket {
 	public void write(DataOutputStream data) throws IOException {
 		data.writeUTF(this.name);
 		data.writeBoolean(this.override);
-		data.writeInt(this.list.size());
-		for(int i = 0; i < this.list.size(); ++i)
+		data.writeInt(this.list.size() - this.index);
+		for(int i = index; i < this.list.size(); ++i) {
 			this.list.get(i).writeToOutputStream(data, false);
+			
+			this.index += 1;
+			
+			if(data.size() > 16000 && this.index < this.list.size()) {
+				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketAddArea(this.name, false, this.index, this.player, this.list), this.player);
+				break;
+			}
+		}
 	}
 
 	@Override

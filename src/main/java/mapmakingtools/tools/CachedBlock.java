@@ -5,9 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import cpw.mods.fml.common.FMLLog;
-import mapmakingtools.api.enums.Rotation;
-import mapmakingtools.api.manager.FlippedManager;
-import mapmakingtools.api.manager.RotationManager;
+import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.handler.EntityJoinWorldHandler;
 import mapmakingtools.helper.PacketHelper;
 import net.minecraft.block.Block;
@@ -87,7 +85,7 @@ public class CachedBlock {
 		return replacementCache;
 	}
 	
-	public CachedBlock setCachedBlockReletiveToRotated(PlayerData data, Rotation rotation) { 
+	public CachedBlock setCachedBlockReletiveToRotated(PlayerData data, MovementType movementType) { 
 		int posX = MathHelper.floor_double(data.getPlayer().posX);
 		int posY = MathHelper.floor_double(data.getPlayer().posY);
 		int posZ = MathHelper.floor_double(data.getPlayer().posZ);
@@ -98,7 +96,7 @@ public class CachedBlock {
 		int backUpY = y;
 		int backUpZ = z;
 		
-		switch(rotation) {
+		switch(movementType) {
 		case _000_:
 			break;
 		case _090_:
@@ -117,14 +115,19 @@ public class CachedBlock {
 		CachedBlock replacementCache = new CachedBlock(data.getPlayer().worldObj, posX + newX, posY + newY, posZ + newZ);
 		//Stops any entities being destroyed from the block break
 		EntityJoinWorldHandler.shouldSpawnEntities = false;
-		this.clearTileEntity(data.getPlayer().worldObj, posX + newX, posY + newY, posZ + newZ);
-		data.getPlayer().worldObj.setBlock(posX + newX, posY + newY, posZ + newZ, this.block, 0, 2);
-		data.getPlayer().worldObj.setBlockMetadataWithNotify(posX + newX, posY + newY, posZ + newZ, this.meta, 2);
-		if(this.tileEntity != null)
-			data.getPlayer().worldObj.setTileEntity(posX + newX, posY + newY, posZ + newZ, this.tileEntity);
 		try {
-			if(rotation != Rotation._000_)
-				RotationManager.onBlockRotation(this.block, this.meta, this.tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, rotation);
+			this.clearTileEntity(data.getPlayer().worldObj, posX + newX, posY + newY, posZ + newZ);
+			boolean set = RotationLoader.onRotation(block, this.meta, tileEntity, this.orginalWorld, posX + newX, posY + newY, posZ + newZ, movementType);
+			
+			if(!set)
+				data.getPlayer().worldObj.setBlock(posX + newX, posY + newY, posZ + newZ, this.block, this.meta, 2);
+			
+			if(this.tileEntity != null) {
+				this.tileEntity.xCoord = posX + newX;
+				this.tileEntity.yCoord = posY + newY;
+				this.tileEntity.zCoord = posZ + newZ;
+				data.getPlayer().worldObj.setTileEntity(posX + newX, posY + newY, posZ + newZ, this.tileEntity);
+			}
 		}
 		catch(Exception e) {}
 		EntityJoinWorldHandler.shouldSpawnEntities = true;
@@ -132,26 +135,37 @@ public class CachedBlock {
 		return replacementCache; 												
 	}
 	
-	public CachedBlock setCachedBlockReletiveToFlipped(PlayerData data, int flipMode) { 
+	public CachedBlock setCachedBlockReletiveToFlipped(PlayerData data, MovementType movementType) { 
 		int newX = this.x, newY = this.y, newZ = this.z;
 		
-		if(flipMode == 1)
+		switch(movementType) {
+		case _X_:
 			newX = data.getMaxX() - (this.x - data.getMinX());
-		else if(flipMode == 2)
+			break;
+		case _Z_:
 			newZ = data.getMaxZ() - (this.z - data.getMinZ());
-		else if(flipMode == 0)
+			break;
+		case _Y_:
 			newY = data.getMaxY() - (this.y - data.getMinY());
+			break;
+		}
 	
 		CachedBlock replacementCache = new CachedBlock(this.orginalWorld, newX, newY, newZ);
 		//Stops any entities being destroyed from the block break
 		EntityJoinWorldHandler.shouldSpawnEntities = false;
-		this.clearTileEntity(this.orginalWorld, newX, newY, newZ);
-		this.orginalWorld.setBlock(newX, newY, newZ, this.block, 0, 2);
-		this.orginalWorld.setBlockMetadataWithNotify(newX, newY, newZ, this.meta, 2);
-		if(this.tileEntity != null)
-			this.orginalWorld.setTileEntity(newX, newY, newZ, this.tileEntity);
 		try {
-			FlippedManager.onBlockFlipped(this.block, this.meta, this.tileEntity, this.orginalWorld, newX, newY, newZ, flipMode);
+			this.clearTileEntity(this.orginalWorld, newX, newY, newZ);
+			boolean set = RotationLoader.onRotation(block, this.meta, tileEntity, this.orginalWorld,  newX, newY, newZ, movementType);
+			
+			if(!set)
+				this.orginalWorld.setBlock(newX, newY, newZ, this.block, this.meta, 2);
+		
+			if(this.tileEntity != null) {
+				this.tileEntity.xCoord = newX;
+				this.tileEntity.yCoord = newY;
+				this.tileEntity.zCoord = newZ;
+				this.orginalWorld.setTileEntity(newX, newY, newZ, this.tileEntity);
+			}
 		}
 		catch(Exception e) {}
 		EntityJoinWorldHandler.shouldSpawnEntities = true;

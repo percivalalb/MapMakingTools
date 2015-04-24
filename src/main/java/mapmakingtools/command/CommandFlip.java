@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.tools.CachedBlock;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
@@ -51,18 +52,18 @@ public class CommandFlip extends CommandBase {
 		if(param.length < 1)
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		else {
-			int flipIndex = -1;
+			MovementType movementType = null;
 			String flipMode = param[0];
 			
 			for(String str : getModeNames())
 	    		if(str.equalsIgnoreCase(flipMode))
-	    			flipIndex = getModeNames().indexOf(str);
+	    			movementType = MovementType.getRotation(str);
 
-			if(flipIndex == -1)
+			if(movementType != null)
 				throw new CommandException("mapmakingtools.commands.build.flipmodeerror", new Object[] {flipMode});
 				
 			
-			data.getActionStorage().setFlipping(flipIndex);
+			data.getActionStorage().setFlipping(movementType);
 
 			ArrayList<CachedBlock> list = new ArrayList<CachedBlock>();
 			
@@ -91,7 +92,7 @@ public class CommandFlip extends CommandBase {
     }
 	
 	public static List<String> getModeNames() {
-		return Arrays.asList("yVertically", "xHorizontal", "zHorizontal");
+		return Arrays.asList("y", "x", "z");
 	}
 
     @Override

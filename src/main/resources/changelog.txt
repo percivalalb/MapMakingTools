@@ -7,6 +7,19 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+v2.2.3a - 
++ Readded the '//killentities <type>' command that was originally in the v2.0.1a version
++ Added full NEI support
+
+# Rewrote the rotation and flipped manager so that it is much more reliable.
+# Moved the wrench item to the 'Miscellaneous' Creative Tab
+
+* Fixed server crashing on start up due to item editor
+* Fixed when removing the custom name tag from an item it may remove some other attributes from the same tag.
+* Fixed the quick build item sending to many updates to the client.
+* Fixed when many blocks are being rotated/flipped there direction being wrong.
+* Fixed the wooden axe and the wrench item not being in the creative search menu
+
 v2.2.2a - 2nd August 2014
 + Completely redone the item editor, now has sections at the side with you can choose to edit on the item
   Currently you can edit
@@ -15,7 +28,7 @@ v2.2.2a - 2nd August 2014
   Item enchantments
   Enchanted Book enchantments
   Item display name
-  Item metadata (can make tools and armor unbreakable)
+  Item metadata (can make tools and armour unbreakable)
   Item stacksize
   Player head name
   Potion effects on potions

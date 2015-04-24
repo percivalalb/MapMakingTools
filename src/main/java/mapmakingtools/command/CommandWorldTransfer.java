@@ -80,10 +80,10 @@ public class CommandWorldTransfer extends CommandBase {
 				}
 			}
 			
-			if(list.size() > 1000)
+			if(list.size() > 16000)
 				throw new CommandException("mapmakingtools.commands.build.worldtransfer.toolarge", new Object[0]);
 			
-			MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketAddArea(name, false, list), player);
+			MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketAddArea(name, false, 0, player, list), player);
 		}
 		else if("paste".equals(mode)) {
 			if(param.length < 2)

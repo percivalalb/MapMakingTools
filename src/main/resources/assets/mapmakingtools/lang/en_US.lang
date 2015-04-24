@@ -24,6 +24,8 @@ mapmakingtools.commands.build.move.usage=//move <axis> <amount>
 mapmakingtools.commands.build.worldtransfer.usage=//worldtransfer <mode>
 mapmakingtools.commands.build.worldtransfer.usage.copy=//worldtransfer copy <name>
 mapmakingtools.commands.build.worldtransfer.usage.paste=//worldtransfer paste <name>
+mapmakingtools.commands.killentities.usage=//killentites <type>
+mapmakingtools.commands.debug.usage=//debug <command>
 
 mapmakingtools.commands.build.postionsnotselected=You need make to selections before you can complete this command.
 mapmakingtools.commands.build.hasnotingtoundo=There is nothing to undo.

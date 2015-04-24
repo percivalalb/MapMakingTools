@@ -9,7 +9,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
@@ -34,7 +33,6 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket>{
 
     	msg.write(dos);
     	bytes.writeBytes(bos.toByteArray());
-    	LogHelper.info("Packet Size: %d", bytes.array().length);
     }
 
     @Override
@@ -55,7 +53,6 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket>{
 
 			msg.read(dis);
 			msg.execute(player);
-			LogHelper.info("Packet Size: %d", bytes.array().length);
 		} 
     	catch(Exception e) {
 			e.printStackTrace();

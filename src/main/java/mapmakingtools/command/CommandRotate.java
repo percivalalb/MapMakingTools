@@ -1,8 +1,9 @@
 package mapmakingtools.command;
 
+import java.util.Arrays;
 import java.util.List;
 
-import mapmakingtools.api.enums.Rotation;
+import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
@@ -49,7 +50,14 @@ public class CommandRotate extends CommandBase {
 		if(param.length < 1)
 			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
 		else {
-			Rotation rotation = Rotation.getRotation(parseInt(sender, param[0]));
+			MovementType rotation = null;
+			for(String str : getModeNames())
+	    		if(str.equalsIgnoreCase(param[0]))
+	    			rotation = MovementType.getRotation(param[0]);
+			
+			if(rotation == null)
+				throw new CommandException("mapmakingtools.commands.build.rotatemodeerror", new Object[0]);
+			
 			boolean didChange = data.getActionStorage().setRotation(rotation);
 			
 			if(didChange) {
@@ -66,9 +74,13 @@ public class CommandRotate extends CommandBase {
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
-        return null;
+	public List addTabCompletionOptions(ICommandSender sender, String[] param) {
+        return param.length == 1 ? getListOfStringsFromIterableMatchingLastWord(param, getModeNames()) : null;
     }
+	
+	public static List<String> getModeNames() {
+		return Arrays.asList("90", "180", "270");
+	}
 
     @Override
     public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {

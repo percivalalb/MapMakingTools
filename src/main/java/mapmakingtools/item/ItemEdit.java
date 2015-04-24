@@ -73,7 +73,7 @@ public class ItemEdit extends ItemAxe {
     
     @Override
     public CreativeTabs[] getCreativeTabs() {
-        return new CreativeTabs[]{ getCreativeTab(), CreativeTabs.tabRedstone};
+        return new CreativeTabs[] {this.getCreativeTab(), CreativeTabs.tabMisc};
     }
     
     @Override
@@ -82,6 +82,16 @@ public class ItemEdit extends ItemAxe {
     		par3List.add(new ItemStack(item, 1, 0));
     	
     	else if(par2CreativeTabs == this.getCreativeTabs()[1]) {
+    		ItemStack stack = new ItemStack(item, 1, 0);
+    		stack.stackTagCompound = new NBTTagCompound();
+    		stack.stackTagCompound.setBoolean("WRENCH", true);
+    		stack.stackTagCompound.setTag("AttributeModifiers", new NBTTagList());
+    		par3List.add(stack);
+    	}
+    	
+    	else if(par2CreativeTabs == null) { //All Search Tab
+    		par3List.add(new ItemStack(item, 1, 0));
+    		
     		ItemStack stack = new ItemStack(item, 1, 0);
     		stack.stackTagCompound = new NBTTagCompound();
     		stack.stackTagCompound.setBoolean("WRENCH", true);
@@ -102,11 +112,6 @@ public class ItemEdit extends ItemAxe {
     		return StatCollector.translateToLocal("item.mapmakingtools.wrench.name");
     	else
     		return StatCollector.translateToLocal(this.getUnlocalizedName(stack) + ".name");
-    }
-    
-   // @Override
-    public String getItemDisplayName(ItemStack stack) {
-    	return this.getItemStackDisplayName(stack).trim();
     }
     
     @Override

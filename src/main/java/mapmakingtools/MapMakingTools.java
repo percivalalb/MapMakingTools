@@ -8,7 +8,6 @@ import mapmakingtools.handler.ConfigurationHandler;
 import mapmakingtools.handler.EntityJoinWorldHandler;
 import mapmakingtools.handler.PlayerTrackerHandler;
 import mapmakingtools.handler.WorldSaveHandler;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.lib.Reference;
 import mapmakingtools.network.NetworkManager;
 import mapmakingtools.proxy.CommonProxy;
@@ -44,8 +43,8 @@ public class MapMakingTools {
     	ModItems.inti();
     	proxy.registerFilters();  
     	proxy.registerRotation();
-    	proxy.registerFlipped();
     	proxy.registerItemAttribute();
+    	proxy.registerForceKill();
     }
     
     @EventHandler

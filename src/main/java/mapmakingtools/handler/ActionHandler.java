@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Facing;
@@ -25,7 +26,6 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -35,6 +35,7 @@ public class ActionHandler {
 
 	@SubscribeEvent
 	public void rightClick(PlayerInteractEvent event) {
+		
 		EntityPlayer player = event.entityPlayer;
 		ItemStack item = player.getHeldItem();
 		World world = player.worldObj;
@@ -43,7 +44,11 @@ public class ActionHandler {
 		int z = event.z;
 		int side = event.face;
 		
-		FMLLog.info("" + world.getBlockMetadata(x, y, z));
+		//if(world.isRemote && event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+		//	player.addChatMessage(new ChatComponentText("Meta:" + event.world.getBlockMetadata(event.x, event.y, event.z)));
+		
+		//if(player.isSneaking())
+		//	event.setCanceled(true);
 		
 		switch(event.action) {
 		case LEFT_CLICK_BLOCK:
@@ -58,7 +63,6 @@ public class ActionHandler {
 					z += (player.isSneaking() ? Facing.offsetsZForSide[side] : 0);
 					
 					if(playerData.setFirstPoint(x, y, z)) {
-						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(x, y, z), player);
 						if(playerData.hasSelectedPoints()) {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
 							chatComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
@@ -88,7 +92,6 @@ public class ActionHandler {
 					z += (player.isSneaking() ? Facing.offsetsZForSide[side] : 0);
 					
 					if(playerData.setSecondPoint(x, y, z)) {
-						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(x, y, z), player);
 						if(playerData.hasSelectedPoints()) {
 							ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
 							chatComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);

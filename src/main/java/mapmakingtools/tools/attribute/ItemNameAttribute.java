@@ -1,9 +1,12 @@
 package mapmakingtools.tools.attribute;
 
+import com.google.common.base.Strings;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
@@ -28,7 +31,14 @@ public class ItemNameAttribute extends IItemAttribute {
 			stack.setStackDisplayName(EnumChatFormatting.RESET + this.name);
 		if(data == 1) {
 			if(stack.hasTagCompound()) {
-				stack.stackTagCompound.removeTag("display");
+				if(stack.stackTagCompound.hasKey("display", 10)) {
+					NBTTagCompound display = stack.stackTagCompound.getCompoundTag("display");
+					display.removeTag("Name");
+					if(display.hasNoTags())
+						stack.stackTagCompound.removeTag("display");
+					if(stack.stackTagCompound.hasNoTags())
+						stack.setTagCompound(null);
+				}
 			}
 		}
 	}
@@ -40,10 +50,12 @@ public class ItemNameAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		String displayname = stack.getDisplayName();
-		if(displayname.startsWith(EnumChatFormatting.RESET.toString())) 
-			displayname = displayname.substring(2, displayname.length());
-		this.fld_name.setText(displayname);
+		if(first) {
+			String displayname = stack.getDisplayName();
+			if(displayname.startsWith(EnumChatFormatting.RESET.toString())) 
+				displayname = displayname.substring(2, displayname.length());
+			this.fld_name.setText(displayname);
+		}
 	}
 
 	@Override
