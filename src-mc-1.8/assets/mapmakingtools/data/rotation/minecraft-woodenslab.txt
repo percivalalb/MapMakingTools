@@ -1,0 +1,14 @@
+block ~~~ minecraft:wooden_slab
+
+data ~~~ y ~~~ 0 ~~~ 8
+data ~~~ y ~~~ 1 ~~~ 9
+data ~~~ y ~~~ 2 ~~~ 10
+data ~~~ y ~~~ 3 ~~~ 11
+data ~~~ y ~~~ 4 ~~~ 12
+data ~~~ y ~~~ 5 ~~~ 13
+data ~~~ y ~~~ 8 ~~~ 0
+data ~~~ y ~~~ 9 ~~~ 1
+data ~~~ y ~~~ 10 ~~~ 2
+data ~~~ y ~~~ 11 ~~~ 3
+data ~~~ y ~~~ 12 ~~~ 4
+data ~~~ y ~~~ 13 ~~~ 5

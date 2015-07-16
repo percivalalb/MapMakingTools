@@ -1,0 +1,221 @@
+Map Making Tools - Changelog
+
+Update List Key
+(+) A new feature
+(-) A removed feature
+(#) A changed feature
+(*) A bug fix
+(/) Other
+
+v2.3.1a
+* Fixed the //playerstatue command not working
+
+v2.3.0a
++ Updated to 1.8
++ Added support for all blocks in the rotation and flipped manager.
++ Added a unique item for the quick build axe and the wrench instead of overriding the vanilla wooden axe with causes lots of issues.
++ Added a new filter called villager profession that allows you to change the profession of a villager
++ Added the new 1.8 blocks to the block helper list
++ Added the new 1.8 enchantments to the enchantment list
++ Added the new 1.8 potions to the potion list
++ Added the new 1.8 entities to the entity list
++ Added the command //copyinventory <player>
+
+- Removed the expand and shrink command for now
+
+# Updated the version checker to be more reliable and accurate
+# Changed the block helper to show when the shift key is pressed
+# Moved the Quick Build Axe and Wrench item to the 'Miscellaneous' Creative Tab
+# //worldtransfer can now cater for infinitely size areas
+
+* Fixed the enchantment knockback not showing on the enchantment list
+* Fixed //wordtransfer not working sometimes
+* Fixed client update issue with command //setbiome
+* Fixed wrong language key for //worldtransfer paste
+
+v2.2.3a (Never released, content pushed to the 1.8 version)
++ Readded the '//killentities <type>' command that was originally in the v2.0.1a version
++ Added full NEI support
+
+# Rewrote the rotation and flipped manager so that it is much more reliable.
+# Moved the wrench item to the 'Miscellaneous' Creative Tab
+
+* Fixed server crashing on start up due to item editor
+* Fixed when removing the custom name tag from an item it may remove some other attributes from the same tag.
+* Fixed the quick build item sending to many updates to the client.
+* Fixed when many blocks are being rotated/flipped there direction being wrong.
+* Fixed the wooden axe and the wrench item not being in the creative search menu
+
+v2.2.2a - 2nd August 2014
++ Completely redone the item editor, now has sections at the side with you can choose to edit on the item
+  Currently you can edit
+  Armor Colour
+  Written book name and author
+  Item enchantments
+  Enchanted Book enchantments
+  Item display name
+  Item metadata (can make tools and armour unbreakable)
+  Item stacksize
+  Player head name
+  Potion effects on potions
+  Repair cost used for anvils
+
+# Changed the default key for the block helper to right shift instead of left shift to avoid conflicts with the 'shift' default binding.
+
+- Removed the old player skull gui accessed when you shift right clicked with a head
+
+* Fixed item editor gui being very buggy which mean that all the buttons etc vanished. 
+* Fixed not being to use item editor button armor slots
+
+
+
+v2.2.1a - 24th July 2014
++ Added world transfer feature this allows you to copy up to 1000 blocks from any world/server with the mod on
+  The selected areas that you choose to transfer are stored in 'mapmakingtools_worldtransfer.dat'
+  The command '//worldtransfer <mode>' will allow you to access these features
+  '//worldtransfer copy <name>' will save the selected area to your machine under the name you give it
+  '//worldtransfer paste <name>' will paste the selected area with the given name
+  '//worldtransfer gui' will open a gui that shows all your copied areas, from here you can see there name and delete them from the memory
++ Added Russian translation file (thanks to Bonedon_Russian)
++ Finished the English translation for the information button in the filter menu.
++ Added '//selectionsize' command
++ Added '//expand' command
++ Added '//shrink' command
++ Added '//move' command
++ Added a line of text when holding the quick build axe that tells you the size of your currently selected area
++ Added a custom logger under the name 'Map Making Tools'
++ Starting work on making the item editor much better
+
+- Removed the '//temp' command which as used for debugging
+
+# The block helper will now only show when 'SHIFT' key is pressed, is configurable in controls menu - this was to avoid issue with tab completion with commands
+
+* Fixed crash in head gui by temporally removing the player image to the left of the gui  
+* Fixed the outline of the selected area showing even when the axe is not being held
+* Fixed the wrench making you crash on servers
+
+
+
+v2.2.0a - 8th July 2014
++ Updated to 1.7.10
+
+# The block helper will now only show when the tab button is down
+
+
+
+v2.1.3a - 26th April 2014
++ Added warning message when creating using //playerstatue because of it can take a while when using big areas e.g. 48x48x99
+
+# The //playerstatue now can be any size if it is a multiply of a 16x16x32 creating some huge statues.
+# Only 10 saves of Undo, redo and copy cache will be saved after the 10th it will override the oldest cache 
+
+* Fixed custom give filter allowing some slots to go infinite when not needed.
+* Fixed quick build sometimes not updating the client
+* Fixed //clearpoints not working
+* Fixed crash on forge versions higher than #1055
+
+
+
+v2.1.2a - 14th April 2014
++ Readded mob velocity filter for mob spawners
++ Readded creeper explosion properties filter for mob spawners
++ Readded baby monster filter for mob spawners
++ Readded chest symmetrify filter for chests
++ Readded convert to dispenser and dropper filter
+
+
+
+v2.1.1a - 11th April 2014
++ Readded the block helper in the chat menu
++ Readded the configuration file to say whether the block helper should be shown
++ Added the new blocks from 1.7 to the block helper
++ Readded version checker
+
+# Changed the //replace command to work better with the block helper: //replace <block> <meta> <block> <meta> 
+
+* Fixed the //playerstatue not working on servers
+
+
+
+v2.1.0a - 9th April 2014
++ Updated to 1.7.2 - Entire mod recoded to be more efficient and compatible with 1.7
+
++ Shift while using the quick build item to not select the block you click but the block adjacent to the side you click on
++ As well as the outline of the area selected you can now see the 2 blocks you selected to make the out line
++ The selected area from the quick build system will now save when the world restarts and load back to how it was
++ Undo, redo and copied areas will be saved on world unload
++ Added information tool tip to most filters
++ Added custom give filter where you can create your item and then convert it all its data to a /give command that command blocks accept (this includes converting nbt data to text)
+
+# Data in filters are now constant and will only change when you click to new button to update your data from the current world
+# Selected areas using the axe are now dimension unique
+# The wrench item is now part of the vanilla wooden axe item allowing you to have people with map makings tools and people without on the same server
+# //setbiome command now uses vanilla packets to send updates the client
+# Changed the command //clearselections name to //clearpoints
+
+* Fixed the wrench being able to take damage
+* Fixed possible graphical glitches in the mob type filter
+* Fixed rotation of the breaking anvils reverting them to non-broken ones
+* //setbiome command is now much better
+
+
+
+v2.0.4a (Never released, content pushed to the 1.7 version)
++ Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping! 
++ Started work on a new filter to edit the chance of the item dropping from an Item Frame.
+
+* Fixed a equals method derp
+* Fixed tile entities not sending there information to the client when being pasted, flipped etc
+
+
+
+v2.0.3a - 8th September 2013
+Please note Forge #850 or higher is now needed to run map making tools
++ Made the Fill Inventory like the potion setter on mob spawners and so can put unlimited stacks of items in inventories that contain extra data
++ Added the ability to set the amount of uses the recipe can be used in a villager shop
++ Added the ability to edit item name and damage, hover over item in inventory and click 'M' to edit the item
++ Added a //setbiome <biome> command which you can set the biome of anywhere if selected with Quick Build Item
++ Added and new filter using the wrench so you can edit command blocks names and add colours, bold etc
+
+# Removed some debug messages
+
+* Fixed Quick Build Item opening some GUI's when right clicking, which was annoying 
+* Fixed weird TileEntity behaver after being pasted
+* Fixed the items in the villager shop editor flashing from one item to another on opening the GUI (For real!)
+* Fixed some spelling mistakes
+* Fixed the wrench saying you are editing a block/entity when you are not editing it, meaning you would have to relog to fix. 
+
+
+
+v2.0.2b - 2nd September 2013
+* Fixed crash with sign edit
+
+
+
+v2.0.2a - 2nd September 2013
++ In the block id helper menu in chat you can now insert blocks ids when doing a command
++ Added a new filter called 'Max Mob Health' you can click on the tab but it is not finished yet
+
+* Fixed some blocks popping off when pasting e.g. redstone, torchs etc
+* Fixed the //replace sometimes not working if the replace block had a metadata value
+* Fixed the message 'Succesfully edited a sign.' displaying twice
+
+
+
+v2.0.1a - 1st September 2013
++ Added the ability to edit signs once they are placed in the world and add colours and other text options e.g. bold, underlined etc...
++ Added a //killentities <type> command, which you can kill all/specified entities in the loaded world
++ Added a config option to completely disable the block id helper.
+
+* Fixed the wooden axe not being able to destroy anything in survival mode due to the quick build system
+* Fixed the /potion command not working and making the game crash
+* Fixed the items in the villager shop editor flashing from one item to another on opening the GUI
+
+# Made the selected box outline and block id helper only show in creative mode
+
+
+
+v2.0.0a - 14th August 2013
+
++ Added the Wrench 
++ Completely changed the mod
