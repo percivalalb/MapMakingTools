@@ -2,33 +2,18 @@ package mapmakingtools.proxy;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import mapmakingtools.api.interfaces.IFilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ForceKillManager;
-import mapmakingtools.api.manager.ItemEditorManager;
-import mapmakingtools.client.gui.GuiFilter;
-import mapmakingtools.client.gui.GuiItemEditor;
-import mapmakingtools.client.gui.GuiWorldTransfer;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.container.ContainerWorldTransfer;
 import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.RotationLoader;
-import mapmakingtools.tools.attribute.ArmorColourAttribute;
-import mapmakingtools.tools.attribute.BookAttribute;
-import mapmakingtools.tools.attribute.BookEnchantmentAttribute;
-import mapmakingtools.tools.attribute.EnchantmentAttribute;
-import mapmakingtools.tools.attribute.FireworksAttribute;
-import mapmakingtools.tools.attribute.ItemMetaAttribute;
-import mapmakingtools.tools.attribute.ItemNameAttribute;
-import mapmakingtools.tools.attribute.LoreAttribute;
-import mapmakingtools.tools.attribute.PlayerHeadAttribute;
-import mapmakingtools.tools.attribute.PotionAttribute;
-import mapmakingtools.tools.attribute.RepairCostAttribute;
-import mapmakingtools.tools.attribute.StackSizeAttribute;
-import mapmakingtools.tools.datareader.BlockList;
 import mapmakingtools.tools.datareader.BlockColourList;
+import mapmakingtools.tools.datareader.BlockList;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
 import mapmakingtools.tools.datareader.EnchantmentList;
 import mapmakingtools.tools.datareader.PotionList;
@@ -71,7 +56,6 @@ import mapmakingtools.tools.killentities.KillAnimals;
 import mapmakingtools.tools.killentities.KillGeneric;
 import mapmakingtools.tools.killentities.KillItem;
 import mapmakingtools.tools.killentities.KillMobs;
-import net.minecraft.block.Block;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -97,9 +81,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
  * @author ProPercivalalb
@@ -140,7 +122,14 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	public void registerHandlers() {}
-	public EntityPlayer getClientPlayer() { return null; }
+	
+	public EntityPlayer getPlayerEntity(MessageContext ctx) {
+		return ctx.getServerHandler().playerEntity;
+	}
+	
+	public EntityPlayer getPlayerEntity() {
+		return null;
+	}
 	
 	public void onPreLoad() {
 		BlockList.readDataFromFile();

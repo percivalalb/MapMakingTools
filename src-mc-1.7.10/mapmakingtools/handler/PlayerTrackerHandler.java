@@ -1,10 +1,10 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.tools.PlayerData;
-import mapmakingtools.tools.WorldData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import mapmakingtools.tools.PlayerData;
+import mapmakingtools.tools.WorldData;
 
 /**
  * @author ProPercivalalb

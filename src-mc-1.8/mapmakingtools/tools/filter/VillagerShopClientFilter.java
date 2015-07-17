@@ -3,7 +3,8 @@ package mapmakingtools.tools.filter;
 import java.util.Arrays;
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.api.interfaces.IFilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FilterManager;
@@ -11,6 +12,7 @@ import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerRecipeAmounts;
 import mapmakingtools.tools.filter.packet.PacketVillagerShop;
 import net.minecraft.client.gui.GuiButton;
@@ -21,8 +23,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb
@@ -95,7 +95,7 @@ public class VillagerShopClientFilter extends IFilterClient {
 	    Arrays.fill(recipeUses, 7);
 	    
 	    int recipeAmounts = ((VillagerShopServerFilter)FilterManager.getServerFilterFromClass(VillagerShopServerFilter.class)).getAmountRecipes(gui.getPlayer());
-	    MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketVillagerRecipeAmounts(recipeAmounts));
+	    PacketDispatcher.sendToServer(new PacketVillagerRecipeAmounts(recipeAmounts));
 	    
 	    this.btn_add.enabled = recipeAmounts < 9;
 	    this.btn_remove.enabled = recipeAmounts > 1;
@@ -204,22 +204,22 @@ public class VillagerShopClientFilter extends IFilterClient {
         	int recipeAmounts = 0;
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketVillagerShop(gui.getEntityId(), this.recipeUses));
+                	PacketDispatcher.sendToServer(new PacketVillagerShop(gui.getEntityId(), this.recipeUses));
                     
                 case 1:
-                    ClientHelper.mc.setIngameFocus();
+                    ClientHelper.mc.thePlayer.closeScreen();
                     break;
                 case 2:
                 	recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).maxRecipesMap.put(gui.getPlayer().getUniqueID(), recipeAmounts + 1);
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).addOnlySlots(gui.getFilterContainer());
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketVillagerRecipeAmounts(recipeAmounts + 1));
+                	PacketDispatcher.sendToServer(new PacketVillagerRecipeAmounts(recipeAmounts + 1));
                     break;
                 case 3:
                 	recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).maxRecipesMap.put(gui.getPlayer().getUniqueID(), recipeAmounts - 1);
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).addOnlySlots(gui.getFilterContainer());
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketVillagerRecipeAmounts(recipeAmounts - 1));
+                	PacketDispatcher.sendToServer(new PacketVillagerRecipeAmounts(recipeAmounts - 1));
                     break;
             }
         }

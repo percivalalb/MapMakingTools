@@ -2,14 +2,14 @@ package mapmakingtools.integration.nei;
 
 import java.util.List;
 
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiWorldTransfer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import codechicken.nei.VisiblityData;
-import codechicken.nei.api.INEIGuiHandler;
-import codechicken.nei.api.TaggedInventoryArea;
 
 /**
  * @author ProPercivalalb

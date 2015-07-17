@@ -1,7 +1,6 @@
 package mapmakingtools.handler;
 
 import mapmakingtools.lib.Constants;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 
 /**

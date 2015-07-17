@@ -1,5 +1,7 @@
 package mapmakingtools.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.container.ContainerWorldTransfer;
 import mapmakingtools.lib.ResourceReference;
@@ -7,8 +9,6 @@ import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ChatComponentTranslation;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

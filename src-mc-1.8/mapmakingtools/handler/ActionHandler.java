@@ -1,7 +1,7 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.ModItems;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.network.packet.PacketUpdateEntity;
 import mapmakingtools.tools.PlayerAccess;
@@ -105,7 +105,7 @@ public class ActionHandler {
 							SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).getSpawnerBaseLogic());
 						
 						
-						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketUpdateBlock(tileEntity, pos), player);
+						PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos), player);
 						event.setCanceled(true);
 					}
 				}
@@ -128,7 +128,7 @@ public class ActionHandler {
 		
 		if(stack != null && stack.getItem() == ModItems.editItem && stack.getMetadata() == 1) {
 			if(!world.isRemote) {
-				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketUpdateEntity(entity), player);
+				PacketDispatcher.sendTo(new PacketUpdateEntity(entity), player);
 				event.setCanceled(true);
 			}
 		}

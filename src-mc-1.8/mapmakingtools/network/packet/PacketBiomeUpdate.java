@@ -2,17 +2,19 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage;
+import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketBiomeUpdate extends IPacket {
+public class PacketBiomeUpdate extends AbstractClientMessage {
 	
 	public BlockPos pos1, pos2;
 	public BiomeGenBase biome;
@@ -38,7 +40,7 @@ public class PacketBiomeUpdate extends IPacket {
 	}
 	
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		Iterable<BlockPos> positions = BlockPos.getAllInBox(new BlockPos(this.pos1.getX(), 0, this.pos1.getZ()), new BlockPos(this.pos2.getX(), 0, this.pos2.getZ()));
 		
 		for(BlockPos pos : positions) {

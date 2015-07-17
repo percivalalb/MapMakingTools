@@ -1,37 +1,53 @@
 package mapmakingtools.tools.filter.packet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import mapmakingtools.network.IPacketPos;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketChestSymmetrify extends IPacketPos {
+public class PacketChestSymmetrify extends AbstractServerMessage {
+	
+	public BlockPos pos;
 	
 	public PacketChestSymmetrify() {}
 	public PacketChestSymmetrify(BlockPos pos) {
-		super(pos);
+		this.pos = pos;
+	}
+	
+	@Override
+	public void read(PacketBuffer packetbuffer) throws IOException {
+		this.pos = BlockPos.fromLong(packetbuffer.readLong());
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void write(PacketBuffer packetbuffer) throws IOException {
+		packetbuffer.writeLong(this.pos.toLong());
+	}
+
+	@Override
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		TileEntity tile = player.worldObj.getTileEntity(this.pos.getX(), this.pos.getY(), this.pos.getZ());
 		if(tile instanceof TileEntityChest) {
 			TileEntityChest chest = (TileEntityChest)tile;
@@ -53,7 +69,7 @@ public class PacketChestSymmetrify extends IPacketPos {
 				chatComponent.getChatStyle().setItalic(true);
 				chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
 				player.addChatMessage(chatComponent);
-				return;
+				return null;
 			}	
 			
 			//Counts the amount of each id in the chest
@@ -185,6 +201,8 @@ public class PacketChestSymmetrify extends IPacketPos {
 			chatComponent.getChatStyle().setItalic(true);
 			player.addChatMessage(chatComponent);
 		}
+		
+		return null;
 	}
 
 }

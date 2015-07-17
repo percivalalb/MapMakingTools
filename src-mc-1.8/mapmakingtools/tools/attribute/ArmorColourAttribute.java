@@ -3,6 +3,8 @@ package mapmakingtools.tools.attribute;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Strings;
+
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.helper.NumberParse;
@@ -12,8 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb

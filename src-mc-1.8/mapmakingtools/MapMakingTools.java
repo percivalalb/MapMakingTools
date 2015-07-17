@@ -8,7 +8,7 @@ import mapmakingtools.handler.PlayerTrackerHandler;
 import mapmakingtools.handler.WorldSaveHandler;
 import mapmakingtools.helper.MapMakingToolsVersion;
 import mapmakingtools.lib.Reference;
-import mapmakingtools.network.NetworkManager;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.proxy.CommonProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -32,18 +32,16 @@ public class MapMakingTools {
 	@SidedProxy(clientSide = Reference.SP_CLIENT, serverSide = Reference.SP_SERVER)
     public static CommonProxy proxy;
 	
-	public static NetworkManager NETWORK_MANAGER;
-	
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	ConfigurationHandler.loadConfig(new Configuration(event.getSuggestedConfigurationFile()));
     	MapMakingToolsVersion.startVersionCheck();
     	proxy.onPreLoad();
+    	PacketDispatcher.registerPackets();
     }
     
     @EventHandler
     public void onInit(FMLInitializationEvent event) {
-    	NETWORK_MANAGER = new NetworkManager();
     	NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
     	MinecraftForge.EVENT_BUS.register(new ActionHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldSaveHandler());

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.NumberParse;
 
 /**
  * @author ProPercivalalb

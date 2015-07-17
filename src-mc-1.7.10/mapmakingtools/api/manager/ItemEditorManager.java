@@ -4,14 +4,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
-import mapmakingtools.api.interfaces.IFilterServer;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 /**
  * @author ProPercivalalb

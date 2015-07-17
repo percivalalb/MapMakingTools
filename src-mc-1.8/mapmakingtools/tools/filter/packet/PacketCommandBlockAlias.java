@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ServerHelper;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -13,35 +13,36 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketCommandBlockAlias extends IPacketPos {
+public class PacketCommandBlockAlias extends AbstractServerMessage {
 
-	public int x, y, z;
+	public BlockPos pos;
 	public String name;
 	
 	public PacketCommandBlockAlias() {}
 	public PacketCommandBlockAlias(BlockPos pos, String name) {
-		super(pos);
+		this.pos = pos;
 		this.name = name;
 	}
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = packetbuffer.readBlockPos();
 		this.name = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeString(this.name);
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 

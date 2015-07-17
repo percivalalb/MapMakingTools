@@ -19,7 +19,7 @@ public class GuiOpenHandler {
 		GuiScreen screen = event.gui;
 		if(!(screen instanceof GuiCommandBlock)) return;
 		
-		EntityPlayer player = MapMakingTools.proxy.getClientPlayer();
+		EntityPlayer player = MapMakingTools.proxy.getPlayerEntity();
 		if(player == null) return;
 		
 		ItemStack stack = player.getCurrentEquippedItem();

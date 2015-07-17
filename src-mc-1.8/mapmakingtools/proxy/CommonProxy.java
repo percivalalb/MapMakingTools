@@ -81,8 +81,10 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * @author ProPercivalalb
@@ -100,7 +102,6 @@ public class CommonProxy implements IGuiHandler {
 		
 		if(ID == ID_FILTER_BLOCK) {
 			List<IFilterServer> filterList = FilterManager.getServerBlocksFilters(player, world, pos);
-			LogHelper.info("serverfawewea" + filterList.size());
 			if(filterList.size() > 0)
 				return new ContainerFilter(filterList, player).setBlockPos(pos);
 		}
@@ -124,7 +125,18 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	public void registerHandlers() {}
-	public EntityPlayer getClientPlayer() { return null; }
+	
+	public EntityPlayer getPlayerEntity(MessageContext ctx) {
+		return ctx.getServerHandler().playerEntity;
+	}
+	
+	public EntityPlayer getPlayerEntity() {
+		return null;
+	}
+	
+	public IThreadListener getThreadFromContext(MessageContext ctx) {
+		return ctx.getServerHandler().playerEntity.getServerForPlayer();
+	}
 	
 	public void onPreLoad() {
 		BlockList.readDataFromFile();

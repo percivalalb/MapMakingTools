@@ -2,13 +2,13 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IFilterClientSpawner;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketBabyMonster;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
@@ -60,8 +60,8 @@ public class BabyMonsterClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketBabyMonster(gui.getBlockPos(), this.btn_covert.getData() == 0 ? false : true, this.minecartIndex));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketBabyMonster(gui.getBlockPos(), this.btn_covert.getData() == 0 ? false : true, this.minecartIndex));
+            		ClientHelper.mc.thePlayer.closeScreen();
                 	break;
             }
         }

@@ -2,13 +2,15 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.api.interfaces.IFilterClientSpawner;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
 import mapmakingtools.util.SpawnerUtil;
@@ -18,8 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb
@@ -67,8 +67,8 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmor(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketMobArmor(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+            		ClientHelper.mc.thePlayer.closeScreen();
                     break;
             }
         }
@@ -102,7 +102,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public void updateButtonClicked(IGuiFilter gui) {
 		if(!showErrorIcon(gui))
-			MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorUpdate(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+			PacketDispatcher.sendToServer(new PacketMobArmorUpdate(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
 	}
 	
 	@Override

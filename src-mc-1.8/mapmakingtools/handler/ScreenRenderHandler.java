@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import mapmakingtools.ModItems;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.LogHelper;
@@ -29,11 +34,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /**
  * @author ProPercivalalb

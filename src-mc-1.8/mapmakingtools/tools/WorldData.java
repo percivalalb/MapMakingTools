@@ -6,14 +6,14 @@ import java.io.FileOutputStream;
 import java.util.Hashtable;
 import java.util.UUID;
 
+import com.google.common.base.Strings;
+
 import mapmakingtools.api.interfaces.IFilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
-import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb

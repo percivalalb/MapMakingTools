@@ -2,8 +2,10 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.filter.VillagerShopServerFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -11,7 +13,7 @@ import net.minecraft.network.PacketBuffer;
 /**
  * @author ProPercivalalb
  */
-public class PacketVillagerRecipeAmounts extends IPacket {
+public class PacketVillagerRecipeAmounts extends AbstractServerMessage {
 
 	public int recipeAmount;
 	
@@ -31,7 +33,7 @@ public class PacketVillagerRecipeAmounts extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(player.openContainer instanceof IContainerFilter) {
 			IContainerFilter container = (IContainerFilter)player.openContainer;
 			if(container.getCurrentFilter() instanceof VillagerShopServerFilter) {
@@ -40,6 +42,7 @@ public class PacketVillagerRecipeAmounts extends IPacket {
 				shop.addOnlySlots(container);
 			}
 		}
+		return null;
 
 	}
 }

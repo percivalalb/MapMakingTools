@@ -2,15 +2,15 @@ package mapmakingtools.api;
 
 import java.util.List;
 
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.MathHelper;
-
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

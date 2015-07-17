@@ -1,17 +1,14 @@
 package mapmakingtools.client.gui.button;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.lib.Symbols;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ChatAllowedCharacters;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

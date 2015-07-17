@@ -1,35 +1,50 @@
 package mapmakingtools.tools.filter.packet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketChestSymmetrify extends IPacketPos {
+public class PacketChestSymmetrify extends AbstractServerMessage {
+	
+	public BlockPos pos;
 	
 	public PacketChestSymmetrify() {}
 	public PacketChestSymmetrify(BlockPos pos) {
-		super(pos);
+		this.pos = pos;
+	}
+	
+	@Override
+	public void read(PacketBuffer packetbuffer) throws IOException {
+		this.pos = packetbuffer.readBlockPos();
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void write(PacketBuffer packetbuffer) throws IOException {
+		packetbuffer.writeBlockPos(this.pos);
+	}
+
+	@Override
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		TileEntity tile = player.worldObj.getTileEntity(this.pos);

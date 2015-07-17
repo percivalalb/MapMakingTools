@@ -1,20 +1,17 @@
 package mapmakingtools.helper;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutput;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
+import com.google.common.base.Charsets;
+
+import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.base.Charsets;
 
 /**
  * @author ProPercivalalb

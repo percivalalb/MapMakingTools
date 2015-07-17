@@ -1,18 +1,20 @@
 package mapmakingtools.client.gui;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -22,9 +24,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb
@@ -320,6 +319,6 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
 	@Override
 	public void sendUpdateToServer(int data) {
-		MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketItemEditorUpdate(this.createNewStack(data), this.slotIndex));
+		PacketDispatcher.sendToServer(new PacketItemEditorUpdate(this.createNewStack(data), this.slotIndex));
 	}
 }

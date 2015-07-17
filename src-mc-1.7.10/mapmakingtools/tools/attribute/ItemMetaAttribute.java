@@ -1,5 +1,7 @@
 package mapmakingtools.tools.attribute;
 
+import com.google.common.base.Strings;
+
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiSmallButton;
@@ -9,8 +11,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb

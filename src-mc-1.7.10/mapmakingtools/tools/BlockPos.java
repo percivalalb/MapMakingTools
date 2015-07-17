@@ -1,11 +1,8 @@
 package mapmakingtools.tools;
 
-import com.google.common.collect.AbstractIterator;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.Iterator;
+
+import com.google.common.collect.AbstractIterator;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;

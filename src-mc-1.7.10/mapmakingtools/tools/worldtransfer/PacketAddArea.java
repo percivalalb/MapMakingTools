@@ -3,7 +3,9 @@ package mapmakingtools.tools.worldtransfer;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import mapmakingtools.network.IPacket;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +16,7 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * @author ProPercivalalb
  */
-public class PacketAddArea extends IPacket {
+public class PacketAddArea extends AbstractClientMessage {
 
 	public String name;
 	public ArrayList<BlockCache> list;
@@ -68,9 +70,9 @@ public class PacketAddArea extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		
 		WorldTransferList.put(this.name, this.firstSection, this.lastSection, this.list, this.sendData);
 
@@ -84,6 +86,8 @@ public class PacketAddArea extends IPacket {
 			
 			WorldTransferList.saveToFile();
 		}
+		
+		return null;
 	}
 
 }

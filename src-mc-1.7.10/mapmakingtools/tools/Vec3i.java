@@ -1,8 +1,8 @@
 package mapmakingtools.tools;
 
-import net.minecraft.util.MathHelper;
-
 import com.google.common.base.Objects;
+
+import net.minecraft.util.MathHelper;
 
 /**
  * Copied from MINECRAFT 1.8

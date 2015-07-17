@@ -3,6 +3,8 @@ package mapmakingtools.tools.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Strings;
+
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
@@ -21,8 +23,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
-
-import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb

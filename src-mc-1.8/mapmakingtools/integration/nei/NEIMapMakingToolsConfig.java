@@ -1,8 +1,8 @@
 package mapmakingtools.integration.nei;
 
-import mapmakingtools.lib.Reference;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import mapmakingtools.lib.Reference;
 
 /**
  * @author ProPercivalalb

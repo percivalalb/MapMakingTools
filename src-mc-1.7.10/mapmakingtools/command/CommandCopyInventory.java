@@ -8,7 +8,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 

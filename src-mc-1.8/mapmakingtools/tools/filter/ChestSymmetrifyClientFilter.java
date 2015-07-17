@@ -2,12 +2,12 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IFilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketChestSymmetrify;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -59,8 +59,8 @@ public class ChestSymmetrifyClientFilter extends IFilterClient {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketChestSymmetrify(gui.getBlockPos()));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketChestSymmetrify(gui.getBlockPos()));
+            		ClientHelper.mc.thePlayer.closeScreen();
                 	break;
             }
         }

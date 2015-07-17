@@ -1,12 +1,12 @@
 package mapmakingtools.tools;
 
 import java.util.Hashtable;
-import java.util.UUID;
 
 import com.google.common.base.Strings;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +33,7 @@ public class PlayerData {
 	
 	public EntityPlayer getPlayer() {
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return MapMakingTools.proxy.getClientPlayer();
+			return MapMakingTools.proxy.getPlayerEntity();
 		
 		if(Strings.isNullOrEmpty(this.username))
 			return null;
@@ -92,8 +92,8 @@ public class PlayerData {
 	}
 	
 	public void sendUpdateToClient() {
-		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(this.getFirstPoint()), this.getPlayer());
-		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(this.getSecondPoint()), this.getPlayer());
+		PacketDispatcher.sendTo(new PacketSetPoint1(this.getFirstPoint()), this.getPlayer());
+		PacketDispatcher.sendTo(new PacketSetPoint2(this.getSecondPoint()), this.getPlayer());
 	}
 	
 	public ActionStorage getActionStorage() {

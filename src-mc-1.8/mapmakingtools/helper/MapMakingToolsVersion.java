@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
+import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.lib.Reference;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,9 +22,6 @@ import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
-
-import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
 
 /**
  * @author ProPercivalalb
@@ -83,7 +83,7 @@ public class MapMakingToolsVersion {
 						e.printStackTrace();
 					}
                 	if(status == OUTDATED) {
-                		EntityPlayer player = MapMakingTools.proxy.getClientPlayer();
+                		EntityPlayer player = MapMakingTools.proxy.getPlayerEntity();
                 		if(player != null) {
                 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.updatemessage", Reference.MOD_NAME, recommendedVersion, linkVersion);
                 		  	chatComponent.getChatStyle().setItalic(true);

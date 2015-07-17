@@ -2,9 +2,11 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.container.IUnlimitedInventory;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -13,7 +15,7 @@ import net.minecraft.network.PacketBuffer;
 /**
  * @author ProPercivalalb
  */
-public class PacketPhantomInfinity extends IPacket {
+public class PacketPhantomInfinity extends AbstractServerMessage {
 
 	public int slotIndex;
 	public boolean isUnlimited;
@@ -37,9 +39,9 @@ public class PacketPhantomInfinity extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(player.openContainer == null) 
-			return;
+			return null;
 		Container container = player.openContainer;
 		
 		Slot slot = (Slot)container.inventorySlots.get(this.slotIndex);
@@ -47,7 +49,7 @@ public class PacketPhantomInfinity extends IPacket {
 			((IPhantomSlot)slot).setIsUnlimited(this.isUnlimited);
 		if(slot.inventory instanceof IUnlimitedInventory)
 			((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), this.isUnlimited);
-
+		return null;
 
 	}
 

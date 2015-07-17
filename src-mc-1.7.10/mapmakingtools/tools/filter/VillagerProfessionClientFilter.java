@@ -2,15 +2,14 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IFilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,8 +62,8 @@ public class VillagerProfessionClientFilter extends IFilterClient {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketVillagerProfession(this.professionId));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketVillagerProfession(this.professionId));
+            		ClientHelper.mc.thePlayer.closeScreen();
                 	break;
                 case 1:
                 	this.professionId += 1;

@@ -2,6 +2,9 @@ package mapmakingtools.proxy;
 
 import java.util.List;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import mapmakingtools.api.interfaces.IFilterClient;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ItemEditorManager;
@@ -26,12 +29,10 @@ import mapmakingtools.tools.attribute.PotionAttribute;
 import mapmakingtools.tools.attribute.RepairCostAttribute;
 import mapmakingtools.tools.attribute.StackSizeAttribute;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * @author ProPercivalalb
@@ -93,9 +94,13 @@ public class ClientProxy extends CommonProxy {
 		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
 	}
 
+	@Override
+	public EntityPlayer getPlayerEntity(MessageContext ctx) {
+		return (ctx.side.isClient() ? Minecraft.getMinecraft().thePlayer : super.getPlayerEntity(ctx));
+	}
 	
 	@Override
-	public EntityPlayer getClientPlayer() {
-		return FMLClientHandler.instance().getClientPlayerEntity();
+	public EntityPlayer getPlayerEntity() {
+		return Minecraft.getMinecraft().thePlayer;
 	}
 }

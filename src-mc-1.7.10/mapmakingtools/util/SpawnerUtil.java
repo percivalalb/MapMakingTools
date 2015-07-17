@@ -3,6 +3,8 @@ package mapmakingtools.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.helper.ServerHelper;
@@ -46,7 +48,6 @@ public class SpawnerUtil {
 		if(minecartIndex == -1)
 			ReflectionHelper.setField(mobIdField, spawnerLogic, mobId);
 		else {
-			confirmHasRandomMinecart(spawnerLogic);
 			LogHelper.info("Index: " + minecartIndex);
 			WeightedRandomMinecart randomMinecart = (WeightedRandomMinecart)getRandomMinecarts(spawnerLogic).get(minecartIndex);
 			NBTTagCompound data = randomMinecart.func_98220_a();
@@ -263,7 +264,9 @@ public class SpawnerUtil {
 	}
 	
 	public static void confirmHasRandomMinecart(MobSpawnerBaseLogic spawnerLogic) {
-		if(getRandomMinecarts(spawnerLogic).size() > 0)
+		List<WeightedRandomMinecart> minecarts = getRandomMinecarts(spawnerLogic);
+		
+		if(minecarts != null && minecarts.size() > 0)
 			return;
 		
 		NBTTagCompound data = new NBTTagCompound();
@@ -272,24 +275,15 @@ public class SpawnerUtil {
 		data.setTag("Properties", new NBTTagCompound());
 		WeightedRandomMinecart randomMinecart = spawnerLogic.new WeightedRandomMinecart(data);
 		spawnerLogic.setRandomEntity(randomMinecart);
-		getRandomMinecarts(spawnerLogic).add(randomMinecart);
+		if(minecarts == null) {
+			minecarts = Lists.newArrayList();
+			ReflectionHelper.setField(randomMinecartListField, spawnerLogic, minecarts);
+		}
+		minecarts.add(randomMinecart);
 	}
 	
 	public static List<WeightedRandomMinecart> getRandomMinecarts(MobSpawnerBaseLogic spawnerLogic) {
 		return ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic);
-	}
-	
-	public static void sendSpawnerPacketToAllPlayers(TileEntityMobSpawner spawner) {
-		if(!ServerHelper.isServer())
-			return;
-		MinecraftServer server = MinecraftServer.getServer();
-		server.getConfigurationManager().sendPacketToAllPlayersInDimension(getTileEntitySpawnerPacket(spawner), spawner.getWorldObj().provider.dimensionId);
-	}
-	
-	public static Packet getTileEntitySpawnerPacket(TileEntityMobSpawner spawner) {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        spawner.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(spawner.xCoord, spawner.yCoord, spawner.zCoord, 1, nbttagcompound);
 	}
 	
 	public static NBTTagCompound getMinecartProperties(WeightedRandomMinecart minecart) {

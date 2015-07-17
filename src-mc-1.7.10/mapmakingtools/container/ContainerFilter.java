@@ -2,10 +2,10 @@ package mapmakingtools.container;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.filter.packet.PacketPhantomInfinity;
 import net.minecraft.entity.Entity;
@@ -32,7 +32,6 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	public int selected;
 	
 	public ContainerFilter(List<IFilterServer> filterList, EntityPlayer player) {
-		//this.inventorySlots = new ArrayListSlot();
 		this.filterList = filterList;
 		this.player = player;
 	}
@@ -70,7 +69,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
         this.inventorySlots.add(slot);
         this.inventoryItemStacks.add((Object)null);
         if(slot instanceof IPhantomSlot && ((IPhantomSlot)slot).canBeUnlimited())
-        	MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), ((IPhantomSlot)slot).isUnlimited()), player);
+        	PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), ((IPhantomSlot)slot).isUnlimited()), player);
         return slot;
     }
 	
@@ -125,9 +124,11 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	@Override
 	public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
 		Slot slot = slotNum < 0 || slotNum >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotNum);
-		if (slot instanceof IPhantomSlot) {
+		if (slot instanceof IPhantomSlot && !this.getWorld().isRemote) {
 			return slotClickPhantom(slot, mouseButton, modifier, player);
 		}
+		else if(slot instanceof IPhantomSlot)
+			return slot.getStack();
 		return super.slotClick(slotNum, mouseButton, modifier, player);
 	}
 
@@ -146,30 +147,30 @@ public class ContainerFilter extends Container implements IContainerFilter {
 		else if(slotStack != null) {
 			
 			int stackSize = mouseButton == 2 ? 0 : mouseButton == 1 ? slotStack.stackSize + 1: slotStack.stackSize - 1;
-		
-			if(stackSize == 2 && phantomSlot.isUnlimited() && phantomSlot.canBeUnlimited()) {
+			
+			if(stackSize > 1 && phantomSlot.canBeUnlimited()) {
 				stackSize = 1;
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
 				phantomSlot.setIsUnlimited(false);
-				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
+				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
 			
-			if(stackSize < 1 && !phantomSlot.isUnlimited() && phantomSlot.canBeUnlimited()) {
+			else if(stackSize < 1 && !phantomSlot.isUnlimited() && phantomSlot.canBeUnlimited()) {
 				stackSize = 1;
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), true);
 				phantomSlot.setIsUnlimited(true);
-				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), true), player);
+				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), true), player);
 			}
-			slotStack.stackSize = stackSize;
-			if(stackSize < 1) {
+			else if(stackSize < 1) {
 				slot.putStack(null);
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
 				phantomSlot.setIsUnlimited(false);
-				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
+				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
+			slotStack.stackSize = stackSize;
 		}
 		
 		return stack;

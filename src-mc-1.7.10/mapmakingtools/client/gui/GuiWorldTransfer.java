@@ -1,9 +1,5 @@
 package mapmakingtools.client.gui;
 
-import java.awt.Color;
-import java.awt.font.FontRenderContext;
-
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import mapmakingtools.client.gui.button.GuiSmallButton;
@@ -12,7 +8,6 @@ import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ChatComponentTranslation;
 
 /**

@@ -2,28 +2,32 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.helper.NumberParse;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.network.packet.PacketUpdateSpawner;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSpawnerTimings extends IPacketPos {
+public class PacketSpawnerTimings extends AbstractServerMessage {
 
+	public BlockPos pos;
 	public String minDelay, maxDelay, spawnRadius, spawnCount, entityCap, detectionRange;
 	
 	public PacketSpawnerTimings() {}
 	public PacketSpawnerTimings(BlockPos pos, String minDelay, String maxDelay, String spawnRadius, String spawnCount, String entityCap, String detectionRange) {
-		super(pos);
+		this.pos = pos;
 		this.minDelay = minDelay;
 		this.maxDelay = maxDelay;
 		this.spawnRadius = spawnRadius;
@@ -34,7 +38,7 @@ public class PacketSpawnerTimings extends IPacketPos {
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = BlockPos.fromLong(packetbuffer.readLong());
 		this.minDelay = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.maxDelay = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.spawnRadius = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
@@ -45,7 +49,7 @@ public class PacketSpawnerTimings extends IPacketPos {
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeLong(this.pos.toLong());
 		packetbuffer.writeStringToBuffer(this.minDelay);
 		packetbuffer.writeStringToBuffer(this.maxDelay);
 		packetbuffer.writeStringToBuffer(this.spawnRadius);
@@ -55,9 +59,9 @@ public class PacketSpawnerTimings extends IPacketPos {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		
 		TileEntity tile = player.worldObj.getTileEntity(this.pos.getX(), this.pos.getY(), this.pos.getZ());
 		if(tile instanceof TileEntityMobSpawner) {
@@ -68,7 +72,7 @@ public class PacketSpawnerTimings extends IPacketPos {
 				chatComponent.getChatStyle().setItalic(true);
 				chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
 				player.addChatMessage(chatComponent);
-				return;
+				return null;
 			}
 			
 			int minDelayNo = NumberParse.getInteger(this.minDelay);
@@ -86,11 +90,13 @@ public class PacketSpawnerTimings extends IPacketPos {
 			SpawnerUtil.setDetectionRadius(spawner.func_145881_a(), detectionRadiusNo);
 			//SpawnerUtil.setTimings(spawner.func_145881_a(), this.minDelay, this.maxDelay, this.spawnRadius, this.spawnCount, this.entityCap, this.detectionRange, this.minecartIndex);
 			
-			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
-			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.spawnertimings.complete");
 			chatComponent.getChatStyle().setItalic(true);
 			player.addChatMessage(chatComponent);
+			
+			return new PacketUpdateSpawner(spawner, this.pos);
 		}
+		
+		return null;
 	}
 }

@@ -3,17 +3,19 @@ package mapmakingtools.tools.worldtransfer;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import mapmakingtools.MapMakingTools;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage;
+import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketPasteNotify extends IPacket {
+public class PacketPasteNotify extends AbstractClientMessage {
 
 	public String name;
 	
@@ -33,7 +35,7 @@ public class PacketPasteNotify extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
@@ -51,7 +53,7 @@ public class PacketPasteNotify extends IPacket {
 			for(int j = start; j < start + amount; ++j)
 				part.add(area.get(j));
 			
-			MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketPaste(this.name, part, i == 0, i == sendData.size() - 1));
+			PacketDispatcher.sendToServer(new PacketPaste(this.name, part, i == 0, i == sendData.size() - 1));
 			start += amount;
 		}
 	}

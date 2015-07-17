@@ -7,12 +7,14 @@ import mapmakingtools.api.interfaces.IFilterProvider;
 import mapmakingtools.api.interfaces.IFilterServer;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
+import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.packet.PacketUpdateSpawner;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -44,7 +46,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+		PacketDispatcher.sendToDimension(new PacketUpdateSpawner(spawner, pos), world.provider.dimensionId);
 		
 		filterList.add(FilterManager.getServerFilterFromClass(MobTypeServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(SpawnerTimingServerFilter.class));

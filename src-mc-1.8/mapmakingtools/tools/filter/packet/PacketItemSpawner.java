@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.container.ContainerFilter;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.ItemSpawnerServerFilter;
 import mapmakingtools.util.SpawnerUtil;
@@ -14,34 +14,36 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketItemSpawner extends IPacketPos {
+public class PacketItemSpawner extends AbstractServerMessage {
 
+	public BlockPos pos;
 	public int minecartIndex;
 	
 	public PacketItemSpawner() {}
 	public PacketItemSpawner(BlockPos pos, int minecartIndex) {
-		super(pos);
+		this.pos = pos;
 		this.minecartIndex = minecartIndex;
 	}
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = packetbuffer.readBlockPos();
 		this.minecartIndex = packetbuffer.readInt();
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeInt(this.minecartIndex);
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		TileEntity tile = player.worldObj.getTileEntity(this.pos);

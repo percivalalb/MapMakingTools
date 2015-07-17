@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IFilterClient;
@@ -18,6 +21,7 @@ import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSelectedFilter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -29,10 +33,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /**
  * @author ProPercivalalb
@@ -67,7 +67,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         }	
         else {
         	int index = this.filterList.indexOf(filterCurrent);
-        //	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketSelectedFilter(index));
+        //	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
 			//this.getContainerFilter().setSelected(index);
         }
 	}
@@ -239,7 +239,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         		GuiTabSelect tab = (GuiTabSelect)(GuiButton)this.buttonList.get(i);
         		if(tab.filter == filterCurrent) {
         			int index = this.filterList.indexOf(filterCurrent);
-        			MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketSelectedFilter(index));
+        			PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
         			this.getContainerFilter().setSelected(index);
         			tab.isSelected = true;
         		}
@@ -270,7 +270,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	if (button.enabled) {
             switch (button.id) {
             	case -1:
-            		ClientHelper.mc.setIngameFocus();
+            		ClientHelper.mc.thePlayer.closeScreen();
             		break;
             
             	case 148:
@@ -308,7 +308,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         
         if(filterCurrent == null || filterCurrent.doClosingKeysWork(this, cha, charIndex))
         	if (charIndex == Keyboard.KEY_ESCAPE)
-        		ClientHelper.mc.setIngameFocus();
+        		ClientHelper.mc.thePlayer.closeScreen();
         
         for(int i = 0; i < this.textboxList.size(); ++i)
         	((GuiTextField)this.textboxList.get(i)).textboxKeyTyped(cha, charIndex);

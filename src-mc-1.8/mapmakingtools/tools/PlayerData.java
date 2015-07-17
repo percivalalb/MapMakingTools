@@ -3,10 +3,11 @@ package mapmakingtools.tools;
 import java.util.Hashtable;
 import java.util.UUID;
 
-import mapmakingtools.MapMakingTools;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
@@ -32,7 +33,7 @@ public class PlayerData {
 		this.uuid = uuid;
 	}
 	
-	public EntityPlayer getPlayer() {
+	public EntityPlayerMP getPlayer() {
 		
 		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerByUUID(this.uuid);
 	}
@@ -88,8 +89,8 @@ public class PlayerData {
 	}
 	
 	public void sendUpdateToClient() {
-		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint1(this.getFirstPoint()), this.getPlayer());
-		MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketSetPoint2(this.getSecondPoint()), this.getPlayer());
+		PacketDispatcher.sendTo(new PacketSetPoint1(this.getFirstPoint()), this.getPlayer());
+		PacketDispatcher.sendTo(new PacketSetPoint2(this.getSecondPoint()), this.getPlayer());
 	}
 	
 	public ActionStorage getActionStorage() {

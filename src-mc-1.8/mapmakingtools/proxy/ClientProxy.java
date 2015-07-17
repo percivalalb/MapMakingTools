@@ -27,17 +27,19 @@ import mapmakingtools.tools.attribute.PotionAttribute;
 import mapmakingtools.tools.attribute.RepairCostAttribute;
 import mapmakingtools.tools.attribute.StackSizeAttribute;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * @author ProPercivalalb
@@ -116,7 +118,17 @@ public class ClientProxy extends CommonProxy {
 	}
 	
 	@Override
-	public EntityPlayer getClientPlayer() {
-		return FMLClientHandler.instance().getClientPlayerEntity();
+	public EntityPlayer getPlayerEntity(MessageContext ctx) {
+		return (ctx.side.isClient() ? Minecraft.getMinecraft().thePlayer : super.getPlayerEntity(ctx));
+	}
+	
+	@Override
+	public EntityPlayer getPlayerEntity() {
+		return Minecraft.getMinecraft().thePlayer;
+	}
+	
+	@Override
+	public IThreadListener getThreadFromContext(MessageContext ctx) {
+		return (ctx.side.isClient() ? Minecraft.getMinecraft() : super.getThreadFromContext(ctx));
 	}
 }

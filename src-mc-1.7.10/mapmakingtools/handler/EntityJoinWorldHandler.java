@@ -1,7 +1,7 @@
 package mapmakingtools.handler;
 
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 /**
  * @author ProPercivalalb

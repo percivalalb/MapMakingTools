@@ -11,7 +11,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.world.World;
 
 /**

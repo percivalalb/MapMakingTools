@@ -2,45 +2,47 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
+import mapmakingtools.network.PacketDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketUpdateBlock extends IPacketPos {
+public class PacketUpdateBlock extends AbstractClientMessage {
 
+	public BlockPos pos;
 	public NBTTagCompound tagCompound;
 	
 	public PacketUpdateBlock() {}
 	public PacketUpdateBlock(TileEntity tileEntity, BlockPos pos) {
-		super(pos);
+		this.pos = pos;
 		this.tagCompound = new NBTTagCompound();
 		tileEntity.writeToNBT(this.tagCompound);
 	}
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = packetbuffer.readBlockPos();
 		this.tagCompound = packetbuffer.readNBTTagCompoundFromBuffer();
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeNBTTagCompoundToBuffer(this.tagCompound);
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		World world = ClientHelper.mc.thePlayer.worldObj;
 		TileEntity tileEntity = world.getTileEntity(this.pos);
 		
@@ -49,7 +51,7 @@ public class PacketUpdateBlock extends IPacketPos {
 		
 		FakeWorldManager.putTileEntity(tileEntity, world, this.pos, this.tagCompound);
 		
-		MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketEditBlock(this.pos));
+		PacketDispatcher.sendToServer(new PacketEditBlock(this.pos));
 	}
 
 }

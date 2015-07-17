@@ -1,13 +1,13 @@
 package mapmakingtools.client.gui.textfield;
 
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.client.gui.button.GuiAdvancedTextField;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.common.FMLLog;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb

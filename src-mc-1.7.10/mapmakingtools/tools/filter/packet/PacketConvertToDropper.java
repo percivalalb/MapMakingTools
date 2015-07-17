@@ -1,31 +1,48 @@
 package mapmakingtools.tools.filter.packet;
 
-import mapmakingtools.network.IPacketPos;
+import java.io.IOException;
+
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityDropper;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketConvertToDropper extends IPacketPos {
+public class PacketConvertToDropper extends AbstractServerMessage {
 
+	public BlockPos pos;
+	
 	public PacketConvertToDropper() {}
 	public PacketConvertToDropper(BlockPos pos) {
-		super(pos);
+		this.pos = pos;
+	}
+	
+	@Override
+	public void read(PacketBuffer packetbuffer) throws IOException {
+		this.pos = BlockPos.fromLong(packetbuffer.readLong());
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void write(PacketBuffer packetbuffer) throws IOException {
+		packetbuffer.writeLong(this.pos.toLong());
+	}
+
+	@Override
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		Block block = player.worldObj.getBlock(this.pos.getX(), this.pos.getY(), this.pos.getZ());
 		int blockMeta = player.worldObj.getBlockMetadata(this.pos.getX(), this.pos.getY(), this.pos.getZ());
 		if(Block.isEqualTo(block, Blocks.dispenser)) {
@@ -54,6 +71,7 @@ public class PacketConvertToDropper extends IPacketPos {
 			chatComponent.getChatStyle().setItalic(true);
 			player.addChatMessage(chatComponent);
 		}
+		return null;
 	}
 
 }

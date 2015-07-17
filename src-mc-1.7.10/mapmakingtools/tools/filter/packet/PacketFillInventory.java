@@ -1,31 +1,48 @@
 package mapmakingtools.tools.filter.packet;
 
+import java.io.IOException;
+
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.IPhantomSlot;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketFillInventory extends IPacketPos {
+public class PacketFillInventory extends AbstractServerMessage {
 
+	public BlockPos pos;
+	
 	public PacketFillInventory() {}
 	public PacketFillInventory(BlockPos pos) {
-		super(pos);
+		this.pos = pos;
+	}
+	
+	@Override
+	public void read(PacketBuffer packetbuffer) throws IOException {
+		this.pos = BlockPos.fromLong(packetbuffer.readLong());
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void write(PacketBuffer packetbuffer) throws IOException {
+		packetbuffer.writeLong(this.pos.toLong());
+	}
+
+	@Override
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		TileEntity tile = player.worldObj.getTileEntity(this.pos.getX(), this.pos.getY(), this.pos.getZ());
 		if(player.openContainer instanceof ContainerFilter) {
 			
@@ -49,6 +66,8 @@ public class PacketFillInventory extends IPacketPos {
 				}
 			}
 		}
+		
+		return null;
 	}
 
 }

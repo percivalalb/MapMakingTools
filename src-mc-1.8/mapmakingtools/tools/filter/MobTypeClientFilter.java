@@ -2,21 +2,21 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IFilterClientSpawner;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb
@@ -55,8 +55,8 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 			@Override
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.selected;
-				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobType(gui.getBlockPos(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
-        		ClientHelper.mc.setIngameFocus();
+				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
+        		ClientHelper.mc.thePlayer.closeScreen();
 			}
         	
         };
@@ -98,7 +98,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	//PacketTypeHandler.populatePacketAndSendToServer(new PacketMobArmor(gui.x, gui.y, gui.z));
-            		ClientHelper.mc.setIngameFocus();
+            		ClientHelper.mc.thePlayer.closeScreen();
                     break;
             }
         }

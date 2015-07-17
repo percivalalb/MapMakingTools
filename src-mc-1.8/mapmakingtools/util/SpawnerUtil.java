@@ -3,6 +3,8 @@ package mapmakingtools.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.helper.ServerHelper;
@@ -263,7 +265,9 @@ public class SpawnerUtil {
 	}
 	
 	public static void confirmHasRandomMinecart(MobSpawnerBaseLogic spawnerLogic) {
-		if(getRandomMinecarts(spawnerLogic).size() > 0)
+		List<WeightedRandomMinecart> minecarts = getRandomMinecarts(spawnerLogic);
+		
+		if(minecarts != null && minecarts.size() > 0)
 			return;
 		
 		NBTTagCompound data = new NBTTagCompound();
@@ -272,7 +276,11 @@ public class SpawnerUtil {
 		data.setTag("Properties", new NBTTagCompound());
 		WeightedRandomMinecart randomMinecart = spawnerLogic.new WeightedRandomMinecart(data);
 		spawnerLogic.setRandomEntity(randomMinecart);
-		getRandomMinecarts(spawnerLogic).add(randomMinecart);
+		if(minecarts == null) {
+			minecarts = Lists.newArrayList();
+			ReflectionHelper.setField(randomMinecartListField, spawnerLogic, minecarts);
+		}
+		minecarts.add(randomMinecart);
 	}
 	
 	public static List<WeightedRandomMinecart> getRandomMinecarts(MobSpawnerBaseLogic spawnerLogic) {

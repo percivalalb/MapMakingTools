@@ -1,12 +1,12 @@
 package mapmakingtools.command;
 
-import io.netty.buffer.Unpooled;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.netty.buffer.Unpooled;
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
@@ -132,7 +132,7 @@ public class CommandWorldTransfer extends CommandBase {
 					for(int j = start2; j < start2 + amount; ++j)
 						part.add(list.get(j));
 					
-					MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketAddArea(name, part, sendClientData, i == 0, i == sendServerData.size() - 1), player);
+					PacketDispatcher.sendTo(new PacketAddArea(name, part, sendClientData, i == 0, i == sendServerData.size() - 1), player);
 					start2 += amount;
 				}
 				
@@ -147,7 +147,7 @@ public class CommandWorldTransfer extends CommandBase {
 			
 			String name = param[1];
 			
-			MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketPasteNotify(name), player);
+			PacketDispatcher.sendTo(new PacketPasteNotify(name), player);
 		}
 		else if("gui".equals(mode)) {
 			player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_WORLD_TRANSFER, player.worldObj, 0, 0, 0);

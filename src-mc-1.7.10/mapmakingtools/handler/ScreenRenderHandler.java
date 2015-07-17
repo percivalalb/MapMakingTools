@@ -1,21 +1,24 @@
 package mapmakingtools.handler;
 
-import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mapmakingtools.ModItems;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.ReflectionHelper;
-import mapmakingtools.item.ItemEdit;
 import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.datareader.BlockList;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
@@ -29,14 +32,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb

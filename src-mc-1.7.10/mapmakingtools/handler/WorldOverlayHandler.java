@@ -1,7 +1,9 @@
 package mapmakingtools.handler;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mapmakingtools.ModItems;
-import mapmakingtools.item.ItemEdit;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
@@ -11,10 +13,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb

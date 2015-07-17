@@ -6,6 +6,7 @@ import java.util.List;
 
 import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.tools.BlockCache;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
@@ -13,7 +14,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 

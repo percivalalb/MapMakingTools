@@ -2,9 +2,7 @@ package mapmakingtools.client.gui.button;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.lib.ResourceReference;
-import mapmakingtools.lib.Symbols;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

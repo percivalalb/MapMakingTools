@@ -1,14 +1,13 @@
 package mapmakingtools.handler;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.ModItems;
-import mapmakingtools.item.ItemEdit;
 import net.minecraft.client.gui.GuiCommandBlock;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb
@@ -20,7 +19,7 @@ public class GuiOpenHandler {
 		GuiScreen screen = event.gui;
 		if(!(screen instanceof GuiCommandBlock)) return;
 		
-		EntityPlayer player = MapMakingTools.proxy.getClientPlayer();
+		EntityPlayer player = MapMakingTools.proxy.getPlayerEntity();
 		if(player == null) return;
 		
 		ItemStack stack = player.getCurrentEquippedItem();

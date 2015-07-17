@@ -4,16 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLLog;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.NumberParse;
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 /**
  * @author ProPercivalalb

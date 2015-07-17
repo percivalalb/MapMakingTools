@@ -1,21 +1,5 @@
 package mapmakingtools;
 
-import java.io.File;
-
-import mapmakingtools.handler.ActionHandler;
-import mapmakingtools.handler.CommandHandler;
-import mapmakingtools.handler.ConfigurationHandler;
-import mapmakingtools.handler.EntityJoinWorldHandler;
-import mapmakingtools.handler.PlayerTrackerHandler;
-import mapmakingtools.handler.WorldSaveHandler;
-import mapmakingtools.helper.LogHelper;
-import mapmakingtools.helper.MapMakingToolsVersion;
-import mapmakingtools.lib.Reference;
-import mapmakingtools.network.NetworkManager;
-import mapmakingtools.proxy.CommonProxy;
-import mapmakingtools.tools.worldtransfer.WorldTransferList;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -26,6 +10,18 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import mapmakingtools.handler.ActionHandler;
+import mapmakingtools.handler.CommandHandler;
+import mapmakingtools.handler.ConfigurationHandler;
+import mapmakingtools.handler.EntityJoinWorldHandler;
+import mapmakingtools.handler.PlayerTrackerHandler;
+import mapmakingtools.handler.WorldSaveHandler;
+import mapmakingtools.helper.MapMakingToolsVersion;
+import mapmakingtools.lib.Reference;
+import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.proxy.CommonProxy;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.MOD_DEPENDENCIES)
 public class MapMakingTools {
@@ -36,18 +32,16 @@ public class MapMakingTools {
 	@SidedProxy(clientSide = Reference.SP_CLIENT, serverSide = Reference.SP_SERVER)
     public static CommonProxy proxy;
 	
-	public static NetworkManager NETWORK_MANAGER;
-	
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	ConfigurationHandler.loadConfig(new Configuration(event.getSuggestedConfigurationFile()));
     	MapMakingToolsVersion.startVersionCheck();
     	proxy.onPreLoad();
+    	PacketDispatcher.registerPackets();
     }
     
     @EventHandler
     public void onInit(FMLInitializationEvent event) {
-    	NETWORK_MANAGER = new NetworkManager();
     	NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     	MinecraftForge.EVENT_BUS.register(new ActionHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldSaveHandler());

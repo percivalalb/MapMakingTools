@@ -1,30 +1,46 @@
 package mapmakingtools.tools.filter.packet;
 
-import mapmakingtools.network.IPacketPos;
+import java.io.IOException;
+
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketConvertToDropper extends IPacketPos {
+public class PacketConvertToDropper extends AbstractServerMessage {
 
+	public BlockPos pos;
+	
 	public PacketConvertToDropper() {}
 	public PacketConvertToDropper(BlockPos pos) {
-		super(pos);
+		this.pos = pos;
+	}
+	
+	@Override
+	public void read(PacketBuffer packetbuffer) throws IOException {
+		this.pos = packetbuffer.readBlockPos();
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void write(PacketBuffer packetbuffer) throws IOException {
+		packetbuffer.writeBlockPos(this.pos);
+	}
+
+	@Override
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		

@@ -8,9 +8,6 @@ import java.util.List;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.NumberParse;
-import net.minecraft.block.Block;
-
-import cpw.mods.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb

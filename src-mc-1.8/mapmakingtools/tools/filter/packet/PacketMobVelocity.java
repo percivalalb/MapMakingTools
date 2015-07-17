@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.helper.NumberParse;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,15 +13,17 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
 
-public class PacketMobVelocity extends IPacketPos {
+public class PacketMobVelocity extends AbstractServerMessage {
 
+	public BlockPos pos;
 	public String xMotion, yMotion, zMotion;
 	public int minecartIndex;
 	
 	public PacketMobVelocity() {}
 	public PacketMobVelocity(BlockPos pos, String xMotion, String yMotion, String zMotion, int minecartIndex) {
-		super(pos);
+		this.pos = pos;
 		this.xMotion = xMotion;
 		this.yMotion = yMotion;
 		this.zMotion = zMotion;
@@ -30,7 +32,7 @@ public class PacketMobVelocity extends IPacketPos {
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = packetbuffer.readBlockPos();
 		this.xMotion = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.yMotion = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.zMotion = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
@@ -39,7 +41,7 @@ public class PacketMobVelocity extends IPacketPos {
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeString(this.xMotion);
 		packetbuffer.writeString(this.yMotion);
 		packetbuffer.writeString(this.zMotion);
@@ -47,7 +49,7 @@ public class PacketMobVelocity extends IPacketPos {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		

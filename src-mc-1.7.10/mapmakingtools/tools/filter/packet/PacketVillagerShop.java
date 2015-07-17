@@ -2,10 +2,12 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.filter.VillagerShopServerFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -18,7 +20,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 
-public class PacketVillagerShop extends IPacket {
+public class PacketVillagerShop extends AbstractServerMessage {
 
 	public int entityId;
 	public int[] recipeUses;
@@ -45,7 +47,7 @@ public class PacketVillagerShop extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		LogHelper.info("dawe " + this.entityId);
 		if(player.openContainer instanceof IContainerFilter) {
 			LogHelper.info("filter " + this.entityId);
@@ -81,14 +83,14 @@ public class PacketVillagerShop extends IPacket {
 							chatComponent.getChatStyle().setItalic(true);
 							chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
 							player.addChatMessage(chatComponent);
-		        			return;
+							return null;
 		        		}
 		        		if(output == null) {
 		        			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.villagershop.outputnull");
 							chatComponent.getChatStyle().setItalic(true);
 							chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
 							player.addChatMessage(chatComponent);
-		        			return;
+							return null;
 		        		}
 		        		MerchantRecipe recipe = new MerchantRecipe(input1, input2, output);
 		        		recipe.func_82783_a(this.recipeUses[i] - 7);
@@ -102,6 +104,8 @@ public class PacketVillagerShop extends IPacket {
 		        }
 		    }
 		}
+		
+		return null;
 	}
 
 }

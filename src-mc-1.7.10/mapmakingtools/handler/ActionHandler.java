@@ -1,8 +1,8 @@
 package mapmakingtools.handler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.ModItems;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.network.packet.PacketUpdateEntity;
 import mapmakingtools.tools.BlockPos;
@@ -101,14 +101,16 @@ public class ActionHandler {
 					}
 				}
 				else if(stack != null && stack.getItem() == ModItems.editItem && stack.getItemDamage() == 1) {
-					TileEntity tileEntity = world.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
-					if(tileEntity != null) {
-						if(tileEntity instanceof TileEntityMobSpawner) 
-							SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).func_145881_a());
-						
-						
-						MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketUpdateBlock(tileEntity, pos), player);
-						event.setCanceled(true);
+					if(!world.isRemote) {
+						TileEntity tileEntity = world.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+						if(tileEntity != null) {
+							if(tileEntity instanceof TileEntityMobSpawner) 
+								SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).func_145881_a());
+							
+							
+							PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos), player);
+							event.setCanceled(true);
+						}
 					}
 				}
 			}
@@ -130,7 +132,7 @@ public class ActionHandler {
 		
 		if(stack != null && stack.getItem() == ModItems.editItem && stack.getItemDamage() == 1) {
 			if(!world.isRemote) {
-				MapMakingTools.NETWORK_MANAGER.sendPacketToPlayer(new PacketUpdateEntity(entity), player);
+				PacketDispatcher.sendTo(new PacketUpdateEntity(entity), player);
 				event.setCanceled(true);
 			}
 		}

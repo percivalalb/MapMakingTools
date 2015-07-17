@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.helper.NumberParse;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,17 +13,19 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSpawnerTimings extends IPacketPos {
+public class PacketSpawnerTimings extends AbstractServerMessage {
 
+	public BlockPos pos;
 	public String minDelay, maxDelay, spawnRadius, spawnCount, entityCap, detectionRange;
 	
 	public PacketSpawnerTimings() {}
 	public PacketSpawnerTimings(BlockPos pos, String minDelay, String maxDelay, String spawnRadius, String spawnCount, String entityCap, String detectionRange) {
-		super(pos);
+		this.pos = pos;
 		this.minDelay = minDelay;
 		this.maxDelay = maxDelay;
 		this.spawnRadius = spawnRadius;
@@ -34,7 +36,7 @@ public class PacketSpawnerTimings extends IPacketPos {
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = packetbuffer.readBlockPos();
 		this.minDelay = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.maxDelay = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.spawnRadius = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
@@ -45,7 +47,7 @@ public class PacketSpawnerTimings extends IPacketPos {
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeString(this.minDelay);
 		packetbuffer.writeString(this.maxDelay);
 		packetbuffer.writeString(this.spawnRadius);
@@ -55,7 +57,7 @@ public class PacketSpawnerTimings extends IPacketPos {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		

@@ -2,18 +2,19 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.manager.FakeWorldManager;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage;
+import mapmakingtools.network.PacketDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketUpdateEntity extends IPacket {
+public class PacketUpdateEntity extends AbstractMessage {
 
 	public int entityId;
 	public NBTTagCompound tagCompound;
@@ -38,7 +39,7 @@ public class PacketUpdateEntity extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		Entity entity = player.worldObj.getEntityByID(this.entityId);
 		
 		if(entity == null)
@@ -46,7 +47,7 @@ public class PacketUpdateEntity extends IPacket {
 		
 		FakeWorldManager.putEntity(entity, this.tagCompound);
 		
-		MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketEditEntity(entity));
+		PacketDispatcher.sendToServer(new PacketEditEntity(entity));
 	}
 
 }

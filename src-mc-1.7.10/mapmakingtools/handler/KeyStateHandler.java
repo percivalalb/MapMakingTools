@@ -1,10 +1,15 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
-import mapmakingtools.network.packet.PacketItemEditorUpdate;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.client.gui.ScaledResolution;
@@ -13,14 +18,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 /**
  * @author ProPercivalalb
@@ -66,7 +63,7 @@ public class KeyStateHandler {
                         		}
                             	LogHelper.info(stack.getDisplayName() + " " + index);
  
-                            	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketOpenItemEditor(index));
+                            	PacketDispatcher.sendToServer(new PacketOpenItemEditor(index));
                             	
                         	}
                         }

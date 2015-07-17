@@ -2,8 +2,10 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.filter.VillagerProfessionServerFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -14,7 +16,7 @@ import net.minecraft.util.ChatComponentTranslation;
 /**
  * @author ProPercivalalb
  */
-public class PacketVillagerProfession extends IPacket {
+public class PacketVillagerProfession extends AbstractServerMessage {
 
 	public int professionId;
 	
@@ -34,7 +36,7 @@ public class PacketVillagerProfession extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(player.openContainer instanceof IContainerFilter) {
 			IContainerFilter container = (IContainerFilter)player.openContainer;
 			if(container.getCurrentFilter() instanceof VillagerProfessionServerFilter) {
@@ -51,5 +53,6 @@ public class PacketVillagerProfession extends IPacket {
 			}
 		}
 
+		return null;
 	}
 }

@@ -2,8 +2,10 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.proxy.CommonProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +14,7 @@ import net.minecraft.network.PacketBuffer;
 /**
  * @author ProPercivalalb
  */
-public class PacketEditEntity extends IPacket {
+public class PacketEditEntity extends AbstractServerMessage {
 
 	public int entityId;
 	
@@ -32,8 +34,9 @@ public class PacketEditEntity extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		player.openGui(MapMakingTools.instance, CommonProxy.ID_FILTER_ENTITY, player.worldObj, this.entityId, 0, 0);
+		return null;
 	}
 
 }

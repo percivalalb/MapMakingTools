@@ -6,7 +6,6 @@ import java.io.IOException;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import mapmakingtools.api.enums.MovementType;
-import mapmakingtools.network.IPacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -82,9 +81,9 @@ public class BlockCache {
     
     public static BlockCache readFromPacketBuffer(PacketBuffer packetbuffer) throws IOException {
         return new BlockCache(
-        		IPacket.readBlockPos(packetbuffer),
+        		BlockPos.fromLong(packetbuffer.readLong()),
         		packetbuffer.readInt(),
-        		IPacket.readBlockPos(packetbuffer),
+        		BlockPos.fromLong(packetbuffer.readLong()),
                 packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4),
                 packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4),
                 packetbuffer.readInt(),
@@ -212,9 +211,9 @@ public class BlockCache {
     }
     
     public void writeToPacketBuffer(PacketBuffer packetbuffer) throws IOException {
-    	IPacket.writeBlockPos(packetbuffer, this.playerPos);
+    	packetbuffer.writeLong(this.playerPos.toLong());
 		packetbuffer.writeInt(this.dimId);
-		IPacket.writeBlockPos(packetbuffer, this.pos);
+		packetbuffer.writeLong(this.pos.toLong());
 		packetbuffer.writeStringToBuffer(this.blockIdentifier.modId);
 		packetbuffer.writeStringToBuffer(this.blockIdentifier.name);
 		packetbuffer.writeInt(this.meta);

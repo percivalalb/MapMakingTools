@@ -3,14 +3,16 @@ package mapmakingtools.network.packet;
 import java.io.IOException;
 
 import mapmakingtools.container.ContainerFilter;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSelectedFilter extends IPacket {
+public class PacketSelectedFilter extends AbstractServerMessage {
 
 	public int selected;
 	
@@ -30,7 +32,7 @@ public class PacketSelectedFilter extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(player.openContainer instanceof ContainerFilter) {
 			ContainerFilter container = (ContainerFilter)player.openContainer;
 			container.setSelected(this.selected);

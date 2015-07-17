@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
@@ -14,11 +15,12 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketPaste extends IPacket {
+public class PacketPaste extends AbstractServerMessage {
 
 	public String name;
 	public List<BlockCache> list;
@@ -54,7 +56,7 @@ public class PacketPaste extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		

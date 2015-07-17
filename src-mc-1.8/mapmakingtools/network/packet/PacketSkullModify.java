@@ -2,7 +2,8 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.item.nbt.SkullNBT;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,11 +11,12 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSkullModify extends IPacket {
+public class PacketSkullModify extends AbstractServerMessage {
 
 	public String name;
 	
@@ -34,7 +36,7 @@ public class PacketSkullModify extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		ItemStack item = player.getHeldItem();

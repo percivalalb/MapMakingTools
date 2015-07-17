@@ -3,8 +3,11 @@ package mapmakingtools.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import com.google.common.base.Strings;
+
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketBiomeUpdate;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
@@ -13,13 +16,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
-
-import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb
@@ -69,7 +69,7 @@ public class CommandSetBiome extends CommandBase {
 				chunk.setChunkModified();
 			}
 			
-			MapMakingTools.NETWORK_MANAGER.sendPacketToAllInDimension(new PacketBiomeUpdate(data.getFirstPoint(), data.getSecondPoint(), biome), world.provider.dimensionId);
+			PacketDispatcher.sendToDimension(new PacketBiomeUpdate(data.getFirstPoint(), data.getSecondPoint(), biome), world.provider.dimensionId);
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.setbiome.complete", "" + biome.biomeName);
 			chatComponent.getChatStyle().setItalic(true);
 			player.addChatMessage(chatComponent);

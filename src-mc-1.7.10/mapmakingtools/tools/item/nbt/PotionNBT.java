@@ -3,8 +3,6 @@ package mapmakingtools.tools.item.nbt;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 
 /**
  * @author ProPercivalalb

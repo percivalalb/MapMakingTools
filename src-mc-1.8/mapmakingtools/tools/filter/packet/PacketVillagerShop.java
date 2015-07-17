@@ -5,7 +5,7 @@ import java.io.IOException;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.filter.VillagerShopServerFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -17,8 +17,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
-public class PacketVillagerShop extends IPacket {
+public class PacketVillagerShop extends AbstractServerMessage {
 
 	public int entityId;
 	public int[] recipeUses;
@@ -45,7 +46,7 @@ public class PacketVillagerShop extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		LogHelper.info("dawe " + this.entityId);
 		if(player.openContainer instanceof IContainerFilter) {
 			LogHelper.info("filter " + this.entityId);

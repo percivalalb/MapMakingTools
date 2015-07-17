@@ -1,8 +1,11 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.ReflectionHelper;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.client.gui.ScaledResolution;
@@ -14,9 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 /**
  * @author ProPercivalalb
@@ -60,7 +60,7 @@ public class KeyStateHandler {
                         			index = 36 +  3 - (index - 5);
                         		}
 
-                            	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketOpenItemEditor(index));
+                            	PacketDispatcher.sendToServer(new PacketOpenItemEditor(index));
                             	
                         	}
                         }

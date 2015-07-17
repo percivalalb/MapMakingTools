@@ -8,7 +8,7 @@ Update List Key
 (/) Other
 
 v2.3.1a
-* Fixed the //playerstatue command not working
+* Fixed few bugs
 
 v2.3.0a
 + Updated to 1.8
@@ -33,7 +33,10 @@ v2.3.0a
 * Fixed client update issue with command //setbiome
 * Fixed wrong language key for //worldtransfer paste
 
-v2.2.3a (Never released, content pushed to the 1.8 version)
+v2.2.3a
+* Fixed few bugs
+
+v2.2.Xa (Never released, content pushed to the 1.8 version)
 + Readded the '//killentities <type>' command that was originally in the v2.0.1a version
 + Added full NEI support
 

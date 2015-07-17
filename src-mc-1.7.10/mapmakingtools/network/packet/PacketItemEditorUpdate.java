@@ -2,7 +2,9 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.network.IPacket;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,7 +13,7 @@ import net.minecraft.network.PacketBuffer;
 /**
  * @author ProPercivalalb
  */
-public class PacketItemEditorUpdate extends IPacket {
+public class PacketItemEditorUpdate extends AbstractServerMessage {
 	
 	public int slotIndex;
 	public ItemStack stack;
@@ -34,12 +36,13 @@ public class PacketItemEditorUpdate extends IPacket {
 		packetbuffer.writeItemStackToBuffer(this.stack);
 	}
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		System.out.println(player);
 		
 		player.inventory.setInventorySlotContents(this.slotIndex, this.stack);
 		player.inventory.markDirty();
+		return null;
 	}
 }

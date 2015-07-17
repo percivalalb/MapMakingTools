@@ -9,7 +9,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.world.WorldServer;
 
 /**

@@ -2,13 +2,15 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.api.interfaces.IFilterClientSpawner;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketItemSpawner;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
@@ -17,8 +19,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb
@@ -97,8 +97,8 @@ public class ItemSpawnerClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketItemSpawner(gui.getBlockPos(), minecartIndex));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketItemSpawner(gui.getBlockPos(), minecartIndex));
+            		ClientHelper.mc.thePlayer.closeScreen();
                     break;
             }
         }

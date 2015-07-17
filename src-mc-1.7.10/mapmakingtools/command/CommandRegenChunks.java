@@ -3,31 +3,20 @@ package mapmakingtools.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
-import mapmakingtools.network.packet.PacketBiomeUpdate;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraft.world.gen.ChunkProviderServer;
-
-import com.google.common.base.Strings;
 
 /**
  * @author ProPercivalalb
@@ -101,7 +90,7 @@ public class CommandRegenChunks extends CommandBase {
 	            			  
 			}
 			
-			//MapMakingTools.NETWORK_MANAGER.sendPacketToAllInDimension(new PacketBiomeUpdate(data.getFirstPoint(), data.getSecondPoint(), biome), world.provider.dimensionId);
+			//PacketDispatcher.sendPacketToAllInDimension(new PacketBiomeUpdate(data.getFirstPoint(), data.getSecondPoint(), biome), world.provider.dimensionId);
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.regenchunks.complete");
 			chatComponent.getChatStyle().setItalic(true);
 			player.addChatMessage(chatComponent);

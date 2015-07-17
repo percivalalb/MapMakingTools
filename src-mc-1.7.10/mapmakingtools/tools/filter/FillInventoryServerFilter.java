@@ -7,6 +7,7 @@ import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IFilterServer;
 import mapmakingtools.container.IUnlimitedInventory;
 import mapmakingtools.container.SlotFake;
+import mapmakingtools.tools.BlockPos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -14,8 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import mapmakingtools.tools.BlockPos;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 /**

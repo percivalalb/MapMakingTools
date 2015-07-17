@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.tools.BlockCache;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.block.Block;
@@ -14,7 +15,6 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;

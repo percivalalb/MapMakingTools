@@ -2,20 +2,20 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
+import org.lwjgl.opengl.GL11;
+
 import mapmakingtools.api.interfaces.IFilterClientSpawner;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobVelocity;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author ProPercivalalb
@@ -87,8 +87,8 @@ public class MobVelocityClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.minecartIndex));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.minecartIndex));
+            		ClientHelper.mc.thePlayer.closeScreen();
                     break;
             }
         }

@@ -2,19 +2,19 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IFilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.TextHelper;
+import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.filter.packet.PacketConvertToDropper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;
-import mapmakingtools.tools.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -61,8 +61,8 @@ public class ConvertToDropperClientFilter extends IFilterClient {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketConvertToDropper(gui.getBlockPos()));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketConvertToDropper(gui.getBlockPos()));
+            		ClientHelper.mc.thePlayer.closeScreen();
                 	break;
             }
         }

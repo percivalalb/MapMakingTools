@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.helper.NumberParse;
-import mapmakingtools.network.IPacketPos;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,18 +13,20 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketCreeperProperties extends IPacketPos {
+public class PacketCreeperProperties extends AbstractServerMessage {
 
+	public BlockPos pos;
 	public String fuseTime, explosionRadius;
 	public int minecartIndex;
 	
 	public PacketCreeperProperties() {}
 	public PacketCreeperProperties(BlockPos pos, String fuseTime, String explosionRadius, int minecartIndex) {
-		super(pos);
+		this.pos = pos;
 		this.fuseTime = fuseTime;
 		this.explosionRadius = explosionRadius;
 		this.minecartIndex = minecartIndex;
@@ -32,7 +34,7 @@ public class PacketCreeperProperties extends IPacketPos {
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		super.read(packetbuffer);
+		this.pos = packetbuffer.readBlockPos();
 		this.fuseTime = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.explosionRadius = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
 		this.minecartIndex = packetbuffer.readInt();
@@ -40,14 +42,14 @@ public class PacketCreeperProperties extends IPacketPos {
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		super.write(packetbuffer);
+		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeString(this.fuseTime);
 		packetbuffer.writeString(this.explosionRadius);
 		packetbuffer.writeInt(this.minecartIndex);
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		TileEntity tile = player.worldObj.getTileEntity(this.pos);

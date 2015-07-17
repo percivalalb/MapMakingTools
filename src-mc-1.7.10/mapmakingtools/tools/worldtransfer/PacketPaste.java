@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.network.IPacket;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.BlockPos;
 import mapmakingtools.tools.PlayerAccess;
@@ -18,7 +20,7 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * @author ProPercivalalb
  */
-public class PacketPaste extends IPacket {
+public class PacketPaste extends AbstractServerMessage {
 
 	public String name;
 	public List<BlockCache> list;
@@ -54,9 +56,9 @@ public class PacketPaste extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public IMessage process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
-			return;
+			return null;
 		
 		PlayerData data = WorldData.getPlayerData(player);
 		
@@ -78,6 +80,8 @@ public class PacketPaste extends IPacket {
 			chatComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
 			player.addChatMessage(chatComponent);
 		}
+		
+		return null;
 	}
 
 }

@@ -3,15 +3,10 @@ package mapmakingtools.client.gui.textfield;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.FMLLog;
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.client.gui.button.GuiAdvancedTextField;
-import mapmakingtools.client.gui.button.GuiButtonTextColour.TextColour;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
-import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.EnumChatFormatting;
 
 /**

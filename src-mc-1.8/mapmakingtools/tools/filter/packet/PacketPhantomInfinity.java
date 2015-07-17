@@ -4,16 +4,17 @@ import java.io.IOException;
 
 import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.container.IUnlimitedInventory;
-import mapmakingtools.network.IPacket;
+import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketPhantomInfinity extends IPacket {
+public class PacketPhantomInfinity extends AbstractServerMessage {
 
 	public int slotIndex;
 	public boolean isUnlimited;
@@ -37,7 +38,7 @@ public class PacketPhantomInfinity extends IPacket {
 	}
 
 	@Override
-	public void execute(EntityPlayer player) {
+	public void process(EntityPlayer player, Side side) {
 		if(player.openContainer == null) 
 			return;
 		Container container = player.openContainer;

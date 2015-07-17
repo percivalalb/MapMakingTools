@@ -1,8 +1,8 @@
 package mapmakingtools.helper;
 
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
-
 import org.apache.logging.log4j.Level;
+
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 
 /**
  * @author ProPercivalalb

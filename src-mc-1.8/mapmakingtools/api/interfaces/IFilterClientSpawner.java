@@ -3,10 +3,10 @@ package mapmakingtools.api.interfaces;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiMinecartIndexButton;
 import mapmakingtools.helper.ClientHelper;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
 import mapmakingtools.tools.filter.packet.PacketMobArmorRemoveIndex;
 import mapmakingtools.util.SpawnerUtil;
@@ -81,7 +81,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				}
 				minecarts.remove(button.id - 200);
 				this.addMinecartButtons(gui, topX, topY);
-				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorRemoveIndex(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+				PacketDispatcher.sendToServer(new PacketMobArmorRemoveIndex(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
 			}
 			
 		}
@@ -108,7 +108,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				minecarts.add(randomMinecart);
 				
 				this.addMinecartButtons(gui, topX, topY);
-				MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketMobArmorAddIndex(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+				PacketDispatcher.sendToServer(new PacketMobArmorAddIndex(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
 			}
 		}
 	}

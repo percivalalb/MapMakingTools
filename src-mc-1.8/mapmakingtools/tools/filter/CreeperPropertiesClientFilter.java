@@ -2,13 +2,13 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IFilterClientSpawner;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.helper.TextHelper;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketCreeperProperties;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
@@ -79,8 +79,8 @@ public class CreeperPropertiesClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	MapMakingTools.NETWORK_MANAGER.sendPacketToServer(new PacketCreeperProperties(gui.getBlockPos(), this.txt_fuse.getText(), this.txt_radius.getText(), this.minecartIndex));
-            		ClientHelper.mc.setIngameFocus();
+                	PacketDispatcher.sendToServer(new PacketCreeperProperties(gui.getBlockPos(), this.txt_fuse.getText(), this.txt_radius.getText(), this.minecartIndex));
+            		ClientHelper.mc.thePlayer.closeScreen();
                 	break;
             }
         }
