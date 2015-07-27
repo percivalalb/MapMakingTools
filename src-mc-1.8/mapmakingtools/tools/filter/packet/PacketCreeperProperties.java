@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -70,7 +71,7 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 			
 			SpawnerUtil.setCreeperFuse(spawner.getSpawnerBaseLogic(), fuseTimeNO, this.minecartIndex);
 			SpawnerUtil.setCreeperExplosionRadius(spawner.getSpawnerBaseLogic(), explosionRadiusNO, this.minecartIndex);
-			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.creeperproperties.complete");
 			chatComponent.getChatStyle().setItalic(true);

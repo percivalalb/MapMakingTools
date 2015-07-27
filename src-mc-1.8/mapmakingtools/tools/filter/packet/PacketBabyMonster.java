@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -53,7 +54,7 @@ public class PacketBabyMonster extends AbstractServerMessage {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 			SpawnerUtil.setBabyMonster(spawner.getSpawnerBaseLogic(), this.baby, this.minecartIndex);
-			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.babymonster.complete");
 			chatComponent.getChatStyle().setItalic(true);

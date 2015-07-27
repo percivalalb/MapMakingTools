@@ -103,17 +103,20 @@ public class FillInventoryServerFilter extends IFilterServer {
 		
 		public FillInventory(int inventorySize) {
 			this.contents = new ItemStack[inventorySize];
-			umlimited = new boolean[inventorySize];
+			this.umlimited = new boolean[inventorySize];
 		}
 		
+		@Override
 		public int getSizeInventory() {
 		    return this.contents.length;
 		}
 
+		@Override
 		public ItemStack getStackInSlot(int par1) {
 		    return this.contents[par1];
 		}
 
+		@Override
 		public ItemStack decrStackSize(int par1, int par2) {
 		     if (this.contents[par1] != null) {
 		        ItemStack itemstack;
@@ -138,6 +141,7 @@ public class FillInventoryServerFilter extends IFilterServer {
 		    }
 		}
 
+		@Override
 		public ItemStack getStackInSlotOnClosing(int par1) {
 		    if (this.contents[par1] != null) {
 		        ItemStack itemstack = this.contents[par1];
@@ -149,6 +153,7 @@ public class FillInventoryServerFilter extends IFilterServer {
 		    }
 		}
 
+		@Override
 		public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
 		    this.contents[par1] = par2ItemStack;
 
@@ -172,7 +177,7 @@ public class FillInventoryServerFilter extends IFilterServer {
 
 		@Override
 		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-			return false;
+			return true;
 		}
 /**
 		@Override

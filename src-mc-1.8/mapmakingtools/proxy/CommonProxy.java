@@ -32,6 +32,8 @@ import mapmakingtools.tools.filter.CustomGiveClientFilter;
 import mapmakingtools.tools.filter.CustomGiveServerFilter;
 import mapmakingtools.tools.filter.FillInventoryClientFilter;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;
+import mapmakingtools.tools.filter.EditSignClientFilter;
+import mapmakingtools.tools.filter.EditSignServerFilter;
 import mapmakingtools.tools.filter.ItemSpawnerClientFilter;
 import mapmakingtools.tools.filter.ItemSpawnerServerFilter;
 import mapmakingtools.tools.filter.MobArmorClientFilter;
@@ -167,6 +169,7 @@ public class CommonProxy implements IGuiHandler {
     	
     	FilterManager.registerFilter(ChestSymmetrifyClientFilter.class, ChestSymmetrifyServerFilter.class);
     	
+    	FilterManager.registerFilter(EditSignClientFilter.class, EditSignServerFilter.class);
     	
     	FilterManager.registerFilter(VillagerShopClientFilter.class, VillagerShopServerFilter.class);
     	FilterManager.registerFilter(VillagerProfessionClientFilter.class, VillagerProfessionServerFilter.class);

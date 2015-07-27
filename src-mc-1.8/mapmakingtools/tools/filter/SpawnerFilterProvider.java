@@ -42,9 +42,8 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		TileEntity tile = world.getTileEntity(pos);
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
-		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
 		filterList.add(FilterManager.getServerFilterFromClass(MobTypeServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(SpawnerTimingServerFilter.class));

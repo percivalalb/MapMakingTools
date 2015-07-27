@@ -6,6 +6,7 @@ import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.ItemSpawnerServerFilter;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,7 +59,7 @@ public class PacketItemSpawner extends AbstractServerMessage {
 					
 					ItemStack item = container.getSlot(0).getStack().copy();
 					SpawnerUtil.setItemType(spawner.getSpawnerBaseLogic(), item, this.minecartIndex);
-					SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
 			    	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.changeitem.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
 					chatComponent.getChatStyle().setItalic(true);

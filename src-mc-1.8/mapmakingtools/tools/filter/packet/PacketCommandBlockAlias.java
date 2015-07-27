@@ -56,7 +56,6 @@ public class PacketCommandBlockAlias extends AbstractServerMessage {
 	    			MinecraftServer server = MinecraftServer.getServer();
 	    			server.getConfigurationManager().sendPacketToAllPlayersInDimension(commandBlock.getDescriptionPacket(), commandBlock.getWorld().provider.getDimensionId());
     			}
-				LogHelper.info("GGGG");
     			
     			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.commandblockalias.complete", this.name);
 				chatComponent.getChatStyle().setItalic(true);

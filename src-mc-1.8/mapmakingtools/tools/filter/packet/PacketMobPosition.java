@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -79,7 +80,7 @@ public class PacketMobPosition extends AbstractServerMessage {
 			}
 			
 			SpawnerUtil.setPosition(spawner.getSpawnerBaseLogic(), xPosNO, yPosNO, zPosNO, this.minecartIndex);
-			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobposition.complete");
 			chatComponent.getChatStyle().setItalic(true);

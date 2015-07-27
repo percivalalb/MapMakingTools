@@ -6,6 +6,7 @@ import java.util.List;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -60,7 +61,7 @@ public class PacketMobArmorRemoveIndex extends AbstractServerMessage {
 				minecarts.remove(this.minecartIndex);
 				if(SpawnerUtil.getRandomMinecart(spawner.getSpawnerBaseLogic()) == minecart)
 					spawner.getSpawnerBaseLogic().setRandomEntity((MobSpawnerBaseLogic.WeightedRandomMinecart)WeightedRandom.getRandomItem(spawner.getSpawnerBaseLogic().getSpawnerWorld().rand, minecarts));
-				SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+				PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.removeIndex");
 				chatComponent.getChatStyle().setItalic(true);

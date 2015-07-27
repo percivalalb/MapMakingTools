@@ -1,6 +1,7 @@
 package mapmakingtools.tools.attribute;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Strings;
@@ -10,6 +11,7 @@ import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.tools.datareader.EnchantmentList;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -18,21 +20,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 /**
  * @author ProPercivalalb
  */
-public class EnchantmentAttribute extends IItemAttribute {
+public class BlockDestoryAttribute extends IItemAttribute {
 
 	private ScrollMenu scrollMenuAdd;
 	private ScrollMenu scrollMenuRemove;
 	private GuiButton btn_add;
-	private GuiButton btn_add_effect;
 	private GuiButton btn_remove;
 	private GuiButton btn_remove_all;
-	private GuiTextField fld_lvl;
-	private String level;
 	private static int selected = -1;
 	private static int selectedDelete = -1;
 	
@@ -43,24 +44,23 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(this.level != null && this.selected != -1 && data == 0) {
-			if(NumberParse.isInteger(this.level)) {
-				Enchantment enchantment = Enchantment.getEnchantmentById(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
-				
-				if(enchantment == null)
-					return;
-				
-				
-				stack.addEnchantment(enchantment, NumberParse.getInteger(this.level));
-			}
+		if(this.selected != -1 && data == 0) {
+			if(!stack.hasTagCompound())
+				stack.setTagCompound(new NBTTagCompound());
+			
+			if(!stack.getTagCompound().hasKey("CanDestroy", 9))
+				stack.getTagCompound().setTag("CanDestroy", new NBTTagList());
+			
+			NBTTagList list = stack.getTagCompound().getTagList("CanDestroy", 8);
+			list.appendTag(new NBTTagString(scrollMenuAdd.strRefrence.get(this.selected)));
 		}
 		
 		if(this.selectedDelete != -1 && data == 1) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("ench", 9)) {
-		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("ench", 10);
+			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", 9)) {
+		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CanDestroy", 8);
 		        nbttaglist.removeTag(this.selectedDelete);
-		        if(nbttaglist.tagCount() == 0)
-		        	stack.getTagCompound().removeTag("ench");
+		        if(nbttaglist.hasNoTags())
+		        	stack.getTagCompound().removeTag("CanDestroy");
 			}
 		}
 		
@@ -68,14 +68,14 @@ public class EnchantmentAttribute extends IItemAttribute {
 			if(!stack.hasTagCompound())
 				stack.setTagCompound(new NBTTagCompound());
 			
-			if(!stack.getTagCompound().hasKey("ench", 9))
-				stack.getTagCompound().setTag("ench", new NBTTagList());
+			if(!stack.getTagCompound().hasKey("CanDestroy", 9))
+				stack.getTagCompound().setTag("CanDestroy", new NBTTagList());
 		}
 		
 		if(data == 3) {
 			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("ench", 9)) {
-					stack.getTagCompound().removeTag("ench");
+				if(stack.getTagCompound().hasKey("CanDestroy", 9)) {
+					stack.getTagCompound().removeTag("CanDestroy");
 					if(stack.getTagCompound().hasNoTags())
 						stack.setTagCompound(null);
 				}
@@ -85,7 +85,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 	@Override
 	public String getUnlocalizedName() {
-		return "mapmakingtools.itemattribute.enchantment.name";
+		return "mapmakingtools.itemattribute.blockdestory.name";
 	}
 	
 	@Override
@@ -93,12 +93,20 @@ public class EnchantmentAttribute extends IItemAttribute {
 		this.scrollMenuRemove.selected = -1;
 		this.selectedDelete = -1;
 		
+		//TODO
+		this.scrollMenuAdd.strRefrence = new ArrayList<String>();
+		for(Object key : Block.blockRegistry.getKeys())
+			this.scrollMenuAdd.strRefrence.add(((ResourceLocation)key).toString());
+		Collections.sort(this.scrollMenuAdd.strRefrence);
+		
+		this.scrollMenuAdd.initGui();
+		
 		List<String> list = new ArrayList<String>();
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("ench")) {
-			NBTTagList enchantmentList = stack.getTagCompound().getTagList("ench", 10);
-			for(int i = 0; i < enchantmentList.tagCount(); ++i) {
-				NBTTagCompound t = enchantmentList.getCompoundTagAt(i);
-				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", 9)) {
+			NBTTagList destoryList = stack.getTagCompound().getTagList("CanDestroy", 8);
+			for(int i = 0; i < destoryList.tagCount(); ++i) {
+				String blockId = destoryList.getStringTagAt(i);
+				list.add(String.format("%s", blockId));
 			}
 		}
 		this.scrollMenuRemove.strRefrence = list;
@@ -108,9 +116,6 @@ public class EnchantmentAttribute extends IItemAttribute {
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
 		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
-		if(Strings.isNullOrEmpty(this.fld_lvl.getText()) && !this.fld_lvl.isFocused()) {
-			itemEditor.getFontRenderer().drawString("Level", x + 6, y + height / 2 - 17, 13882323);
-		}
 	}
 
 	@Override
@@ -121,23 +126,16 @@ public class EnchantmentAttribute extends IItemAttribute {
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
-		this.scrollMenuAdd = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, EnchantmentList.getEnchantments()) {
+		this.scrollMenuAdd = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, new ArrayList<String>()) {
 
 			@Override
 			public void onSetButton() {
-				EnchantmentAttribute.selected = this.selected;
+				BlockDestoryAttribute.selected = this.selected;
 			}
 
 			@Override
 			public String getDisplayString(String listStr) {
-				Enchantment enchantment = Enchantment.getEnchantmentById(EnchantmentList.getEnchantmentId(listStr));
-				
-				if(enchantment == null)
-					return listStr;
-				
-				String unlocalised = enchantment.getName();
-				String localised = StatCollector.translateToLocal(unlocalised);
-				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
+				return listStr;
 			}
 			
 		};
@@ -145,37 +143,23 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				EnchantmentAttribute.selectedDelete = this.selected;
+				BlockDestoryAttribute.selectedDelete = this.selected;
 			}
 
 			@Override
 			public String getDisplayString(String listStr) {
-				String[] split = listStr.split(" ~~~ ");
-				
-				Enchantment enchantment = Enchantment.getEnchantmentById(NumberParse.getInteger(split[0]));
-				
-				if(enchantment == null)
-					return listStr;
-				
-				String localised = enchantment.getTranslatedName(NumberParse.getInteger(split[1]));
-				
-				return localised;
+				return listStr;
 			}
 			
 		};
 		
-		this.fld_lvl = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + height / 2 - 20, 50, 14);
-		this.fld_lvl.setMaxStringLength(5);
-		this.btn_add = new GuiButton(0, x + 60, y + height / 2 - 23, 50, 20, "Add");
+		this.btn_add = new GuiButton(0, x + 2, y + height / 2 - 23, 50, 20, "Add");
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
-		this.btn_add_effect = new GuiButton(2, x + 130, y + height / 2 - 23, 120, 20, "Add Glimering Effect");
-		this.btn_remove_all = new GuiButton(3, x + 130, y + height - 23, 130, 20, "Remove all Enchantments");
+		this.btn_remove_all = new GuiButton(3, x + 130, y + height - 23, 130, 20, "Remove all Blocks");
 		
 		itemEditor.getButtonList().add(this.btn_add);
 		itemEditor.getButtonList().add(this.btn_remove);
-		itemEditor.getButtonList().add(this.btn_add_effect);
 		itemEditor.getButtonList().add(this.btn_remove_all);
-		itemEditor.getTextBoxList().add(this.fld_lvl);
 		this.scrollMenuAdd.initGui();
 		this.scrollMenuRemove.initGui();
 	}
@@ -204,7 +188,6 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 	@Override
 	public void textboxKeyTyped(IGuiItemEditor itemEditor, char character, int keyId, GuiTextField textbox) {
-		if(this.fld_lvl == textbox)
-			this.level = this.fld_lvl.getText();
+		
 	}
 }

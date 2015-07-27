@@ -6,6 +6,7 @@ import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -56,7 +57,7 @@ public class PacketMobArmor extends AbstractServerMessage {
 					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
 					ItemStack[] stack = filterCurrent.getInventory(container).contents; 
 					SpawnerUtil.setMobArmor(spawner.getSpawnerBaseLogic(), stack[4], stack[3], stack[2], stack[1], stack[0], this.minecartIndex);
-					SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
 				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.complete");
 					chatComponent.getChatStyle().setItalic(true);

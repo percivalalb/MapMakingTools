@@ -3,6 +3,7 @@ package mapmakingtools.tools;
 import java.util.Hashtable;
 import java.util.UUID;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSetPoint1;
 import mapmakingtools.network.packet.PacketSetPoint2;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
@@ -33,7 +35,10 @@ public class PlayerData {
 		this.uuid = uuid;
 	}
 	
-	public EntityPlayerMP getPlayer() {
+	public EntityPlayer getPlayer() {
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+			return MapMakingTools.proxy.getPlayerEntity();
+		
 		
 		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerByUUID(this.uuid);
 	}

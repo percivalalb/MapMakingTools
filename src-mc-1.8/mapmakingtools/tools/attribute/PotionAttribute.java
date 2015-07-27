@@ -8,6 +8,8 @@ import com.google.common.base.Strings;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.client.gui.button.GuiButtonData;
+import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.tools.datareader.PotionList;
 import mapmakingtools.tools.item.nbt.PotionNBT;
@@ -36,8 +38,10 @@ public class PotionAttribute extends IItemAttribute {
 	private GuiButton btn_remove_all;
 	private GuiTextField fld_lvl;
 	private GuiTextField fld_duration;
+	private GuiButtonData btn_particles;
 	private String level;
 	private String duration;
+	private boolean showParticles = true;
 	private static int selected = -1;
 	private static int selectedDelete = -1;
 	
@@ -59,12 +63,12 @@ public class PotionAttribute extends IItemAttribute {
 					List potionList = ((ItemPotion)Items.potionitem).getEffects(stack.getItemDamage());
 					for(int i = 0; potionList != null && i < potionList.size(); ++i) {
 						PotionEffect effect = (PotionEffect)potionList.get(i);
-						PotionNBT.addPotionEffects(stack, effect.getPotionID(), effect.getAmplifier() + 1, effect.getDuration(), effect.getIsAmbient());
+						PotionNBT.addPotionEffects(stack, effect.getPotionID(), effect.getAmplifier() + 1, effect.getDuration(), effect.getIsAmbient(), effect.getIsShowParticles());
 					}
 				}
 				int lvl = NumberParse.getInteger(this.level);
 				int dur = NumberParse.getInteger(this.duration);
-				PotionNBT.addPotionEffects(stack, potion.id, lvl, dur, false);
+				PotionNBT.addPotionEffects(stack, potion.id, lvl, dur, false, this.showParticles);
 			}
 		}
 		
@@ -105,7 +109,7 @@ public class PotionAttribute extends IItemAttribute {
 		List potionList = ((ItemPotion)Items.potionitem).getEffects(stack);
 		for(int i = 0; potionList != null && i < potionList.size(); ++i) {
 			PotionEffect effect = (PotionEffect)potionList.get(i);
-			list.add(String.format("%d ~~~ %d", effect.getPotionID(), effect.getAmplifier()));
+			list.add(String.format("%d ~~~ %d ~~~ %d ~~~ %b", effect.getPotionID(), effect.getAmplifier(), effect.getDuration(), effect.getIsShowParticles()));
 		}
 		this.scrollMenuRemove.strRefrence = list;
 		this.scrollMenuRemove.initGui();
@@ -177,15 +181,21 @@ public class PotionAttribute extends IItemAttribute {
 				int lvl = NumberParse.getInteger(split[1]);
 				
 				
-				return localised + " " + (lvl + 1);
+				return localised + " " + (lvl + 1) + " (" + split[2] + " ticks,  Visable: " + split[3] + ")";
 			}
 			
 		};
 		
 		this.fld_lvl = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + height / 2 - 20, 50, 14);
 		this.fld_duration = new GuiTextField(1, itemEditor.getFontRenderer(), x + 59, y + height / 2 - 20, 50, 14);
+		this.btn_particles = new GuiButtonData(3, x + 115, y + height / 2 - 23, 80, 20, "Has Particles");
+		if(this.showParticles)
+			this.btn_particles.displayString = "Has Particles";
+		else 
+			this.btn_particles.displayString = "No Particles";
+
 		this.fld_lvl.setMaxStringLength(5);
-		this.btn_add = new GuiButton(0, x + 115, y + height / 2 - 23, 50, 20, "Add");
+		this.btn_add = new GuiSmallButton(0, x + width - 20, y + height / 2 - 20, 16, 16, "+");
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
 		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Effects");
 		
@@ -194,6 +204,7 @@ public class PotionAttribute extends IItemAttribute {
 		itemEditor.getButtonList().add(this.btn_remove_all);
 		itemEditor.getTextBoxList().add(this.fld_lvl);
 		itemEditor.getTextBoxList().add(this.fld_duration);
+		itemEditor.getButtonList().add(this.btn_particles);
 		this.scrollMenuAdd.initGui();
 		this.scrollMenuRemove.initGui();
 	}
@@ -203,11 +214,21 @@ public class PotionAttribute extends IItemAttribute {
 		if(button.id == 0) {
 			itemEditor.sendUpdateToServer(0);
 		}
-		if(button.id == 1) {
+		else if(button.id == 1) {
 			itemEditor.sendUpdateToServer(1);
 		}
-		if(button.id == 2) {
+		else if(button.id == 2) {
 			itemEditor.sendUpdateToServer(2);
+		}
+		else if(button.id == 3) {
+			if(this.showParticles) {
+				this.btn_particles.displayString = "No Particles";
+				this.showParticles = false;
+			}
+			else {
+				this.btn_particles.displayString = "Has Particles";
+				this.showParticles = true;
+			}
 		}
 	}
 	

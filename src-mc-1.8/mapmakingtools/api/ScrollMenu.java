@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -45,8 +46,15 @@ public abstract class ScrollMenu {
 	public void initGui() {
 		this.scaling = new ScaledResolution(ClientHelper.mc, ClientHelper.mc.displayWidth, ClientHelper.mc.displayHeight);
 		if(this.strRefrence.size() > 0) {
-        	this.listHeight = MathHelper.floor_double(this.strRefrence.size() / this.noColumns) * 14 - this.height;
-	
+        	this.listHeight = MathHelper.ceiling_double_int(this.strRefrence.size() / (double)this.noColumns) * 14 - this.height;
+        	
+        	this.scrollHeight = (int) ((this.height / (double)(this.listHeight + this.height)) * this.height);
+        	if(this.scrollHeight < 20)
+        		scrollHeight = 20;
+        	//FMLLog.info("" + this.scrollHeight);
+        	//if(this.scrollHeight)
+        	
+        	/**
         	if(this.listHeight % 14 != 0) {
             	if(this.strRefrence.size() % this.noColumns == 1)
             		this.listHeight += 14 + this.listHeight % 14 - 4;
@@ -58,7 +66,7 @@ public abstract class ScrollMenu {
 
             if (this.scrollHeight <= 0 || this.scrollHeight >= height) {
                 this.scrollHeight = height;
-            }
+            }**/
 		}
 		else {
 			this.listHeight = this.height;
@@ -90,7 +98,7 @@ public abstract class ScrollMenu {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         
-        if (this.scrollHeight != this.height)
+        if (this.scrollHeight <= this.height)
             this.drawScrollBar();
         
         this.drawScrollList();
@@ -100,7 +108,7 @@ public abstract class ScrollMenu {
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
         
-        if (this.scrollHeight != this.height) {
+        if (this.scrollHeight <= this.height) {
             xMouse -= this.xPosition;
             yMouse -= this.yPosition;
 
@@ -190,9 +198,9 @@ public abstract class ScrollMenu {
 	     xMouse -= this.xPosition;
          yMouse -= this.yPosition;
 
-	     if (mouseButton == 0 && xMouse >= 0 && xMouse < this.width && yMouse >= 0 && yMouse < this.height + 6) {
-	         for (int buttonIndex = 0; buttonIndex < this.strRefrence.size(); ++buttonIndex) {
-	             if (this.mouseInRadioButton(xMouse, yMouse, buttonIndex)) {
+	     if(mouseButton == 0 && xMouse >= 0 && xMouse < this.width && yMouse >= 0 && yMouse < this.height + 6) {
+	         for(int buttonIndex = 0; buttonIndex < this.strRefrence.size(); ++buttonIndex) {
+	             if(this.mouseInRadioButton(xMouse, yMouse, buttonIndex)) {
 	                 this.selected = buttonIndex;
 	                 this.onSetButton();
 	                 break;

@@ -99,14 +99,16 @@ public class ActionHandler {
 					}
 				}
 				else if(stack != null && stack.getItem() == ModItems.editItem && stack.getMetadata() == 1) {
-					TileEntity tileEntity = world.getTileEntity(pos);
-					if(tileEntity != null) {
-						if(tileEntity instanceof TileEntityMobSpawner) 
-							SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).getSpawnerBaseLogic());
-						
-						
-						PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos), player);
-						event.setCanceled(true);
+					if(!world.isRemote) {
+						TileEntity tileEntity = world.getTileEntity(pos);
+						if(tileEntity != null) {
+							if(tileEntity instanceof TileEntityMobSpawner) 
+								SpawnerUtil.confirmHasRandomMinecart(((TileEntityMobSpawner)tileEntity).getSpawnerBaseLogic());
+							
+							
+							PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos), player);
+							event.setCanceled(true);
+						}
 					}
 				}
 			}

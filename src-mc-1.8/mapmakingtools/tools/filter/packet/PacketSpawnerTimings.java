@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -88,7 +89,7 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 			SpawnerUtil.setDetectionRadius(spawner.getSpawnerBaseLogic(), detectionRadiusNo);
 			//SpawnerUtil.setTimings(spawner.getSpawnerBaseLogic(), this.minDelay, this.maxDelay, this.spawnRadius, this.spawnCount, this.entityCap, this.detectionRange, this.minecartIndex);
 			
-			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.spawnertimings.complete");
 			chatComponent.getChatStyle().setItalic(true);

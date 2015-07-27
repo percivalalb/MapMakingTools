@@ -145,6 +145,7 @@ mapmakingtools.itemattribute.potion.name=Potions
 mapmakingtools.itemattribute.playerhead.name=Player Head
 mapmakingtools.itemattribute.fireworks.name=Fireworks
 mapmakingtools.itemattribute.armorcolour.name=Armor Colour
+mapmakingtools.itemattribute.blockdestory.name=Breakable Blocks
 
 mapmakingtools.key.category=Map Making Tools
 mapmakingtools.key.itemeditor=ItemEditor

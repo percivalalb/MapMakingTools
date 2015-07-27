@@ -60,15 +60,22 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("StoredEnchantments", 9)) {
 		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("StoredEnchantments", 10);
 		        nbttaglist.removeTag(this.selectedDelete);
-		        if(nbttaglist.tagCount() == 0)
+		        if(nbttaglist.hasNoTags()) {
 		        	stack.getTagCompound().removeTag("StoredEnchantments");
+		        	if(stack.getTagCompound().hasNoTags())
+						stack.setTagCompound(null);
+		        }
 			}
 		}
 		
 		if(data == 2) {
-			if(stack.hasTagCompound())
-				if(stack.getTagCompound().hasKey("StoredEnchantments", 9))
+			if(stack.hasTagCompound()) {
+				if(stack.getTagCompound().hasKey("StoredEnchantments", 9)) {
 					stack.getTagCompound().removeTag("StoredEnchantments");
+					if(stack.getTagCompound().hasNoTags())
+						stack.setTagCompound(null);
+				}
+			}
 		}
 	}
 
@@ -89,10 +96,12 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 		}
 		
 		List<String> list = new ArrayList<String>();
-		NBTTagList enchantmentList = stack.getTagCompound().getTagList("StoredEnchantments", 10);
-		for(int i = 0; i < enchantmentList.tagCount(); ++i) {
-			NBTTagCompound t = enchantmentList.getCompoundTagAt(i);
-			list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("StoredEnchantments")) {
+			NBTTagList enchantmentList = stack.getTagCompound().getTagList("StoredEnchantments", 10);
+			for(int i = 0; i < enchantmentList.tagCount(); ++i) {
+				NBTTagCompound t = enchantmentList.getCompoundTagAt(i);
+				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
+			}
 		}
 		this.scrollMenuRemove.strRefrence = list;
 		this.scrollMenuRemove.initGui();

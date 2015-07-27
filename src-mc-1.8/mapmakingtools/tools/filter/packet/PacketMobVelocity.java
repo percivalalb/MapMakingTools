@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.helper.NumberParse;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -70,7 +71,7 @@ public class PacketMobVelocity extends AbstractServerMessage {
 			double zMotionNO = NumberParse.getDouble(this.zMotion);
 			
 			SpawnerUtil.setVelocity(spawner.getSpawnerBaseLogic(), xMotionNO, yMotionNO, zMotionNO, this.minecartIndex);
-			SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobvelocity.complete");
 			chatComponent.getChatStyle().setItalic(true);

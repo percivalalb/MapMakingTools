@@ -17,6 +17,7 @@ import mapmakingtools.handler.ScreenRenderHandler;
 import mapmakingtools.handler.WorldOverlayHandler;
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.tools.attribute.ArmorColourAttribute;
+import mapmakingtools.tools.attribute.BlockDestoryAttribute;
 import mapmakingtools.tools.attribute.BookAttribute;
 import mapmakingtools.tools.attribute.BookEnchantmentAttribute;
 import mapmakingtools.tools.attribute.EnchantmentAttribute;
@@ -115,6 +116,7 @@ public class ClientProxy extends CommonProxy {
 		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
 		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
 		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
+		ItemEditorManager.registerItemHandler(new BlockDestoryAttribute());
 	}
 	
 	@Override

@@ -78,7 +78,7 @@ public class FillInventoryClientFilter extends IFilterClient {
 	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 104) / 2;
+        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
         gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
 	}
 	

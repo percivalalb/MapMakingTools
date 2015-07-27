@@ -6,6 +6,7 @@ import java.util.List;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -62,7 +63,7 @@ public class PacketMobArmorAddIndex extends AbstractServerMessage {
 				WeightedRandomMinecart randomMinecart = spawner.getSpawnerBaseLogic().new WeightedRandomMinecart(data);
 				minecarts.add(randomMinecart);
 				spawner.getSpawnerBaseLogic().setRandomEntity(randomMinecart);
-				SpawnerUtil.sendSpawnerPacketToAllPlayers(spawner);
+				PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
 				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.addIndex");
 				chatComponent.getChatStyle().setItalic(true);

@@ -287,12 +287,13 @@ public class SpawnerUtil {
 		return ReflectionHelper.getField(randomMinecartListField, List.class, spawnerLogic);
 	}
 	
+	/**
 	public static void sendSpawnerPacketToAllPlayers(TileEntityMobSpawner spawner) {
 		if(!ServerHelper.isServer())
 			return;
 		MinecraftServer server = MinecraftServer.getServer();
 		server.getConfigurationManager().sendPacketToAllPlayersInDimension(getTileEntitySpawnerPacket(spawner), spawner.getWorld().provider.getDimensionId());
-	}
+	}**/
 	
 	public static Packet getTileEntitySpawnerPacket(TileEntityMobSpawner spawner) {
         NBTTagCompound nbttagcompound = new NBTTagCompound();

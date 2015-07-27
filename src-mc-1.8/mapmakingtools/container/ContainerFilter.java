@@ -15,6 +15,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
@@ -125,14 +127,16 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	@Override
 	public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
 		Slot slot = slotNum < 0 || slotNum >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotNum);
-		if (slot instanceof IPhantomSlot && !this.getWorld().isRemote) {
-			return slotClickPhantom(slot, mouseButton, modifier, player);
+		if (slot instanceof IPhantomSlot) {
+			if(!this.getWorld().isRemote)
+				return slotClickPhantom(slot, mouseButton, modifier, player);
+			return null;
 		}
-		else if(slot instanceof IPhantomSlot)
-			return slot.getStack();
+
 		return super.slotClick(slotNum, mouseButton, modifier, player);
 	}
 
+	
 	private ItemStack slotClickPhantom(Slot slot, int mouseButton, int modifier, EntityPlayer player) {
 		ItemStack stack = null;
 		IPhantomSlot phantomSlot = (IPhantomSlot)slot;
@@ -147,36 +151,44 @@ public class ContainerFilter extends Container implements IContainerFilter {
 		}
 		else if(slotStack != null) {
 			
-			int stackSize = mouseButton == 2 ? 0 : mouseButton == 1 ? slotStack.stackSize + 1: slotStack.stackSize - 1;
-		
-			if(stackSize > 1 && phantomSlot.canBeUnlimited()) {
-				stackSize = 1;
-				if(slot.inventory instanceof IUnlimitedInventory)
-					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
-				phantomSlot.setIsUnlimited(false);
-				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
-			}
-			
-			else if(stackSize < 1 && !phantomSlot.isUnlimited() && phantomSlot.canBeUnlimited()) {
-				stackSize = 1;
-				if(slot.inventory instanceof IUnlimitedInventory)
-					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), true);
-				phantomSlot.setIsUnlimited(true);
-				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), true), player);
-			}
-			else if(stackSize < 1) {
+			if(mouseButton == 2) {
 				slot.putStack(null);
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
 				phantomSlot.setIsUnlimited(false);
 				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
-			slotStack.stackSize = stackSize;
+			else {
+				int stackSize = mouseButton == 1 ? slotStack.stackSize + 1: slotStack.stackSize - 1;
+			
+				if(stackSize > 1 && phantomSlot.canBeUnlimited() && phantomSlot.isUnlimited()) {
+					stackSize = 1;
+					if(slot.inventory instanceof IUnlimitedInventory)
+						((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
+					phantomSlot.setIsUnlimited(false);
+					PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
+				}
+				else if(stackSize < 1 && phantomSlot.canBeUnlimited() && !phantomSlot.isUnlimited()) {
+					stackSize = 1;
+					if(slot.inventory instanceof IUnlimitedInventory)
+						((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), true);
+					phantomSlot.setIsUnlimited(true);
+					PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), true), player);
+				}
+				else if(stackSize < 1) {
+					slot.putStack(null);
+					if(slot.inventory instanceof IUnlimitedInventory)
+						((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
+					phantomSlot.setIsUnlimited(false);
+					PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
+				}
+				slotStack.stackSize = stackSize;
+			}
 		}
-		
+		this.detectAndSendChanges();
 		return stack;
 	}
-
+	
 	@Override
 	public List<Slot> getInventorySlots() {
 		return this.inventorySlots;
