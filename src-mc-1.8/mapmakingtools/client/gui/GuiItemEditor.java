@@ -104,12 +104,9 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     	if(size < 1)
     		size = 1;
     	
-		maxPages = MathHelper.ceiling_double_int(this.itemList.size() / size) + 1;
-    	
-		if(size == 1)
-			maxPages -= 1;
+		this.maxPages = MathHelper.ceiling_double_int(this.itemList.size() / (double)size);
 		
-		if(this.currentPage > maxPages)
+		if(this.currentPage > this.maxPages)
     		this.currentPage = 1;
 		
     	for(int i = 0; i < size; ++i) {
@@ -127,23 +124,9 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     	if(itemCurrent != null)
     		itemCurrent.populateFromItem(this, this.getStack(), true);
     }
-	
+
 	@Override
-	public void drawScreen(int par1, int par2, float par3) {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	    GL11.glScaled(this.getScaleFactor(), this.getScaleFactor(), this.getScaleFactor());
-		super.drawScreen(par1, par2, par3);
-		GL11.glPopMatrix();
-    }
-	
-	@Override
-	public void drawDefaultBackground() {
-		this.drawGradientRect(0, 0, (int)(this.width / this.getScaleFactor()), (int)(this.height / this.getScaleFactor()), -1072689136, -804253680);
-    }
-	
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //this.mc.getTextureManager().bindTexture(ResourceReference.itemEditor);
         int guiXCentre = this.width / 2;
@@ -169,7 +152,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         	itemCurrent.drawInterface(this, 150, this.guiTop, this.guiLeft + this.xSize - 150, this.ySize);
         
         if(itemCurrent != null)
-        	itemCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
+        	itemCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
         
     }
 	
@@ -183,26 +166,15 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         //for(GuiTextField field : this.textboxList)
         //	field.drawToolTip(xMouse, yMouse);
 	}
-
-	public float getScaleFactor() {
-		int scale = resolution.getScaleFactor();
-		if(scale == 1)
-			return 1F;
-		if(scale == 2)
-			return 1F;
-		if(scale == 3)
-			return 1F / 3F * 2F;
-		return 1F;
-	}
 	
 	@Override
 	public void updateScreen() {
-		for(GuiTextField field : this.textboxList) {
+		for(GuiTextField field : this.textboxList) 
 			field.updateCursorCounter();
-		}
+		
 		if(this.getStack() == null) {
 			//player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("itemeditor.closeNoItem"));
-            this.mc.setIngameFocus();
+            this.mc.thePlayer.closeScreen();
 		}
 		
 		if(itemCurrent != null)
@@ -211,18 +183,16 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
 	@Override
 	public void mouseClicked(int xMouse, int yMouse, int mouseButton) throws IOException {	
-		xMouse = (int)(xMouse / this.getScaleFactor());
-		yMouse = (int)(yMouse / this.getScaleFactor());
-		
+
 		//for(GuiTextField field : this.textboxList)
 		//	if(field instanceof GuiColourTextField)
 		//		if(((GuiColourTextField)field).preMouseClick(xMouse, yMouse, mouseButton))
 		//			return;
 		
 		super.mouseClicked(xMouse, yMouse, mouseButton);
-		for(GuiTextField field : this.textboxList) {
+		
+		for(GuiTextField field : this.textboxList)
 			field.mouseClicked(xMouse, yMouse, mouseButton);
-		}
 		
 		if(itemCurrent != null)
 			itemCurrent.mouseClicked(this, xMouse, yMouse, mouseButton);
@@ -265,37 +235,19 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	}
 	
 	@Override
-	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-    	mouseX = (int)(mouseX / this.getScaleFactor());
-		mouseY = (int)(mouseY / this.getScaleFactor());
-		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-    }
-	
-	@Override
-	protected boolean isPointInRegion(int par1, int par2, int par3, int par4, int xMouse, int yMouse) {
-        int k1 = this.guiLeft;
-        int l1 = this.guiTop;
-        xMouse = (int)(xMouse / this.getScaleFactor());
-		yMouse = (int)(yMouse / this.getScaleFactor());
-        xMouse -= k1;
-        yMouse -= l1;
-        return xMouse >= par1 - 1 && xMouse < par1 + par3 + 1 && yMouse >= par2 - 1 && yMouse < par2 + par4 + 1;
-    }
-	
-	@Override
-	public void keyTyped(char character, int keyId) {
-		if (keyId == Keyboard.KEY_ESCAPE) {
-            this.mc.setIngameFocus(); 
+	public void keyTyped(char typedChar, int keyCode) {
+		if (keyCode == Keyboard.KEY_ESCAPE) {
+            this.mc.thePlayer.closeScreen();
             return;
 		}
 		
 		for(GuiTextField field : this.textboxList)
-			if(field.textboxKeyTyped(character, keyId))
+			if(field.textboxKeyTyped(typedChar, keyCode))
 				if(itemCurrent != null)
-					itemCurrent.textboxKeyTyped(this, character, keyId, field);
+					itemCurrent.textboxKeyTyped(this, typedChar, keyCode, field);
 		
 		if(itemCurrent != null)
-			itemCurrent.keyTyped(this, character, keyId);
+			itemCurrent.keyTyped(this, typedChar, keyCode);
 	}
 
 	@Override

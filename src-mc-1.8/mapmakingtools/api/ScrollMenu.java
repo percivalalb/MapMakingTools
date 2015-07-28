@@ -50,7 +50,7 @@ public abstract class ScrollMenu {
         	
         	this.scrollHeight = (int) ((this.height / (double)(this.listHeight + this.height)) * this.height);
         	if(this.scrollHeight < 20)
-        		scrollHeight = 20;
+        		this.scrollHeight = 20;
         	//FMLLog.info("" + this.scrollHeight);
         	//if(this.scrollHeight)
         	
@@ -98,7 +98,7 @@ public abstract class ScrollMenu {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         
-        if (this.scrollHeight <= this.height)
+        if (this.scrollHeight <= this.height && this.strRefrence.size() > 0)
             this.drawScrollBar();
         
         this.drawScrollList();
@@ -108,7 +108,7 @@ public abstract class ScrollMenu {
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
         
-        if (this.scrollHeight <= this.height) {
+        if (this.scrollHeight <= this.height && this.strRefrence.size() > 0) {
             xMouse -= this.xPosition;
             yMouse -= this.yPosition;
 

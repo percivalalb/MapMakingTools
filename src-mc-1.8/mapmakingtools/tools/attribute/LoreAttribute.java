@@ -1,5 +1,7 @@
 package mapmakingtools.tools.attribute;
 
+import java.util.ArrayList;
+
 import com.google.common.base.Strings;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
@@ -10,15 +12,23 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumChatFormatting;
 
 /**
  * @author ProPercivalalb
  */
 public class LoreAttribute extends IItemAttribute {
 
+	private int x;
+	private int y;
 	private GuiButton btn_add;
 	private GuiButton btn_remove;
 	private String meta;
+	private ArrayList<GuiTextField> loreFields = new ArrayList<GuiTextField>();
+	private ArrayList<GuiButton> minusButtons = new ArrayList<GuiButton>();
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, ItemStack stack) {
@@ -27,11 +37,34 @@ public class LoreAttribute extends IItemAttribute {
 	
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(Strings.isNullOrEmpty(this.meta))
-			return;
-		
-		if(NumberParse.isInteger(this.meta))
-			stack.setItemDamage(NumberParse.getInteger(this.meta));
+		if(data == 0) {
+			if(this.loreFields.size() <= 0) {
+				if(stack.hasTagCompound()) {
+					if(stack.getTagCompound().hasKey("display", 10)) {
+						NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
+						display.removeTag("Lore");
+						if(display.hasNoTags())
+							stack.getTagCompound().removeTag("display");
+						if(stack.getTagCompound().hasNoTags())
+							stack.setTagCompound(null);
+					}
+				}
+			}
+			else {
+				if(!stack.hasTagCompound())
+					stack.setTagCompound(new NBTTagCompound());
+				
+				if(!stack.getTagCompound().hasKey("display", 10))
+					stack.getTagCompound().setTag("display", new NBTTagCompound());
+				
+				NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
+				NBTTagList list = new NBTTagList();
+				for(GuiTextField field : this.loreFields)
+					list.appendTag(new NBTTagString(field.getText()));
+				
+				display.setTag("Lore", list);
+			}
+		}
 	}
 
 	@Override
@@ -42,7 +75,24 @@ public class LoreAttribute extends IItemAttribute {
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		if(first) {
-		//	this.fld_meta.setText(String.valueOf(stack.getItemDamage()));
+			this.loreFields.clear();
+			this.minusButtons.clear();
+			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("display", 10)) {
+				if(stack.getTagCompound().getCompoundTag("display").getTagType("Lore") == 9) {
+					NBTTagList list = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
+					for(int l = 0; l < list.tagCount(); ++l) {
+						GuiTextField textField = new GuiTextField(l, itemEditor.getFontRenderer(), this.x + 17, this.y + 54 + l * 21, 100, 15);
+						textField.setMaxStringLength(1000);
+						textField.setText(list.getStringTagAt(l));
+						this.loreFields.add(textField);
+						itemEditor.getTextBoxList().add(textField);
+						
+						GuiSmallButton minusButton = new GuiSmallButton(l, this.x + 2, this.y + 54 + l * 21, 13, 12, "-");
+						this.minusButtons.add(minusButton);
+						itemEditor.getButtonList().add(minusButton);
+                    }
+				}
+			}
 		}
 	}
 
@@ -53,22 +103,50 @@ public class LoreAttribute extends IItemAttribute {
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
-	    this.btn_add = new GuiSmallButton(2, x + 2, y + 30, 13, 12, "+");
+	    this.btn_add = new GuiSmallButton(-1, x + 2, y + 30, 13, 12, "+");
 	    this.btn_remove = new GuiSmallButton(3, x + 2, y + 16, 13, 12, "-");
 	    itemEditor.getButtonList().add(this.btn_add);
-		itemEditor.getButtonList().add(this.btn_remove);
+		//itemEditor.getButtonList().add(this.btn_remove);
 		
-		for(int i = 0; i < 2; ++i) {
-			GuiTextField textField = new GuiTextField(i, itemEditor.getFontRenderer(), x + 17, y + 54  + i * 21, 100, 15);
-			itemEditor.getTextBoxList().add(textField);
-		}
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override
-	public void textboxKeyTyped(IGuiItemEditor itemEditor, char character, int keyId, GuiTextField textbox) {
-		if(textbox.func_175206_d() == 0) {
+	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
+		if(button.id >= 0 && button.id <= this.minusButtons.size()) {
+			if(itemEditor.getButtonList().contains(button))
+				itemEditor.getButtonList().remove(button);
+			if(itemEditor.getTextBoxList().contains(this.loreFields.get(button.id)))
+				itemEditor.getTextBoxList().remove(this.loreFields.get(button.id));
+			this.minusButtons.remove(button.id);
+			this.loreFields.remove(button.id);
+			for(int i = button.id; i < this.minusButtons.size(); i++) {
+				this.minusButtons.get(i).yPosition -= 21;
+				this.minusButtons.get(i).id -= 1;
+				this.loreFields.get(i).yPosition -= 21;
+			}
+			itemEditor.sendUpdateToServer(0);
+		}
+		else if(button.id == -1) {
+			GuiTextField textField = new GuiTextField(this.minusButtons.size(), itemEditor.getFontRenderer(), this.x + 17, this.y + 54 + this.minusButtons.size() * 21, 100, 15);
+			textField.setMaxStringLength(1000);
+			this.loreFields.add(textField);
+			itemEditor.getTextBoxList().add(textField);
 			
-			itemEditor.sendUpdateToServer(-1);
+			GuiSmallButton minusButton = new GuiSmallButton(this.minusButtons.size(), this.x + 2, this.y + 54 + this.minusButtons.size() * 21, 13, 12, "-");
+			this.minusButtons.add(minusButton);
+			itemEditor.getButtonList().add(minusButton);
+			
+			itemEditor.sendUpdateToServer(0);
+		}
+	}
+	
+	@Override
+	public void textboxKeyTyped(IGuiItemEditor itemEditor, char character, int keyId, GuiTextField textbox) {
+		if(textbox.func_175206_d() >= 0 && textbox.func_175206_d() <= this.loreFields.size()) {
+			
+			itemEditor.sendUpdateToServer(0);
 		}
 	}
 }

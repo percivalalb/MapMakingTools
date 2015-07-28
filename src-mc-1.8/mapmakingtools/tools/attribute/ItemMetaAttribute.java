@@ -40,12 +40,14 @@ public class ItemMetaAttribute extends IItemAttribute {
 			else {
 				if(!stack.getTagCompound().hasKey("Unbreakable", 1))
 					stack.getTagCompound().setBoolean("Unbreakable", true);
-				else
+				else {
+					
 					if(stack.getTagCompound().getBoolean("Unbreakable"))
 						stack.getTagCompound().removeTag("Unbreakable");
-					if(stack.getTagCompound().hasNoTags()) {
+				
+					if(stack.getTagCompound().hasNoTags())
 						stack.setTagCompound(null);
-					}
+				}
 			}
 		}
 	}

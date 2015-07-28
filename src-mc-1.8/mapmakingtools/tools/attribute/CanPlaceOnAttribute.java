@@ -27,7 +27,7 @@ import net.minecraft.util.StatCollector;
 /**
  * @author ProPercivalalb
  */
-public class BlockDestoryAttribute extends IItemAttribute {
+public class CanPlaceOnAttribute extends IItemAttribute {
 
 	private ScrollMenu scrollMenuAdd;
 	private ScrollMenu scrollMenuRemove;
@@ -48,34 +48,36 @@ public class BlockDestoryAttribute extends IItemAttribute {
 			if(!stack.hasTagCompound())
 				stack.setTagCompound(new NBTTagCompound());
 			
-			if(!stack.getTagCompound().hasKey("CanDestroy", 9))
-				stack.getTagCompound().setTag("CanDestroy", new NBTTagList());
+			if(!stack.getTagCompound().hasKey("CanPlaceOn", 9))
+				stack.getTagCompound().setTag("CanPlaceOn", new NBTTagList());
 			
-			NBTTagList list = stack.getTagCompound().getTagList("CanDestroy", 8);
-			list.appendTag(new NBTTagString(scrollMenuAdd.strRefrence.get(this.selected)));
+			NBTTagList list = stack.getTagCompound().getTagList("CanPlaceOn", 8);
+			boolean hasTag = false;
+			for(int i = 0; i < list.tagCount(); i++) {
+				if(list.getStringTagAt(i).equals(scrollMenuAdd.strRefrence.get(this.selected)))
+					hasTag = true;
+			}
+			
+			if(!hasTag)
+				list.appendTag(new NBTTagString(scrollMenuAdd.strRefrence.get(this.selected)));
 		}
 		
 		if(this.selectedDelete != -1 && data == 1) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", 9)) {
-		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CanDestroy", 8);
+			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanPlaceOn", 9)) {
+		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CanPlaceOn", 8);
 		        nbttaglist.removeTag(this.selectedDelete);
-		        if(nbttaglist.hasNoTags())
-		        	stack.getTagCompound().removeTag("CanDestroy");
+		        if(nbttaglist.hasNoTags()) {
+		        	stack.getTagCompound().removeTag("CanPlaceOn");
+		        	if(stack.getTagCompound().hasNoTags())
+		        		stack.setTagCompound(null);
+		        }
 			}
 		}
 		
 		if(data == 2) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
-			
-			if(!stack.getTagCompound().hasKey("CanDestroy", 9))
-				stack.getTagCompound().setTag("CanDestroy", new NBTTagList());
-		}
-		
-		if(data == 3) {
 			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("CanDestroy", 9)) {
-					stack.getTagCompound().removeTag("CanDestroy");
+				if(stack.getTagCompound().hasKey("CanPlaceOn", 9)) {
+					stack.getTagCompound().removeTag("CanPlaceOn");
 					if(stack.getTagCompound().hasNoTags())
 						stack.setTagCompound(null);
 				}
@@ -85,7 +87,7 @@ public class BlockDestoryAttribute extends IItemAttribute {
 
 	@Override
 	public String getUnlocalizedName() {
-		return "mapmakingtools.itemattribute.blockdestory.name";
+		return "mapmakingtools.itemattribute.canplaceon.name";
 	}
 	
 	@Override
@@ -102,8 +104,8 @@ public class BlockDestoryAttribute extends IItemAttribute {
 		this.scrollMenuAdd.initGui();
 		
 		List<String> list = new ArrayList<String>();
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", 9)) {
-			NBTTagList destoryList = stack.getTagCompound().getTagList("CanDestroy", 8);
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanPlaceOn", 9)) {
+			NBTTagList destoryList = stack.getTagCompound().getTagList("CanPlaceOn", 8);
 			for(int i = 0; i < destoryList.tagCount(); ++i) {
 				String blockId = destoryList.getStringTagAt(i);
 				list.add(String.format("%s", blockId));
@@ -130,7 +132,7 @@ public class BlockDestoryAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				BlockDestoryAttribute.selected = this.selected;
+				CanPlaceOnAttribute.selected = this.selected;
 			}
 
 			@Override
@@ -143,7 +145,7 @@ public class BlockDestoryAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				BlockDestoryAttribute.selectedDelete = this.selected;
+				CanPlaceOnAttribute.selectedDelete = this.selected;
 			}
 
 			@Override
@@ -155,7 +157,7 @@ public class BlockDestoryAttribute extends IItemAttribute {
 		
 		this.btn_add = new GuiButton(0, x + 2, y + height / 2 - 23, 50, 20, "Add");
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
-		this.btn_remove_all = new GuiButton(3, x + 130, y + height - 23, 130, 20, "Remove all Blocks");
+		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Blocks");
 		
 		itemEditor.getButtonList().add(this.btn_add);
 		itemEditor.getButtonList().add(this.btn_remove);
@@ -174,9 +176,6 @@ public class BlockDestoryAttribute extends IItemAttribute {
 		}
 		if(button.id == 2) {
 			itemEditor.sendUpdateToServer(2);
-		}
-		if(button.id == 3) {
-			itemEditor.sendUpdateToServer(3);
 		}
 	}
 	

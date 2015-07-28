@@ -33,6 +33,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -95,8 +96,9 @@ public class ScreenRenderHandler {
 	    			float scale = 1F; //1.0F is normal size
 	    			
 	    			
-	    			int totalWidth = MathHelper.floor_double((width - 8) / 16);
-	    			int totalHeight = (BlockList.getListSize() + BlockList.getListSize() % totalWidth) / totalWidth;
+	    			int totalWidth = MathHelper.floor_double((double)(width - 8) / 16.0D);
+	    			FMLLog.info(BlockList.getListSize() + " " + totalWidth);
+	    			int totalHeight = MathHelper.floor_double((double)BlockList.getListSize() / (double)totalWidth);
 	    			int renderOffset = (width - 8 - totalWidth * 16) / 2;
 	    			
 	    			GL11.glPushMatrix();
@@ -116,6 +118,9 @@ public class ScreenRenderHandler {
 	    			int column = 0;
 	    			for(int i = 0; i < BlockList.getListSize(); ++i) {
 	    				ItemStack item = BlockList.getList().get(i);
+	    				
+	    				
+
 	    				if(item == null || item.getItem() == null)
 	    					continue;
 	    				

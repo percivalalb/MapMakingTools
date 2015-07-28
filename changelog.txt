@@ -7,6 +7,20 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+
+v2.3.3a - 27th July 2015
++ Added new attribute 'Tooltip flags' which allows you to specify which parts of the items tool tip can be shown
++ Added new attribute 'Can place on' which allows the item to be placed on the specified blocks in adventure mode.
++ Added new attribute 'Modifiers' which allows the item to have its attack damage changed and more to come in the future.
+
+# Changed the display name of the 'Breakable Blocks' attribute to 'Block Breaking' to stop the text going outside the button
+
+* Fixed the breakable blocks attribute allowing you too add the same block multiple times
+* Fixed scrollable menu sometimes showing the scroll bar when there are not enought items for it to scroll
+* Fixed US language file missing some localizations
+* Fixed max page number sometimes being wrong with item attribute gui
+* Fixed glitch when in large scale in item editor
+
 v2.3.2a
 + Added the sign edit filter back. Click on a sign with the wrench.
 + Added a attribute for blocks that the item can break. This allows the item to break the specified blocks in adventure mode.

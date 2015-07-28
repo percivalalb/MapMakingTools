@@ -17,16 +17,20 @@ import mapmakingtools.handler.ScreenRenderHandler;
 import mapmakingtools.handler.WorldOverlayHandler;
 import mapmakingtools.helper.LogHelper;
 import mapmakingtools.tools.attribute.ArmorColourAttribute;
-import mapmakingtools.tools.attribute.BlockDestoryAttribute;
+import mapmakingtools.tools.attribute.BlockDestroyAttribute;
 import mapmakingtools.tools.attribute.BookAttribute;
 import mapmakingtools.tools.attribute.BookEnchantmentAttribute;
+import mapmakingtools.tools.attribute.CanPlaceOnAttribute;
 import mapmakingtools.tools.attribute.EnchantmentAttribute;
 import mapmakingtools.tools.attribute.ItemMetaAttribute;
 import mapmakingtools.tools.attribute.ItemNameAttribute;
+import mapmakingtools.tools.attribute.LoreAttribute;
+import mapmakingtools.tools.attribute.ModifiersAttribute;
 import mapmakingtools.tools.attribute.PlayerHeadAttribute;
 import mapmakingtools.tools.attribute.PotionAttribute;
 import mapmakingtools.tools.attribute.RepairCostAttribute;
 import mapmakingtools.tools.attribute.StackSizeAttribute;
+import mapmakingtools.tools.attribute.TooltipFlagsAttribute;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
@@ -105,10 +109,14 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerItemAttribute() {
 		ItemEditorManager.registerItemHandler(new ItemNameAttribute());
-		//ItemEditorManager.registerItemHandler(new LoreAttribute());
+		ItemEditorManager.registerItemHandler(new LoreAttribute());
+		ItemEditorManager.registerItemHandler(new TooltipFlagsAttribute());
 		ItemEditorManager.registerItemHandler(new StackSizeAttribute());
 		ItemEditorManager.registerItemHandler(new ItemMetaAttribute());
 		ItemEditorManager.registerItemHandler(new RepairCostAttribute());
+		ItemEditorManager.registerItemHandler(new BlockDestroyAttribute());
+		ItemEditorManager.registerItemHandler(new CanPlaceOnAttribute());
+		ItemEditorManager.registerItemHandler(new ModifiersAttribute());
 		ItemEditorManager.registerItemHandler(new EnchantmentAttribute());
 		ItemEditorManager.registerItemHandler(new BookEnchantmentAttribute());
 		ItemEditorManager.registerItemHandler(new PotionAttribute());
@@ -116,7 +124,6 @@ public class ClientProxy extends CommonProxy {
 		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
 		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
 		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
-		ItemEditorManager.registerItemHandler(new BlockDestoryAttribute());
 	}
 	
 	@Override
