@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.netty.buffer.Unpooled;
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.lib.PacketLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.BlockCache;
@@ -21,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -79,61 +81,37 @@ public class CommandWorldTransfer extends CommandBase {
 			
 			try {
 			
-				PacketBuffer packetbuffer = new PacketBuffer(Unpooled.buffer());
-				ArrayList<Integer> sendClientData = new ArrayList<Integer>();
-				ArrayList<Integer> sendServerData = new ArrayList<Integer>();
+				boolean send = false;
+				int packetCount = 0;
 				
-				int startClient = packetbuffer.writerIndex();
-				int startServer = packetbuffer.writerIndex();
-				int totalClient = 0;
-				int totalServer = 0;
-				for(int i = 0; i < list.size(); ++i) {
-					int s = packetbuffer.writerIndex();
-					list.get(i).writeToPacketBuffer(packetbuffer);
-					int e = packetbuffer.writerIndex();
-					
-					if(e - startClient > 30000) {
-						sendClientData.add(totalClient);
-						startClient = s;
-						totalClient = 1;
-						
-						if(i == list.size() - 1)
-							sendClientData.add(totalClient);
-					}
-					else {
-						totalClient += 1;
-						
-						if(i == list.size() - 1)
-							sendClientData.add(totalClient);
-					}
-					
-					if(e - startServer > 1000000) {
-						sendServerData.add(totalServer);
-						startServer = s;
-						totalServer = 1;
-						
-						if(i == list.size() - 1)
-							sendServerData.add(totalServer);
-					}
-					else {
-						totalServer += 1;
-						
-						if(i == list.size() - 1)
-							sendServerData.add(totalServer);
-					}
-				}
+				int index = 0;
+				boolean first = true;
 				
-				int start2 = 0;
+				int start = 0;
+				ArrayList<BlockCache> part = new ArrayList<BlockCache>();
 				
-				for(int i = 0; i < sendServerData.size(); ++i) {
-					int amount = sendServerData.get(i);
-					ArrayList<BlockCache> part = new ArrayList<BlockCache>();
+				for(BlockCache cache : list) {
+					int size = cache.calculateSize();
 					
-					for(int j = start2; j < start2 + amount; ++j)
-						part.add(list.get(j));
+					if(start + size <= PacketLib.MAX_SIZE_TO_CLIENT) {
+						part.add(cache);
+						
+						start += size;
+						send = index == list.size() - 1;
+					}
+					else
+						send = true;
+
 					
-					PacketDispatcher.sendTo(new PacketAddArea(name, part, sendClientData, i == 0, i == sendServerData.size() - 1), player);
-					start2 += amount;
+					if(send) {
+						PacketDispatcher.sendTo(new PacketAddArea(name, part, first, index == list.size() - 1), player);
+						packetCount += 1;
+						start = 0;
+						first = false;
+						part.clear();
+					}
+					
+					index += 1;
 				}
 				
 			}

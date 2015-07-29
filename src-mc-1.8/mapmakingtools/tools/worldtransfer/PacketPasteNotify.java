@@ -3,6 +3,7 @@ package mapmakingtools.tools.worldtransfer;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import mapmakingtools.lib.PacketLib;
 import mapmakingtools.network.AbstractMessage;
 import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
 import mapmakingtools.network.PacketDispatcher;
@@ -10,6 +11,8 @@ import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -42,20 +45,52 @@ public class PacketPasteNotify extends AbstractClientMessage {
 		if(!WorldTransferList.hasName(this.name))
 			return;
 		
-		ArrayList<Integer> sendData = WorldTransferList.getSendDataFromName(this.name);
 		ArrayList<BlockCache> area = WorldTransferList.getAreaFromName(this.name);
-		int start = 0;
 		
-		for(int i = 0; i < sendData.size(); ++i) {
-			int amount = sendData.get(i);
+		try {
+			
+			boolean send = false;
+			int packetCount = 0;
+			
+			int index = 0;
+			boolean first = true;
+			
+			int start = 0;
 			ArrayList<BlockCache> part = new ArrayList<BlockCache>();
 			
-			for(int j = start; j < start + amount; ++j)
-				part.add(area.get(j));
+			for(BlockCache cache : area) {
+				int size = cache.calculateSize();
+				
+				if(start + size <= PacketLib.MAX_SIZE_TO_SERVER) {
+					part.add(cache);
+					
+					start += size;
+					send = index == area.size() - 1;
+				}
+				else
+					send = true;
+
+				
+				if(send) {
+					PacketDispatcher.sendToServer(new PacketPaste(this.name, part, first, index == area.size() - 1));
+					packetCount += 1;
+					start = 0;
+					first = false;
+					part.clear();
+				}
+				
+				index += 1;
+			}
 			
-			PacketDispatcher.sendToServer(new PacketPaste(this.name, part, i == 0, i == sendData.size() - 1));
-			start += amount;
+			ChatComponentTranslation chatComponent = new ChatComponentTranslation("packets: " + packetCount, packetCount);
+			chatComponent.getChatStyle().setColor(EnumChatFormatting.AQUA);
+			player.addChatMessage(chatComponent);
+			
 		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	
 	}
 
 }

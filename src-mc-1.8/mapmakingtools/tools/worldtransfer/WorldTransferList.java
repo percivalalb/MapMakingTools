@@ -21,12 +21,10 @@ public class WorldTransferList {
 
 	public static final File saveFile = new File("mmt_savedata.dat");
 	private static final Hashtable<String, ArrayList<BlockCache>> map = new Hashtable<String, ArrayList<BlockCache>>();
-	private static final Hashtable<String, ArrayList<Integer>> map_send_data = new Hashtable<String, ArrayList<Integer>>();
 	
-	public static void put(String name, boolean firstSection, boolean lastSection, ArrayList<BlockCache> list, ArrayList<Integer> sendData) {
+	public static void put(String name, boolean firstSection, boolean lastSection, ArrayList<BlockCache> list) {
 		if(firstSection) {
 			map.put(name, list);
-			map_send_data.put(name, sendData);
 		}
 		else if(lastSection) {
 			map.get(name).addAll(list);
@@ -57,10 +55,6 @@ public class WorldTransferList {
 		return map.get(name);
 	}
 	
-	public static ArrayList<Integer> getSendDataFromName(String name) {
-		return map_send_data.get(name);
-	}
-	
 	public static void saveToFile() {
 		try {
 			
@@ -78,11 +72,7 @@ public class WorldTransferList {
 			for(String name : map.keySet()) {
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setString("name", name);
-				NBTTagList sendData = new NBTTagList();
-				
-				for(int j = 0; j < map_send_data.get(name).size(); ++j)
-					sendData.appendTag(new NBTTagDouble(map_send_data.get(name).get(j)));
-				
+	
 				NBTTagList areaList = new NBTTagList();
 				
 				ArrayList<BlockCache> blockList = map.get(name);
@@ -93,7 +83,6 @@ public class WorldTransferList {
 				}
 				
 				tag.setTag("area", areaList);
-				tag.setTag("senddata", sendData);
 				
 				list.appendTag(tag);
 			}
@@ -123,19 +112,13 @@ public class WorldTransferList {
 			for(int i = 0; i < list.tagCount(); ++i) {
 				NBTTagCompound tag = list.getCompoundTagAt(i);
 				NBTTagList areaList = (NBTTagList)tag.getTagList("area", 10);
-				NBTTagList sendDataList = (NBTTagList)tag.getTagList("senddata", 3);
 				
 				ArrayList<BlockCache> blockList = new ArrayList<BlockCache>();
 				for(int j = 0; j < areaList.tagCount(); ++j)
 					blockList.add(BlockCache.readFromNBT(areaList.getCompoundTagAt(j)));
-				
-				ArrayList<Integer> sendData = new ArrayList<Integer>();
-				for(int j = 0; j < sendDataList.tagCount(); ++j)
-					sendData.add(((NBTTagDouble)sendDataList.get(j)).getInt());
-				
+
 				String name = tag.getString("name");
 				map.put(name, blockList);
-				map_send_data.put(name, sendData);
 			}
 			
 			for(String name : map.keySet()) {

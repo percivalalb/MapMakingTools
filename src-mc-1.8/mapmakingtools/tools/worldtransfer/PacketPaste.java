@@ -51,6 +51,7 @@ public class PacketPaste extends AbstractServerMessage {
 		packetbuffer.writeBoolean(this.firstSection);
 		packetbuffer.writeBoolean(this.lastSection);
 		packetbuffer.writeInt(this.list.size());
+		
 		for(int i = 0; i < this.list.size(); ++i)
 			this.list.get(i).writeToPacketBuffer(packetbuffer);
 	}

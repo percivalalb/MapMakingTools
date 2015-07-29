@@ -3,6 +3,7 @@ package mapmakingtools.tools;
 
 import java.io.IOException;
 
+import io.netty.buffer.Unpooled;
 import mapmakingtools.api.enums.MovementType;
 import mapmakingtools.helper.BlockPosHelper;
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -63,6 +65,18 @@ public class BlockCache {
         this.meta = meta;
         this.nbt = nbt;
     }
+    
+    private BlockCache(BlockPos playerPos, int dimension, BlockPos pos, ResourceLocation resource, int meta, NBTTagCompound nbt) {
+    	this.playerPos = playerPos;
+    	this.world = DimensionManager.getWorld(dimension);
+    	this.dimId = dimension;
+        this.pos = pos;
+        this.block = Block.getBlockFromName(resource.toString());
+        this.replacedBlock = this.block.getStateFromMeta(meta);
+        this.blockIdentifier = new UniqueIdentifier(resource.toString());
+        this.meta = meta;
+        this.nbt = nbt;
+    }
 
     public static BlockCache createCache(EntityPlayer player, World world, BlockPos pos) {
         return new BlockCache(new BlockPos(player), world, pos, world.getBlockState(pos));
@@ -90,8 +104,8 @@ public class BlockCache {
         		packetbuffer.readBlockPos(),
         		packetbuffer.readInt(),
         		packetbuffer.readBlockPos(),
-                packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4),
-                packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4),
+        		new ResourceLocation(packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4)),
+                //packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4),
                 packetbuffer.readInt(),
                 packetbuffer.readNBTTagCompoundFromBuffer());
     }
@@ -214,11 +228,27 @@ public class BlockCache {
 		packetbuffer.writeBlockPos(this.playerPos);
 		packetbuffer.writeInt(this.dimId);
 		packetbuffer.writeBlockPos(this.pos);
-		packetbuffer.writeString(this.blockIdentifier.modId);
-		packetbuffer.writeString(this.blockIdentifier.name);
+		String id = this.blockIdentifier.toString();
+	    int i = id.indexOf(58);
+
+	    if(i >= 0) {
+
+	    	if(id.substring(0, i).equals("minecraft"))
+				packetbuffer.writeString(id.substring(i + 1, id.length()));
+	    	else
+	    		packetbuffer.writeString(id);
+	    }
+	    
 		packetbuffer.writeInt(this.meta);
 		packetbuffer.writeNBTTagCompoundToBuffer(this.nbt);
 	}
+    private static PacketBuffer SIZE_BUFFER = new PacketBuffer(Unpooled.buffer());
+    
+    public int calculateSize() throws IOException {
+    	SIZE_BUFFER.clear();
+    	this.writeToPacketBuffer(SIZE_BUFFER);
+    	return SIZE_BUFFER.writerIndex();
+    }
 
     @Override
     public boolean equals(Object obj) {

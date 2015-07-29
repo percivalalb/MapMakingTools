@@ -21,13 +21,11 @@ public class PacketAddArea extends AbstractClientMessage {
 	public String name;
 	public ArrayList<BlockCache> list;
 	public boolean firstSection, lastSection;
-	public ArrayList<Integer> sendData;
 	
 	public PacketAddArea() {}
-	public PacketAddArea(String name, ArrayList<BlockCache> list, ArrayList<Integer> sendData, boolean firstSection, boolean lastSection) {
+	public PacketAddArea(String name, ArrayList<BlockCache> list, boolean firstSection, boolean lastSection) {
 		this.name = name;
 		this.list = list;
-		this.sendData = sendData;
 		this.firstSection = firstSection;
 		this.lastSection = lastSection;
 	}
@@ -38,18 +36,10 @@ public class PacketAddArea extends AbstractClientMessage {
 		this.firstSection = packetbuffer.readBoolean();
 		this.lastSection = packetbuffer.readBoolean();
 		this.list = new ArrayList<BlockCache>();
-		this.sendData = new ArrayList<Integer>();
 		int size = packetbuffer.readInt();
 		for(int i = 0; i < size; ++i)
 			this.list.add(BlockCache.readFromPacketBuffer(packetbuffer));
-		
-		if(this.firstSection) {
-			int s = packetbuffer.readInt();
-			for(int i = 0; i < s; ++i)
-				this.sendData.add(packetbuffer.readInt());
-		}
-			
-			
+
 	}
 
 	@Override
@@ -60,13 +50,6 @@ public class PacketAddArea extends AbstractClientMessage {
 		packetbuffer.writeInt(this.list.size());
 		for(int i = 0; i < this.list.size(); ++i)
 			this.list.get(i).writeToPacketBuffer(packetbuffer);
-		
-		if(this.firstSection) {
-			packetbuffer.writeInt(this.sendData.size());
-			for(int i = 0; i < this.sendData.size(); ++i)
-				packetbuffer.writeInt(this.sendData.get(i));
-		}
-			
 	}
 
 	@Override
@@ -74,7 +57,7 @@ public class PacketAddArea extends AbstractClientMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		WorldTransferList.put(this.name, this.firstSection, this.lastSection, this.list, this.sendData);
+		WorldTransferList.put(this.name, this.firstSection, this.lastSection, this.list);
 
 		if(this.lastSection) {
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.worldtransfer.copy.complete", name);
