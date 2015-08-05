@@ -91,7 +91,7 @@ public class CommandWorldTransfer extends CommandBase {
 				ArrayList<BlockCache> part = new ArrayList<BlockCache>();
 				
 				for(BlockCache cache : list) {
-					int size = cache.calculateSize();
+					int size = cache.calculateSizeEverything();
 					
 					if(start + size <= PacketLib.MAX_SIZE_TO_CLIENT) {
 						part.add(cache);

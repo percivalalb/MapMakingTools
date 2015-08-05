@@ -7,6 +7,7 @@ import mapmakingtools.command.CommandDebug;
 import mapmakingtools.command.CommandFlip;
 import mapmakingtools.command.CommandFloor;
 import mapmakingtools.command.CommandKillAll;
+import mapmakingtools.command.CommandMaze;
 import mapmakingtools.command.CommandMove;
 import mapmakingtools.command.CommandPaste;
 import mapmakingtools.command.CommandPlayerStatue;
@@ -50,6 +51,7 @@ public class CommandHandler {
        // event.registerServerCommand(new CommandExpand());
         //event.registerServerCommand(new CommandShrink());
         event.registerServerCommand(new CommandMove());
+        event.registerServerCommand(new CommandMaze());
         
         event.registerServerCommand(new CommandWorldTransfer());
         event.registerServerCommand(new CommandKillAll());

@@ -59,7 +59,7 @@ public class PacketPasteNotify extends AbstractClientMessage {
 			ArrayList<BlockCache> part = new ArrayList<BlockCache>();
 			
 			for(BlockCache cache : area) {
-				int size = cache.calculateSize();
+				int size = cache.calculateSizeCompact();
 				
 				if(start + size <= PacketLib.MAX_SIZE_TO_SERVER) {
 					part.add(cache);

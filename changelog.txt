@@ -8,10 +8,20 @@ Update List Key
 (/) Other
 
 
-v2.3.3a - 27th July 2015
-+ Added new attribute 'Tooltip flags' which allows you to specify which parts of the items tool tip can be shown
-+ Added new attribute 'Can place on' which allows the item to be placed on the specified blocks in adventure mode.
-+ Added new attribute 'Modifiers' which allows the item to have its attack damage changed and more to come in the future.
+v2.3.4a - nd August 2015
++ Added some 'Guardian' and fireball to kill all entities commands.
+
+# The knockback modifier in the item menu is no additive not a multiplying percetage.
+
+* Fixed crash when looking at another player in multiplayer while holding the wrench
+
+
+
+v2.3.3a - 2nd August 2015
++ Added new item editor attribute 'Tooltip flags' which allows you to specify which parts of the items tool tip can be shown
++ Added new item editor attribute 'Can place on' which allows the item to be placed on the specified blocks in adventure mode.
++ Added new item editor attribute 'Modifiers' which allows the item to to affect attributes of the player wearing or holding the item.
++ Holding the wrench will now show data about the block you are looking at, id | meta | stateId, and the entity you are looking at, id | currentWorldEntityId and the mod the that the thing is from.
 
 # Changed the display name of the 'Breakable Blocks' attribute to 'Block Breaking' to stop the text going outside the button
 
@@ -20,6 +30,8 @@ v2.3.3a - 27th July 2015
 * Fixed US language file missing some localizations
 * Fixed max page number sometimes being wrong with item attribute gui
 * Fixed glitch when in large scale in item editor
+
+
 
 v2.3.2a
 + Added the sign edit filter back. Click on a sign with the wrench.

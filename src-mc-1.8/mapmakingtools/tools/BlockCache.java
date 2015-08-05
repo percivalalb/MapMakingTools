@@ -25,17 +25,19 @@ import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
  */
 public class BlockCache {
 
-	public final BlockPos playerPos;
-    public final BlockPos pos;
-    public final int dimId;
-    private final NBTTagCompound nbt;
-    public final UniqueIdentifier blockIdentifier;
-    public final Block block;
-    public final int meta;
+	public BlockPos playerPos;
+    public  BlockPos pos;
+    public int dimId;
+    private NBTTagCompound nbt;
+    public UniqueIdentifier blockIdentifier;
+    public Block block;
+    public int meta;
     
-    public final IBlockState replacedBlock;
-    public final World world;
+    public IBlockState replacedBlock;
+    public World world;
 
+    private BlockCache() {}
+    
     private BlockCache(BlockPos playerPos, World world, BlockPos pos, IBlockState state) {
         this.playerPos = playerPos;
     	this.world = world;
@@ -73,12 +75,12 @@ public class BlockCache {
         this.pos = pos;
         this.block = Block.getBlockFromName(resource.toString());
         this.replacedBlock = this.block.getStateFromMeta(meta);
-        this.blockIdentifier = new UniqueIdentifier(resource.toString());
+        this.blockIdentifier = new UniqueIdentifier(resource);
         this.meta = meta;
         this.nbt = nbt;
     }
 
-    public static BlockCache createCache(EntityPlayer player, World world, BlockPos pos) {
+	public static BlockCache createCache(EntityPlayer player, World world, BlockPos pos) {
         return new BlockCache(new BlockPos(player), world, pos, world.getBlockState(pos));
     }
     
@@ -95,7 +97,7 @@ public class BlockCache {
                 BlockPos.fromLong(tag.getLong("blockPos")),
                 tag.getString("blockMod"),
                 tag.getString("blockName"),
-                tag.getInteger("metadata"),
+                tag.getByte("metadata"),
                 nbt);
     }
     
@@ -105,9 +107,17 @@ public class BlockCache {
         		packetbuffer.readInt(),
         		packetbuffer.readBlockPos(),
         		new ResourceLocation(packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4)),
-                //packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4),
-                packetbuffer.readInt(),
+                packetbuffer.readByte(),
                 packetbuffer.readNBTTagCompoundFromBuffer());
+    }
+    
+    public static BlockCache readFromPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
+        BlockCache cache = new BlockCache();
+        ResourceLocation resource = new ResourceLocation(packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4));
+        cache.block = Block.getBlockFromName(resource.toString());
+        cache.replacedBlock = cache.block.getStateFromMeta(packetbuffer.readByte());
+        cache.blockIdentifier = new UniqueIdentifier(resource);
+        return cache;
     }
 
     public boolean restore(boolean applyPhysics) {
@@ -216,7 +226,7 @@ public class BlockCache {
         compound.setString("blockName", this.blockIdentifier.name);
         compound.setLong("blockPos", this.pos.toLong());
         compound.setInteger("dimension", this.dimId);
-        compound.setInteger("metadata", this.meta);
+        compound.setByte("metadata", (byte)this.meta);
 
         compound.setBoolean("hasTE", this.nbt != null);
 
@@ -231,24 +241,40 @@ public class BlockCache {
 		String id = this.blockIdentifier.toString();
 	    int i = id.indexOf(58);
 
-	    if(i >= 0) {
-
-	    	if(id.substring(0, i).equals("minecraft"))
-				packetbuffer.writeString(id.substring(i + 1, id.length()));
-	    	else
-	    		packetbuffer.writeString(id);
-	    }
+	    if(i >= 0 && id.substring(0, i).equals("minecraft"))
+			packetbuffer.writeString(id.substring(i + 1, id.length()));
+	    else
+	    	packetbuffer.writeString(id);
 	    
-		packetbuffer.writeInt(this.meta);
+		packetbuffer.writeByte(this.meta);
 		packetbuffer.writeNBTTagCompoundToBuffer(this.nbt);
 	}
+    
     private static PacketBuffer SIZE_BUFFER = new PacketBuffer(Unpooled.buffer());
     
-    public int calculateSize() throws IOException {
+    public int calculateSizeEverything() throws IOException {
     	SIZE_BUFFER.clear();
     	this.writeToPacketBuffer(SIZE_BUFFER);
     	return SIZE_BUFFER.writerIndex();
     }
+    
+    public int calculateSizeCompact() throws IOException {
+    	SIZE_BUFFER.clear();
+    	this.writeToPacketBufferCompact(SIZE_BUFFER);
+    	return SIZE_BUFFER.writerIndex();
+    }
+    
+    public void writeToPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
+		String id = this.blockIdentifier.toString();
+	    int i = id.indexOf(58);
+
+	    if(i >= 0 && id.substring(0, i).equals("minecraft"))
+			packetbuffer.writeString(id.substring(i + 1, id.length()));
+	    else
+	    	packetbuffer.writeString(id);
+	    
+		packetbuffer.writeByte(this.meta);
+	}
 
     @Override
     public boolean equals(Object obj) {

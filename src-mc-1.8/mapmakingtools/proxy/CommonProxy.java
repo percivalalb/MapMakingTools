@@ -62,6 +62,7 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -82,6 +83,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
@@ -253,7 +255,7 @@ public class CommonProxy implements IGuiHandler {
 	public void registerForceKill() {
 		ForceKillManager.registerHandler("all", new KillAll());
 		ForceKillManager.registerHandler("arrow", new KillGeneric(EntityArrow.class));
-		//ForceKillManager.registerHandler("fireb", new KillGeneric(EntityFireball.class));
+		ForceKillManager.registerHandler("fireball", new KillGeneric(EntityFireball.class));
 		ForceKillManager.registerHandler("enderman", new KillGeneric(EntityEnderman.class));
 		ForceKillManager.registerHandler("blaze", new KillGeneric(EntityBlaze.class));
 		ForceKillManager.registerHandler("cow", new KillGeneric(EntityCow.class));
@@ -279,6 +281,7 @@ public class CommonProxy implements IGuiHandler {
 		ForceKillManager.registerHandler("rabbit", new KillGeneric(EntityRabbit.class));
 		ForceKillManager.registerHandler("wolf", new KillGeneric(EntityWolf.class));
 		ForceKillManager.registerHandler("villager", new KillGeneric(EntityVillager.class));
+		ForceKillManager.registerHandler("guardian", new KillGeneric(EntityGuardian.class));
 		ForceKillManager.registerHandler("monster", new KillMobs());
 		ForceKillManager.registerHandler("animal", new KillAnimals());
 		

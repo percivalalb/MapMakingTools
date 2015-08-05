@@ -47,14 +47,12 @@ public class PlayerData {
 		return this.getPlayer().worldObj;
 	}
 	
-	public BlockPos getFirstPoint() {
-		int dimId = this.getPlayer().worldObj.provider.getDimensionId();	
-		return pos1.get(dimId);
+	public BlockPos getFirstPoint() {	
+		return this.pos1.get(this.getPlayer().worldObj.provider.getDimensionId());
 	}
 	
 	public BlockPos getSecondPoint() {
-		int dimId = this.getPlayer().worldObj.provider.getDimensionId();
-		return pos2.get(dimId);
+		return this.pos2.get(this.getPlayer().worldObj.provider.getDimensionId());
 	}
 	
 	public int[] getSelectionSize() {
@@ -72,9 +70,9 @@ public class PlayerData {
 	public boolean setFirstPoint(BlockPos pos) {
 		int dimId = this.getPlayer().worldObj.provider.getDimensionId();
 		if(pos != null)
-			pos1.put(dimId, pos);
+			this.pos1.put(dimId, pos);
 		else
-			pos1.remove(dimId);
+			this.pos1.remove(dimId);
 		return true;
 	}
 	
@@ -87,9 +85,9 @@ public class PlayerData {
 	public boolean setSecondPoint(BlockPos pos) {
 		int dimId = this.getPlayer().worldObj.provider.getDimensionId();
 		if(pos != null)
-			pos2.put(dimId, pos);
+			this.pos2.put(dimId, pos);
 		else
-			pos2.remove(dimId);
+			this.pos2.remove(dimId);
 		return true;
 	}
 	
@@ -150,33 +148,21 @@ public class PlayerData {
 	}
 	
 	public int getMinX() {
-		int x1 = getFirstPoint().getX();
-		int x2 = getSecondPoint().getX();
-		return x1 < x2 ? x1 : x2;
+		return Math.min(this.getFirstPoint().getX(), this.getSecondPoint().getX());
 	}
 	public int getMinY() {
-		int y1 = getFirstPoint().getY();
-		int y2 = getSecondPoint().getY();
-		return y1 < y2 ? y1 : y2;
+		return Math.min(this.getFirstPoint().getY(), this.getSecondPoint().getY());
 	}
 	public int getMinZ() {
-		int z1 = getFirstPoint().getZ();
-		int z2 = getSecondPoint().getZ();
-		return z1 < z2 ? z1 : z2;
+		return Math.min(this.getFirstPoint().getZ(), this.getSecondPoint().getZ());
 	}
 	public int getMaxX() {
-		int x1 = getFirstPoint().getX();
-		int x2 = getSecondPoint().getX();
-		return x1 > x2 ? x1 : x2;
+		return Math.max(this.getFirstPoint().getX(), this.getSecondPoint().getX());
 	}
 	public int getMaxY() {
-		int y1 = getFirstPoint().getY();
-		int y2 = getSecondPoint().getY();
-		return y1 > y2 ? y1 : y2;
+		return Math.max(this.getFirstPoint().getY(), this.getSecondPoint().getY());
 	}
 	public int getMaxZ() {
-		int z1 = getFirstPoint().getZ();
-		int z2 = getSecondPoint().getZ();
-		return z1 > z2 ? z1 : z2;
+		return Math.max(this.getFirstPoint().getZ(), this.getSecondPoint().getZ());
 	}
 }

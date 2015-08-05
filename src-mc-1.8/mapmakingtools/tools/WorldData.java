@@ -75,7 +75,7 @@ public class WorldData {
 		try {
 			File file = new File(worldDirectory, "mapmakingtools.dat");
 			
-			if (!file.exists()) {
+			if(!file.exists()) {
 				FileOutputStream outputStream = new FileOutputStream(file);
 			    CompressedStreamTools.writeCompressed(new NBTTagCompound(), outputStream);
 			    outputStream.close();
