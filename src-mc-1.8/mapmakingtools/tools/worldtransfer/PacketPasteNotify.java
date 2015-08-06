@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -49,7 +50,6 @@ public class PacketPasteNotify extends AbstractClientMessage {
 		
 		try {
 			
-			boolean send = false;
 			int packetCount = 0;
 			
 			int index = 0;
@@ -59,24 +59,29 @@ public class PacketPasteNotify extends AbstractClientMessage {
 			ArrayList<BlockCache> part = new ArrayList<BlockCache>();
 			
 			for(BlockCache cache : area) {
-				int size = cache.calculateSizeCompact();
+				boolean notFinal = false;
 				
+				int size = cache.calculateSizeCompact();
 				if(start + size <= PacketLib.MAX_SIZE_TO_SERVER) {
 					part.add(cache);
 					
 					start += size;
-					send = index == area.size() - 1;
 				}
 				else
-					send = true;
+					notFinal = true;
 
 				
-				if(send) {
-					PacketDispatcher.sendToServer(new PacketPaste(this.name, part, first, index == area.size() - 1));
+				if(notFinal || index == area.size() - 1) {
+					PacketDispatcher.sendToServer(new PacketPaste(this.name, part, first, index == area.size() - 1, WorldTransferList.mapPos.get(this.name).get(0), WorldTransferList.mapPos.get(this.name).get(1)));
 					packetCount += 1;
 					start = 0;
 					first = false;
 					part.clear();
+					
+					if(notFinal) {
+						part.add(cache);
+						start += size;
+					}
 				}
 				
 				index += 1;

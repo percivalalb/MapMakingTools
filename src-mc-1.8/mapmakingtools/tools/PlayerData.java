@@ -24,7 +24,6 @@ public class PlayerData {
 	private Hashtable<Integer, BlockPos> pos1 = new Hashtable<Integer, BlockPos>();
 	private Hashtable<Integer, BlockPos> pos2 = new Hashtable<Integer, BlockPos>();
 	private ActionStorage actionStorage = new ActionStorage(this);
-	public BlockPos lastPos;
 	
 	public UUID uuid;
 	
@@ -121,7 +120,6 @@ public class PlayerData {
 		tag.setString("uuid", this.uuid.toString());
 		tag.setTag("firstPoint", list1);
 		tag.setTag("secondPoint", list2);
-		tag.setTag("actionStorage", actionStorage.writeToNBT(new NBTTagCompound()));
 		
 		return tag;
 	}
@@ -143,8 +141,15 @@ public class PlayerData {
 		}
 		
 		this.uuid = UUID.fromString(tag.getString("uuid"));
-		this.actionStorage.readFromNBT(tag.getCompoundTag("actionStorage"));
 		return this;
+	}
+	
+	public BlockPos getMinPos() {
+		return new BlockPos(this.getMinX(), this.getMinY(), this.getMinZ());
+	}
+	
+	public BlockPos getMaxPos() {
+		return new BlockPos(this.getMaxX(), this.getMaxY(), this.getMaxZ());
 	}
 	
 	public int getMinX() {

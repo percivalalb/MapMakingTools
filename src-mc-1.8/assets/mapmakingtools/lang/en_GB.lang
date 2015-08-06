@@ -27,6 +27,7 @@ mapmakingtools.commands.build.worldtransfer.usage.paste=//worldtransfer paste <n
 mapmakingtools.commands.killentities.usage=//killentites <type>
 mapmakingtools.commands.debug.usage=//debug <command>
 mapmakingtools.commands.copyinventory.usage=//copyinventory <player>
+mapmakingtools.commands.build.maze.usage//maze <block> [meta]
 
 mapmakingtools.commands.build.postionsnotselected=You need make to selections before you can complete this command.
 mapmakingtools.commands.build.hasnotingtoundo=There is nothing to undo.
@@ -67,6 +68,7 @@ mapmakingtools.commands.build.worldtransfer.copy.complete=The area has been save
 mapmakingtools.commands.build.worldtransfer.copy.complete2=Use the command '//worldtransfer paste %s' to paste it to a server.
 mapmakingtools.commands.build.worldtransfer.paste.complete=The area '%s' has been pasted to the server from your local machine.
 mapmakingtools.commands.copyinventory.complete=Copied the inventory into yours.
+mapmakingtools.commands.build.maze.complete=Created a maze out of '%s'.
 
 mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown

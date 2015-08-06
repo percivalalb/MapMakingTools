@@ -235,6 +235,9 @@ public class ModifiersAttribute extends IItemAttribute {
 	private Modifier MAX_HEALTH = new Modifier(SharedMonsterAttributes.maxHealth, "Weapon modifier", MULT_PERCENTAGE_OPERATION, itemModifierUUID);
 	private Modifier MOVEMENT_SPEED = new Modifier(SharedMonsterAttributes.movementSpeed, "Weapon modifier", MULT_PERCENTAGE_OPERATION, itemModifierUUID);
 	private Modifier FOLLOW_RANGE = new Modifier(SharedMonsterAttributes.followRange, "Weapon modifier", MULT_PERCENTAGE_OPERATION, itemModifierUUID);
+	//private static final UUID sprintingSpeedBoostModifierUUID = UUID.fromString("662A6B8D-DA3E-4C1C-8813-96EA6097278D");
+    //private static Modifier sprintingSpeedBoostModifier = new Modifier(sprintingSpeedBoostModifierUUID, "Sprinting speed boost", 0.30000001192092896D, 2)).setSaved(false);
+	
 	private final Modifier[] MODIFIERS = new Modifier[] {ATTACK_DAMAGE, KNOCKBACK_RESISTANCE, MAX_HEALTH, MOVEMENT_SPEED, FOLLOW_RANGE};
 	
 	public static class Modifier {

@@ -5,8 +5,10 @@ import java.util.List;
 
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
+import mapmakingtools.tools.WorldAction;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -62,9 +64,11 @@ public class CommandSet extends CommandBase {
 			
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getFirstPoint(), data.getSecondPoint());
 			
+			IBlockState state = block.getStateFromMeta(meta);
+			
 			for(BlockPos pos : positions) {
 				list.add(BlockCache.createCache(player, world, pos));
-				world.setBlockState(pos, block.getStateFromMeta(meta), 2);
+				WorldAction.setBlock(world, pos, state, false);
 				blocks += 1;
 			}
 

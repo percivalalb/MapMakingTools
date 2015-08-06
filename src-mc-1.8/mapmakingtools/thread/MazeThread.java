@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
+import mapmakingtools.tools.WorldAction;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
@@ -15,31 +17,86 @@ public class MazeThread implements Runnable {
 	
 	public World world;
 	public PlayerData data;
+	public IBlockState state;
 
-	public MazeThread(World world, PlayerData data) {
+	public MazeThread(World world, PlayerData data, IBlockState state) {
 		this.world = world;
 		this.data = data;
+		this.state = state;
 	}
 	
 	@Override
 	public void run() {
+
 		synchronized(this.world) {
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
-			int blocks = 0;
-			
+
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getFirstPoint(), data.getSecondPoint());
 			
-			IBlockState state = Blocks.bedrock.getDefaultState();
-			
+			HashMap<Long, Integer> groups = new HashMap<Long, Integer>();
+			int group = 0;
 			for(BlockPos pos : positions) {
 				list.add(BlockCache.createCache(data.getPlayer(), world, pos));
-				world.setBlockState(pos, state, 3);
-				blocks += 1;
+				
+				if ((pos.getX() - data.getMinX()) % 2 == 1 && (pos.getZ() - data.getMinZ()) % 2 == 1 && pos.getX() != data.getMaxX() && pos.getZ() != data.getMaxZ()) {
+					WorldAction.setBlockToAir(world, pos, false);
+					groups.put(new BlockPos(pos.getX(), 0, pos.getZ()).toLong(), group);
+					group += 1;
+				}
+				else
+					WorldAction.setBlock(world, pos, state, false);
 			}
+			
+			while(true) {
+				Long[] keys = groups.keySet().toArray(new Long[groups.size()]);
+				long intersection = keys[world.rand.nextInt(groups.size())];
+				BlockPos intersectionPos = BlockPos.fromLong(intersection);
 
+				BlockPos dir = new BlockPos[] {new BlockPos(0, 0, 1),
+											   new BlockPos(1, 0, 0),
+											   new BlockPos(0, 0, -1),
+											   new BlockPos(-1, 0, 0)} [world.rand.nextInt(4)];
+						
+				if(world.isAirBlock(dir.add(0, data.getMinY(), 0).add(intersectionPos)))
+					continue;
+				
+				long nextIntersection = dir.multiply(2).add(intersectionPos).toLong();
+				
+				//Spot it wants to connect to doesn't exist
+				if(!groups.containsKey(nextIntersection))
+					continue;
+				
+				int thisid = groups.get(intersection);
+				int oldid = groups.get(nextIntersection);
+				
+				if(oldid == thisid) //Already Connected
+					continue;
+				
+				//Set the old group to the next one combining the groups
+				for(Long spot : groups.keySet())
+					if(groups.get(spot) == oldid)
+						groups.put(spot, thisid);
+				
+				//Clear pathway
+				for(int y = data.getMinY(); y <= data.getMaxY(); y++)
+					WorldAction.setBlockToAir(world, dir.add(0, y, 0).add(intersectionPos), false);
+				
+				//Checks if all groups are the same - all pathways are connected
+				boolean done = true;
+				for(Long spot : groups.keySet()) {
+					if(groups.get(spot) != thisid) {
+						done = false;
+							break;
+					}
+				}
+				
+				if(done)
+					break;
+			}
+			
 			data.getActionStorage().addUndo(list);
 
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.set.complete", "" + blocks);
+			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.blockRegistry.getNameForObject(state.getBlock()));
 			chatComponent.getChatStyle().setItalic(true);
 			data.getPlayer().addChatMessage(chatComponent);
 		}

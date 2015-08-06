@@ -13,6 +13,7 @@ v2.3.4a - nd August 2015
 
 # The knockback modifier in the item menu is no additive not a multiplying percetage.
 
+* Fixed crash on start up by no longer saving and loading undo/redo data after world exit
 * Fixed crash when looking at another player in multiplayer while holding the wrench
 
 

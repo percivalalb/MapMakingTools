@@ -117,6 +117,7 @@ public class BlockCache {
         cache.block = Block.getBlockFromName(resource.toString());
         cache.replacedBlock = cache.block.getStateFromMeta(packetbuffer.readByte());
         cache.blockIdentifier = new UniqueIdentifier(resource);
+        cache.nbt = packetbuffer.readNBTTagCompoundFromBuffer();
         return cache;
     }
 
@@ -274,6 +275,7 @@ public class BlockCache {
 	    	packetbuffer.writeString(id);
 	    
 		packetbuffer.writeByte(this.meta);
+		packetbuffer.writeNBTTagCompoundToBuffer(this.nbt);
 	}
 
     @Override
@@ -311,5 +313,10 @@ public class BlockCache {
         hash = 73 * hash + (this.world != null ? this.world.hashCode() : 0);
         hash = 73 * hash + (this.blockIdentifier != null ? this.blockIdentifier.hashCode() : 0);
         return hash;
+    }
+    
+    @Override
+    public String toString() {
+    	return "BlockCache=[Pos=" + this.pos.toString() + ", Block=" + this.blockIdentifier.toString() + "]";
     }
 }

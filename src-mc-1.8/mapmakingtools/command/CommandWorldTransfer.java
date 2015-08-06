@@ -13,7 +13,9 @@ import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import mapmakingtools.tools.worldtransfer.PacketAddArea;
+import mapmakingtools.tools.worldtransfer.PacketPaste;
 import mapmakingtools.tools.worldtransfer.PacketPasteNotify;
+import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -73,15 +75,14 @@ public class CommandWorldTransfer extends CommandBase {
 			
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
 			
-			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getFirstPoint(), data.getSecondPoint());
+			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getMinPos(), data.getMaxPos());
 			
 			for(BlockPos pos : positions) {
+				FMLLog.info("" + pos.toString());
 				list.add(BlockCache.createCache(player, world, pos));
 			}
 			
 			try {
-			
-				boolean send = false;
 				int packetCount = 0;
 				
 				int index = 0;
@@ -91,29 +92,34 @@ public class CommandWorldTransfer extends CommandBase {
 				ArrayList<BlockCache> part = new ArrayList<BlockCache>();
 				
 				for(BlockCache cache : list) {
-					int size = cache.calculateSizeEverything();
+					boolean notFinal = false;
 					
+					int size = cache.calculateSizeCompact();
 					if(start + size <= PacketLib.MAX_SIZE_TO_CLIENT) {
 						part.add(cache);
 						
 						start += size;
-						send = index == list.size() - 1;
 					}
 					else
-						send = true;
+						notFinal = true;
 
 					
-					if(send) {
-						PacketDispatcher.sendTo(new PacketAddArea(name, part, first, index == list.size() - 1), player);
+					if(notFinal || index == list.size() - 1) {
+						PacketDispatcher.sendTo(new PacketAddArea(name, part, first, index == list.size() - 1, data), player);
 						packetCount += 1;
 						start = 0;
 						first = false;
 						part.clear();
+						
+						if(notFinal) {
+							part.add(cache);
+							start += size;
+						}
 					}
 					
 					index += 1;
 				}
-				
+
 			}
 			catch(Exception e) {
 				e.printStackTrace();
