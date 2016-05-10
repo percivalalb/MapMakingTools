@@ -1,0 +1,16 @@
+block ~~~ minecraft:stone_slab
+
+data ~~~ y ~~~ 0 ~~~ 8
+data ~~~ y ~~~ 1 ~~~ 9
+data ~~~ y ~~~ 3 ~~~ 11
+data ~~~ y ~~~ 4 ~~~ 12
+data ~~~ y ~~~ 5 ~~~ 13
+data ~~~ y ~~~ 6 ~~~ 14
+data ~~~ y ~~~ 7 ~~~ 15
+data ~~~ y ~~~ 8 ~~~ 0
+data ~~~ y ~~~ 9 ~~~ 1
+data ~~~ y ~~~ 11 ~~~ 3
+data ~~~ y ~~~ 12 ~~~ 4
+data ~~~ y ~~~ 13 ~~~ 5
+data ~~~ y ~~~ 14 ~~~ 6
+data ~~~ y ~~~ 15 ~~~ 7

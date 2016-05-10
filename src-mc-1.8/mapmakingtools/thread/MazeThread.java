@@ -13,7 +13,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 
-public class MazeThread implements Runnable {
+public class MazeThread extends Thread {
 	
 	public World world;
 	public PlayerData data;
@@ -28,7 +28,7 @@ public class MazeThread implements Runnable {
 	@Override
 	public void run() {
 
-		synchronized(this.world) {
+		//synchronized(this.world) {
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
 
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getFirstPoint(), data.getSecondPoint());
@@ -99,7 +99,7 @@ public class MazeThread implements Runnable {
 			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.blockRegistry.getNameForObject(state.getBlock()));
 			chatComponent.getChatStyle().setItalic(true);
 			data.getPlayer().addChatMessage(chatComponent);
-		}
+		//}
 		
 /**
 		ArrayList<BlockCache> list = new ArrayList<BlockCache>();

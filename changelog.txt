@@ -8,10 +8,14 @@ Update List Key
 (/) Other
 
 
-v2.3.4a - nd August 2015
+
+v2.4.0a - 16th April 2016
+Updated to MC 1.8.9
++ Added //maze <block> [meta] command which will create a maze out of the desired block in the selected area
 + Added some 'Guardian' and fireball to kill all entities commands.
 
 # The knockback modifier in the item menu is no additive not a multiplying percetage.
+# Changed the selection outline colour to white
 
 * Fixed crash on start up by no longer saving and loading undo/redo data after world exit
 * Fixed crash when looking at another player in multiplayer while holding the wrench

@@ -1,8 +1,10 @@
 {
   "versions": {
-    "1.8-recommended": "v2.3.0a"
+    "1.8-recommended": "v2.3.3a",
+    "1.8.9-recommended": "v2.4.0a"
   },
   "links": {
-    "v2.3.0a": "http://adfoc.us/14766149580022"
+    "v2.3.0a": "http://adfoc.us/14766156032436",
+    "v2.4.0a": "http://adfoc.us/14766158557631"
   }
 }
