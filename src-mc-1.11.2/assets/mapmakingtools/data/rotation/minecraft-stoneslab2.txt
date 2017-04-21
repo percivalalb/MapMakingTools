@@ -1,0 +1,4 @@
+block ~~~ minecraft:stone_slab2
+
+data ~~~ y ~~~ 0 ~~~ 8
+data ~~~ y ~~~ 8 ~~~ 0

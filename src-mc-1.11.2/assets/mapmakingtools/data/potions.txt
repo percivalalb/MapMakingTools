@@ -1,0 +1,26 @@
+#Format for adding potions
+#customId ~~~ potionId
+
+movespeed ~~~ 1
+moveslowdown ~~~ 2
+digspeed ~~~ 3
+digslowdown ~~~ 4
+damageboost ~~~ 5
+heal ~~~ 6
+harm ~~~ 7
+jump ~~~ 8
+confusion ~~~ 9
+regeneration ~~~ 10
+resistance ~~~ 11
+fireresistance ~~~ 12 
+waterbreathing ~~~ 13
+invisibility ~~~ 14
+blindness ~~~ 15
+nightvision ~~~ 16
+hunger ~~~ 17
+weakness ~~~ 18
+poison ~~~ 19
+wither ~~~ 20
+healthboost ~~~ 21
+absorption ~~~ 22
+saturation ~~~ 23
