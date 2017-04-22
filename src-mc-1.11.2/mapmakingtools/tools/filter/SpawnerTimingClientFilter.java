@@ -14,6 +14,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketSpawnerTimings;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.TextFormatting;
 
 /**
@@ -44,7 +45,7 @@ public class SpawnerTimingClientFilter extends IFilterClientSpawner {
 
 	@Override
 	public String getIconPath() {
-		return "mapmakingtools:textures/filter/spawnerTimings.png";
+		return "mapmakingtools:textures/filter/spawner_timings.png";
 	}
 	
 	@Override
@@ -109,7 +110,7 @@ public class SpawnerTimingClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketSpawnerTimings(gui.getBlockPos(), this.txt_minDelay.getText(), this.txt_maxDelay.getText(), this.txt_spawnRadius.getText(), this.txt_spawnCount.getText(), this.txt_entityCap.getText(), this.txt_detectionRange.getText()));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                     break;
             }
         }
@@ -135,7 +136,7 @@ public class SpawnerTimingClientFilter extends IFilterClientSpawner {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobposition.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobposition.info"));
 	}
 	
 	@Override

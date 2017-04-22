@@ -48,7 +48,7 @@ public class KeyStateHandler {
             		for (int j1 = 0; j1 < container.inventorySlots.inventorySlots.size(); ++j1) {
                         Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
                         
-                        if (slot.inventory instanceof InventoryPlayer && this.isPointInRegion(container, slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, xMouse, yMouse) && slot.canBeHovered()) {
+                        if (slot.inventory instanceof InventoryPlayer && this.isPointInRegion(container, slot.xPos, slot.yPos, 16, 16, xMouse, yMouse) && slot.canBeHovered()) {
                         	InventoryPlayer playerInventory = (InventoryPlayer)slot.inventory;
                         	if(slot.getHasStack()) {
                         		ItemStack stack = slot.getStack();

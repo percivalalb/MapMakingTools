@@ -8,8 +8,9 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 public class CommandPos2 extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/pos2";
 	}
 
@@ -29,41 +30,31 @@ public class CommandPos2 extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.pos2.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		
 		data.setSecondPoint(new BlockPos(player));
 		data.sendUpdateToClient();
 		
 		if(data.hasSelectedPoints()) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + data.getBlockCount());
-			chatComponent.getChatStyle().setColor(TextFormatting.GREEN);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + data.getBlockCount());
+			chatComponent.getStyle().setColor(TextFormatting.GREEN);
+			player.sendMessage(chatComponent);
 		}
 		else {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
-			chatComponent.getChatStyle().setColor(TextFormatting.RED);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
+			chatComponent.getStyle().setColor(TextFormatting.RED);
+			player.sendMessage(chatComponent);
 		}
 	}
-
-	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] param, BlockPos pos) {
-        return null;
-    }
-	
-    @Override
-    public boolean isUsernameIndex(String[] param, int index) {
-        return false;
-    }
 }

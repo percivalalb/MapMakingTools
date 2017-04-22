@@ -26,7 +26,7 @@ public class PacketSkullModify extends AbstractServerMessage {
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.name = packetbuffer.readStringFromBuffer(32);
+		this.name = packetbuffer.readString(32);
 	}
 
 	@Override
@@ -38,11 +38,11 @@ public class PacketSkullModify extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		ItemStack item = player.getHeldItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if(item == null)
 			return;
 		
-		if(item != null && Item.getIdFromItem(item.getItem()) == Item.getIdFromItem(Items.skull) && item.getItemDamage() == 3) {
+		if(item != null && Item.getIdFromItem(item.getItem()) == Item.getIdFromItem(Items.SKULL) && item.getItemDamage() == 3) {
 			SkullNBT.setSkullName(item, this.name);
 		}
 		

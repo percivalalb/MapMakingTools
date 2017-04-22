@@ -15,6 +15,7 @@ import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.TextFormatting;
 
 /**
@@ -33,7 +34,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 
 	@Override
 	public String getIconPath() {
-		return "mapmakingtools:textures/filter/mobType.png";
+		return "mapmakingtools:textures/filter/mob_type.png";
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 			@Override
 			public String getDisplayString(String listStr) {
 				String unlocalised = String.format("entity.%s.name", listStr);
-				String localised = I18n.format(unlocalised);
+				String localised = I18n.translateToLocal(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
 			}
 
@@ -55,7 +56,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.selected;
 				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
-        		ClientHelper.mc.thePlayer.closeScreen();
+        		ClientHelper.mc.player.closeScreen();
 			}
         	
         };
@@ -69,7 +70,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobType.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobType.info"));
 	}
 	
 	@Override
@@ -97,7 +98,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	//PacketTypeHandler.populatePacketAndSendToServer(new PacketMobArmor(gui.x, gui.y, gui.z));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                     break;
             }
         }

@@ -1,12 +1,15 @@
 package mapmakingtools.command;
 
+import java.util.Collections;
 import java.util.List;
 
+import jline.internal.Nullable;
 import mapmakingtools.MapMakingTools;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -15,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 public class CommandDebug extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/debug";
 	}
 
@@ -25,31 +28,31 @@ public class CommandDebug extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.debug.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
 		
-		if(param.length >= 1) {
-			if(param[0].toLowerCase().equals("reloadrotations")) {
+		if(args.length >= 1) {
+			if(args[0].toLowerCase().equals("reloadrotations")) {
 				MapMakingTools.proxy.registerRotation();
 			}
 		}
 	}
-
+	
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, "reloadrotations") : null;
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "reloadrotations") : Collections.<String>emptyList();
     }
 
     @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
+    public boolean isUsernameIndex(String[] args, int index) {
         return false;
     }
 }

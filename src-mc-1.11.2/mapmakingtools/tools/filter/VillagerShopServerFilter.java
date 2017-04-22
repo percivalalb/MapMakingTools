@@ -11,11 +11,11 @@ import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 
@@ -135,133 +135,10 @@ public class VillagerShopServerFilter extends IFilterServer {
 		return invMap.get(uuid);
 	}
 
-	public class VillagerShopInventory implements IUnlimitedInventory {
-
-		public ItemStack[] contents;
+	public class VillagerShopInventory extends InventoryBasic {
 		
 		public VillagerShopInventory(int inventorySize) {
-			this.contents = new ItemStack[inventorySize];
-		}
-		
-		public int getSizeInventory() {
-		    return this.contents.length;
-		}
-
-		public ItemStack getStackInSlot(int par1) {
-		    return this.contents[par1];
-		}
-
-		public ItemStack decrStackSize(int par1, int par2) {
-		     if (this.contents[par1] != null) {
-		        ItemStack itemstack;
-
-		        if (this.contents[par1].stackSize <= par2) {
-		            itemstack = this.contents[par1];
-		            this.contents[par1] = null;
-		            return itemstack;
-		        }
-		        else {
-		            itemstack = this.contents[par1].splitStack(par2);
-
-		            if (this.contents[par1].stackSize == 0) {
-		                this.contents[par1] = null;
-		            }
-
-		            return itemstack;
-		        }
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		@Override
-		public ItemStack removeStackFromSlot(int par1) {
-		    if (this.contents[par1] != null) {
-		        ItemStack itemstack = this.contents[par1];
-		        this.contents[par1] = null;
-		        return itemstack;
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		    this.contents[par1] = par2ItemStack;
-
-		    if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit()) {
-		        par2ItemStack.stackSize = this.getInventoryStackLimit();
-		    }
-		}
-
-		@Override
-		public int getInventoryStackLimit() {
-			return 64;
-		}
-
-		@Override
-		public void markDirty() {}
-
-		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-			return true;
-		}
-
-		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-			return false;
-		}
-
-		@Override
-		public boolean isSlotUnlimited(int slotIndex) {
-			return false;
-		}
-		
-		@Override
-		public void setSlotUnlimited(int slotIndex, boolean isUnlimited) {
-			
-		}
-
-
-		@Override
-		public void openInventory(EntityPlayer player) {}
-
-		@Override
-		public void closeInventory(EntityPlayer player) {}
-
-	    public String getGuiID() {
-	        return "mapmakingtools:villagershop";
-	    }
-
-	    public int getField(int id) {
-	        return 0;
-	    }
-
-	    public void setField(int id, int value) {}
-
-	    public int getFieldCount() {
-	        return 0;
-	    }
-
-	    public void clear() {
-	        for (int i = 0; i < this.contents.length; ++i)
-	            this.contents[i] = null;
-	    }
-
-		@Override
-		public String getName() {
-			return "Villager Shop";
-		}
-
-		@Override
-		public boolean hasCustomName() {
-			return true;
-		}
-
-		@Override
-		public IChatComponent getDisplayName() {
-			return null;
+			super("Villager Shop", false, inventorySize);
 		}
 	}
 }

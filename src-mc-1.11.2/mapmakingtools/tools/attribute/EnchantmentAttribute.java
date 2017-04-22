@@ -13,6 +13,7 @@ import mapmakingtools.tools.datareader.EnchantmentList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,6 @@ public class EnchantmentAttribute extends IItemAttribute {
 	private ScrollMenu scrollMenuAdd;
 	private ScrollMenu scrollMenuRemove;
 	private GuiButton btn_add;
-	private GuiButton btn_add_effect;
 	private GuiButton btn_remove;
 	private GuiButton btn_remove_all;
 	private GuiTextField fld_lvl;
@@ -44,7 +44,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		if(this.level != null && this.selected != -1 && data == 0) {
 			if(NumberParse.isInteger(this.level)) {
-				Enchantment enchantment = Enchantment.getEnchantmentById(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
+				Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
 				
 				if(enchantment == null)
 					return;
@@ -64,14 +64,6 @@ public class EnchantmentAttribute extends IItemAttribute {
 		}
 		
 		if(data == 2) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
-			
-			if(!stack.getTagCompound().hasKey("ench", 9))
-				stack.getTagCompound().setTag("ench", new NBTTagList());
-		}
-		
-		if(data == 3) {
 			if(stack.hasTagCompound()) {
 				if(stack.getTagCompound().hasKey("ench", 9)) {
 					stack.getTagCompound().removeTag("ench");
@@ -129,13 +121,13 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 			@Override
 			public String getDisplayString(String listStr) {
-				Enchantment enchantment = Enchantment.getEnchantmentById(EnchantmentList.getEnchantmentId(listStr));
+				Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(listStr));
 				
 				if(enchantment == null)
 					return listStr;
 				
 				String unlocalised = enchantment.getName();
-				String localised = I18n.format(unlocalised);
+				String localised = I18n.translateToLocal(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
 			}
 			
@@ -151,7 +143,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 			public String getDisplayString(String listStr) {
 				String[] split = listStr.split(" ~~~ ");
 				
-				Enchantment enchantment = Enchantment.getEnchantmentById(NumberParse.getInteger(split[0]));
+				Enchantment enchantment = Enchantment.getEnchantmentByID(NumberParse.getInteger(split[0]));
 				
 				if(enchantment == null)
 					return listStr;
@@ -167,12 +159,12 @@ public class EnchantmentAttribute extends IItemAttribute {
 		this.fld_lvl.setMaxStringLength(5);
 		this.btn_add = new GuiButton(0, x + 60, y + height / 2 - 23, 50, 20, "Add");
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
-		this.btn_add_effect = new GuiButton(2, x + 130, y + height / 2 - 23, 120, 20, "Add Glimering Effect");
-		this.btn_remove_all = new GuiButton(3, x + 130, y + height - 23, 130, 20, "Remove all Enchantments");
+		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Enchantments");
+		
+		this.btn_remove.enabled = false;
 		
 		itemEditor.getButtonList().add(this.btn_add);
 		itemEditor.getButtonList().add(this.btn_remove);
-		itemEditor.getButtonList().add(this.btn_add_effect);
 		itemEditor.getButtonList().add(this.btn_remove_all);
 		itemEditor.getTextBoxList().add(this.fld_lvl);
 		this.scrollMenuAdd.initGui();
@@ -190,15 +182,14 @@ public class EnchantmentAttribute extends IItemAttribute {
 		if(button.id == 2) {
 			itemEditor.sendUpdateToServer(2);
 		}
-		if(button.id == 3) {
-			itemEditor.sendUpdateToServer(3);
-		}
 	}
 	
 	@Override
 	public void mouseClicked(IGuiItemEditor itemEditor, int xMouse, int yMouse, int mouseButton) {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
+		
+		this.btn_remove.enabled = this.scrollMenuRemove.selected != -1;
 	}
 
 	@Override

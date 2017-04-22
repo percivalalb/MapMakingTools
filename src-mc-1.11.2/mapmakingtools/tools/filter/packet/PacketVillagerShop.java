@@ -12,7 +12,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
@@ -54,7 +54,7 @@ public class PacketVillagerShop extends AbstractServerMessage {
 			if(container.getCurrentFilter() instanceof VillagerShopServerFilter) {
 				LogHelper.info("shop " + this.entityId);
 				VillagerShopServerFilter shop = (VillagerShopServerFilter)container.getCurrentFilter();
-		        World world = player.worldObj;
+		        World world = player.world;
 		        Entity entity = world.getEntityByID(this.entityId);
 		        if(entity instanceof EntityVillager) {
 		        	LogHelper.info("villager " + this.entityId);
@@ -78,17 +78,17 @@ public class PacketVillagerShop extends AbstractServerMessage {
 		        			input2 = null;
 		        		}
 		        		if(input1 == null) {
-		        			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.villagershop.inputnull");
-							chatComponent.getChatStyle().setItalic(true);
-							chatComponent.getChatStyle().setColor(TextFormatting.RED);
-							player.addChatMessage(chatComponent);
+		        			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagershop.inputnull");
+							chatComponent.getStyle().setItalic(true);
+							chatComponent.getStyle().setColor(TextFormatting.RED);
+							player.sendMessage(chatComponent);
 		        			return;
 		        		}
 		        		if(output == null) {
-		        			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.villagershop.outputnull");
-							chatComponent.getChatStyle().setItalic(true);
-							chatComponent.getChatStyle().setColor(TextFormatting.RED);
-							player.addChatMessage(chatComponent);
+		        			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagershop.outputnull");
+							chatComponent.getStyle().setItalic(true);
+							chatComponent.getStyle().setColor(TextFormatting.RED);
+							player.sendMessage(chatComponent);
 		        			return;
 		        		}
 		        		MerchantRecipe recipe = new MerchantRecipe(input1, input2, output, 0, this.recipeUses[i]);
@@ -96,9 +96,9 @@ public class PacketVillagerShop extends AbstractServerMessage {
 		        	}
 		        	ReflectionHelper.setField(EntityVillager.class, villager, 5, recipeList);
 		        	
-		        	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.villagershop.complete");
-					chatComponent.getChatStyle().setItalic(true);
-					player.addChatMessage(chatComponent);
+		        	TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagershop.complete");
+					chatComponent.getStyle().setItalic(true);
+					player.sendMessage(chatComponent);
 		        }
 		    }
 		}

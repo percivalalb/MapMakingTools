@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -38,12 +38,12 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.pos = packetbuffer.readBlockPos();
-		this.minDelay = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.maxDelay = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.spawnRadius = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.spawnCount = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.entityCap = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.detectionRange = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.minDelay = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.maxDelay = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.spawnRadius = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.spawnCount = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.entityCap = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.detectionRange = packetbuffer.readString(Integer.MAX_VALUE / 4);
 	}
 
 	@Override
@@ -62,15 +62,15 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 			if(!NumberParse.areIntegers(this.minDelay, this.maxDelay, this.spawnRadius, this.spawnCount, this.entityCap, this.detectionRange)) {
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.spawnertimings.notint");
-				chatComponent.getChatStyle().setItalic(true);
-				chatComponent.getChatStyle().setColor(TextFormatting.RED);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.notint");
+				chatComponent.getStyle().setItalic(true);
+				chatComponent.getStyle().setColor(TextFormatting.RED);
+				player.sendMessage(chatComponent);
 				return;
 			}
 			
@@ -91,9 +91,9 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 			
 			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.spawnertimings.complete");
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 }

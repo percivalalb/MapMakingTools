@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -34,9 +34,9 @@ public class PacketMobVelocity extends AbstractServerMessage {
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.pos = packetbuffer.readBlockPos();
-		this.xMotion = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.yMotion = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.zMotion = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.xMotion = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.yMotion = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.zMotion = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.minecartIndex = packetbuffer.readInt();
 	}
 
@@ -54,15 +54,15 @@ public class PacketMobVelocity extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 			if(!NumberParse.areDoubles(this.xMotion, this.yMotion, this.zMotion)) {
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobvelocity.notint");
-				chatComponent.getChatStyle().setItalic(true);
-				chatComponent.getChatStyle().setColor(TextFormatting.RED);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobvelocity.notint");
+				chatComponent.getStyle().setItalic(true);
+				chatComponent.getStyle().setColor(TextFormatting.RED);
+				player.sendMessage(chatComponent);
 				return;
 			}
 			
@@ -73,9 +73,9 @@ public class PacketMobVelocity extends AbstractServerMessage {
 			SpawnerUtil.setVelocity(spawner.getSpawnerBaseLogic(), xMotionNO, yMotionNO, zMotionNO, this.minecartIndex);
 			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobvelocity.complete");
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobvelocity.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 }

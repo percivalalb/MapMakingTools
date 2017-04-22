@@ -13,13 +13,13 @@ import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 /**
  * @author ProPercivalalb
  */
 public class RotationLoader {
 
+	/**
 	private static Hashtable<UniqueIdentifier, Hashtable<String, Hashtable<Integer, Integer>>> map = new Hashtable<UniqueIdentifier, Hashtable<String, Hashtable<Integer, Integer>>>();
 	
 	public static void loadFromTextFile(String filePath) {
@@ -91,5 +91,5 @@ public class RotationLoader {
 		world.setBlockState(pos, block.getStateFromMeta(newMeta), 2);
 		
 		return true;
-	}
+	}**/
 }

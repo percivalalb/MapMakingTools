@@ -9,28 +9,28 @@ import net.minecraft.util.ResourceLocation;
  */
 public class ResourceReference {
 
-	public static final ResourceLocation screenLarge = new ResourceLocation("mapmakingtools", getGuiTexturePath("guiTabEmptyLarge.png"));
-	public static final ResourceLocation screenMedium = new ResourceLocation("mapmakingtools", getGuiTexturePath("guiTabEmpty.png"));
-	public static final ResourceLocation screenSmall = new ResourceLocation("mapmakingtools", getGuiTexturePath("guiSmall.png"));
-	public static final ResourceLocation screenMobArmor = new ResourceLocation("mapmakingtools", getGuiTexturePath("mobArmor.png"));
-	public static final ResourceLocation screenOneSlot = new ResourceLocation("mapmakingtools", getGuiTexturePath("oneSlot.png"));
-	public static final ResourceLocation screenVillagerShop = new ResourceLocation("mapmakingtools", getGuiTexturePath("villagerShop.png"));
+	public static final ResourceLocation screenLarge = new ResourceLocation("mapmakingtools", getGuiTexturePath("gui_tab_empty_large.png"));
+	public static final ResourceLocation screenMedium = new ResourceLocation("mapmakingtools", getGuiTexturePath("gui_tab_empty.png"));
+	public static final ResourceLocation screenSmall = new ResourceLocation("mapmakingtools", getGuiTexturePath("gui_small.png"));
+	public static final ResourceLocation screenMobArmor = new ResourceLocation("mapmakingtools", getGuiTexturePath("mob_armor.png"));
+	public static final ResourceLocation screenOneSlot = new ResourceLocation("mapmakingtools", getGuiTexturePath("one_slot.png"));
+	public static final ResourceLocation screenVillagerShop = new ResourceLocation("mapmakingtools", getGuiTexturePath("villager_shop.png"));
 
-	public static final ResourceLocation screenScroll = new ResourceLocation("mapmakingtools", getGuiTexturePath("guiTab.png"));
+	public static final ResourceLocation screenScroll = new ResourceLocation("mapmakingtools", getGuiTexturePath("gui_tab.png"));
 	
-	public static final ResourceLocation buttonTextColour = new ResourceLocation("mapmakingtools", getGuiTexturePath("buttonTextColour.png"));
+	public static final ResourceLocation buttonTextColour = new ResourceLocation("mapmakingtools", getGuiTexturePath("button_text_colour.png"));
 
 	public static final ResourceLocation tabs = new ResourceLocation("mapmakingtools", getGuiTexturePath("tab.png"));
 
-	public static final ResourceLocation itemEditor = new ResourceLocation("mapmakingtools", getGuiTexturePath("item_Editor.png"));
-	public static final ResourceLocation itemEditorSlot = new ResourceLocation("mapmakingtools", getGuiTexturePath("item_Editor_slot.png"));
+	public static final ResourceLocation itemEditor = new ResourceLocation("mapmakingtools", getGuiTexturePath("item_editor.png"));
+	public static final ResourceLocation itemEditorSlot = new ResourceLocation("mapmakingtools", getGuiTexturePath("item_editor_slot.png"));
 	
-	public static final ResourceLocation watchPlayer = new ResourceLocation("mapmakingtools", getGuiTexturePath("watchPlayer.png"));
+	public static final ResourceLocation watchPlayer = new ResourceLocation("mapmakingtools", getGuiTexturePath("watch_player.png"));
 
 	public static final ResourceLocation transparentBackground = new ResourceLocation("mapmakingtools", getGuiTexturePath("transparent_background.png"));
 
 	
-	public static final ResourceLocation worldTransfer = new ResourceLocation("mapmakingtools", getGuiTexturePath("worldtransfer.png"));
+	public static final ResourceLocation worldTransfer = new ResourceLocation("mapmakingtools", getGuiTexturePath("world_transfer.png"));
 
 	public static final HashMap<String, ResourceLocation> textures = new HashMap<String, ResourceLocation>();
 	

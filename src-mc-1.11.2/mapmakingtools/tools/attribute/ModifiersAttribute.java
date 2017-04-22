@@ -15,10 +15,12 @@ import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.NumberParse;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -74,7 +76,7 @@ public class ModifiersAttribute extends IItemAttribute {
 				stack.setTagCompound(new NBTTagCompound());
 			
 			if(!stack.getTagCompound().hasKey("AttributeModifiers", 9)) {
-				Multimap modifiers = stack.getAttributeModifiers();
+				Multimap modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
 	
 		        if(!modifiers.isEmpty()) {
 		        	stack.getTagCompound().setTag("AttributeModifiers", new NBTTagList());
@@ -114,7 +116,7 @@ public class ModifiersAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		Multimap modifiers = stack.getAttributeModifiers();
+		Multimap modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
 		for(int i = 0; i < MODIFIERS.length; i++) {
 			if(!modifiers.isEmpty()) {
 	        	
@@ -170,7 +172,7 @@ public class ModifiersAttribute extends IItemAttribute {
 		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
 		
 		for(int i = 0; i < MODIFIERS.length; i++)
-			itemEditor.getFontRenderer().drawString(I18n.format("attribute.name." + MODIFIERS[i].attributeName), x + 6, y + 20 + i * 17, 16777120);
+			itemEditor.getFontRenderer().drawString(I18n.translateToLocal("attribute.name." + MODIFIERS[i].attributeName), x + 6, y + 20 + i * 17, 16777120);
 	}
 
 	int x;
@@ -242,7 +244,7 @@ public class ModifiersAttribute extends IItemAttribute {
 		public UUID uuid;
 		
 		public Modifier(IAttribute attribute, String name, int operation, UUID uuid) {
-			this(attribute.getAttributeUnlocalizedName(), name, operation, uuid);
+			this(attribute.getName(), name, operation, uuid);
 		}
 		
 		public Modifier(String attributeName, String name, int operation, UUID uuid) {

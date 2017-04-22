@@ -14,8 +14,9 @@ public class WorldAction {
 	    IBlockState lastState = chunk.setBlockState(pos, blockState);
 	    
 	    //TODO
+	    if(lastState != null)
+	    	world.notifyBlockUpdate(pos, lastState, blockState, notifyAndLight ? 3 : 2);
 	    /**
-	    world.markBlockRangeForRenderUpdate(rangeMin, rangeMax);.markBlockForUpdate(pos);
 	    if(notifyAndLight) {
 	         world.markBlockForUpdate(pos);
 

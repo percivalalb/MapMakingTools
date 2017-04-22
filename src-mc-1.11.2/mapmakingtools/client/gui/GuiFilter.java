@@ -163,7 +163,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     		//if(listBt instanceof GuiButtonCancel) {
     		//	GuiButtonCancel tab = (GuiButtonCancel)listBt;
         	//	if(tab.isMouseAbove(xMouse, yMouse)) {
-        	//		List<String> list = Arrays.asList(I18n.format("gui.cancel"));
+        	//		List<String> list = Arrays.asList(I18n.translateToLocal("gui.cancel"));
         	//		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
         	//	}
     		//}

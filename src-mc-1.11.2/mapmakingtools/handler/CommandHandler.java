@@ -1,5 +1,6 @@
 package mapmakingtools.handler;
 
+import mapmakingtools.command.CommandBox;
 import mapmakingtools.command.CommandClearPoints;
 import mapmakingtools.command.CommandCopy;
 import mapmakingtools.command.CommandCopyInventory;
@@ -9,6 +10,7 @@ import mapmakingtools.command.CommandFloor;
 import mapmakingtools.command.CommandKillAll;
 import mapmakingtools.command.CommandMaze;
 import mapmakingtools.command.CommandMove;
+import mapmakingtools.command.CommandOutline;
 import mapmakingtools.command.CommandPaste;
 import mapmakingtools.command.CommandPlayerStatue;
 import mapmakingtools.command.CommandPos1;
@@ -36,6 +38,8 @@ public class CommandHandler {
         event.registerServerCommand(new CommandRoof());
         event.registerServerCommand(new CommandFloor());
         event.registerServerCommand(new CommandWall());
+        event.registerServerCommand(new CommandBox());
+        event.registerServerCommand(new CommandOutline());
         event.registerServerCommand(new CommandRotate());
         event.registerServerCommand(new CommandFlip());
         event.registerServerCommand(new CommandReplace());

@@ -8,8 +8,9 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 /**
@@ -18,7 +19,7 @@ import net.minecraft.world.World;
 public class CommandUndo extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/undo";
 	}
 
@@ -28,17 +29,17 @@ public class CommandUndo extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.undo.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		
 		if(!data.getActionStorage().hasSomethingToUndo())
@@ -47,19 +48,9 @@ public class CommandUndo extends CommandBase {
 		int blocksChanged = data.getActionStorage().undo();
 		
 		if(blocksChanged > 0) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.undo.complete", "" + blocksChanged);
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.undo.complete", "" + blocksChanged);
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
-
-	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-        return null;
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
-        return false;
-    }
 }

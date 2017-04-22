@@ -31,23 +31,23 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 		if(data == 0) {
 			int flag = 0;
 			
-			if(!btn_ench.func_146141_c())
+			if(!btn_ench.isTicked())
 				flag |= 1 << 0; //Enchantment Info
-			if(!btn_modif.func_146141_c())
+			if(!btn_modif.isTicked())
 				flag |= 1 << 1; //Modifier Info
-			if(!btn_unbreak.func_146141_c())
+			if(!btn_unbreak.isTicked())
 				flag |= 1 << 2; //Unbreakable Info
-			if(!btn_destroy.func_146141_c())
+			if(!btn_destroy.isTicked())
 				flag |= 1 << 3; //Block Destroy Info
-			if(!btn_place.func_146141_c())
+			if(!btn_place.isTicked())
 				flag |= 1 << 4; //Can Place On Info
-			if(!btn_normal.func_146141_c())
+			if(!btn_normal.isTicked())
 				flag |= 1 << 5; //Normal Info
 
 			if(flag == 0) {
 				if(stack.hasTagCompound() && stack.getTagCompound().hasKey("HideFlags", 99)) {
 			        stack.getTagCompound().removeTag("HideFlags");
-					this.btn_all.func_146140_b(true);
+					this.btn_all.setTicked(true);
 			        
 			        if(stack.getTagCompound().hasNoTags())
 			        	stack.setTagCompound(null);
@@ -59,7 +59,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 				stack.setTagCompound(new NBTTagCompound());
 				
 			stack.getTagCompound().setInteger("HideFlags", flag);
-			this.btn_all.func_146140_b(false);
+			this.btn_all.setTicked(false);
 			
 		}
 	}
@@ -76,20 +76,20 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 				int flag = stack.getTagCompound().getInteger("HideFlags");
 				
 				if((flag & (1 << 0)) == (1 << 0))
-					this.btn_ench.func_146140_b(false);
+					this.btn_ench.setTicked(false);
 				if((flag & (1 << 1)) == (1 << 1))
-					this.btn_modif.func_146140_b(false);
+					this.btn_modif.setTicked(false);
 				if((flag & (1 << 2)) == (1 << 2))
-					this.btn_unbreak.func_146140_b(false);
+					this.btn_unbreak.setTicked(false);
 				if((flag & (1 << 3)) == (1 << 3))
-					this.btn_destroy.func_146140_b(false);
+					this.btn_destroy.setTicked(false);
 				if((flag & (1 << 4)) == (1 << 4))
-					this.btn_place.func_146140_b(false);
+					this.btn_place.setTicked(false);
 				if((flag & (1 << 5)) == (1 << 5))
-					this.btn_normal.func_146140_b(false);
+					this.btn_normal.setTicked(false);
 				
 				if(flag != ~flag)
-					this.btn_all.func_146140_b(false);
+					this.btn_all.setTicked(false);
 			}
 		}
 	}
@@ -129,17 +129,17 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 	@Override
 	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
 		if(button.id >= 0 && button.id <= 5) {
-			((GuiTickButton)button).func_146140_b(!((GuiTickButton)button).func_146141_c());
+			((GuiTickButton)button).setTicked(!((GuiTickButton)button).isTicked());
 			itemEditor.sendUpdateToServer(0);
 		}
 		if(button.id == 6) {
-			((GuiTickButton)button).func_146140_b(!((GuiTickButton)button).func_146141_c());
-		    this.btn_ench.func_146140_b(((GuiTickButton)button).func_146141_c());
-		    this.btn_modif.func_146140_b(((GuiTickButton)button).func_146141_c());
-		    this.btn_unbreak.func_146140_b(((GuiTickButton)button).func_146141_c());
-		    this.btn_destroy.func_146140_b(((GuiTickButton)button).func_146141_c());
-		    this.btn_place.func_146140_b(((GuiTickButton)button).func_146141_c());
-		    this.btn_normal.func_146140_b(((GuiTickButton)button).func_146141_c());
+			((GuiTickButton)button).setTicked(!((GuiTickButton)button).isTicked());
+		    this.btn_ench.setTicked(((GuiTickButton)button).isTicked());
+		    this.btn_modif.setTicked(((GuiTickButton)button).isTicked());
+		    this.btn_unbreak.setTicked(((GuiTickButton)button).isTicked());
+		    this.btn_destroy.setTicked(((GuiTickButton)button).isTicked());
+		    this.btn_place.setTicked(((GuiTickButton)button).isTicked());
+		    this.btn_normal.setTicked(((GuiTickButton)button).isTicked());
 			itemEditor.sendUpdateToServer(0);
 		}
 	}

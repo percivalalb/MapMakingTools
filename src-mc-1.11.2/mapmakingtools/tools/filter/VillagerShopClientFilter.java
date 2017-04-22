@@ -16,6 +16,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerRecipeAmounts;
 import mapmakingtools.tools.filter.packet.PacketVillagerShop;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -121,7 +122,7 @@ public class VillagerShopClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.villagershop.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagershop.info"));
 	}
 	
 	@Override
@@ -206,7 +207,7 @@ public class VillagerShopClientFilter extends IFilterClient {
                 	PacketDispatcher.sendToServer(new PacketVillagerShop(gui.getEntityId(), this.recipeUses));
                     
                 case 1:
-                    ClientHelper.mc.thePlayer.closeScreen();
+                    ClientHelper.mc.player.closeScreen();
                     break;
                 case 2:
                 	recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());

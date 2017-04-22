@@ -24,11 +24,11 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class CommandWall extends CommandBase {
+public class CommandOutline extends CommandBase {
 
 	@Override
 	public String getName() {
-		return "/wall";
+		return "/outline";
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class CommandWall extends CommandBase {
 	
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "mapmakingtools.commands.build.wall.usage";
+		return "mapmakingtools.commands.build.outline.usage";
 	}
 
 	@Override
@@ -70,7 +70,16 @@ public class CommandWall extends CommandBase {
 			IBlockState state = block.getStateFromMeta(meta);
 			
 			for(BlockPos pos : positions) {
-				if(pos.getX() == data.getMinX() || pos.getX() == data.getMaxX() || pos.getZ() == data.getMinZ() || pos.getZ() == data.getMaxZ()) {
+				boolean flag1 = pos.getX() == data.getMinX();
+				boolean flag2 = pos.getX() == data.getMaxX();
+				boolean flag3 = pos.getZ() == data.getMinZ();
+				boolean flag4 = pos.getZ() == data.getMaxZ();
+				boolean flag5 = pos.getY() == data.getMinY();
+				boolean flag6 = pos.getY() == data.getMaxY();
+				boolean[] flags = new boolean[] {flag1, flag2, flag3, flag4, flag5, flag6};
+				int count = 0;
+			    for (boolean var : flags) count += (var ? 1 : 0);
+				if(count > 1) {
 					list.add(BlockCache.createCache(player, world, pos));
 					WorldAction.setBlock(world, pos, state, false);
 					blocks += 1;
@@ -79,7 +88,7 @@ public class CommandWall extends CommandBase {
 
 			data.getActionStorage().addUndo(list);
 
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.wall.complete", "" + blocks, args[0]);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.outline.complete", "" + blocks, args[0]);
 			chatComponent.getStyle().setItalic(true);
 			player.sendMessage(chatComponent);
 			
@@ -90,9 +99,4 @@ public class CommandWall extends CommandBase {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		return args.length == 1 ? getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys()) : Collections.<String>emptyList();
 	}
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index) {
-        return false;
-    }
 }

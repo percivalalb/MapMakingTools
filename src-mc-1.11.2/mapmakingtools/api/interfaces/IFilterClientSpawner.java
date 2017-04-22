@@ -14,6 +14,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.WeightedSpawnerEntity;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -30,11 +32,12 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.getSpawnerBaseLogic());
+		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
 		
 		if(minecarts == null)
 			return;
 
+		FMLLog.info("" +  minecarts.size()  + " " + gui.getBlockPos());
 		this.minecartsCount = minecarts.size();
 		this.minecartButtons.clear();
 		
@@ -45,7 +48,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 			
 		
 		int i = 0;
-		for(WeightedRandomMinecart randomMinecart : minecarts) {
+		for(WeightedSpawnerEntity randomMinecart : minecarts) {
 			GuiMinecartIndexButton button = new GuiMinecartIndexButton(200 + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
 			if(i != minecartIndex)
 				button.enabled = false;
@@ -61,7 +64,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.getSpawnerBaseLogic());
+		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
 		
 		if(mouseButton == 2) {
 			GuiButton button = null;
@@ -103,7 +106,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				data.setInteger("Weight", 1);
 				data.setString("Type", "Pig");
 				data.setTag("Properties", new NBTTagCompound());
-				WeightedRandomMinecart randomMinecart = spawner.getSpawnerBaseLogic().new WeightedRandomMinecart(data);
+				WeightedSpawnerEntity randomMinecart = new WeightedSpawnerEntity(data);
 				minecarts.add(randomMinecart);
 				
 				this.addMinecartButtons(gui, topX, topY);
@@ -119,14 +122,14 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.getSpawnerBaseLogic());
+		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
 		
 		for(GuiButton tempButton : gui.getButtonList()) {
 			if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
 				if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
 					continue;
 				List<String> list = new ArrayList<String>();
-    			list.add(SpawnerUtil.getMinecartType(minecarts.get(tempButton.id - 200)));
+    			list.add(SpawnerUtil.getMinecartType(minecarts.get(tempButton.id - 200)).toString());
     			//list.add("NBT: ");
     			//list.add(SpawnerUtil.getMinecartProperties(minecarts.get(tempButton.id - 200)).toString());
     			

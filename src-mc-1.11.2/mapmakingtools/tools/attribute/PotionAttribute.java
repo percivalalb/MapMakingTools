@@ -16,15 +16,15 @@ import mapmakingtools.tools.item.nbt.PotionNBT;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 
 /**
  * @author ProPercivalalb
@@ -54,21 +54,21 @@ public class PotionAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		if(!Strings.isNullOrEmpty(this.level) && !Strings.isNullOrEmpty(this.duration) && this.selected != -1 && data == 0) {
 			if(NumberParse.isInteger(this.level)) {
-				Potion potion = Potion.potionTypes[PotionList.getPotionId(PotionList.getCustomId(this.selected))];
+				Potion potion = Potion.getPotionById(PotionList.getPotionId(PotionList.getCustomId(this.selected)));
 				
 				if(potion == null)
 					return;
 				
 				if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("CustomPotionEffects", 9)) {
-					List potionList = ((ItemPotion)Items.POTIONITEM).getEffects(stack.getItemDamage());
+					List potionList = PotionUtils.getEffectsFromStack(stack);
 					for(int i = 0; potionList != null && i < potionList.size(); ++i) {
 						PotionEffect effect = (PotionEffect)potionList.get(i);
-						PotionNBT.addPotionEffects(stack, effect.getPotion(), effect.getAmplifier() + 1, effect.getDuration(), effect.getIsAmbient(), effect.doesShowParticles());
+						PotionNBT.addPotionEffects(stack, Potion.getIdFromPotion(effect.getPotion()), effect.getAmplifier() + 1, effect.getDuration(), effect.getIsAmbient(), effect.doesShowParticles());
 					}
 				}
 				int lvl = NumberParse.getInteger(this.level);
 				int dur = NumberParse.getInteger(this.duration);
-				PotionNBT.addPotionEffects(stack, potion.id, lvl, dur, false, this.showParticles);
+				PotionNBT.addPotionEffects(stack, Potion.getIdFromPotion(potion), lvl, dur, false, this.showParticles);
 			}
 		}
 		
@@ -106,10 +106,10 @@ public class PotionAttribute extends IItemAttribute {
 		this.selectedDelete = -1;
 		
 		List<String> list = new ArrayList<String>();
-		List potionList = ((ItemPotion)Items.POTIONITEM).getEffects(stack);
+		List potionList = PotionUtils.getEffectsFromStack(stack);
 		for(int i = 0; potionList != null && i < potionList.size(); ++i) {
 			PotionEffect effect = (PotionEffect)potionList.get(i);
-			list.add(String.format("%d ~~~ %d ~~~ %d ~~~ %b", effect.getPotion(), effect.getAmplifier(), effect.getDuration(), effect.doesShowParticles()));
+			list.add(String.format("%d ~~~ %d ~~~ %d ~~~ %b", Potion.getIdFromPotion(effect.getPotion()), effect.getAmplifier(), effect.getDuration(), effect.doesShowParticles()));
 		}
 		this.scrollMenuRemove.strRefrence = list;
 		this.scrollMenuRemove.initGui();
@@ -148,13 +148,13 @@ public class PotionAttribute extends IItemAttribute {
 
 			@Override
 			public String getDisplayString(String listStr) {
-				Potion potion = Potion.potionTypes[PotionList.getPotionId(listStr)];
+				Potion potion = Potion.getPotionById(PotionList.getPotionId(listStr));
 				
 				if(potion == null)
 					return listStr;
 				
 				String unlocalised = potion.getName();
-				String localised = I18n.format(unlocalised);
+				String localised = I18n.translateToLocal(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
 			}
 			
@@ -170,14 +170,14 @@ public class PotionAttribute extends IItemAttribute {
 			public String getDisplayString(String listStr) {
 				String[] split = listStr.split(" ~~~ ");
 				
-				Potion potion = Potion.potionTypes[NumberParse.getInteger(split[0])];
+				Potion potion = Potion.getPotionById(NumberParse.getInteger(split[0]));
 				
 				
 				
 				if(potion == null)
 					return listStr;
 				
-				String localised = I18n.format(potion.getName());
+				String localised = I18n.translateToLocal(potion.getName());
 				int lvl = NumberParse.getInteger(split[1]);
 				
 				

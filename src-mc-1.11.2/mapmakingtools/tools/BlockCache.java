@@ -3,18 +3,22 @@ package mapmakingtools.tools;
 import java.io.IOException;
 
 import io.netty.buffer.Unpooled;
+import jline.internal.Nullable;
 import mapmakingtools.api.enums.MovementType;
-import mapmakingtools.helper.BlockPosHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -24,15 +28,16 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class BlockCache {
 
 	public BlockPos playerPos;
-    public BlockPos pos;
-    public int dimId;
-    private NBTTagCompound nbt;
-    public UniqueIdentifier blockIdentifier;
-    private final ResourceLocation registryName;
-    public int meta;
-    
-    public IBlockState replacedBlock;
-    public World world;
+	public BlockPos pos;
+	private int dimId;
+	
+	private transient IBlockState replacedBlock;
+	private transient World world;
+	
+	@Nullable
+	private NBTTagCompound nbt;
+	private ResourceLocation registryName;
+	public int meta;
 
     private BlockCache() {}
     
@@ -40,13 +45,12 @@ public class BlockCache {
         this.playerPos = playerPos;
     	this.world = world;
         this.dimId = world.provider.getDimension();
-        this.pos = pos;
+        this.pos = pos.toImmutable();
         this.replacedBlock = state;
-        this.block = state.getBlock();
-        this.blockIdentifier = GameRegistry.findUniqueIdentifierFor(this.block);
-        this.meta = this.block.getMetaFromState(state);
+        this.registryName = state.getBlock().getRegistryName();
+        this.meta = state.getBlock().getMetaFromState(state);
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity != null) {
+        if(tileEntity != null) {
             this.nbt = new NBTTagCompound();
             tileEntity.writeToNBT(this.nbt);
         }
@@ -54,26 +58,15 @@ public class BlockCache {
         	this.nbt = null;
     }
 
-    private BlockCache(BlockPos playerPos, int dimension, BlockPos pos, String modid, String blockName, int meta, NBTTagCompound nbt) {
-    	this.playerPos = playerPos;
-    	this.world = DimensionManager.getWorld(dimension);
-    	this.dimId = dimension;
-        this.pos = pos;
-        this.block = Block.getBlockFromName(modid + ":" + blockName);
-        this.replacedBlock = this.block.getStateFromMeta(meta);
-        this.blockIdentifier = new UniqueIdentifier(modid + ":" + blockName);
-        this.meta = meta;
-        this.nbt = nbt;
+    private BlockCache(BlockPos playerPos, int dimension, BlockPos pos, String modID, String blockName, int meta, NBTTagCompound nbt) {
+    	this(playerPos, dimension, pos, new ResourceLocation(modID, blockName), meta, nbt);
     }
     
     private BlockCache(BlockPos playerPos, int dimension, BlockPos pos, ResourceLocation resource, int meta, NBTTagCompound nbt) {
     	this.playerPos = playerPos;
-    	this.world = DimensionManager.getWorld(dimension);
     	this.dimId = dimension;
-        this.pos = pos;
-        this.block = Block.getBlockFromName(resource.toString());
-        this.replacedBlock = this.block.getStateFromMeta(meta);
-        this.blockIdentifier = new UniqueIdentifier(resource);
+        this.pos = pos.toImmutable();
+        this.registryName = resource;
         this.meta = meta;
         this.nbt = nbt;
     }
@@ -104,84 +97,72 @@ public class BlockCache {
         		packetbuffer.readBlockPos(),
         		packetbuffer.readInt(),
         		packetbuffer.readBlockPos(),
-        		new ResourceLocation(packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4)),
+        		new ResourceLocation(packetbuffer.readString(Integer.MAX_VALUE / 4)),
                 packetbuffer.readByte(),
-                packetbuffer.readNBTTagCompoundFromBuffer());
+                packetbuffer.readCompoundTag());
     }
     
     public static BlockCache readFromPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
         BlockCache cache = new BlockCache();
-        ResourceLocation resource = new ResourceLocation(packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4));
-        cache.block = Block.getBlockFromName(resource.toString());
-        cache.replacedBlock = cache.block.getStateFromMeta(packetbuffer.readByte());
-        cache.blockIdentifier = new UniqueIdentifier(resource);
-        cache.nbt = packetbuffer.readNBTTagCompoundFromBuffer();
+        cache.registryName = new ResourceLocation(packetbuffer.readString(Integer.MAX_VALUE / 4));
+        cache.meta = packetbuffer.readByte();
+        cache.nbt = packetbuffer.readCompoundTag();
         return cache;
     }
 
     public boolean restore(boolean applyPhysics) {
-        return this.restoreToLocation(this.world, this.pos, applyPhysics);
+        return this.restoreToLocation(this.getWorld(), this.pos, applyPhysics);
     }
 
     public boolean restoreToLocation(World world, BlockPos pos, boolean applyPhysics) {
 
-        world.setBlockState(pos, this.replacedBlock, applyPhysics ? 3 : 2);
-        world.markBlockForUpdate(pos);
-        if (this.nbt != null) {
-        	TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity != null) {
-                tileEntity.readFromNBT(this.nbt);
-                tileEntity.setPos(pos);
-            }
-        }
+        world.setBlockState(pos, this.getReplacedBlock(), applyPhysics ? 3 : 2);
+        world.notifyBlockUpdate(pos, world.getBlockState(pos), this.getReplacedBlock(), applyPhysics ? 3 : 2);
+        if(this.nbt != null) {
+	    	TileEntity tileEntity = world.getTileEntity(pos);
+	        if(tileEntity != null) {
+	            tileEntity.readFromNBT(this.nbt);
+	            tileEntity.setPos(pos);
+	            tileEntity.markDirty();
+	        }
+	    }
         
         return true;
     }
     
-    public BlockCache restoreRelativeToRotated(PlayerData data, MovementType movementType) { 
-		BlockPos newPos = BlockPosHelper.subtract(this.pos, this.playerPos);
-		BlockPos newPlayerPos = new BlockPos(data.getPlayer());
+    public BlockCache restoreRelativeToRotated(PlayerData dataIn, Rotation rotationIn) { 
+    	World world = dataIn.getPlayerWorld();
+    	
+		BlockPos diffPos = this.pos.subtract(this.playerPos).rotate(rotationIn);
+		BlockPos newPlayerPos = new BlockPos(dataIn.getPlayer());
+
+		diffPos = diffPos.add(newPlayerPos);
 		
-		if(movementType.equals(MovementType._090_))
-			newPos = new BlockPos(-newPos.getZ(), newPos.getY(), newPos.getX());
-		else if(movementType.equals(MovementType._180_))
-			newPos = new BlockPos(-newPos.getX(), newPos.getY(), -newPos.getZ());
-		else if(movementType.equals(MovementType._270_))
-			newPos = new BlockPos(newPos.getZ(), newPos.getY(), -newPos.getX());
+		BlockCache bse = BlockCache.createCache(dataIn.getPlayer(), dataIn.getPlayerWorld(), diffPos);
 		
-		newPos = newPos.add(newPlayerPos);
+		IBlockState newState = this.getReplacedBlock().getBlock().withRotation(this.getReplacedBlock(), rotationIn);
 		
-		BlockCache bse = BlockCache.createCache(data.getPlayer(), data.getPlayerWorld(), newPos);
+		dataIn.getPlayerWorld().setBlockState(diffPos, newState, 2);
 		
-		if(!RotationLoader.onRotation(data.getPlayerWorld(), newPos, this.blockIdentifier, this.block, this.meta, movementType))
-			data.getPlayerWorld().setBlockState(newPos, this.replacedBlock, 2);
-		
-		data.getPlayerWorld().markBlockForUpdate(newPos);
-	    if (this.nbt != null) {
-	    	TileEntity tileEntity = data.getPlayerWorld().getTileEntity(newPos);
-	        if (tileEntity != null) {
+		dataIn.getPlayerWorld().notifyBlockUpdate(diffPos, dataIn.getPlayerWorld().getBlockState(diffPos), newState, 2);
+	    if(this.nbt != null) {
+	    	TileEntity tileEntity = dataIn.getPlayerWorld().getTileEntity(diffPos);
+	        if(tileEntity != null) {
 	            tileEntity.readFromNBT(this.nbt);
-	            tileEntity.setPos(newPos);
+	            tileEntity.setPos(diffPos);
+	            tileEntity.markDirty();
 	        }
 	    }
 	    
 	    return bse;
 	}
     
-    public BlockCache restoreRelative(PlayerData data) { 
-		BlockPos newPos = BlockPosHelper.subtract(this.pos, this.playerPos);
-		BlockPos newPlayerPos = new BlockPos(data.getPlayer());
-		newPos = newPos.add(newPlayerPos);
-
-		BlockCache bse = BlockCache.createCache(data.getPlayer(), data.getPlayerWorld(), newPos);
-		
-		this.restoreToLocation(data.getPlayerWorld(), newPos, false);
-		
-		return bse;
+    public BlockCache restoreRelative(PlayerData dataIn) { 
+		return restoreRelative(dataIn.getPlayerWorld(), new BlockPos(dataIn.getPlayer()));
 	}
     
     public BlockCache restoreRelative(World world, BlockPos pos) { 
-		BlockPos newPos = BlockPosHelper.subtract(this.pos, this.playerPos);
+		BlockPos newPos = this.pos.subtract(this.playerPos);
 		BlockPos newPlayerPos = pos;
 		newPos = newPos.add(newPlayerPos);
 
@@ -192,22 +173,24 @@ public class BlockCache {
 		return bse;
 	}
 	
-	public BlockCache restoreRelativeToFlipped(PlayerData data, MovementType movementType) { 
+	public BlockCache restoreRelativeToFlipped(PlayerData data, Mirror mirror) { 
 		BlockPos newPos = this.pos;
 		
-		if(movementType.equals(MovementType._X_))
+		if(mirror.equals(Mirror.FRONT_BACK))
 			newPos = new BlockPos(data.getMaxX() - (this.pos.getX() - data.getMinX()), this.pos.getY(), this.pos.getZ());
-		else if(movementType.equals(MovementType._Z_))
+		else if(mirror.equals(Mirror.LEFT_RIGHT))
 			newPos = new BlockPos(this.pos.getX(), this.pos.getY(), data.getMaxZ() - (this.pos.getZ() - data.getMinZ()));
-		else if(movementType.equals(MovementType._Y_))
-			newPos = new BlockPos(this.pos.getX(), data.getMaxY() - (this.pos.getY() - data.getMinY()), this.pos.getZ());
+		//else if(movementType.equals(MovementType._Y_))
+		//	newPos = new BlockPos(this.pos.getX(), data.getMaxY() - (this.pos.getY() - data.getMinY()), this.pos.getZ());
 	
 		BlockCache bse = BlockCache.createCache(data.getPlayer(), data.getPlayerWorld(), newPos);
 		
-		if(!RotationLoader.onRotation(data.getPlayerWorld(), newPos, this.blockIdentifier, this.block, this.meta, movementType))
-			data.getPlayerWorld().setBlockState(newPos, this.replacedBlock, 2);
+		IBlockState newState = this.getReplacedBlock().getBlock().withMirror(this.getReplacedBlock(), mirror);
 		
-		data.getPlayerWorld().markBlockForUpdate(newPos);
+		//TODO if(!RotationLoader.onRotation(data.getPlayerWorld(), newPos, this.blockIdentifier, this.block, this.meta, movementType))
+			data.getPlayerWorld().setBlockState(newPos, newState, 2);
+		
+		data.getPlayerWorld().notifyBlockUpdate(newPos, data.getPlayerWorld().getBlockState(newPos), newState, 2);
 	    if (this.nbt != null) {
 	    	TileEntity tileEntity = data.getPlayerWorld().getTileEntity(newPos);
 	        if (tileEntity != null) {
@@ -221,15 +204,15 @@ public class BlockCache {
 
     public void writeToNBT(NBTTagCompound compound) {
     	compound.setLong("playerPos", this.playerPos.toLong());
-        compound.setString("blockMod", this.blockIdentifier.modId);
-        compound.setString("blockName", this.blockIdentifier.name);
+        compound.setString("blockMod", this.registryName.getResourceDomain());
+        compound.setString("blockName", this.registryName.getResourcePath());
         compound.setLong("blockPos", this.pos.toLong());
         compound.setInteger("dimension", this.dimId);
         compound.setByte("metadata", (byte)this.meta);
 
         compound.setBoolean("hasTE", this.nbt != null);
 
-        if (this.nbt != null)
+        if(this.nbt != null)
             compound.setTag("tileEntity", this.nbt);
     }
     
@@ -237,16 +220,14 @@ public class BlockCache {
 		packetbuffer.writeBlockPos(this.playerPos);
 		packetbuffer.writeInt(this.dimId);
 		packetbuffer.writeBlockPos(this.pos);
-		String id = this.blockIdentifier.toString();
-	    int i = id.indexOf(58);
-
-	    if(i >= 0 && id.substring(0, i).equals("minecraft"))
-			packetbuffer.writeString(id.substring(i + 1, id.length()));
+		
+	    if(this.registryName.getResourceDomain().equals("minecraft"))
+			packetbuffer.writeString(this.registryName.getResourcePath());
 	    else
-	    	packetbuffer.writeString(id);
+	    	packetbuffer.writeString(this.registryName.toString());
 	    
 		packetbuffer.writeByte(this.meta);
-		packetbuffer.writeNBTTagCompoundToBuffer(this.nbt);
+		packetbuffer.writeCompoundTag(this.nbt);
 	}
     
     private static PacketBuffer SIZE_BUFFER = new PacketBuffer(Unpooled.buffer());
@@ -264,36 +245,45 @@ public class BlockCache {
     }
     
     public void writeToPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
-		String id = this.blockIdentifier.toString();
-	    int i = id.indexOf(58);
-
-	    if(i >= 0 && id.substring(0, i).equals("minecraft"))
-			packetbuffer.writeString(id.substring(i + 1, id.length()));
+	    if(this.registryName.getResourceDomain().equals("minecraft"))
+			packetbuffer.writeString(this.registryName.getResourcePath());
 	    else
-	    	packetbuffer.writeString(id);
+	    	packetbuffer.writeString(this.registryName.toString());
 	    
 		packetbuffer.writeByte(this.meta);
-		packetbuffer.writeNBTTagCompoundToBuffer(this.nbt);
+		packetbuffer.writeCompoundTag(this.nbt);
 	}
 
+    public World getWorld() {
+        return this.world == null ? DimensionManager.getWorld(this.dimId) : this.world;
+    }
+
+    public IBlockState getReplacedBlock() {
+        return this.replacedBlock == null ? ForgeRegistries.BLOCKS.getValue(this.registryName).getStateFromMeta(this.meta) : this.replacedBlock;
+    }
+
+    public TileEntity getTileEntity() {
+        return this.nbt != null ? TileEntity.create(this.getWorld(), this.nbt) : null;
+    }
+    
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if(obj == null)
             return false;
-        if (this.getClass() != obj.getClass())
+        if(this.getClass() != obj.getClass())
             return false;
         BlockCache other = (BlockCache)obj;
-        if (!this.pos.equals(other.pos))
+        if(!this.pos.equals(other.pos))
             return false;
-        if (this.meta != other.meta)
+        if(this.meta != other.meta)
             return false;
-        if (this.dimId != other.dimId)
+        if(this.dimId != other.dimId)
             return false;
-        if (this.nbt != other.nbt && (this.nbt == null || !this.nbt.equals(other.nbt)))
+        if(this.nbt != other.nbt && (this.nbt == null || !this.nbt.equals(other.nbt)))
             return false;
-        if (this.world != other.world && (this.world == null || !this.world.equals(other.world)))
+        if(this.getWorld() != other.getWorld() && (this.getWorld() == null || !this.getWorld().equals(other.getWorld())))
             return false;
-        if (this.blockIdentifier != other.blockIdentifier && (this.blockIdentifier == null || !this.blockIdentifier.equals(other.blockIdentifier)))
+        if(this.registryName != other.registryName && (this.registryName == null || !this.registryName.equals(other.registryName)))
             return false;
         
         return true;
@@ -308,13 +298,13 @@ public class BlockCache {
         hash = 73 * hash + this.meta;
         hash = 73 * hash + this.dimId;
         hash = 73 * hash + (this.nbt != null ? this.nbt.hashCode() : 0);
-        hash = 73 * hash + (this.world != null ? this.world.hashCode() : 0);
-        hash = 73 * hash + (this.blockIdentifier != null ? this.blockIdentifier.hashCode() : 0);
+        hash = 73 * hash + (this.getWorld() != null ? this.getWorld().hashCode() : 0);
+        hash = 73 * hash + (this.registryName != null ? this.registryName.hashCode() : 0);
         return hash;
     }
     
     @Override
     public String toString() {
-    	return "BlockCache=[Pos=" + this.pos.toString() + ", Block=" + this.blockIdentifier.toString() + "]";
+    	return "BlockCache=[Pos=" + this.pos.toString() + ", Block=" + this.registryName + "]";
     }
 }

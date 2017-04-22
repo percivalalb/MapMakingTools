@@ -10,6 +10,7 @@ import mapmakingtools.tools.filter.packet.PacketPhantomInfinity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -65,10 +66,10 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	
 	@Override
 	public Slot addSlotToContainer(Slot slot) {
-		slot.xDisplayPosition += 62 / 2;
+		slot.xPos += 62 / 2;
         slot.slotNumber = this.inventorySlots.size();
         this.inventorySlots.add(slot);
-        this.inventoryItemStacks.add((ItemStack)null);
+        this.inventoryItemStacks.add(ItemStack.EMPTY);
         if(slot instanceof IPhantomSlot && ((IPhantomSlot)slot).canBeUnlimited())
         	PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), ((IPhantomSlot)slot).isUnlimited()), this.player);
         return slot;
@@ -76,12 +77,12 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	
 	@Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
-    	ItemStack stack = null;
-    	if(filterCurrent != null && (stack = filterCurrent.transferStackInSlot(this, par1EntityPlayer, par2)) != null) {
+    	ItemStack stack = ItemStack.EMPTY;
+    	if(filterCurrent != null && !(stack = filterCurrent.transferStackInSlot(this, par1EntityPlayer, par2)).isEmpty()) {
     		return stack;
     	}
     	else {
-    		return null;
+    		return ItemStack.EMPTY;
     	}
 	}
 	
@@ -104,16 +105,6 @@ public class ContainerFilter extends Container implements IContainerFilter {
     }
 	
 	@Override
-	public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack) {
-        for (int i = 0; i < par1ArrayOfItemStack.length; ++i) {
-            Slot slot = this.getSlot(i);
-            if(slot != null) {
-            	slot.putStack(par1ArrayOfItemStack[i]);
-            }
-        }
-    }
-	
-	@Override
 	public void putStackInSlot(int par1, ItemStack par2ItemStack) {
 		Slot slot = this.getSlot(par1);
         if(slot != null) {
@@ -123,41 +114,41 @@ public class ContainerFilter extends Container implements IContainerFilter {
 
 	//Phantom Slot
 	@Override
-	public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
-		Slot slot = slotNum < 0 || slotNum >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotNum);
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+		Slot slot = slotId < 0 || slotId >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotId);
 		if (slot instanceof IPhantomSlot) {
 			if(!this.getWorld().isRemote)
-				return slotClickPhantom(slot, mouseButton, modifier, player);
-			return null;
+				return slotClickPhantom(slot, dragType, clickTypeIn, player);
+			return ItemStack.EMPTY;
 		}
 
-		return super.slotClick(slotNum, mouseButton, modifier, player);
+		return super.slotClick(slotId, dragType, clickTypeIn, player);
 	}
 
 	
-	private ItemStack slotClickPhantom(Slot slot, int mouseButton, int modifier, EntityPlayer player) {
-		ItemStack stack = null;
+	private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, EntityPlayer player) {
+		ItemStack stack = ItemStack.EMPTY;
 		IPhantomSlot phantomSlot = (IPhantomSlot)slot;
 		InventoryPlayer playerInv = player.inventory;
 		ItemStack stackHeld = playerInv.getItemStack();
 		ItemStack slotStack = slot.getStack();
 		
-		if(stackHeld != null) {
+		if(!stackHeld.isEmpty()) {
 			ItemStack phantomStack = stackHeld.copy();
-			phantomStack.stackSize = slotStack != null ? slotStack.stackSize : 1;
+			phantomStack.setCount(!slotStack.isEmpty() ? slotStack.getCount() : 1);
 			slot.putStack(phantomStack);
 		}
-		else if(slotStack != null) {
+		else if(!slotStack.isEmpty()) {
 			
 			if(mouseButton == 2) {
-				slot.putStack(null);
+				slot.putStack(ItemStack.EMPTY);
 				if(slot.inventory instanceof IUnlimitedInventory)
 					((IUnlimitedInventory)slot.inventory).setSlotUnlimited(slot.getSlotIndex(), false);
 				phantomSlot.setIsUnlimited(false);
 				PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 			}
 			else {
-				int stackSize = mouseButton == 1 ? slotStack.stackSize + 1: slotStack.stackSize - 1;
+				int stackSize = mouseButton == 1 ? slotStack.getCount() + 1: slotStack.getCount() - 1;
 			
 				if(stackSize > 1 && phantomSlot.canBeUnlimited() && phantomSlot.isUnlimited()) {
 					stackSize = 1;
@@ -180,7 +171,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 					phantomSlot.setIsUnlimited(false);
 					PacketDispatcher.sendTo(new PacketPhantomInfinity(slot.getSlotIndex(), false), player);
 				}
-				slotStack.stackSize = stackSize;
+				slotStack.setCount(stackSize);
 			}
 		}
 		this.detectAndSendChanges();
@@ -209,7 +200,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 
 	@Override
 	public World getWorld() {
-		return this.getPlayer().worldObj;
+		return this.getPlayer().world;
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -34,7 +35,7 @@ public class FillInventoryClientFilter extends IFilterClient {
 
 	@Override
 	public String getIconPath() {
-		return "mapmakingtools:textures/filter/fill_Inventory.png";
+		return "mapmakingtools:textures/filter/fill_inventory.png";
 	}
 
 	@Override
@@ -58,11 +59,11 @@ public class FillInventoryClientFilter extends IFilterClient {
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
-		if (button.enabled) {
-            switch (button.id) {
+		if(button.enabled) {
+            switch(button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketFillInventory(gui.getBlockPos()));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                 	break;
             }
         }
@@ -70,7 +71,7 @@ public class FillInventoryClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.fillinventory.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.fillinventory.info"));
 	}
 	
 	@Override

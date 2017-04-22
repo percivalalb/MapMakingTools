@@ -45,7 +45,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
@@ -60,7 +59,7 @@ public class ClientProxy extends CommonProxy {
 		if(ID == ID_FILTER_BLOCK) {
 			List<IFilterClient> filterList = FilterManager.getClientBlocksFilters(player, world, pos);
 			if(filterList.size() > 0)
-				return new GuiFilter(filterList, player, pos);
+				return new GuiFilter(filterList, player, pos.toImmutable());
 		}
 		else if(ID == ID_FILTER_ENTITY) {
 			List<IFilterClient> filterList = FilterManager.getClientEntitiesFilters(player, world.getEntityByID(x));
@@ -91,7 +90,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerHandlers() {
 		ClientRegistry.registerKeyBinding(KeyStateHandler.keyItemEditor);
-    	FMLCommonHandler.instance().bus().register(new KeyStateHandler());
+		MinecraftForge.EVENT_BUS.register(new KeyStateHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldOverlayHandler());
     	MinecraftForge.EVENT_BUS.register(new ScreenRenderHandler());
     	MinecraftForge.EVENT_BUS.register(new GuiOpenHandler());

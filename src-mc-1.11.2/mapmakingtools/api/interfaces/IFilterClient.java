@@ -3,7 +3,7 @@ package mapmakingtools.api.interfaces;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb
@@ -11,7 +11,7 @@ import net.minecraft.client.resources.I18n;
 public abstract class IFilterClient extends IFilter {
 	
 	public abstract String getUnlocalizedName();
-	public String getFilterName() { return I18n.format(this.getUnlocalizedName()); }
+	public String getFilterName() { return I18n.translateToLocal(this.getUnlocalizedName()); }
 	public abstract String getIconPath();
 	
 	public void initGui(IGuiFilter gui) {}

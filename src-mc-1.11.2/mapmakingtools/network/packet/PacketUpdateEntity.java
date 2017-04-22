@@ -29,18 +29,18 @@ public class PacketUpdateEntity extends AbstractMessage {
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.entityId = packetbuffer.readInt();
-		this.tagCompound = packetbuffer.readNBTTagCompoundFromBuffer();
+		this.tagCompound = packetbuffer.readCompoundTag();
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
 		packetbuffer.writeInt(this.entityId);
-		packetbuffer.writeNBTTagCompoundToBuffer(this.tagCompound);
+		packetbuffer.writeCompoundTag(this.tagCompound);
 	}
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
-		Entity entity = player.worldObj.getEntityByID(this.entityId);
+		Entity entity = player.world.getEntityByID(this.entityId);
 		
 		if(entity == null)
 			return;

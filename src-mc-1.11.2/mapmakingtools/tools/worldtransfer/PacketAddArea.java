@@ -10,9 +10,9 @@ import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -39,7 +39,7 @@ public class PacketAddArea extends AbstractClientMessage {
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.name = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.name = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.firstSection = packetbuffer.readBoolean();
 		this.lastSection = packetbuffer.readBoolean();
 		if(this.firstSection) {
@@ -94,7 +94,7 @@ public class PacketAddArea extends AbstractClientMessage {
 		for(BlockCache bse : this.list) {
 			bse.playerPos = this.firstSection ? this.playerPos : WorldTransferList.getAreaFromName(this.name).get(0).playerPos;
 
-			bse.pos = lowestPos.add(index % xDiff, MathHelper.floor_double((index % (yDiff * xDiff)) / xDiff), MathHelper.floor_double(index / (yDiff * xDiff)));
+			bse.pos = lowestPos.add(index % xDiff, MathHelper.floor((index % (yDiff * xDiff)) / xDiff), MathHelper.floor(index / (yDiff * xDiff)));
 			
 			index += 1;
 		}
@@ -102,12 +102,12 @@ public class PacketAddArea extends AbstractClientMessage {
 		WorldTransferList.put(this.name, this.firstSection, this.lastSection, this.list);
 
 		if(this.lastSection) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.worldtransfer.copy.complete", name);
-			chatComponent.getChatStyle().setColor(TextFormatting.GREEN);
-			player.addChatMessage(chatComponent);
-			chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.worldtransfer.copy.complete2", this.name);
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.worldtransfer.copy.complete", name);
+			chatComponent.getStyle().setColor(TextFormatting.GREEN);
+			player.sendMessage(chatComponent);
+			chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.worldtransfer.copy.complete2", this.name);
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 			
 			WorldTransferList.saveToFile();
 		}

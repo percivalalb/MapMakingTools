@@ -14,6 +14,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobVelocity;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.TextFormatting;
 
 /**
@@ -87,7 +88,7 @@ public class MobVelocityClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.minecartIndex));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                     break;
             }
         }
@@ -110,7 +111,7 @@ public class MobVelocityClientFilter extends IFilterClientSpawner {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobvelocity.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobvelocity.info"));
 	}
 	
 	@Override

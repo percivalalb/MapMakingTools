@@ -1,13 +1,14 @@
 package mapmakingtools.command;
 
+import java.util.Collections;
 import java.util.List;
 
+import jline.internal.Nullable;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 public class CommandClearPoints extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/clearpoints";
 	}
 
@@ -28,16 +29,13 @@ public class CommandClearPoints extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.clearpoints.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
-		if(!(sender instanceof EntityPlayer))
-			return;
-		
-		EntityPlayerMP player = param.length == 0 ? getCommandSenderAsPlayer(sender) : getPlayer(sender, param[0]);
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		EntityPlayerMP player = args.length == 0 ? this.getCommandSenderAsPlayer(sender) : this.getPlayer(server, sender, args[0]);
 		
 		PlayerData data = WorldData.getPlayerData(player);
 		data.setFirstPoint(null);
@@ -46,16 +44,12 @@ public class CommandClearPoints extends CommandBase {
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, this.getPlayers()) : null;
-    }
-
-    protected String[] getPlayers() {
-        return MinecraftServer.getServer().getAllUsernames();
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.<String>emptyList();
     }
 
     @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
-        return par2 == 0;
+    public boolean isUsernameIndex(String[] args, int index) {
+        return index == 0;
     }
 }

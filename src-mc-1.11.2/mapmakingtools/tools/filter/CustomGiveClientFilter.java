@@ -15,6 +15,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -75,7 +76,7 @@ public class CustomGiveClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketCustomGive(gui.getBlockPos()));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                 	break;
             }
         }
@@ -90,8 +91,8 @@ public class CustomGiveClientFilter extends IFilterClient {
 			
 			if(stack != null) {
 				String command = "/give @p";
-				command += " " + Item.itemRegistry.getNameForObject(stack.getItem());
-				command += " " + stack.stackSize;
+				command += " " + Item.REGISTRY.getNameForObject(stack.getItem());
+				command += " " + stack.getCount();
 				command += " " + stack.getItemDamage();
 				
 				if(stack.hasTagCompound())
@@ -113,7 +114,7 @@ public class CustomGiveClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.customgive.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.customgive.info"));
 	}
 	
 	@Override

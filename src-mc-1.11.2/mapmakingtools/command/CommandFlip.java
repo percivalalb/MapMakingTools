@@ -2,9 +2,12 @@ package mapmakingtools.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import jline.internal.Nullable;
 import mapmakingtools.api.enums.MovementType;
+import mapmakingtools.helper.NumberParse;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
@@ -13,8 +16,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 /**
@@ -23,7 +29,7 @@ import net.minecraft.world.World;
 public class CommandFlip extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/flip";
 	}
 
@@ -33,39 +39,34 @@ public class CommandFlip extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.flip.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		
 		if(!data.hasSelectedPoints())
 			throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 		
 		
-		if(param.length < 1)
-			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		if(args.length < 1)
+			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		else {
-			MovementType movementType = null;
-			String flipMode = param[0];
-			
-			for(String str : getModeNames())
-	    		if(str.equalsIgnoreCase(flipMode))
-	    			movementType = MovementType.getRotation(str);
+			Mirror mirror = Mirror.values()[NumberParse.getInteger(args[0])];
 
-			if(movementType == null)
-				throw new CommandException("mapmakingtools.commands.build.flipmodeerror", new Object[] {flipMode});
+
+			if(mirror.equals(Mirror.NONE))
+				throw new CommandException("mapmakingtools.commands.build.flipmodeerror", new Object[] {mirror});
 				
+			data.getActionStorage().setFlipping(mirror);
 			
-			data.getActionStorage().setFlipping(movementType);
-
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
 			
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getFirstPoint(), data.getSecondPoint());
@@ -77,24 +78,19 @@ public class CommandFlip extends CommandBase {
 			int blocksChanged = data.getActionStorage().flip(list);
 			
 			if(blocksChanged > 0) {
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.flip.complete", "" + blocksChanged);
-				chatComponent.getChatStyle().setItalic(true);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.flip.complete", "" + blocksChanged);
+				chatComponent.getStyle().setItalic(true);
+				player.sendMessage(chatComponent);
 			}
 		}
 	}
-
+	
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] param, BlockPos pos) {
-        return param.length == 1 ? getListOfStringsMatchingLastWord(param, getModeNames()) : null;
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, this.getModeNames()) : Collections.<String>emptyList();
     }
 	
 	public static List<String> getModeNames() {
-		return Arrays.asList("x", "y", "z");
+		return Arrays.asList("0", "1", "2");
 	}
-
-    @Override
-    public boolean isUsernameIndex(String[] param, int index) {
-        return false;
-    }
 }

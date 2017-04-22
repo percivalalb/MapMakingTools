@@ -80,20 +80,20 @@ public class CachedBlock {
 		
 		newPos = newPos.add(playerPos);
 		
-		CachedBlock replacementCache = new CachedBlock(data.getPlayer().worldObj, newPos);
+		CachedBlock replacementCache = new CachedBlock(data.getPlayer().world, newPos);
 		//Stops any entities being destroyed from the block break
 		EntityJoinWorldHandler.shouldSpawnEntities = false;
 		try {
-			this.clearTileEntity(data.getPlayer().worldObj, newPos);
+			this.clearTileEntity(data.getPlayer().world, newPos);
 			boolean set = RotationLoader.onRotation(this.blockState, this.tileEntity, this.orginalWorld, newPos, movementType);
 			
 			if(!set)
-				data.getPlayer().worldObj.setBlockState(newPos, this.blockState, 2);
+				data.getPlayer().world.setBlockState(newPos, this.blockState, 2);
 			
 			if(this.tileEntity != null) {
 				TileEntity tile = TileEntity.createAndLoadEntity(this.tileEntity);
 				tile.setPos(newPos);
-				data.getPlayer().worldObj.setTileEntity(newPos, tile);
+				data.getPlayer().world.setTileEntity(newPos, tile);
 			}
 		}
 		catch(Exception e) {}
@@ -154,7 +154,7 @@ public class CachedBlock {
 			this.orginalWorld = DimensionManager.getWorld(packetbuffer.readInt());
 		
 		this.pos = BlockPos.fromLong(data.readLong());
-		this.blockState = Block.getBlockFromName(packetbuffer.readStringFromBuffer(Integer.MAX_VALUE));
+		this.blockState = Block.getBlockFromName(packetbuffer.readString(Integer.MAX_VALUE));
 		this.tileEntity = PacketHelper.readNBTTagCompound(data);
 		return this;
 	}

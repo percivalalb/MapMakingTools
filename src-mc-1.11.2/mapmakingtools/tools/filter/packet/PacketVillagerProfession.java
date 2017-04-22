@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -45,9 +45,9 @@ public class PacketVillagerProfession extends AbstractServerMessage {
 					EntityVillager villager = (EntityVillager)entity;
 					villager.setProfession(this.professionId);
 					
-					ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.villagerprofession.complete", this.professionId);
-					chatComponent.getChatStyle().setItalic(true);
-					player.addChatMessage(chatComponent);
+					TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagerprofession.complete", this.professionId);
+					chatComponent.getStyle().setItalic(true);
+					player.sendMessage(chatComponent);
 				}
 			}
 		}

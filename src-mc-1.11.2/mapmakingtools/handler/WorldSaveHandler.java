@@ -12,13 +12,13 @@ public class WorldSaveHandler {
 	
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load event) {
-		if(event.world.provider.getDimensionId() == 0 && !event.world.isRemote)
+		if(event.getWorld().provider.getDimension() == 0 && !event.getWorld().isRemote)
 			WorldData.read(DimensionManager.getCurrentSaveRootDirectory());
 	}
 	
 	@SubscribeEvent
 	public void worldSave(WorldEvent.Save event) {
-		if(event.world.provider.getDimensionId() == 0 && !event.world.isRemote)
+		if(event.getWorld().provider.getDimension() == 0 && !event.getWorld().isRemote)
 			WorldData.save(DimensionManager.getCurrentSaveRootDirectory());
 	}
 	

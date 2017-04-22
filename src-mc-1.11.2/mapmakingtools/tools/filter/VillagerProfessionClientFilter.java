@@ -11,6 +11,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -66,7 +67,7 @@ public class VillagerProfessionClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketVillagerProfession(this.professionId));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                 	break;
                 case 1:
                 	this.professionId += 1;
@@ -84,7 +85,7 @@ public class VillagerProfessionClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.villagerprofession.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagerprofession.info"));
 	}
 	
 	@Override

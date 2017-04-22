@@ -8,11 +8,10 @@ import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -32,7 +31,7 @@ public class PacketCommandBlockAlias extends AbstractServerMessage {
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.pos = packetbuffer.readBlockPos();
-		this.name = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.name = packetbuffer.readString(Integer.MAX_VALUE / 4);
 	}
 
 	@Override
@@ -46,20 +45,22 @@ public class PacketCommandBlockAlias extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityCommandBlock) {
 			LogHelper.info("YES");
 			TileEntityCommandBlock commandBlock = (TileEntityCommandBlock)tile;
 			commandBlock.getCommandBlockLogic().setName(this.name);
 				//player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.commandBlockName.complete", name));
 				if(ServerHelper.isServer()) {
-	    			MinecraftServer server = MinecraftServer.getServer();
-	    			server.getConfigurationManager().sendPacketToAllPlayersInDimension(commandBlock.getDescriptionPacket(), commandBlock.getWorld().provider.getDimensionId());
+					//TODO
+					
+	    			//MinecraftServer server = ServerHelper.mcServer;
+	    			//server.getConfigurationManager().sendPacketToAllPlayersInDimension(commandBlock.getDescriptionPacket(), commandBlock.getWorld().provider.getDimensionId());
     			}
     			
-    			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.commandblockalias.complete", this.name);
-				chatComponent.getChatStyle().setItalic(true);
-				player.addChatMessage(chatComponent);
+    			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.commandblockalias.complete", this.name);
+				chatComponent.getStyle().setItalic(true);
+				player.sendMessage(chatComponent);
 			
 		}
 	}

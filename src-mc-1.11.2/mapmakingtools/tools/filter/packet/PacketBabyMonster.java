@@ -10,8 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -49,16 +49,16 @@ public class PacketBabyMonster extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 			SpawnerUtil.setBabyMonster(spawner.getSpawnerBaseLogic(), this.baby, this.minecartIndex);
 			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.babymonster.complete");
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.babymonster.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 

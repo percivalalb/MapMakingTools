@@ -13,9 +13,9 @@ import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -44,7 +44,7 @@ public class PacketPaste extends AbstractServerMessage {
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.name = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.name = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.list = new ArrayList<BlockCache>();
 		this.firstSection = packetbuffer.readBoolean();
 		this.lastSection = packetbuffer.readBoolean();
@@ -106,7 +106,7 @@ public class PacketPaste extends AbstractServerMessage {
 		for(BlockCache bse : this.list) {
 			bse.playerPos = this.firstSection ? this.playerPos : this.mapPos.get(this.name).get(2);
 
-			bse.pos = lowestPos.add(index % xDiff, MathHelper.floor_double((index % (yDiff * xDiff)) / xDiff), MathHelper.floor_double(index / (yDiff * xDiff)));
+			bse.pos = lowestPos.add(index % xDiff, MathHelper.floor((index % (yDiff * xDiff)) / xDiff), MathHelper.floor(index / (yDiff * xDiff)));
 			
 			index += 1;
 		}
@@ -120,9 +120,9 @@ public class PacketPaste extends AbstractServerMessage {
 			data.getActionStorage().getLastUndo().addAll(newUndo);
 		
 		if(this.lastSection) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.worldtransfer.paste.complete", this.name);
-			chatComponent.getChatStyle().setColor(TextFormatting.GREEN);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.worldtransfer.paste.complete", this.name);
+			chatComponent.getStyle().setColor(TextFormatting.GREEN);
+			player.sendMessage(chatComponent);
 		}
 	}
 

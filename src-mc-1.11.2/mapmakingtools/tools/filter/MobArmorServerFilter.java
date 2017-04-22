@@ -10,28 +10,29 @@ import mapmakingtools.container.SlotArmor;
 import mapmakingtools.container.SlotFake;
 import mapmakingtools.container.SlotFakeArmor;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IChatComponent;
 
 /**
  * @author ProPercivalalb
  */
 public class MobArmorServerFilter extends IFilterServer {
 
+	private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
 	public static Map<String, MobArmor> invMap = new Hashtable<String, MobArmor>();
 	
 	@Override
 	public void addSlots(IContainerFilter container) {
         for (int i = 0; i < 4; ++i) {
-        	container.addSlot(new SlotArmor(container.getPlayer(), container.getPlayer().inventory, container.getPlayer().inventory.getSizeInventory() - 1 - i, 130 + i * 18, 40, i));
+        	container.addSlot(new SlotArmor(container.getPlayer(), container.getPlayer().inventory, container.getPlayer().inventory.getSizeInventory() - 1 - i, 130 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
         }
         container.addSlot(new SlotFake(getInventory(container), 0, 14, 39));
         for (int i = 0; i < 4; ++i) {
-        	container.addSlot(new SlotFakeArmor(container.getPlayer(), getInventory(container), getInventory(container).getSizeInventory() - 1 - i, 40 + i * 18, 40, i));
+        	container.addSlot(new SlotFakeArmor(container.getPlayer(), getInventory(container), getInventory(container).getSizeInventory() - 1 - i, 40 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
         }
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 9; ++j){
@@ -46,7 +47,7 @@ public class MobArmorServerFilter extends IFilterServer {
 	
 	@Override
 	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer par1EntityPlayer, int par2) {
-		ItemStack itemstack = null;
+		ItemStack itemstack = ItemStack.EMPTY;
 	    Slot slot = (Slot)container.getInventorySlots().get(par2);
 
 	    if (slot != null && slot.getHasStack()) {
@@ -54,38 +55,38 @@ public class MobArmorServerFilter extends IFilterServer {
 	        itemstack = itemstack1.copy();
 	        boolean wasPhantomSlot = false;
 
-	        if (itemstack.getItem() instanceof ItemArmor && !((Slot)container.getInventorySlots().get(5 + ((ItemArmor)itemstack.getItem()).armorType)).getHasStack() && (par2 >= 9 && par2 < 45 || par2 >= 0 && par2 < 4)) {
+	        if (itemstack.getItem() instanceof ItemArmor && !((Slot)container.getInventorySlots().get(5 + ((ItemArmor)itemstack.getItem()).armorType.getIndex())).getHasStack() && (par2 >= 9 && par2 < 45 || par2 >= 0 && par2 < 4)) {
 	        	wasPhantomSlot = true;
-	        	int j = 5 + ((ItemArmor)itemstack.getItem()).armorType;
+	        	int j = 5 + ((ItemArmor)itemstack.getItem()).armorType.getIndex();
 	                
 	            if (!container.mergeItemStacks(itemstack1, j, j + 1, false))
-	                return null;
+	                return ItemStack.EMPTY;
 	        }
 	        else if(par2 >= 9 && par2 < 45 && !(itemstack.getItem() instanceof ItemArmor) && !((Slot)container.getInventorySlots().get(4)).getHasStack()) {
 	        	wasPhantomSlot = true;
 	        	if (!container.mergeItemStacks(itemstack1, 4, 4 + 1, false))
-	                return null;
+	                return ItemStack.EMPTY;
 	        }
 	        else if (par2 >= 36 && par2 < 45) {
 	            if (!container.mergeItemStacks(itemstack1, 9, 36, false))
-	                return null;
+	                return ItemStack.EMPTY;
 	        }
 	        else if (!container.mergeItemStacks(itemstack1, 36, 45, false))
-	            return null;
+	            return ItemStack.EMPTY;
 	          
 	        if(!wasPhantomSlot) {
-	        	if(itemstack1.stackSize == 0)
-	        		slot.putStack((ItemStack)null);
+	        	if(itemstack1.isEmpty())
+	        		slot.putStack(ItemStack.EMPTY);
 	            else
 	            	slot.onSlotChanged();
 	        }
 	        else
-	        	itemstack1.stackSize = itemstack.stackSize;
+	        	itemstack1.setCount(itemstack.getCount());
 	            
-	        if (itemstack1.stackSize == itemstack.stackSize)
+	        if (itemstack1.getCount() == itemstack.getCount())
 	            return null;
 
-	        slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
+	        //slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
 	    }
 
 	    return itemstack;
@@ -107,7 +108,7 @@ public class MobArmorServerFilter extends IFilterServer {
 	        for (int k = 0; k < nbttaglist.tagCount(); ++k) {
 	            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(k);
 
-	            this.getInventory(username).contents[k] = ItemStack.loadItemStackFromNBT(nbttagcompound1.getCompoundTag("item"));
+	            this.getInventory(username).setInventorySlotContents(k, new ItemStack(nbttagcompound1.getCompoundTag("item")));
 	            this.getInventory(username).umlimited[k] = nbttagcompound1.getBoolean("isUnlimited");
 	        }
 		}
@@ -124,10 +125,8 @@ public class MobArmorServerFilter extends IFilterServer {
 			for(int i = 0; i < this.getInventory(key).getSizeInventory(); ++i) {
 				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
 				nbttagcompound1.setBoolean("isUnlimited", this.getInventory(key).isSlotUnlimited(i));
-				if(this.getInventory(key).contents[i] != null)
-					data.setTag("item", this.getInventory(key).contents[i].writeToNBT(new NBTTagCompound()));
-				else
-					data.setTag("item", new NBTTagCompound());
+				data.setTag("item", this.getInventory(key).getStackInSlot(i).writeToNBT(new NBTTagCompound()));
+
 				nbttaglist.appendTag(nbttagcompound1);
 			}
 			data.setTag("items", nbttaglist);
@@ -152,104 +151,14 @@ public class MobArmorServerFilter extends IFilterServer {
 		return invMap.get(username);
 	}
 
-	public class MobArmor implements IUnlimitedInventory {
-
-		public ItemStack[] contents;
-		
-		public MobArmor(int inventorySize) {
-			this.contents = new ItemStack[inventorySize];
-			umlimited = new boolean[inventorySize];
-		}
-		
-		public int getSizeInventory() {
-		    return this.contents.length;
-		}
-
-		public ItemStack getStackInSlot(int par1) {
-		    return this.contents[par1];
-		}
-
-		public ItemStack decrStackSize(int par1, int par2) {
-		     if (this.contents[par1] != null) {
-		        ItemStack itemstack;
-
-		        if (this.contents[par1].stackSize <= par2) {
-		            itemstack = this.contents[par1];
-		            this.contents[par1] = null;
-		            return itemstack;
-		        }
-		        else {
-		            itemstack = this.contents[par1].splitStack(par2);
-
-		            if (this.contents[par1].stackSize == 0) {
-		                this.contents[par1] = null;
-		            }
-
-		            return itemstack;
-		        }
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		@Override
-		public ItemStack removeStackFromSlot(int par1) {
-		    if (this.contents[par1] != null) {
-		        ItemStack itemstack = this.contents[par1];
-		        this.contents[par1] = null;
-		        return itemstack;
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		    this.contents[par1] = par2ItemStack;
-
-		    if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit()) {
-		        par2ItemStack.stackSize = this.getInventoryStackLimit();
-		    }
-		}
-
-		@Override
-		public int getInventoryStackLimit() {
-			return 1;
-		}
-
-		@Override
-		public void markDirty() {
-			
-		}
-
-		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-			return true;
-		}
-/**
-		@Override
-		public void openInventory() {}
-
-		@Override
-		public void closeInventory() {}
-
-		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-			return false;
-		}
-
-		@Override
-		public String getInventoryName() {
-			return "Mob Armor";
-		}
-
-		@Override
-		public boolean hasCustomInventoryName() {
-			return true;
-		}**/
+	public class MobArmor extends IUnlimitedInventory {
 
 		public boolean[] umlimited;
+		
+		public MobArmor(int inventorySize) {
+			super("Mob Armour", false, inventorySize);
+			this.umlimited = new boolean[inventorySize];
+		}
 		
 		@Override
 		public boolean isSlotUnlimited(int slotIndex) {
@@ -259,66 +168,6 @@ public class MobArmorServerFilter extends IFilterServer {
 		@Override
 		public void setSlotUnlimited(int slotIndex, boolean isUnlimited) {
 			this.umlimited[slotIndex] = isUnlimited;
-		}
-
-		@Override
-		public void openInventory(EntityPlayer player) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void closeInventory(EntityPlayer player) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public int getField(int id) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void setField(int id, int value) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public int getFieldCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void clear() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public String getName() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean hasCustomName() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public IChatComponent getDisplayName() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean isItemValidForSlot(int index, ItemStack stack) {
-			// TODO Auto-generated method stub
-			return false;
 		}
 	}
 }

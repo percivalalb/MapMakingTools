@@ -16,8 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -47,7 +47,7 @@ public class PacketChestSymmetrify extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityChest) {
 			TileEntityChest chest = (TileEntityChest)tile;
 			
@@ -58,16 +58,16 @@ public class PacketChestSymmetrify extends AbstractServerMessage {
 				ItemStack stack = chest.getStackInSlot(index);
 				if(stack != null) {
 					stacksInChest.add(stack);
-					chest.setInventorySlotContents(index, null);
+					chest.setInventorySlotContents(index, ItemStack.EMPTY);
 					++currentCount;
 				}
 			}
 			
 			if(stacksInChest.size() < 1) {
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.chestsymmetrify.nocontents");
-				chatComponent.getChatStyle().setItalic(true);
-				chatComponent.getChatStyle().setColor(TextFormatting.RED);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.chestsymmetrify.nocontents");
+				chatComponent.getStyle().setItalic(true);
+				chatComponent.getStyle().setColor(TextFormatting.RED);
+				player.sendMessage(chatComponent);
 				return;
 			}	
 			
@@ -185,7 +185,7 @@ public class PacketChestSymmetrify extends AbstractServerMessage {
 			}
 			
 			for(int index = 0; index < chest.getSizeInventory(); ++index) {
-				chest.setInventorySlotContents(index, null);
+				chest.setInventorySlotContents(index, ItemStack.EMPTY);
 			}
 			
 			Iterator<Integer> ite = newItems.keySet().iterator();
@@ -196,9 +196,9 @@ public class PacketChestSymmetrify extends AbstractServerMessage {
 				chest.setInventorySlotContents(key, item.copy());
 			}
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.chestsymmetrify.complete");
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.chestsymmetrify.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 

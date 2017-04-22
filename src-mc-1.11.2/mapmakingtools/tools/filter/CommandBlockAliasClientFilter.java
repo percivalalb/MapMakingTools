@@ -13,6 +13,7 @@ import mapmakingtools.helper.TextHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketCommandBlockAlias;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -38,7 +39,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
 
 	@Override
 	public String getIconPath() {
-		return "mapmakingtools:textures/filter/commandBlockName.png";
+		return "mapmakingtools:textures/filter/command_block_name.png";
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketCommandBlockAlias(gui.getBlockPos(), fld_alias.getText() + "\u00a7r"));
-                	ClientHelper.mc.thePlayer.closeScreen();
+                	ClientHelper.mc.player.closeScreen();
                 	break;
                 case 4:
                 	if(this.fld_alias.isFocused()) {
@@ -120,7 +121,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.commandblockalias.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.commandblockalias.info"));
 	}
 	
 	@Override

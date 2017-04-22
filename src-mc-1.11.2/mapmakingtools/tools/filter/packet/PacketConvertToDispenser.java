@@ -13,8 +13,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -44,10 +44,10 @@ public class PacketConvertToDispenser extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		IBlockState blockState = player.worldObj.getBlockState(this.pos);
+		IBlockState blockState = player.world.getBlockState(this.pos);
 		
-		if(Block.isEqualTo(blockState.getBlock(), Blocks.dropper)) {
-			TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		if(Block.isEqualTo(blockState.getBlock(), Blocks.DROPPER)) {
+			TileEntity tile = player.world.getTileEntity(this.pos);
 			if(tile instanceof TileEntityDropper) {
 				TileEntityDropper dropper = (TileEntityDropper)tile;
 				ItemStack[] slots = new ItemStack[dropper.getSizeInventory()];
@@ -58,8 +58,8 @@ public class PacketConvertToDispenser extends AbstractServerMessage {
 						dropper.setInventorySlotContents(slotCount, (ItemStack)null);
 					}
 				}
-				player.worldObj.setBlockState(this.pos, Blocks.dispenser.getDefaultState(), 3);
-				tile = player.worldObj.getTileEntity(this.pos);
+				player.world.setBlockState(this.pos, Blocks.DISPENSER.getDefaultState(), 3);
+				tile = player.world.getTileEntity(this.pos);
 				if(tile instanceof TileEntityDispenser) {
 					TileEntityDispenser dispenser = (TileEntityDispenser)tile;
 					for(int slotCount = 0; slotCount < slots.length; ++slotCount) {
@@ -67,9 +67,9 @@ public class PacketConvertToDispenser extends AbstractServerMessage {
 					}
 				}
 			}
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.converttodispenser.complete");
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.converttodispenser.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 

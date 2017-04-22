@@ -4,19 +4,21 @@ import java.io.IOException;
 import java.util.List;
 
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.WeightedRandom;
+import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -49,23 +51,25 @@ public class PacketMobArmorRemoveIndex extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
 			if(tile instanceof TileEntityMobSpawner) {
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 
-				List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.getSpawnerBaseLogic());
-				WeightedRandomMinecart minecart = minecarts.get(this.minecartIndex);
+				List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+				WeightedSpawnerEntity minecart = minecarts.get(this.minecartIndex);
 				minecarts.remove(this.minecartIndex);
 				if(SpawnerUtil.getRandomMinecart(spawner.getSpawnerBaseLogic()) == minecart)
-					spawner.getSpawnerBaseLogic().setRandomEntity((MobSpawnerBaseLogic.WeightedRandomMinecart)WeightedRandom.getRandomItem(spawner.getSpawnerBaseLogic().getSpawnerWorld().rand, minecarts));
+					spawner.getSpawnerBaseLogic().setNextSpawnData((WeightedSpawnerEntity)WeightedRandom.getRandomItem(spawner.getSpawnerBaseLogic().getSpawnerWorld().rand, minecarts));
+				
+				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
 				PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.removeIndex");
-				chatComponent.getChatStyle().setItalic(true);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.removeIndex");
+				chatComponent.getStyle().setItalic(true);
+				player.sendMessage(chatComponent);
 			}
 		}
 	}

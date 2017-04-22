@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -46,7 +46,7 @@ public class PacketMobArmorUpdate extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -56,12 +56,12 @@ public class PacketMobArmorUpdate extends AbstractServerMessage {
 					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
 					ItemStack[] mobArmor = SpawnerUtil.getMobArmor(spawner.getSpawnerBaseLogic(), this.minecartIndex);
 					for(int i = 0; i < mobArmor.length; ++i) {
-						filterCurrent.getInventory(container).contents[i] = mobArmor[i];
+						filterCurrent.getInventory(container).setInventorySlotContents(i, mobArmor[i]);
 				    }
 					
-				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.update");
-					chatComponent.getChatStyle().setItalic(true);
-					player.addChatMessage(chatComponent);
+				    TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.update");
+					chatComponent.getStyle().setItalic(true);
+					player.sendMessage(chatComponent);
 				}
 			}
 		}

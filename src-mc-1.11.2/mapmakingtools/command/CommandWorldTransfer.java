@@ -2,8 +2,10 @@ package mapmakingtools.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import jline.internal.Nullable;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.lib.PacketLib;
 import mapmakingtools.network.PacketDispatcher;
@@ -13,11 +15,13 @@ import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import mapmakingtools.tools.worldtransfer.PacketAddArea;
 import mapmakingtools.tools.worldtransfer.PacketPasteNotify;
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLLog;
@@ -28,7 +32,7 @@ import net.minecraftforge.fml.common.FMLLog;
 public class CommandWorldTransfer extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/worldtransfer";
 	}
 
@@ -38,36 +42,36 @@ public class CommandWorldTransfer extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.worldtransfer.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		
-		if(param.length < 1)
-			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		if(args.length < 1)
+			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		
-		String mode = param[0].toLowerCase();
+		String mode = args[0].toLowerCase();
 		
 		if(!this.getModes().contains(mode))
 			throw new CommandException("mapmakingtools.commands.build.worldtransfer.modeerror", new Object[] {mode});
 		
 		if("copy".equals(mode)) {
 			
-			if(param.length < 2)
-				throw new WrongUsageException(this.getCommandUsage(sender) + ".copy", new Object[0]);
+			if(args.length < 2)
+				throw new WrongUsageException(this.getUsage(sender) + ".copy", new Object[0]);
 			
 			if(!data.hasSelectedPoints())
 				throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 			
-			String name = param[1];
+			String name = args[1];
 			
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
 			
@@ -122,30 +126,25 @@ public class CommandWorldTransfer extends CommandBase {
 			}
 		}
 		else if("paste".equals(mode)) {
-			if(param.length < 2)
-				throw new WrongUsageException(this.getCommandUsage(sender) + ".paste", new Object[0]);
+			if(args.length < 2)
+				throw new WrongUsageException(this.getUsage(sender) + ".paste", new Object[0]);
 			
-			String name = param[1];
+			String name = args[1];
 			
 			PacketDispatcher.sendTo(new PacketPasteNotify(name), player);
 		}
 		else if("gui".equals(mode)) {
-			player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_WORLD_TRANSFER, player.worldObj, 0, 0, 0);
+			player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_WORLD_TRANSFER, player.world, 0, 0, 0);
 		}
 		
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] param, BlockPos pos) {
-        return param.length == 1 ? getListOfStringsMatchingLastWord(param, getModes()) : null;
-    }
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, this.getModes()) : Collections.<String>emptyList();
+	}
 	
 	public static List<String> getModes() {
 		return Arrays.asList("copy", "paste", "gui");
 	}
-	
-    @Override
-    public boolean isUsernameIndex(String[] param, int index) {
-        return false;
-    }
 }

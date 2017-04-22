@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiTickButton extends GuiButton {
 	
-	 private static final ResourceLocation beaconGuiTextures = new ResourceLocation("textures/gui/container/beacon.png");
+	 private static final ResourceLocation BEACON_TEXTURES = new ResourceLocation("textures/gui/container/beacon.png");
      private boolean ticked;
      
      public GuiTickButton(int id, int xPosition, int yPosition, boolean ticked) {
@@ -18,7 +18,7 @@ public class GuiTickButton extends GuiButton {
      @Override
      public void drawButton(Minecraft mc, int mouseX, int mouseY) {
     	 if(this.visible) {
-         	mc.getTextureManager().bindTexture(beaconGuiTextures);
+         	mc.getTextureManager().bindTexture(BEACON_TEXTURES);
          	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             short short1 = 219;
@@ -37,11 +37,11 @@ public class GuiTickButton extends GuiButton {
     	 }
      }
 
-     public boolean func_146141_c() {
+     public boolean isTicked() {
      	return this.ticked;
      }
 
-     public void func_146140_b(boolean p_146140_1_) {
-    	 this.ticked = p_146140_1_;
+     public void setTicked(boolean ticked) {
+    	 this.ticked = ticked;
      }
 }

@@ -9,12 +9,13 @@ import mapmakingtools.tools.filter.MobArmorServerFilter;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -47,7 +48,7 @@ public class PacketMobArmor extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -55,13 +56,13 @@ public class PacketMobArmor extends AbstractServerMessage {
 				if(tile instanceof TileEntityMobSpawner) {
 					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
-					ItemStack[] stack = filterCurrent.getInventory(container).contents; 
-					SpawnerUtil.setMobArmor(spawner.getSpawnerBaseLogic(), stack[4], stack[3], stack[2], stack[1], stack[0], this.minecartIndex);
+					IInventory inventory = filterCurrent.getInventory(container); 
+					SpawnerUtil.setMobArmor(spawner.getSpawnerBaseLogic(), inventory.getStackInSlot(4), inventory.getStackInSlot(3), inventory.getStackInSlot(2), inventory.getStackInSlot(1), inventory.getStackInSlot(0), this.minecartIndex);
 					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
-				    ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.complete");
-					chatComponent.getChatStyle().setItalic(true);
-					player.addChatMessage(chatComponent);
+				    TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.complete");
+					chatComponent.getStyle().setItalic(true);
+					player.sendMessage(chatComponent);
 				}
 			}
 		}

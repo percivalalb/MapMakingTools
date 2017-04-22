@@ -13,12 +13,13 @@ import mapmakingtools.helper.TextHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketSignEdit;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -135,8 +136,8 @@ public class EditSignClientFilter extends IFilterClient {
                 	}
                 	break;
                 case 2:
-                	PacketDispatcher.sendToServer(new PacketSignEdit(gui.getBlockPos(), new IChatComponent[] {new ChatComponentText(this.txtLine1.getText()), new ChatComponentText(this.txtLine2.getText()), new ChatComponentText(this.txtLine3.getText()), new ChatComponentText(this.txtLine4.getText())}));
-                	ClientHelper.mc.thePlayer.closeScreen();
+                	PacketDispatcher.sendToServer(new PacketSignEdit(gui.getBlockPos(), new ITextComponent[] {new TextComponentString(this.txtLine1.getText()), new TextComponentString(this.txtLine2.getText()), new TextComponentString(this.txtLine3.getText()), new TextComponentString(this.txtLine4.getText())}));
+                	ClientHelper.mc.player.closeScreen();
                 	break;
             }
         }
@@ -149,7 +150,7 @@ public class EditSignClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.signedit.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.signedit.info"));
 	}
 	
 	@Override

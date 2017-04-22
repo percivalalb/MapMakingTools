@@ -16,6 +16,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobPosition;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.text.TextFormatting;
@@ -96,7 +97,7 @@ public class MobPositionClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketMobPosition(gui.getBlockPos(), txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), this.btn_type.getData() == 0, this.minecartIndex));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                     break;
                 case 2:
                 	if(isRelative) {
@@ -157,7 +158,7 @@ public class MobPositionClientFilter extends IFilterClientSpawner {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobposition.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobposition.info"));
 	}
 	
 	@Override

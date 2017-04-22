@@ -10,7 +10,7 @@ import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -28,7 +28,7 @@ public class PacketPasteNotify extends AbstractClientMessage {
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.name = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.name = packetbuffer.readString(Integer.MAX_VALUE / 4);
 	}
 
 	@Override
@@ -85,9 +85,9 @@ public class PacketPasteNotify extends AbstractClientMessage {
 				index += 1;
 			}
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("packets: " + packetCount, packetCount);
-			chatComponent.getChatStyle().setColor(TextFormatting.AQUA);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("packets: " + packetCount, packetCount);
+			chatComponent.getStyle().setColor(TextFormatting.AQUA);
+			player.sendMessage(chatComponent);
 			
 		}
 		catch(Exception e) {

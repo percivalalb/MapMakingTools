@@ -172,8 +172,8 @@ public class MazeThread extends Thread {
 		
 		data.getActionStorage().addUndo(list);
 
-		ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.maze.complete", param[0]);
-		chatComponent.getChatStyle().setItalic(true);
-		player.addChatMessage(chatComponent);**/
+		TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.maze.complete", param[0]);
+		chatComponent.getStyle().setItalic(true);
+		player.sendMessage(chatComponent);**/
 	}
 }

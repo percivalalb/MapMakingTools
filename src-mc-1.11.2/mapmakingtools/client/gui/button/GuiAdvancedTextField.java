@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 
@@ -609,7 +610,7 @@ public class GuiAdvancedTextField extends Gui {
         }
 
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        VertexBuffer worldrenderer = tessellator.getBuffer();
         GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
         GlStateManager.disableTexture2D();
         GlStateManager.enableColorLogic();

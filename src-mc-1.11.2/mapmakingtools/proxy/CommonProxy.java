@@ -8,7 +8,6 @@ import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.container.ContainerWorldTransfer;
-import mapmakingtools.tools.RotationLoader;
 import mapmakingtools.tools.datareader.BlockColourList;
 import mapmakingtools.tools.datareader.BlockList;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
@@ -181,6 +180,7 @@ public class CommonProxy implements IGuiHandler {
 	public void registerItemAttribute() {}
 
 	public void registerRotation() {
+		/**
 		RotationLoader.clear();
 		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-acaciadoor.txt");
 		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-acaciafencegate.txt");
@@ -248,7 +248,7 @@ public class CommonProxy implements IGuiHandler {
 		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-unlitfurnace.txt");
 		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-unlitpumpkin.txt");
 		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-woodenbutton.txt");
-		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-woodenslab.txt");
+		RotationLoader.loadFromTextFile("/assets/mapmakingtools/data/rotation/minecraft-woodenslab.txt");**/
 	}
 
 	public void registerForceKill() {

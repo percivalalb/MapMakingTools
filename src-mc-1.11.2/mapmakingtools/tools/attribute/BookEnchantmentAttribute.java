@@ -13,7 +13,7 @@ import mapmakingtools.tools.datareader.EnchantmentList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -138,7 +138,7 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 					return listStr;
 				
 				String unlocalised = enchantment.getName();
-				String localised = I18n.format(unlocalised);
+				String localised = I18n.translateToLocal(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
 			}
 			

@@ -27,19 +27,8 @@ public class ItemNameAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		if(this.name != null && data == 0)
 			stack.setStackDisplayName(TextFormatting.RESET + this.name);
-		if(data == 1) {
-			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("display", 10)) {
-					NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
-					display.removeTag("Name");
-					if(display.hasNoTags())
-						stack.getTagCompound().removeTag("display");
-					if(stack.getTagCompound().hasNoTags())
-						stack.setTagCompound(null);
-					this.fld_name.setText(stack.getDisplayName());
-				}
-			}
-		}
+		if(data == 1)
+			stack.clearCustomName();
 	}
 
 	@Override
@@ -49,12 +38,13 @@ public class ItemNameAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		if(first) {
+		//if(first) {
 			String displayname = stack.getDisplayName();
 			if(displayname.startsWith(TextFormatting.RESET.toString())) 
 				displayname = displayname.substring(2, displayname.length());
 			this.fld_name.setText(displayname);
-		}
+		//}
+		this.btn_remove.enabled = stack.hasDisplayName();
 	}
 
 	@Override

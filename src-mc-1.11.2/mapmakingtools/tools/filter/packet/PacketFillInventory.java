@@ -12,8 +12,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -42,7 +42,7 @@ public class PacketFillInventory extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -55,13 +55,13 @@ public class PacketFillInventory extends AbstractServerMessage {
 			    		ItemStack newStack = null;
 			    		if(container.getSlot(0).getStack() != null) {
 			    			newStack = container.getSlot(0).getStack().copy();
-			    			newStack.stackSize = ((IPhantomSlot)container.getSlot(0)).isUnlimited() ? -1 : container.getSlot(0).getStack().stackSize;
+			    			newStack.setCount(((IPhantomSlot)container.getSlot(0)).isUnlimited() ? -1 : container.getSlot(0).getStack().getCount());
 			    		}
 			    		((IInventory)tile).setInventorySlotContents(i, newStack);
 			    	}
-			    	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.fillinventory.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
-					chatComponent.getChatStyle().setItalic(true);
-					player.addChatMessage(chatComponent);
+			    	TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.fillinventory.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
+					chatComponent.getStyle().setItalic(true);
+					player.sendMessage(chatComponent);
 				}
 			}
 		}

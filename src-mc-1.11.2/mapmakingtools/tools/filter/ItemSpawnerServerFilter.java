@@ -12,7 +12,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IChatComponent;
 
 /**
  * @author ProPercivalalb
@@ -48,8 +47,8 @@ public class ItemSpawnerServerFilter extends IFilterServer {
 			String username = data.getString("username");
 			boolean isUnlimited = data.getBoolean("isUnlimited");
 			if(data.hasKey("item")) {
-				ItemStack stack = ItemStack.loadItemStackFromNBT(data.getCompoundTag("item"));
-				this.getInventory(username).contents[0] = stack;
+				ItemStack stack = new ItemStack(data.getCompoundTag("item"));
+				this.getInventory(username).setInventorySlotContents(0, stack);
 				this.getInventory(username).setSlotUnlimited(0, isUnlimited);
 			}
 		}
@@ -62,8 +61,8 @@ public class ItemSpawnerServerFilter extends IFilterServer {
 			NBTTagCompound data = new NBTTagCompound();
 			data.setString("username", key);
 			data.setBoolean("isUnlimited", this.getInventory(key).isSlotUnlimited(0));
-			if(this.getInventory(key).contents[0] != null)
-				data.setTag("item", this.getInventory(key).contents[0].writeToNBT(new NBTTagCompound()));
+			if(!this.getInventory(key).getStackInSlot(0).isEmpty())
+				data.setTag("item", this.getInventory(key).getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 			list.appendTag(data);
 		}
 		tag.setTag("playerData", list);
@@ -85,162 +84,23 @@ public class ItemSpawnerServerFilter extends IFilterServer {
 		return invMap.get(username);
 	}
 
-	public class FillInventory implements IUnlimitedInventory {
+	public class FillInventory extends IUnlimitedInventory {
 
-		public ItemStack[] contents;
+		public boolean[] umlimited;
 		
 		public FillInventory(int inventorySize) {
-			this.contents = new ItemStack[inventorySize];
+			super("Item Spawner", false, inventorySize);
+			this.umlimited = new boolean[inventorySize];
 		}
-		
-		public int getSizeInventory() {
-		    return this.contents.length;
-		}
-
-		public ItemStack getStackInSlot(int par1) {
-		    return this.contents[par1];
-		}
-
-		public ItemStack decrStackSize(int par1, int par2) {
-		     if (this.contents[par1] != null) {
-		        ItemStack itemstack;
-
-		        if (this.contents[par1].stackSize <= par2) {
-		            itemstack = this.contents[par1];
-		            this.contents[par1] = null;
-		            return itemstack;
-		        }
-		        else {
-		            itemstack = this.contents[par1].splitStack(par2);
-
-		            if (this.contents[par1].stackSize == 0) {
-		                this.contents[par1] = null;
-		            }
-
-		            return itemstack;
-		        }
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		@Override
-		public ItemStack removeStackFromSlot(int par1) {
-		    if (this.contents[par1] != null) {
-		        ItemStack itemstack = this.contents[par1];
-		        this.contents[par1] = null;
-		        return itemstack;
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		    this.contents[par1] = par2ItemStack;
-
-		    if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit()) {
-		        par2ItemStack.stackSize = this.getInventoryStackLimit();
-		    }
-		}
-
-		@Override
-		public int getInventoryStackLimit() {
-			return 64;
-		}
-
-		@Override
-		public void markDirty() {}
-
-		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-			return true;
-		}
-
-		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-			return false;
-		}
-/**
-		@Override
-		public void openInventory() {}
-
-		@Override
-		public void closeInventory() {}
-		
-		@Override
-		public String getInventoryName() {
-			return "Item Spawner";
-		}
-
-		@Override
-		public boolean hasCustomInventoryName() {
-			return true;
-		}**/
 		
 		@Override
 		public boolean isSlotUnlimited(int slotIndex) {
-			return false;
+			return this.umlimited[slotIndex];
 		}
 		
 		@Override
 		public void setSlotUnlimited(int slotIndex, boolean isUnlimited) {
-			
-		}
-
-		@Override
-		public void openInventory(EntityPlayer player) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void closeInventory(EntityPlayer player) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public int getField(int id) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void setField(int id, int value) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public int getFieldCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void clear() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public String getName() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean hasCustomName() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public IChatComponent getDisplayName() {
-			// TODO Auto-generated method stub
-			return null;
+			this.umlimited[slotIndex] = isUnlimited;
 		}
 	}
 }

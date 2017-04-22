@@ -1,9 +1,12 @@
 package mapmakingtools.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import jline.internal.Nullable;
+import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldAction;
@@ -15,8 +18,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 /**
@@ -25,7 +29,7 @@ import net.minecraft.world.World;
 public class CommandMaze extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/maze";
 	}
 
@@ -35,7 +39,7 @@ public class CommandMaze extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.maze.usage";
 	}
 
@@ -44,25 +48,25 @@ public class CommandMaze extends CommandBase {
 	}
 	
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		
 		if(!data.hasSelectedPoints())
 			throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 		
-		if(param.length < 1)
-			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		if(args.length < 1)
+			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		else {
-			Block block = getBlockByText(sender, param[0]);
+			Block block = getBlockByText(sender, args[0]);
 			int meta = 0;
 			
-			if(param.length == 2)
-				meta = parseInt(param[1]);
+			if(args.length == 2)
+				meta = parseInt(args[1]);
 			
 			IBlockState state = block.getStateFromMeta(meta);
 			
@@ -133,24 +137,18 @@ public class CommandMaze extends CommandBase {
 			
 			data.getActionStorage().addUndo(list);
 
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.blockRegistry.getNameForObject(state.getBlock()));
-			chatComponent.getChatStyle().setItalic(true);
-			data.getPlayer().addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.REGISTRY.getNameForObject(state.getBlock()));
+			chatComponent.getStyle().setItalic(true);
+			data.getPlayer().sendMessage(chatComponent);
 			
 			//System.out.println("" + data);
 			//MazeThread mazeThread = new MazeThread(world, data, block.getStateFromMeta(meta));
 			//new Thread(mazeThread).start();
 		}
 	}
-
+	
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, Block.blockRegistry.getKeys()) : null;
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
-        return false;
-    }
-
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys()) : Collections.<String>emptyList();
+	}
 }

@@ -34,7 +34,7 @@ public class PacketEditEntity extends AbstractServerMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
-		player.openGui(MapMakingTools.instance, CommonProxy.ID_FILTER_ENTITY, player.worldObj, this.entityId, 0, 0);
+		player.openGui(MapMakingTools.instance, CommonProxy.ID_FILTER_ENTITY, player.world, this.entityId, 0, 0);
 	}
 
 }

@@ -1,15 +1,17 @@
 package mapmakingtools.command;
 
+import java.util.Collections;
 import java.util.List;
 
+import jline.internal.Nullable;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 /**
@@ -18,7 +20,7 @@ import net.minecraft.world.World;
 public class CommandCopyInventory extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/copyinventory";
 	}
 
@@ -28,36 +30,36 @@ public class CommandCopyInventory extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.copyinventory.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		
-		if(param.length < 1)
-			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		if(args.length < 1)
+			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		
-		EntityPlayer copyPlayer = this.getPlayer(sender, param[0]);
+		EntityPlayer copyPlayer = this.getPlayer(server, sender, args[0]);
 		
 		if(copyPlayer == null || player.equals(copyPlayer))
 			throw new CommandException("mapmakingtools.commands.copyinventory.playererror", new Object[0]);
 	
 		player.inventory.copyInventory(copyPlayer.inventory);
 		
-		ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.copyinventory.complete");
-		chatComponent.getChatStyle().setItalic(true);
-		player.addChatMessage(chatComponent);
+		TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.copyinventory.complete");
+		chatComponent.getStyle().setItalic(true);
+		player.sendMessage(chatComponent);
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames()) : null;
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.<String>emptyList();
     }
 	
     @Override

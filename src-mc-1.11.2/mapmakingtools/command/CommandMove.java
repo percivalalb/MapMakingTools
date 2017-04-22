@@ -1,17 +1,21 @@
 package mapmakingtools.command;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import jline.internal.Nullable;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -21,7 +25,7 @@ import net.minecraft.world.World;
 public class CommandMove extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/move";
 	}
 
@@ -31,17 +35,17 @@ public class CommandMove extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.move.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayer))
 			return;
 		
 		EntityPlayer player = (EntityPlayer)sender;
-		World world = player.worldObj;
+		World world = player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		BlockPos firstPoint = data.getFirstPoint();
 		BlockPos secondPoint = data.getSecondPoint();
@@ -49,11 +53,11 @@ public class CommandMove extends CommandBase {
 		if(!data.hasSelectedPoints())
 			throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 		
-		if(param.length < 2)
-			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		if(args.length < 2)
+			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		
-		String direction = param[0].toLowerCase();
-		int amount = this.parseInt(param[1]);
+		String direction = args[0].toLowerCase();
+		int amount = this.parseInt(args[1]);
 		
 		if("x".equals(direction)) {
 			data.setFirstPoint(firstPoint.north(amount));
@@ -70,15 +74,15 @@ public class CommandMove extends CommandBase {
 		
 		data.sendUpdateToClient();
 		
-		ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.move.complete", direction, amount);
-		chatComponent.getChatStyle().setColor(TextFormatting.GREEN);
-		player.addChatMessage(chatComponent);
+		TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.move.complete", direction, amount);
+		chatComponent.getStyle().setColor(TextFormatting.GREEN);
+		player.sendMessage(chatComponent);
 	}
-
+	
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] param, BlockPos pos) {
-        return param.length == 1 ? getListOfStringsMatchingLastWord(param, getDirections()) : null;
-    }
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, this.getDirections()) : Collections.<String>emptyList();
+	}
 	
 	public static List<String> getDirections() {
 		return Arrays.asList("x", "y", "z");

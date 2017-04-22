@@ -14,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -60,8 +59,8 @@ public class CustomGiveServerFilter extends IFilterServer {
 			String username = data.getString("username");
 			boolean isUnlimited = data.getBoolean("isUnlimited");
 			if(data.hasKey("item")) {
-				ItemStack stack = ItemStack.loadItemStackFromNBT(data.getCompoundTag("item"));
-				this.getInventory(username).contents[0] = stack;
+				ItemStack stack = new ItemStack(data.getCompoundTag("item"));
+				this.getInventory(username).setInventorySlotContents(0, stack);
 				this.getInventory(username).setSlotUnlimited(0, isUnlimited);
 			}
 		}
@@ -74,8 +73,8 @@ public class CustomGiveServerFilter extends IFilterServer {
 			NBTTagCompound data = new NBTTagCompound();
 			data.setString("username", key);
 			data.setBoolean("isUnlimited", this.getInventory(key).isSlotUnlimited(0));
-			if(this.getInventory(key).contents[0] != null)
-				data.setTag("item", this.getInventory(key).contents[0].writeToNBT(new NBTTagCompound()));
+			if(!this.getInventory(key).getStackInSlot(0).isEmpty())
+				data.setTag("item", this.getInventory(key).getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 			list.appendTag(data);
 		}
 		tag.setTag("playerData", list);
@@ -97,86 +96,14 @@ public class CustomGiveServerFilter extends IFilterServer {
 		return invMap.get(username);
 	}
 
-	public class CustomGive implements IUnlimitedInventory {
-
-		public ItemStack[] contents;
-		
-		public CustomGive(int inventorySize) {
-			this.contents = new ItemStack[inventorySize];
-			umlimited = new boolean[inventorySize];
-		}
-		
-		public int getSizeInventory() {
-		    return this.contents.length;
-		}
-
-		public ItemStack getStackInSlot(int par1) {
-		    return this.contents[par1];
-		}
-
-		public ItemStack decrStackSize(int par1, int par2) {
-		     if (this.contents[par1] != null) {
-		        ItemStack itemstack;
-
-		        if (this.contents[par1].stackSize <= par2) {
-		            itemstack = this.contents[par1];
-		            this.contents[par1] = null;
-		            return itemstack;
-		        }
-		        else {
-		            itemstack = this.contents[par1].splitStack(par2);
-
-		            if (this.contents[par1].stackSize == 0) {
-		                this.contents[par1] = null;
-		            }
-
-		            return itemstack;
-		        }
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		@Override
-		public ItemStack removeStackFromSlot(int par1) {
-		    if (this.contents[par1] != null) {
-		        ItemStack itemstack = this.contents[par1];
-		        this.contents[par1] = null;
-		        return itemstack;
-		    }
-		    else {
-		        return null;
-		    }
-		}
-
-		public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		    this.contents[par1] = par2ItemStack;
-
-		    //if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit()) {
-		    //    par2ItemStack.stackSize = this.getInventoryStackLimit();
-		    //}
-		}
-
-		@Override
-		public int getInventoryStackLimit() {
-			return 64;
-		}
-
-		@Override
-		public void markDirty() {}
-
-		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-			return true;
-		}
-
-		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-			return true;
-		}
+	public class CustomGive extends IUnlimitedInventory {
 
 		public boolean[] umlimited;
+		
+		public CustomGive(int inventorySize) {
+			super("Custom Give", false, inventorySize);
+			this.umlimited = new boolean[inventorySize];
+		}
 		
 		@Override
 		public boolean isSlotUnlimited(int slotIndex) {
@@ -186,46 +113,6 @@ public class CustomGiveServerFilter extends IFilterServer {
 		@Override
 		public void setSlotUnlimited(int slotIndex, boolean isUnlimited) {
 			this.umlimited[slotIndex] = isUnlimited;
-		}
-
-		@Override
-		public void openInventory(EntityPlayer player) {}
-
-		@Override
-		public void closeInventory(EntityPlayer player) {}
-
-	    public String getGuiID() {
-	        return "mapmakingtools:customgive";
-	    }
-
-	    public int getField(int id) {
-	        return 0;
-	    }
-
-	    public void setField(int id, int value) {}
-
-	    public int getFieldCount() {
-	        return 0;
-	    }
-
-	    public void clear() {
-	        for (int i = 0; i < this.contents.length; ++i)
-	            this.contents[i] = null;
-	    }
-
-		@Override
-		public String getName() {
-			return "Custom Give";
-		}
-
-		@Override
-		public boolean hasCustomName() {
-			return true;
-		}
-
-		@Override
-		public IChatComponent getDisplayName() {
-			return null;
 		}
 	}
 }

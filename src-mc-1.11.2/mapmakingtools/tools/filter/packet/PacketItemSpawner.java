@@ -13,8 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -47,7 +47,7 @@ public class PacketItemSpawner extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
@@ -61,9 +61,9 @@ public class PacketItemSpawner extends AbstractServerMessage {
 					SpawnerUtil.setItemType(spawner.getSpawnerBaseLogic(), item, this.minecartIndex);
 					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
-			    	ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.changeitem.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
-					chatComponent.getChatStyle().setItalic(true);
-					player.addChatMessage(chatComponent);
+			    	TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.changeitem.complete", container.getSlot(0).getStack() == null ? "Nothing" :container.getSlot(0).getStack().getDisplayName());
+					chatComponent.getStyle().setItalic(true);
+					player.sendMessage(chatComponent);
 				}
 			}
 		}

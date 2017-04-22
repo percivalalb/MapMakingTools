@@ -8,6 +8,7 @@ import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -24,9 +25,9 @@ public class WorldOverlayHandler {
 	
 	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) {
-		if(!PlayerAccess.canEdit(mc.thePlayer) || !ClientData.playerData.hasSelectedPoints() || !(mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == ModItems.editItem && mc.thePlayer.getHeldItem().getMetadata() == 0))
+		if(!PlayerAccess.canEdit(mc.player) || !ClientData.playerData.hasSelectedPoints() || !(mc.player.getHeldItemMainhand().getItem() == ModItems.editItem && mc.player.getHeldItemMainhand().getMetadata() == 0))
 			return;
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		PlayerData data = ClientData.playerData;
 		
 		int minX = data.getMinX();
@@ -36,9 +37,9 @@ public class WorldOverlayHandler {
 		int maxY = data.getMaxY() + 1;
 		int maxZ = data.getMaxZ() + 1;
 		 
-		AxisAlignedBB boundingBox = new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
-		this.drawSelectionBox(mc.thePlayer, event.partialTicks, boundingBox);
-        GL11.glPopMatrix();
+		AxisAlignedBB boundingBox = new AxisAlignedBB(data.getMinPos(), data.getMaxPos().add(1, 1, 1));
+		this.drawSelectionBox(mc.player, event.getPartialTicks(), boundingBox);
+		GlStateManager.popMatrix();
 	}
 
 	public void drawSelectionBox(EntityPlayer player, float particleTicks, AxisAlignedBB boundingBox) {
@@ -68,19 +69,18 @@ public class WorldOverlayHandler {
    		 		for(int y = minY; y < maxY; ++y) {
    		 			for(int z = minZ; z < maxZ; ++z) {
    		 				AxisAlignedBB smallBox = new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1);
-   		 				RenderGlobal.drawOutlinedBoundingBox(smallBox.offset(-d0, -d1, -d2), 255, 255, 255, 255);
+   		 				RenderGlobal.drawSelectionBoundingBox(smallBox.offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
    		 			} 
    		 		}
    		 	}
         } 
         else {
-        	RenderGlobal.drawOutlinedBoundingBox(boundingBox.offset(-d0, -d1, -d2), 255, 255, 255, 255);
-        	//if(Constants.RENDER_SELECTED_POSITION) {
-	        //	PlayerData data = ClientData.playerData;
-	        //	GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
-	        	//this.drawBoundingBox(new AxisAlignedBB(data.getFirstPoint().getX(), data.getFirstPoint().getY(), data.getFirstPoint().getZ(), data.getFirstPoint().getX() + 1, data.getFirstPoint().getY() + 1, data.getFirstPoint().getZ() + 1).offset(-d0, -d1, -d2));
-	       // 	//this.drawBoundingBox(new AxisAlignedBB(data.getSecondPoint().getX(), data.getSecondPoint().getY(), data.getSecondPoint().getZ(), data.getSecondPoint().getX() + 1, data.getSecondPoint().getY() + 1, data.getSecondPoint().getZ() + 1).offset(-d0, -d1, -d2));
-        	//}
+        	RenderGlobal.drawSelectionBoundingBox(boundingBox.offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
+        	if(Constants.RENDER_SELECTED_POSITION) {
+	        	PlayerData data = ClientData.playerData;
+	        	RenderGlobal.drawSelectionBoundingBox(new AxisAlignedBB(data.getFirstPoint(), data.getFirstPoint().add(1, 1, 1)).offset(-d0, -d1, -d2), 1F, 1F, 0F, 0.8F);
+	        	RenderGlobal.drawSelectionBoundingBox(new AxisAlignedBB(data.getSecondPoint(), data.getSecondPoint().add(1, 1, 1)).offset(-d0, -d1, -d2), 0F, 1F, 1F, 0.8F);
+        	}
         }
         GL11.glEnable(GL11.GL_DEPTH_TEST); //Make the line see thought blocks
         GL11.glDepthMask(true);

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import mapmakingtools.api.enums.MovementType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 
 /**
  * @author ProPercivalalb
@@ -15,8 +18,8 @@ public class ActionStorage {
 	private ArrayList<ArrayList<BlockCache>> cachedUndo = new ArrayList<ArrayList<BlockCache>>();
 	private ArrayList<ArrayList<BlockCache>> cachedRedo = new ArrayList<ArrayList<BlockCache>>();
 	private ArrayList<BlockCache> cachedCopy = new ArrayList<BlockCache>();
-	private MovementType rotationValue = MovementType._000_;
-	private MovementType flippingValue = MovementType._X_;
+	private Rotation rotationValue = Rotation.NONE;
+	private Mirror flippingValue = Mirror.NONE;
 	
 	public ActionStorage(PlayerData playerData) { 
 		this.playerData = playerData;
@@ -36,7 +39,7 @@ public class ActionStorage {
 	
 	public int addCopy(ArrayList<BlockCache> list) {
 		this.cachedCopy = list;
-		this.rotationValue = MovementType._000_;
+		this.rotationValue = Rotation.NONE;
 		return list.size();
 	}
 	
@@ -58,13 +61,13 @@ public class ActionStorage {
 		return this.cachedUndo.get(this.cachedUndo.size() - 1);
 	}
 	
-	public boolean setRotation(MovementType rotation) {
+	public boolean setRotation(Rotation rotation) {
 		if(rotation != null)
 			this.rotationValue = rotation;
 		return this.rotationValue == rotation;
 	}
 	
-	public boolean setFlipping(MovementType flipping) {
+	public boolean setFlipping(Mirror flipping) {
 		if(flipping != null)
 			this.flippingValue = flipping;
 		return this.flippingValue == flipping;
@@ -108,7 +111,7 @@ public class ActionStorage {
 		ArrayList<BlockCache> newRedo = new ArrayList<BlockCache>();
 		
 		for(BlockCache bse : lastUndo) {
-			newRedo.add(BlockCache.createCache(this.playerData.getPlayer(), bse.world, bse.pos));
+			newRedo.add(BlockCache.createCache(this.playerData.getPlayer(), bse.getWorld(), bse.pos));
 			bse.restore(true);
 		}
 		
@@ -128,7 +131,7 @@ public class ActionStorage {
 		ArrayList<BlockCache> newUndo = new ArrayList<BlockCache>();
 		
 		for(BlockCache bse : lastRedo) {
-			newUndo.add(BlockCache.createCache(this.playerData.getPlayer(), bse.world, bse.pos));
+			newUndo.add(BlockCache.createCache(this.playerData.getPlayer(), bse.getWorld(), bse.pos));
 			bse.restore(true);
 		}
 		
@@ -141,8 +144,8 @@ public class ActionStorage {
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		tag.setString("rotationValue", this.rotationValue.getMarker());
-		tag.setString("flippingValue", this.flippingValue.getMarker());
+		//tag.setString("rotationValue", this.rotationValue.getMarker());
+		//tag.setString("flippingValue", this.flippingValue.getMarker());
 		
 		//Cached Undo list
 		NBTTagList undoList = new NBTTagList();
@@ -191,8 +194,8 @@ public class ActionStorage {
 	}
 	
 	public ActionStorage readFromNBT(NBTTagCompound tag) {
-		this.rotationValue = MovementType.getRotation(tag.getString("rotationValue"));
-		this.flippingValue = MovementType.getRotation(tag.getString("flippingValue"));
+		//this.rotationValue = MovementType.getRotation(tag.getString("rotationValue"));
+		//this.flippingValue = MovementType.getRotation(tag.getString("flippingValue"));
 		
 		if(tag.hasKey("cachedUndo")) {
 			NBTTagList list1 = (NBTTagList)tag.getTag("cachedUndo");

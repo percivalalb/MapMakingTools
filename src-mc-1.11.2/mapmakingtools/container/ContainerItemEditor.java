@@ -33,6 +33,6 @@ public class ContainerItemEditor extends Container {
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return player.inventory.isUseableByPlayer(player);
+		return player.inventory.isUsableByPlayer(player);
 	}
 }

@@ -1,24 +1,29 @@
 package mapmakingtools.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Strings;
 
+import jline.internal.Nullable;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketBiomeUpdate;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 
 /**
@@ -27,7 +32,7 @@ import net.minecraft.world.chunk.Chunk;
 public class CommandSetBiome extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "/setbiome";
 	}
 
@@ -37,88 +42,57 @@ public class CommandSetBiome extends CommandBase {
     }
 	
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "mapmakingtools.commands.build.setbiome.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] param) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(!(sender instanceof EntityPlayerMP))
 			return;
 		
 		EntityPlayerMP player = (EntityPlayerMP)sender;
-		WorldServer world = (WorldServer)player.worldObj;
+		WorldServer world = (WorldServer)player.world;
 		PlayerData data = WorldData.getPlayerData(player);
 		
 		if(!data.hasSelectedPoints())
 			throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 		
-		if(param.length < 1)
-			throw new WrongUsageException(this.getCommandUsage(sender), new Object[0]);
+		if(args.length < 1)
+			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		else {
 			
-			BiomeGenBase biome = getBiomeByText(sender, param[0]);
+			Biome biome = getBiomeByText(sender, args[0]);
 			
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(new BlockPos(data.getFirstPoint().getX(), 0, data.getFirstPoint().getZ()), new BlockPos(data.getSecondPoint().getX(), 0, data.getSecondPoint().getZ()));
 			
 			for(BlockPos pos : positions) {
 				Chunk chunk = world.getChunkFromBlockCoords(pos);
 				byte[] biomes = chunk.getBiomeArray();
-				biomes[((pos.getZ() & 0xF) << 4 | pos.getX() & 0xF)] = (byte)biome.biomeID;
+				biomes[((pos.getZ() & 0xF) << 4 | pos.getX() & 0xF)] = (byte)Biome.getIdForBiome(biome);
 				chunk.setBiomeArray(biomes);
 				chunk.setChunkModified();
 			}
 			
-			PacketDispatcher.sendToDimension(new PacketBiomeUpdate(data.getFirstPoint(), data.getSecondPoint(), biome), world.provider.getDimensionId());
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.commands.build.setbiome.complete", "" + biome.biomeName);
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			PacketDispatcher.sendToDimension(new PacketBiomeUpdate(data.getFirstPoint(), data.getSecondPoint(), biome), world.provider.getDimension());
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.setbiome.complete", "" + biome.getBiomeName());
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 
-	public BiomeGenBase getBiomeByText(ICommandSender sender, String p_147180_1_) throws CommandException {
-		BiomeGenBase[] array =  BiomeGenBase.getBiomeGenArray();
-		for(int i = 0; i < array.length; ++i) {
-			BiomeGenBase biome = array[i];
-			if(biome == null) continue;
-			String name = biome.biomeName;
-			if(!Strings.isNullOrEmpty(name) && name.replaceAll(" ", "").equalsIgnoreCase(p_147180_1_))
-				return biome;
-		}
-		
-		try {
-			int i = this.parseInt(p_147180_1_, 0, array.length - 1);
-            BiomeGenBase biome = array[i];
-                
-            if (biome != null)
-            	return biome;
-         }
-         catch (NumberFormatException numberformatexception) {}
+    public static Biome getBiomeByText(ICommandSender sender, String id) throws NumberInvalidException {
+        ResourceLocation resourcelocation = new ResourceLocation(id);
 
-         throw new NumberInvalidException("mapmakingtools.commands.build.setbiome.notfound", new Object[] {p_147180_1_});
-
-	}
+        if (!Biome.REGISTRY.containsKey(resourcelocation))
+            throw new NumberInvalidException("mapmakingtools.commands.build.setbiome.notfound", new Object[] {resourcelocation});
+        else
+            return (Biome)Biome.REGISTRY.getObject(resourcelocation);
+    }
 	
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-        return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, this.getBiomeKeys()) : null;
-    }
-
-    private List<String> getBiomeKeys() {
-		List<String> list = new ArrayList<String>();
-		BiomeGenBase[] array =  BiomeGenBase.getBiomeGenArray();
-		for(int i = 0; i < array.length; ++i) {
-			BiomeGenBase biome = array[i];
-			if(biome == null) continue;
-			String name = biome.biomeName.replaceAll(" ", "").toLowerCase();
-			if(!Strings.isNullOrEmpty(name))
-				list.add(name);
-		}
-		return list;
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, Biome.REGISTRY.getKeys()) : Collections.<String>emptyList();
 	}
 
-	@Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2) {
-        return false;
-    }
 }

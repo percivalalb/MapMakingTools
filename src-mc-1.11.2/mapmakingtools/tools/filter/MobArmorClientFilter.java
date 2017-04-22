@@ -15,9 +15,10 @@ import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;
 
 /**
@@ -34,7 +35,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 
 	@Override
 	public String getIconPath() {
-		return "mapmakingtools:textures/filter/mobArmor.png";
+		return "mapmakingtools:textures/filter/mob_armor.png";
 	}
 	
 	@Override
@@ -67,7 +68,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketMobArmor(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                     break;
             }
         }
@@ -90,7 +91,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobArmor.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobArmor.info"));
 	}
 	
 	@Override
@@ -111,10 +112,11 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 			return true;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.getSpawnerBaseLogic());
-		WeightedRandomMinecart randomMinecart = minecarts.get(minecartIndex);
-		String mobId = SpawnerUtil.getMinecartType(randomMinecart);
-		if(mobId.equals("Zombie") || mobId.equals("PigZombie") || mobId.equals("Skeleton")) {
+		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+		if(minecarts.size() <= 0) return true;
+		WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
+		String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
+		if(mobId.equals("minecraft:zombie") || mobId.equals("minecraft:zombie_pigman") || mobId.equals("minecraft:skeleton")) {
 			return false;
 		}
 		
@@ -123,7 +125,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	
 	@Override
 	public String getErrorMessage(IGuiFilter gui) { 
-		return TextFormatting.RED + I18n.format("mapmakingtools.filter.mobArmor.error");
+		return TextFormatting.RED + I18n.translateToLocal("mapmakingtools.filter.mobArmor.error");
 	}
 	
 	@Override

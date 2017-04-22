@@ -26,13 +26,13 @@ public class PacketItemEditorUpdate extends AbstractServerMessage {
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.slotIndex = packetbuffer.readInt();
-		this.stack = packetbuffer.readItemStackFromBuffer();
+		this.stack = packetbuffer.readItemStack();
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
 		packetbuffer.writeInt(this.slotIndex);
-		packetbuffer.writeItemStackToBuffer(this.stack);
+		packetbuffer.writeItemStack(this.stack);
 	}
 	@Override
 	public void process(EntityPlayer player, Side side) {

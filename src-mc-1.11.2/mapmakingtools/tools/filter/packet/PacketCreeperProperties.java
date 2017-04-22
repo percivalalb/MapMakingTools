@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -36,8 +36,8 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.pos = packetbuffer.readBlockPos();
-		this.fuseTime = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
-		this.explosionRadius = packetbuffer.readStringFromBuffer(Integer.MAX_VALUE / 4);
+		this.fuseTime = packetbuffer.readString(Integer.MAX_VALUE / 4);
+		this.explosionRadius = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.minecartIndex = packetbuffer.readInt();
 	}
 
@@ -53,16 +53,16 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 
 			if(!NumberParse.areIntegers(this.fuseTime, this.explosionRadius)) {
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.creeperproperties.notint");
-				chatComponent.getChatStyle().setItalic(true);
-				chatComponent.getChatStyle().setColor(TextFormatting.RED);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.creeperproperties.notint");
+				chatComponent.getStyle().setItalic(true);
+				chatComponent.getStyle().setColor(TextFormatting.RED);
+				player.sendMessage(chatComponent);
 				return;
 			}
 			
@@ -73,9 +73,9 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 			SpawnerUtil.setCreeperExplosionRadius(spawner.getSpawnerBaseLogic(), explosionRadiusNO, this.minecartIndex);
 			PacketUtil.sendTileEntityUpdateToWatching(spawner);
 			
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.creeperproperties.complete");
-			chatComponent.getChatStyle().setItalic(true);
-			player.addChatMessage(chatComponent);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.creeperproperties.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 

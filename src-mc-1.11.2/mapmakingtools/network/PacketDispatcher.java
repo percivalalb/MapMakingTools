@@ -166,11 +166,11 @@ public class PacketDispatcher {
 	
 	/**
 	public static void sendToAllTracking(Packet packet, Entity entity) {
-		((WorldServer)entity.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, packet);
+		((WorldServer)entity.world).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, packet);
 	}
 
 	public static void sendToAllAssociated(Packet packet, Entity entity) {
-		((WorldServer)entity.worldObj).getEntityTracker().sendPacketToAllAssociatedPlayers(entity, packet);
+		((WorldServer)entity.world).getEntityTracker().sendPacketToAllAssociatedPlayers(entity, packet);
 	}
 	 **/
 	public static final void sendToServer(IMessage message) {

@@ -4,18 +4,20 @@ import java.io.IOException;
 import java.util.List;
 
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.MobSpawnerBaseLogic.WeightedRandomMinecart;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -41,33 +43,30 @@ public class PacketMobArmorAddIndex extends AbstractServerMessage {
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
 		packetbuffer.writeBlockPos(this.pos);
-		packetbuffer.writeInt(minecartIndex);
+		packetbuffer.writeInt(this.minecartIndex);
 	}
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
-		TileEntity tile = player.worldObj.getTileEntity(this.pos);
+		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(player.openContainer instanceof ContainerFilter) {
 			
 			ContainerFilter container = (ContainerFilter)player.openContainer;
 			if(tile instanceof TileEntityMobSpawner) {
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					
-				List<WeightedRandomMinecart> minecarts = SpawnerUtil.getRandomMinecarts(spawner.getSpawnerBaseLogic());
-				NBTTagCompound data = new NBTTagCompound();
-				data.setInteger("Weight", 1);
-				data.setString("Type", "Pig");
-				data.setTag("Properties", new NBTTagCompound());
-				WeightedRandomMinecart randomMinecart = spawner.getSpawnerBaseLogic().new WeightedRandomMinecart(data);
+				List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+				WeightedSpawnerEntity randomMinecart = new WeightedSpawnerEntity();
 				minecarts.add(randomMinecart);
-				spawner.getSpawnerBaseLogic().setRandomEntity(randomMinecart);
+				spawner.getSpawnerBaseLogic().setNextSpawnData(randomMinecart);
+				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
 				PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("mapmakingtools.filter.mobArmor.addIndex");
-				chatComponent.getChatStyle().setItalic(true);
-				player.addChatMessage(chatComponent);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.addIndex");
+				chatComponent.getStyle().setItalic(true);
+				player.sendMessage(chatComponent);
 			}
 		}
 	}

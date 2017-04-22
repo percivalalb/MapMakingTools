@@ -10,6 +10,7 @@ import mapmakingtools.helper.TextHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketConvertToDispenser;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDropper;
@@ -59,7 +60,7 @@ public class ConvertToDispenserClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketConvertToDispenser(gui.getBlockPos()));
-            		ClientHelper.mc.thePlayer.closeScreen();
+            		ClientHelper.mc.player.closeScreen();
                 	break;
             }
         }
@@ -67,7 +68,7 @@ public class ConvertToDispenserClientFilter extends IFilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.converttodispenser.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.converttodispenser.info"));
 	}
 	
 	@Override
