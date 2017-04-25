@@ -43,7 +43,7 @@ public abstract class ScrollMenu {
 	}
 	
 	public void initGui() {
-		this.scaling = new ScaledResolution(ClientHelper.mc);
+		this.scaling = new ScaledResolution(ClientHelper.getClient());
 		if(this.strRefrence.size() > 0) {
         	this.listHeight = MathHelper.ceil(this.strRefrence.size() / (double)this.noColumns) * 14 - this.height;
         	
@@ -77,7 +77,7 @@ public abstract class ScrollMenu {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.clipToSize();
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenScroll);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
         int var9;
         for(var9 = 0; var9 < this.strRefrence.size(); ++var9) {
     		int row = (var9 - (var9 % this.noColumns)) / this.noColumns;
@@ -175,7 +175,7 @@ public abstract class ScrollMenu {
             int var4 = this.xPosition + 12 + (columnSize * column);
             int var5 = this.yPosition + (14 * row) + 2 - this.scrollY;
             String displayStr = getDisplayString((String)this.strRefrence.get(var3));
-            ClientHelper.mc.fontRendererObj.drawString(displayStr, var4, var5, 16777215);
+            ClientHelper.getClient().fontRenderer.drawString(displayStr, var4, var5, 16777215);
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);

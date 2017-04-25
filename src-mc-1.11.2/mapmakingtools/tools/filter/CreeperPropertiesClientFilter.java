@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
@@ -22,7 +22,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * @author ProPercivalalb
  */
-public class CreeperPropertiesClientFilter extends IFilterClientSpawner {
+public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 
 	public GuiTextField txt_radius;
 	public GuiTextField txt_fuse;
@@ -80,7 +80,7 @@ public class CreeperPropertiesClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketCreeperProperties(gui.getBlockPos(), this.txt_fuse.getText(), this.txt_radius.getText(), this.minecartIndex));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                 	break;
             }
         }

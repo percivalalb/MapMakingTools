@@ -1,8 +1,11 @@
 package mapmakingtools.tools.attribute;
 
+import com.google.common.base.Strings;
+
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.tools.item.nbt.SkullNBT;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -14,6 +17,7 @@ import net.minecraft.item.ItemStack;
 public class PlayerHeadAttribute extends IItemAttribute {
 
 	private GuiTextField fld_name;
+	private GuiButton btn_remove;
 	private String name;
 	
 	@Override
@@ -22,7 +26,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
 	}
 
 	@Override
-	public void onItemCreation(ItemStack stack, int data) {		
+	public void onItemCreation(ItemStack stack, int data) {
 		SkullNBT.setSkullName(stack, this.name);
 	}
 
@@ -33,8 +37,10 @@ public class PlayerHeadAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		if(first)
-			this.fld_name.setText(SkullNBT.getSkullName(stack));
+		if(first) {
+			this.name = SkullNBT.getSkullName(stack);
+			this.fld_name.setText(this.name);
+		}
 	}
 
 	@Override
@@ -45,14 +51,24 @@ public class PlayerHeadAttribute extends IItemAttribute {
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		this.fld_name = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 15, 80, 13);
+		this.btn_remove = new GuiButton(0, x + 2, y + 32, 80, 20, "Set Skin");
+		this.btn_remove.enabled = !Strings.isNullOrEmpty(this.name);
 		itemEditor.getTextBoxList().add(this.fld_name);
+		itemEditor.getButtonList().add(this.btn_remove);
 	}
 
+	@Override
+	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
+		if(button.id == 0) {
+			itemEditor.sendUpdateToServer(-1);
+		}
+	}
+	
 	@Override
 	public void textboxKeyTyped(IGuiItemEditor itemEditor, char character, int keyId, GuiTextField textbox) {
 		if(textbox == this.fld_name) {
 			this.name = this.fld_name.getText();
-			itemEditor.sendUpdateToServer(-1);
+			this.btn_remove.enabled = !Strings.isNullOrEmpty(this.name);
 		}
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import mapmakingtools.api.ScrollMenu;
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
@@ -16,16 +16,17 @@ import mapmakingtools.tools.filter.packet.PacketMobType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 /**
  * @author ProPercivalalb
  */
-public class MobTypeClientFilter extends IFilterClientSpawner {
+public class MobTypeClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButton btnOk;
 	public ScrollMenu menu;
-	public static int selected = SpawnerEntitiesList.getEntities().indexOf("Pig");
+	public static int selected = SpawnerEntitiesList.getEntities().indexOf("minecraft:pig");
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -47,6 +48,9 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 
 			@Override
 			public String getDisplayString(String listStr) {
+				ResourceLocation location = new ResourceLocation(listStr);
+				if(location.getResourceDomain().equals("minecraft"))
+					listStr = location.getResourcePath();
 				String unlocalised = String.format("entity.%s.name", listStr);
 				String localised = I18n.translateToLocal(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
@@ -55,8 +59,8 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 			@Override
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.selected;
-				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.strRefrence.get(this.selected), IFilterClientSpawner.minecartIndex));
-        		ClientHelper.mc.player.closeScreen();
+				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.strRefrence.get(this.selected), FilterMobSpawnerBase.minecartIndex));
+        		ClientHelper.getClient().player.closeScreen();
 			}
         	
         };
@@ -98,7 +102,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	//PacketTypeHandler.populatePacketAndSendToServer(new PacketMobArmor(gui.x, gui.y, gui.z));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                     break;
             }
         }
@@ -107,7 +111,7 @@ public class MobTypeClientFilter extends IFilterClientSpawner {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenScroll);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 135) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 135);

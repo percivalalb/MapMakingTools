@@ -554,7 +554,7 @@ public class GuiAdvancedTextField extends Gui {
             int j1 = l;
 
             //MAP MAKING TOOLS (START)
-	        ScaledResolution scaling = new ScaledResolution(ClientHelper.mc);
+	        ScaledResolution scaling = new ScaledResolution(ClientHelper.getClient());
             int scaleFactor = scaling.getScaleFactor();
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
     		GL11.glScissor(this.xPosition * scaleFactor, (scaling.getScaledHeight() - (this.yPosition + this.height)) * scaleFactor, this.width * scaleFactor, this.height * scaleFactor);

@@ -12,8 +12,8 @@ import net.minecraft.world.World;
  */
 public interface IFilterProvider {
 
-	public void addFilterClientToBlockList(EntityPlayer player, World world, BlockPos pos, List<IFilterClient> filterList);
-	public void addFilterServerToBlockList(EntityPlayer player, World world, BlockPos pos, List<IFilterServer> filterList);
-	public void addFilterClientToEntityList(EntityPlayer player, Entity entity, List<IFilterClient> filterList);
-	public void addFilterServerToEntityList(EntityPlayer player, Entity entity, List<IFilterServer> filterList);
+	public void addFilterClientToBlockList(EntityPlayer player, World world, BlockPos pos, List<FilterClient> filterList);
+	public void addFilterServerToBlockList(EntityPlayer player, World world, BlockPos pos, List<FilterServer> filterList);
+	public void addFilterClientToEntityList(EntityPlayer player, Entity entity, List<FilterClient> filterList);
+	public void addFilterServerToEntityList(EntityPlayer player, Entity entity, List<FilterServer> filterList);
 }

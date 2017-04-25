@@ -25,7 +25,7 @@ public class WorldOverlayHandler {
 	
 	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) {
-		if(!PlayerAccess.canEdit(mc.player) || !ClientData.playerData.hasSelectedPoints() || !(mc.player.getHeldItemMainhand().getItem() == ModItems.editItem && mc.player.getHeldItemMainhand().getMetadata() == 0))
+		if(!PlayerAccess.canEdit(mc.player) || !ClientData.playerData.hasSelectedPoints() || !(mc.player.getHeldItemMainhand().getItem() == ModItems.EDIT_ITEM && mc.player.getHeldItemMainhand().getMetadata() == 0))
 			return;
 		GlStateManager.pushMatrix();
 		PlayerData data = ClientData.playerData;

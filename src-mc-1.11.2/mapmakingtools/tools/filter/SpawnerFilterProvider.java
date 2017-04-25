@@ -2,9 +2,9 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IFilterProvider;
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 public class SpawnerFilterProvider implements IFilterProvider {
 
 	@Override
-	public void addFilterClientToBlockList(EntityPlayer player, World world, BlockPos pos, List<IFilterClient> filterList) {
+	public void addFilterClientToBlockList(EntityPlayer player, World world, BlockPos pos, List<FilterClient> filterList) {
 		TileEntity tile = FakeWorldManager.getTileEntity(world, pos);
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
@@ -37,7 +37,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 	}
 
 	@Override
-	public void addFilterServerToBlockList(EntityPlayer player, World world, BlockPos pos, List<IFilterServer> filterList) {
+	public void addFilterServerToBlockList(EntityPlayer player, World world, BlockPos pos, List<FilterServer> filterList) {
 		TileEntity tile = world.getTileEntity(pos);
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
@@ -55,12 +55,12 @@ public class SpawnerFilterProvider implements IFilterProvider {
 	}
 
 	@Override
-	public void addFilterClientToEntityList(EntityPlayer player, Entity entity, List<IFilterClient> filterList) {
+	public void addFilterClientToEntityList(EntityPlayer player, Entity entity, List<FilterClient> filterList) {
 		
 	}
 
 	@Override
-	public void addFilterServerToEntityList(EntityPlayer player, Entity entity, List<IFilterServer> filterList) {
+	public void addFilterServerToEntityList(EntityPlayer player, Entity entity, List<FilterServer> filterList) {
 		
 	}
 

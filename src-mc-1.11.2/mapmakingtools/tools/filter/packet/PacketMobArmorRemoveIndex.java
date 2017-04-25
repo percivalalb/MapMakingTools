@@ -59,10 +59,8 @@ public class PacketMobArmorRemoveIndex extends AbstractServerMessage {
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 
 				List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-				WeightedSpawnerEntity minecart = minecarts.get(this.minecartIndex);
 				minecarts.remove(this.minecartIndex);
-				if(SpawnerUtil.getRandomMinecart(spawner.getSpawnerBaseLogic()) == minecart)
-					spawner.getSpawnerBaseLogic().setNextSpawnData((WeightedSpawnerEntity)WeightedRandom.getRandomItem(spawner.getSpawnerBaseLogic().getSpawnerWorld().rand, minecarts));
+				spawner.getSpawnerBaseLogic().setNextSpawnData((WeightedSpawnerEntity)WeightedRandom.getRandomItem(spawner.getSpawnerBaseLogic().getSpawnerWorld().rand, minecarts));
 				
 				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
 				PacketUtil.sendTileEntityUpdateToWatching(spawner);

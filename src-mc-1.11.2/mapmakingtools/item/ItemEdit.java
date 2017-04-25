@@ -19,6 +19,7 @@ public class ItemEdit extends Item {
 	
     public ItemEdit() {
     	this.setCreativeTab(CreativeTabs.MISC);
+    	this.setMaxStackSize(1);
     }
     
     @Override

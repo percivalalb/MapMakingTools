@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonTextColour;
@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class CommandBlockAliasClientFilter extends IFilterClient {
+public class CommandBlockAliasClientFilter extends FilterClient {
 
 	private GuiTextFieldNonInteractable fld_alias;
     private GuiButton btn_ok;
@@ -87,7 +87,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketCommandBlockAlias(gui.getBlockPos(), fld_alias.getText() + "\u00a7r"));
-                	ClientHelper.mc.player.closeScreen();
+                	ClientHelper.getClient().player.closeScreen();
                 	break;
                 case 4:
                 	if(this.fld_alias.isFocused()) {
@@ -106,7 +106,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
             for (int l = 0; l < gui.getButtonList().size(); ++l) {
                 GuiButton guibutton = (GuiButton)gui.getButtonList().get(l);
 
-                if (guibutton.mousePressed(ClientHelper.mc, xMouse, yMouse)) {
+                if (guibutton.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
                 	//gui.selectedButton = guibutton;
                     // TODO this.mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
                     if(guibutton instanceof GuiButtonTextColour) {
@@ -138,7 +138,7 @@ public class CommandBlockAliasClientFilter extends IFilterClient {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
     		if(listBt instanceof GuiButtonTextColour) {
     			GuiButtonTextColour tab = (GuiButtonTextColour)listBt;
-        		if(tab.mousePressed(ClientHelper.mc, xMouse, yMouse)) {
+        		if(tab.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         			List<String> list = new ArrayList<String>();
         			list.add(tab.getCurrentColour(tab.textColourIndex).getName());
         			list.add((tab.textColourIndex + 1) + "/" + GuiButtonTextColour.TextColour.values().length);

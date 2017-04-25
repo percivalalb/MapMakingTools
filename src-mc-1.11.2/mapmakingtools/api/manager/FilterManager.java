@@ -3,9 +3,9 @@ package mapmakingtools.api.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IFilterProvider;
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -18,15 +18,15 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class FilterManager {
 	
-	private static final List<IFilterClient> clientMap = new ArrayList<IFilterClient>();
-	private static final List<IFilterServer> serverMap = new ArrayList<IFilterServer>();
+	private static final List<FilterClient> clientMap = new ArrayList<FilterClient>();
+	private static final List<FilterServer> serverMap = new ArrayList<FilterServer>();
 	private static final List<IFilterProvider> providerMap = new ArrayList<IFilterProvider>();
 	
-	public static void registerFilter(Class<? extends IFilterClient> filterClient, Class<? extends IFilterServer> filterServer) {
+	public static void registerFilter(Class<? extends FilterClient> filterClient, Class<? extends FilterServer> filterServer) {
 		try {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
 			
-			IFilterServer server = filterServer.newInstance();
+			FilterServer server = filterServer.newInstance();
 			
 			if(side == Side.CLIENT) {
 				clientMap.add(filterClient.newInstance().setServerFilter(server));
@@ -49,24 +49,24 @@ public class FilterManager {
 		}
 	}
 	
-	public static List<IFilterClient> getClientMap() {
+	public static List<FilterClient> getClientMap() {
 		return clientMap;
 	}
 	
-	public static List<IFilterServer> getServerMap() {
+	public static List<FilterServer> getServerMap() {
 		return serverMap;
 	}
 	
-	public static List<IFilterServer> getServerFiltersFromList(List<IFilterClient> clientFilters) {
-		List<IFilterServer> serverFilters = new ArrayList<IFilterServer>();
-		for(IFilterClient filter : clientFilters)
+	public static List<FilterServer> getServerFiltersFromList(List<FilterClient> clientFilters) {
+		List<FilterServer> serverFilters = new ArrayList<FilterServer>();
+		for(FilterClient filter : clientFilters)
 			serverFilters.add(filter.getServerFilter());
 		return serverFilters;
 	}
 	
-	public static List<IFilterClient> getClientBlocksFilters(EntityPlayer player, World world, BlockPos pos) {
-		List<IFilterClient> list = new ArrayList<IFilterClient>();
-		for(IFilterClient filter : clientMap) {
+	public static List<FilterClient> getClientBlocksFilters(EntityPlayer player, World world, BlockPos pos) {
+		List<FilterClient> list = new ArrayList<FilterClient>();
+		for(FilterClient filter : clientMap) {
 			if(filter.isApplicable(player, world, pos))
 				list.add(filter);
 		}
@@ -75,9 +75,9 @@ public class FilterManager {
 		return list;
 	}
 	
-	public static List<IFilterServer> getServerBlocksFilters(EntityPlayer player, World world, BlockPos pos) {
-		List<IFilterServer> list = new ArrayList<IFilterServer>();
-		for(IFilterServer filter : serverMap)
+	public static List<FilterServer> getServerBlocksFilters(EntityPlayer player, World world, BlockPos pos) {
+		List<FilterServer> list = new ArrayList<FilterServer>();
+		for(FilterServer filter : serverMap)
 			if(filter.isApplicable(player, world, pos))
 				list.add(filter);
 		for(IFilterProvider provider : providerMap)
@@ -85,9 +85,9 @@ public class FilterManager {
 		return list;
 	}
 	
-	public static List<IFilterClient> getClientEntitiesFilters(EntityPlayer player, Entity entity) {
-		List<IFilterClient> list = new ArrayList<IFilterClient>();
-		for(IFilterClient filter : clientMap)
+	public static List<FilterClient> getClientEntitiesFilters(EntityPlayer player, Entity entity) {
+		List<FilterClient> list = new ArrayList<FilterClient>();
+		for(FilterClient filter : clientMap)
 			if(filter.isApplicable(player, entity))
 				list.add(filter);
 		for(IFilterProvider provider : providerMap)
@@ -95,9 +95,9 @@ public class FilterManager {
 		return list;
 	}
 	
-	public static List<IFilterServer> getServerEntitiesFilters(EntityPlayer player, Entity entity) {
-		List<IFilterServer> list = new ArrayList<IFilterServer>();
-		for(IFilterServer filter : serverMap)
+	public static List<FilterServer> getServerEntitiesFilters(EntityPlayer player, Entity entity) {
+		List<FilterServer> list = new ArrayList<FilterServer>();
+		for(FilterServer filter : serverMap)
 			if(filter.isApplicable(player, entity))
 				list.add(filter);
 		for(IFilterProvider provider : providerMap)
@@ -105,15 +105,15 @@ public class FilterManager {
 		return list;
 	}
 
-	public static IFilterClient getClientFilterFromClass(Class<? extends IFilterClient> class1) {
-		for(IFilterClient filter : clientMap)
+	public static FilterClient getClientFilterFromClass(Class<? extends FilterClient> class1) {
+		for(FilterClient filter : clientMap)
 			if(filter.getClass() == class1)
 				return filter;
 		return null;
 	}
 	
-	public static IFilterServer getServerFilterFromClass(Class<? extends IFilterServer> class1) {
-		for(IFilterServer filter : serverMap)
+	public static FilterServer getServerFilterFromClass(Class<? extends FilterServer> class1) {
+		for(FilterServer filter : serverMap)
 			if(filter.getClass() == class1)
 				return filter;
 		return null;

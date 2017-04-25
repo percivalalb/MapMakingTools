@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.NumberParse;
@@ -20,7 +20,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * @author ProPercivalalb
  */
-public class SpawnerTimingClientFilter extends IFilterClientSpawner {
+public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	
 	private GuiTextField txt_minDelay;
 	private GuiTextField txt_maxDelay;
@@ -110,7 +110,7 @@ public class SpawnerTimingClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketSpawnerTimings(gui.getBlockPos(), this.txt_minDelay.getText(), this.txt_maxDelay.getText(), this.txt_spawnRadius.getText(), this.txt_spawnCount.getText(), this.txt_entityCap.getText(), this.txt_detectionRange.getText()));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                     break;
             }
         }
@@ -142,7 +142,7 @@ public class SpawnerTimingClientFilter extends IFilterClientSpawner {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenLarge);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_LARGE);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 160) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 160);

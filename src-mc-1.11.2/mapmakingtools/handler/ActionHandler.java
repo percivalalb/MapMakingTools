@@ -15,6 +15,7 @@ import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -34,103 +35,96 @@ public class ActionHandler {
 	public void onRightClick(RightClickBlock event) {
 		
 		EntityPlayer player = event.getEntityPlayer();
-		ItemStack stack = event.getItemStack();
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		World world = player.world;
 		BlockPos pos = event.getPos();
 		EnumFacing side = event.getFace();
 		
-		//if(!world.isRemote) {
-		//	player.sendMessage(new TextComponentTranslation("%s", "" + world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos))));
-			//event.setCanceled(true);
-		//}
-		
-
-			if(PlayerAccess.canEdit(player) && !world.isRemote) {
-				
-				//Quick Build - Right Click
-				if(stack.getItem() == ModItems.editItem && stack.getMetadata() == 0) {
-					PlayerData playerData = WorldData.getPlayerData(player);
-					
-					BlockPos movedPos = pos;
-					if(player.isSneaking())
-						movedPos = pos.add(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
-					
-					if(playerData.setSecondPoint(movedPos)) {
-						if(playerData.hasSelectedPoints()) {
-							TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
-							chatComponent.getStyle().setColor(TextFormatting.GREEN);
-							player.sendMessage(chatComponent);
-						}
-						else {
-							TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
-							chatComponent.getStyle().setColor(TextFormatting.RED);
-							player.sendMessage(chatComponent);
-						}
-						playerData.sendUpdateToClient();
-						event.setCanceled(true);
-					}
-				}
-				else if(stack.getItem() == ModItems.editItem && stack.getMetadata() == 1) {
-					if(!world.isRemote) {
-						TileEntity tileEntity = world.getTileEntity(pos);
-						if(tileEntity != null) {
-							
-							if(tileEntity instanceof TileEntityMobSpawner) {
-								MobSpawnerBaseLogic spawnerLogic = ((TileEntityMobSpawner)tileEntity).getSpawnerBaseLogic();
-								
-								FMLLog.info("ewaeaw e" + SpawnerUtil.getPotentialSpawns(spawnerLogic).size());
-								SpawnerUtil.confirmHasRandomMinecart(spawnerLogic);
-								FMLLog.info("ewaeaw e" + SpawnerUtil.getPotentialSpawns(spawnerLogic).size());
-							
-							}
-							
-							
-							PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos, false), player);
-							//SpawnerUtil.getTileEntitySpawnerPacket(spawner)
-							event.setCanceled(true);
-						}
-					}
+		//Is Client world or is doing off hand calculation
+		if(world.isRemote || event.getHand().equals(EnumHand.OFF_HAND)) {
+			if(PlayerAccess.canEdit(player)) {
+				if(stack.getItem() == ModItems.EDIT_ITEM) {
+					event.setCanceled(true);
 				}
 			}
-
+		}
+		else if(PlayerAccess.canEdit(player)) {
+			if(stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 0) {
+				PlayerData playerData = WorldData.getPlayerData(player);
+					
+				BlockPos movedPos = player.isSneaking() ? pos.offset(side) : pos;
+					
+				if(playerData.setSecondPoint(movedPos)) {
+					if(playerData.hasSelectedPoints()) {
+						TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
+						chatComponent.getStyle().setColor(TextFormatting.GREEN);
+						player.sendMessage(chatComponent);
+					}
+					else {
+						TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
+						chatComponent.getStyle().setColor(TextFormatting.RED);
+						player.sendMessage(chatComponent);
+					}
+					playerData.sendUpdateToClient();
+					event.setCanceled(true);
+				}
+			}
+			else if(stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 1) {
+				TileEntity tileEntity = world.getTileEntity(pos);
+				if(tileEntity != null) {
+							
+					if(tileEntity instanceof TileEntityMobSpawner) {
+						MobSpawnerBaseLogic spawnerLogic = ((TileEntityMobSpawner)tileEntity).getSpawnerBaseLogic();
+						SpawnerUtil.confirmHasRandomMinecart(spawnerLogic);
+					}
+							
+							
+					PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos, false), player);
+					event.setCanceled(true);
+				}
+			}	
+		}
 	}
 	
 	@SubscribeEvent
 	public void onLeftClick(LeftClickBlock event) {
 		
 		EntityPlayer player = event.getEntityPlayer();
-		ItemStack stack = event.getItemStack();
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		World world = player.world;
 		BlockPos pos = event.getPos();
 		EnumFacing side = event.getFace();
 
-			if(PlayerAccess.canEdit(player) && !world.isRemote) {
-				
-				//Quick Build - Left Click
-				if(stack.getItem() == ModItems.editItem && stack.getMetadata() == 0) {
-					PlayerData playerData = WorldData.getPlayerData(player);
-					
-					BlockPos movedPos = pos;
-					if(player.isSneaking())
-						movedPos = pos.add(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
-	
-					
-					if(playerData.setFirstPoint(movedPos)) {
-						if(playerData.hasSelectedPoints()) {
-							TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
-							chatComponent.getStyle().setColor(TextFormatting.GREEN);
-							player.sendMessage(chatComponent);
-						}
-						else {
-							TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
-							chatComponent.getStyle().setColor(TextFormatting.RED);
-							player.sendMessage(chatComponent);
-						}
-						playerData.sendUpdateToClient();
-						event.setCanceled(true);
-					}
+		//Is Client world or is doing off hand calculation
+		if(world.isRemote || event.getHand().equals(EnumHand.OFF_HAND)) {
+			if(PlayerAccess.canEdit(player)) {
+				if(stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 0) {
+					event.setCanceled(true);
 				}
 			}
+		}
+		if(PlayerAccess.canEdit(player)) {
+			if(stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 0) {
+				PlayerData playerData = WorldData.getPlayerData(player);
+					
+				BlockPos movedPos = player.isSneaking() ? pos.offset(side) : pos;
+					
+				if(playerData.setFirstPoint(movedPos)) {
+					if(playerData.hasSelectedPoints()) {
+						TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.positive", "" + playerData.getBlockCount());
+						chatComponent.getStyle().setColor(TextFormatting.GREEN);
+						player.sendMessage(chatComponent);
+					}
+					else {
+						TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.chat.quickbuild.blocks.count.negative");
+						chatComponent.getStyle().setColor(TextFormatting.RED);
+						player.sendMessage(chatComponent);
+					}
+					playerData.sendUpdateToClient();
+					event.setCanceled(true);
+				}
+			}
+		}
 	
 	}
 	
@@ -141,7 +135,7 @@ public class ActionHandler {
 		World world = player.world;
 		Entity entity = event.getTarget();
 		
-		if(stack != null && stack.getItem() == ModItems.editItem && stack.getMetadata() == 1) {
+		if(stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 1) {
 			if(!world.isRemote) {
 				PacketDispatcher.sendTo(new PacketUpdateEntity(entity), player);
 				event.setCanceled(true);

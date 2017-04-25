@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonData;
@@ -21,7 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * @author ProPercivalalb
  */
-public class BabyMonsterClientFilter extends IFilterClientSpawner {
+public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButtonData btn_covert;
 	
@@ -60,8 +60,8 @@ public class BabyMonsterClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketBabyMonster(gui.getBlockPos(), this.btn_covert.getData() == 0 ? false : true, this.minecartIndex));
-            		ClientHelper.mc.player.closeScreen();
+                	PacketDispatcher.sendToServer(new PacketBabyMonster(gui.getBlockPos(), this.btn_covert.getData() == 0, this.minecartIndex));
+            		ClientHelper.getClient().player.closeScreen();
                 	break;
             }
         }

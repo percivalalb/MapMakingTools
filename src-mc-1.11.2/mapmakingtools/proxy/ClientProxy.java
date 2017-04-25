@@ -3,7 +3,7 @@ package mapmakingtools.proxy;
 import java.util.List;
 
 import mapmakingtools.ModItems;
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.GuiFilter;
@@ -57,12 +57,12 @@ public class ClientProxy extends CommonProxy {
 		BlockPos pos = new BlockPos(x, y, z);
 		
 		if(ID == ID_FILTER_BLOCK) {
-			List<IFilterClient> filterList = FilterManager.getClientBlocksFilters(player, world, pos);
+			List<FilterClient> filterList = FilterManager.getClientBlocksFilters(player, world, pos);
 			if(filterList.size() > 0)
 				return new GuiFilter(filterList, player, pos.toImmutable());
 		}
 		else if(ID == ID_FILTER_ENTITY) {
-			List<IFilterClient> filterList = FilterManager.getClientEntitiesFilters(player, world.getEntityByID(x));
+			List<FilterClient> filterList = FilterManager.getClientEntitiesFilters(player, world.getEntityByID(x));
 			if(filterList.size() > 0)
 				return new GuiFilter(filterList, player, x);
 		}
@@ -96,9 +96,9 @@ public class ClientProxy extends CommonProxy {
     	MinecraftForge.EVENT_BUS.register(new GuiOpenHandler());
     	MinecraftForge.EVENT_BUS.register(new BlockHighlightHandler());
     	
-    	ModelHelper.registerItem(ModItems.editItem, 0, "mapmakingtools:edit_item");
-    	ModelHelper.registerItem(ModItems.editItem, 1, "mapmakingtools:wrench");
-    	ModelBakery.registerItemVariants(ModItems.editItem, new ResourceLocation(Reference.MOD_ID, "edit_item"), new ResourceLocation(Reference.MOD_ID, "wrench"));
+    	ModelHelper.registerItem(ModItems.EDIT_ITEM, 0, "mapmakingtools:edit_item");
+    	ModelHelper.registerItem(ModItems.EDIT_ITEM, 1, "mapmakingtools:wrench");
+    	ModelBakery.registerItemVariants(ModItems.EDIT_ITEM, new ResourceLocation(Reference.MOD_ID, "edit_item"), new ResourceLocation(Reference.MOD_ID, "wrench"));
 
     	
 	}

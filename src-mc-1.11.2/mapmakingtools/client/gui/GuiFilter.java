@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL12;
 
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.ButtonType;
@@ -45,14 +45,14 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     public int entityId;
 	public TargetType mode;
 	
-	private List<IFilterClient> filterList;
-	private static IFilterClient filterCurrent;
+	private List<FilterClient> filterList;
+	private static FilterClient filterCurrent;
 	private static int currentPage = 1;
 	private int maxPages = 1;
 	
 	private List textboxList = new ArrayList();
 	
-	private GuiFilter(List<IFilterClient> filters, EntityPlayer player) {
+	private GuiFilter(List<FilterClient> filters, EntityPlayer player) {
 		super(new ContainerFilter(FilterManager.getServerFiltersFromList(filters), player));
 		this.xSize = 302;
         this.ySize = 100;
@@ -67,19 +67,19 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         }	
         else {
         	int index = this.filterList.indexOf(filterCurrent);
-        //	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
-			//this.getContainerFilter().setSelected(index);
+        	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
+			this.getContainerFilter().setSelected(index);
         }
 	}
 	
-	public GuiFilter(List<IFilterClient> filters, EntityPlayer player, BlockPos pos) {
+	public GuiFilter(List<FilterClient> filters, EntityPlayer player, BlockPos pos) {
 		this(filters, player);
 		this.pos = pos;
 	    this.mode = TargetType.BLOCK;
 	    this.getContainerFilter().setBlockPos(pos);
 	}
 	    
-	public GuiFilter(List<IFilterClient> filters, EntityPlayer player, int entityId) {
+	public GuiFilter(List<FilterClient> filters, EntityPlayer player, int entityId) {
 		this(filters, player);
 	    this.entityId = entityId;
 	    this.mode = TargetType.ENTITY;
@@ -93,7 +93,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         
 		if(filterCurrent == null || !filterCurrent.drawBackground(this)) {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenSmall);
+			ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SMALL);
 			this.drawTexturedModalRect(topX, topY, 0, 0, this.xFakeSize(), this.yFakeSize());
 		}
 		
@@ -103,7 +103,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 			GL11.glPushMatrix();
 			double scale = 1.7D;
 			GL11.glScaled(scale, scale, scale);
-			this.fontRendererObj.drawString("Minecraft Filters", (int)((topX + 10) / scale), (int)((topY + 15) / scale), 0);
+			this.fontRenderer.drawString("Minecraft Filters", (int)((topX + 10) / scale), (int)((topY + 15) / scale), 0);
 			GL11.glScaled(0.588D, 0.588D, 0.588D);
 			GL11.glPopMatrix();
 		}
@@ -126,7 +126,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 			        GL11.glDisable(GL11.GL_LIGHTING);
 			        GL11.glDisable(GL11.GL_DEPTH_TEST);
 			        GL11.glDisable(GL11.GL_BLEND);
-			        this.fontRendererObj.drawStringWithShadow(s1, slot.xPos + 19 - 2 - this.fontRendererObj.getStringWidth(s1), slot.yPos + 6 + 3, 16777215);
+			        this.fontRenderer.drawStringWithShadow(s1, slot.xPos + 19 - 2 - this.fontRenderer.getStringWidth(s1), slot.yPos + 6 + 3, 16777215);
 			        GL11.glEnable(GL11.GL_LIGHTING);
 			        GL11.glEnable(GL11.GL_DEPTH_TEST);
 			        GL11.glEnable(GL11.GL_BLEND);
@@ -168,13 +168,13 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	//	}
     		//}
     		//if(listBt.id == 148) {
-    		//	if(listBt.mousePressed(ClientHelper.mc, xMouse, yMouse)) {
+    		//	if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         	//		List<String> list = Arrays.asList("Prev. Page");
         	//		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
         	//	}
     		//}
     		//if(listBt.id == 149) {
-    		//	if(listBt.mousePressed(ClientHelper.mc, xMouse, yMouse)) {
+    		//	if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         	//		List<String> list = Arrays.asList("Next. Page");
         	//		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
         	//	}
@@ -270,7 +270,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	if (button.enabled) {
             switch (button.id) {
             	case -1:
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
             		break;
             
             	case 148:
@@ -308,7 +308,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         
         if(filterCurrent == null || filterCurrent.doClosingKeysWork(this, cha, charIndex))
         	if (charIndex == Keyboard.KEY_ESCAPE)
-        		ClientHelper.mc.player.closeScreen();
+        		ClientHelper.getClient().player.closeScreen();
         
         for(int i = 0; i < this.textboxList.size(); ++i)
         	((GuiTextField)this.textboxList.get(i)).textboxKeyTyped(cha, charIndex);
@@ -467,7 +467,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     
 	@Override
 	public void drawHoveringText2(List<String> text, int mouseX, int mouseY) {
-		this.drawHoveringText(text, mouseX, mouseY, ClientHelper.mc.fontRendererObj);
+		this.drawHoveringText(text, mouseX, mouseY, ClientHelper.getClient().fontRenderer);
 	}
 
 	@Override
@@ -487,7 +487,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	
 	@Override
 	public FontRenderer getFont() {
-		return this.fontRendererObj;
+		return this.fontRenderer;
 	}
 
 	@Override

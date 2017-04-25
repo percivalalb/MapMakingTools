@@ -2,7 +2,7 @@ package mapmakingtools.client.gui.button;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
@@ -17,10 +17,10 @@ public class GuiTabSelect extends GuiButton {
     
 	public boolean isSelected;
 	public ButtonType type;
-	public IFilterClient filter;
+	public FilterClient filter;
 	public GuiFilter gui;
 	
-	public GuiTabSelect(int id, int xPosition, int yPosition, ButtonType type, IFilterClient filter, GuiFilter gui) {
+	public GuiTabSelect(int id, int xPosition, int yPosition, ButtonType type, FilterClient filter, GuiFilter gui) {
         super(id, xPosition, yPosition, 29, 27, "");
         this.isSelected = false;
         this.type = type;
@@ -32,9 +32,9 @@ public class GuiTabSelect extends GuiButton {
     public void drawButton(Minecraft mc, int i, int j) {
         if(this.visible) {
         	GL11.glPushMatrix();
-        	FontRenderer fontRenderer = mc.fontRendererObj;
+        	FontRenderer fontRenderer = mc.fontRenderer;
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        	mc.getTextureManager().bindTexture(ResourceReference.tabs);
+        	mc.getTextureManager().bindTexture(ResourceReference.TABS);
         	boolean error = filter.showErrorIcon(gui);
             int difference = isSelected ? 32 : 30;
             this.drawTexturedModalRect(this.xPosition + (isSelected && type == ButtonType.RIGHT ? -2 : 0), this.yPosition, 0 + (isSelected ? 30 : 0), 28 * (type == ButtonType.LEFT ? 1 : 0), difference, 27 * (type == ButtonType.LEFT ? 2 : 1));//top left
@@ -51,6 +51,6 @@ public class GuiTabSelect extends GuiButton {
 	}
     
     public boolean isMouseAbove(int mouseX, int mouseY) {
-    	return this.mousePressed(ClientHelper.mc, mouseX, mouseY);
+    	return this.mousePressed(ClientHelper.getClient(), mouseX, mouseY);
     }
 }

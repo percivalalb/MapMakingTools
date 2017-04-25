@@ -8,7 +8,7 @@ import net.minecraft.util.text.translation.I18n;
 /**
  * @author ProPercivalalb
  */
-public abstract class IFilterClient extends IFilter {
+public abstract class FilterClient extends FilterBase {
 	
 	public abstract String getUnlocalizedName();
 	public String getFilterName() { return I18n.translateToLocal(this.getUnlocalizedName()); }
@@ -30,14 +30,14 @@ public abstract class IFilterClient extends IFilter {
 	public boolean showErrorIcon(IGuiFilter gui) { return false; }
 	public String getErrorMessage(IGuiFilter gui) { return null; }
 	
-	private IFilterServer serverFilter;
+	private FilterServer serverFilter;
 	
-	public final IFilterClient setServerFilter(IFilterServer serverFilter) {
+	public final FilterClient setServerFilter(FilterServer serverFilter) {
 		this.serverFilter = serverFilter;
 		return this;
 	}
 	
-	public final IFilterServer getServerFilter() {
+	public final FilterServer getServerFilter() {
 		return this.serverFilter;
 	}
 	

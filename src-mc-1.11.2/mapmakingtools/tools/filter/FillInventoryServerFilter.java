@@ -4,8 +4,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.api.interfaces.IFilterServer;
-import mapmakingtools.container.IUnlimitedInventory;
+import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class FillInventoryServerFilter extends IFilterServer {
+public class FillInventoryServerFilter extends FilterServer {
 
 	public static Map<String, FillInventory> invMap = new Hashtable<String, FillInventory>();
 	
@@ -96,7 +96,7 @@ public class FillInventoryServerFilter extends IFilterServer {
 		return invMap.get(username);
 	}
 
-	public class FillInventory extends IUnlimitedInventory {
+	public class FillInventory extends InventoryUnlimited {
 
 		public boolean[] umlimited;
 		

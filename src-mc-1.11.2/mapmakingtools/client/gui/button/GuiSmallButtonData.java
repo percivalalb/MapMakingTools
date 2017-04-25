@@ -5,16 +5,16 @@ import net.minecraft.client.gui.GuiButton;
 /**
  * @author ProPercivalalb
  */
-public class GuiButtonData extends GuiButton {
+public class GuiSmallButtonData extends GuiSmallButton {
 
 	private int data;
 	
-	public GuiButtonData(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+	public GuiSmallButtonData(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
 		super(buttonId, x, y, widthIn, heightIn, buttonText);
 		this.data = 0;
 	}
 	
-	public GuiButtonData setData(int data) {
+	public GuiSmallButtonData setData(int data) {
 		this.data = data;
 		return this;
 	}

@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.FMLLog;
 /**
  * @author ProPercivalalb
  */
-public abstract class IFilterClientSpawner extends IFilterClient {
+public abstract class FilterMobSpawnerBase extends FilterClient {
 
 	public static int minecartIndex = 0;
 	public int minecartsCount = 1;
@@ -70,7 +70,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 			GuiButton button = null;
 			for(GuiButton tempButton : gui.getButtonList()) {
 				if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
-					if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
+					if(!tempButton.mousePressed(ClientHelper.getClient(), xMouse, yMouse))
 						continue;
 					if(minecarts.size() <= 1)
 						break;
@@ -83,7 +83,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				}
 				minecarts.remove(button.id - 200);
 				this.addMinecartButtons(gui, topX, topY);
-				PacketDispatcher.sendToServer(new PacketMobArmorRemoveIndex(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+				PacketDispatcher.sendToServer(new PacketMobArmorRemoveIndex(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
 			}
 			
 		}
@@ -91,7 +91,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 			GuiButton button = null;
 			for(GuiButton tempButton : gui.getButtonList()) {
 				if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
-					if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
+					if(!tempButton.mousePressed(ClientHelper.getClient(), xMouse, yMouse))
 						continue;
 					if(minecarts.size() >= 17)
 						break;
@@ -110,7 +110,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 				minecarts.add(randomMinecart);
 				
 				this.addMinecartButtons(gui, topX, topY);
-				PacketDispatcher.sendToServer(new PacketMobArmorAddIndex(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+				PacketDispatcher.sendToServer(new PacketMobArmorAddIndex(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public abstract class IFilterClientSpawner extends IFilterClient {
 		
 		for(GuiButton tempButton : gui.getButtonList()) {
 			if(tempButton.id >= 200 && tempButton.id <= 200 + minecartsCount) {
-				if(!tempButton.mousePressed(ClientHelper.mc, xMouse, yMouse))
+				if(!tempButton.mousePressed(ClientHelper.getClient(), xMouse, yMouse))
 					continue;
 				List<String> list = new ArrayList<String>();
     			list.add(SpawnerUtil.getMinecartType(minecarts.get(tempButton.id - 200)).toString());

@@ -3,9 +3,12 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -55,8 +58,13 @@ public class PacketMobArmorUpdate extends AbstractServerMessage {
 					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
 					ItemStack[] mobArmor = SpawnerUtil.getMobArmor(spawner.getSpawnerBaseLogic(), this.minecartIndex);
+					ItemStack[] mobHeld = SpawnerUtil.getMobHeldItems(spawner.getSpawnerBaseLogic(), this.minecartIndex);
+					
+					for(int i = 0; i < mobHeld.length; ++i) {
+						filterCurrent.getInventory(container).setInventorySlotContents(1 - i, mobHeld[i]);
+				    }
 					for(int i = 0; i < mobArmor.length; ++i) {
-						filterCurrent.getInventory(container).setInventorySlotContents(i, mobArmor[i]);
+						filterCurrent.getInventory(container).setInventorySlotContents(i + 2, mobArmor[i]);
 				    }
 					
 				    TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.update");

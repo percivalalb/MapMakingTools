@@ -11,11 +11,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class ModItems {
 
-	public static Item editItem;
+	public static Item EDIT_ITEM;
 	
 	public static void inti() {
-		editItem = new ItemEdit().setUnlocalizedName("mapmakingtools:edititem");
+		EDIT_ITEM = new ItemEdit().setUnlocalizedName("mapmakingtools:edititem");
 		
-		GameRegistry.register(editItem, new ResourceLocation(Reference.MOD_ID, "edit_item"));
+		GameRegistry.register(EDIT_ITEM, new ResourceLocation(Reference.MOD_ID, "edit_item"));
 	}
 }

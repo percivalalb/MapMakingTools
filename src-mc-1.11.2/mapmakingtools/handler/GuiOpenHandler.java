@@ -16,16 +16,6 @@ public class GuiOpenHandler {
 
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
-		GuiScreen screen = event.getGui();
-		if(!(screen instanceof GuiCommandBlock)) return;
 		
-		EntityPlayer player = MapMakingTools.proxy.getPlayerEntity();
-		if(player == null) return;
-		
-		ItemStack stack = player.getActiveItemStack();
-		if(stack.isEmpty()) return;
-		
-		if(stack.getItem() == ModItems.editItem)
-			event.setCanceled(true);
 	}
 }

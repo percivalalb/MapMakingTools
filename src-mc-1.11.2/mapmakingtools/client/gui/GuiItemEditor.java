@@ -13,6 +13,7 @@ import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiTabSelect;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
@@ -137,10 +138,10 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         int topY = (this.height - this.ySize) / 2;
         //this.drawTexturedModalRect(guiXCentre - 175 / 2, guiYCentre - 132 / 2, 0, 0, 175, 132);
         
-        this.mc.getTextureManager().bindTexture(ResourceReference.itemEditorSlot);
+        this.mc.getTextureManager().bindTexture(ResourceReference.ITEM_EDITOR_SLOT);
         this.drawTexturedModalRect(topX, topY, 0, 0, 35, 35);
         GL11.glScaled(0.5F, 0.5F, 0.5F);
-        this.mc.fontRendererObj.drawString("Slot: " + slotIndex, topX + 32, topY + 21, 0);
+        this.mc.fontRenderer.drawString("Slot: " + slotIndex, topX + 32, topY + 21, 0);
         GL11.glScaled(2.0F, 2.0F, 2.0F);
 
         for(GuiTextField field : this.textboxList)
@@ -163,8 +164,11 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 		if(itemCurrent != null)
 			itemCurrent.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
 		
-        //for(GuiTextField field : this.textboxList)
-        //	field.drawToolTip(xMouse, yMouse);
+		GL11.glTranslatef((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
+		
+		if(itemCurrent != null)
+			itemCurrent.drawToolTips(this, xMouse, yMouse);
+		GL11.glTranslatef((float)this.guiLeft, (float)this.guiTop, 0.0F);
 	}
 	
 	@Override
@@ -267,7 +271,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
 	@Override
 	public FontRenderer getFontRenderer() {
-		return this.fontRendererObj;
+		return this.fontRenderer;
 	}
 	
 	@Override

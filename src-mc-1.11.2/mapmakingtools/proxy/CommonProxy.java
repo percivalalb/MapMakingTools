@@ -2,7 +2,7 @@ package mapmakingtools.proxy;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.container.ContainerFilter;
@@ -85,6 +85,7 @@ import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -103,12 +104,12 @@ public class CommonProxy implements IGuiHandler {
 		BlockPos pos = new BlockPos(x, y, z);
 		
 		if(ID == ID_FILTER_BLOCK) {
-			List<IFilterServer> filterList = FilterManager.getServerBlocksFilters(player, world, pos);
+			List<FilterServer> filterList = FilterManager.getServerBlocksFilters(player, world, pos);
 			if(filterList.size() > 0)
 				return new ContainerFilter(filterList, player).setBlockPos(pos);
 		}
 		else if(ID == ID_FILTER_ENTITY) {
-			List<IFilterServer> filterList = FilterManager.getServerEntitiesFilters(player, world.getEntityByID(x));
+			List<FilterServer> filterList = FilterManager.getServerEntitiesFilters(player, world.getEntityByID(x));
 			if(filterList.size() > 0)
 				return new ContainerFilter(filterList, player).setEntityId(x);
 		}
@@ -129,7 +130,7 @@ public class CommonProxy implements IGuiHandler {
 	public void registerHandlers() {}
 	
 	public EntityPlayer getPlayerEntity(MessageContext ctx) {
-		return ctx.getServerHandler().playerEntity;
+		return ctx.getServerHandler().player;
 	}
 	
 	public EntityPlayer getPlayerEntity() {
@@ -137,7 +138,7 @@ public class CommonProxy implements IGuiHandler {
 	}
 	
 	public IThreadListener getThreadFromContext(MessageContext ctx) {
-		return ctx.getServerHandler().playerEntity.getServer();
+		return ctx.getServerHandler().player.getServer();
 	}
 	
 	public void onPreLoad() {

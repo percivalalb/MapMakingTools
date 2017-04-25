@@ -19,7 +19,7 @@ public class GuiSmallButton extends GuiButton {
     @Override
     public void drawButton(Minecraft mc, int i, int j) {
         if(this.visible) {
-        	FontRenderer fontRenderer = mc.fontRendererObj;
+        	FontRenderer fontRenderer = mc.fontRenderer;
         	mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = i >= this.xPosition && j >= yPosition && i < this.xPosition + this.width && j < yPosition + this.height;
@@ -45,6 +45,6 @@ public class GuiSmallButton extends GuiButton {
 	}
     
     public boolean isMouseAbove(int mouseX, int mouseY) {
-    	return this.mousePressed(ClientHelper.mc, mouseX, mouseY);
+    	return this.mousePressed(ClientHelper.getClient(), mouseX, mouseY);
     }
 }

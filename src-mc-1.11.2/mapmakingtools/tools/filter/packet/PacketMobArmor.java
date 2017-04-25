@@ -3,7 +3,9 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.MobArmorServerFilter;
 import mapmakingtools.util.PacketUtil;
@@ -57,7 +59,8 @@ public class PacketMobArmor extends AbstractServerMessage {
 					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 					MobArmorServerFilter filterCurrent = (MobArmorServerFilter)container.filterCurrent;
 					IInventory inventory = filterCurrent.getInventory(container); 
-					SpawnerUtil.setMobArmor(spawner.getSpawnerBaseLogic(), inventory.getStackInSlot(4), inventory.getStackInSlot(3), inventory.getStackInSlot(2), inventory.getStackInSlot(1), inventory.getStackInSlot(0), this.minecartIndex);
+					SpawnerUtil.setMobArmor(spawner.getSpawnerBaseLogic(), inventory.getStackInSlot(5), inventory.getStackInSlot(4), inventory.getStackInSlot(3), inventory.getStackInSlot(2), inventory.getStackInSlot(1), inventory.getStackInSlot(0), this.minecartIndex);
+					PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
 					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
 				    TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.complete");

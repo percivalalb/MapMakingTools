@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.NumberParse;
@@ -20,7 +20,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * @author ProPercivalalb
  */
-public class MobVelocityClientFilter extends IFilterClientSpawner {
+public class MobVelocityClientFilter extends FilterMobSpawnerBase {
 
 	private GuiTextField txt_xMotion;
 	private GuiTextField txt_yMotion;
@@ -88,7 +88,7 @@ public class MobVelocityClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.minecartIndex));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                     break;
             }
         }
@@ -117,7 +117,7 @@ public class MobVelocityClientFilter extends IFilterClientSpawner {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenMedium);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_MEDIUM);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 135) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 135);

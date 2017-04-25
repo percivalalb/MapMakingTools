@@ -1,32 +1,41 @@
 package mapmakingtools.tools.filter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import org.lwjgl.opengl.GL11;
+
+import mapmakingtools.api.ScrollMenu;
+import mapmakingtools.api.interfaces.FilterClient;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.ClientHelper;
+import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.TextHelper;
+import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.tools.datareader.SpawnerEntitiesList;
+import mapmakingtools.tools.filter.packet.PacketMobType;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 /**
  * @author ProPercivalalb
  */
-public class VillagerProfessionClientFilter extends IFilterClient {
+public class VillagerProfessionClientFilter extends FilterClient {
 
-	public int professionId = 0;
-	public GuiButton btn_covert;
-	private GuiButton btn_add;
-	private GuiButton btn_remove;
-	private GuiLabel lbl_profession;
+	public ScrollMenu menu;
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -48,53 +57,61 @@ public class VillagerProfessionClientFilter extends IFilterClient {
 	@Override
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
+		gui.setYSize(135);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
-        this.btn_covert = new GuiButton(0, topX + 20, topY + 50, 170, 20, "Set Villager Profession");
-        this.btn_add = new GuiSmallButton(1, topX + 200, topY + 58, 13, 12, "+");
-	    this.btn_remove = new GuiSmallButton(2, topX + 200, topY + 44, 13, 12, "-");
-        this.lbl_profession = new GuiLabel(gui.getFont(), 0, topX + 20, topY + 37, 200, 20, 0);
-	    gui.getLabelList().add(this.lbl_profession);
-	    gui.getButtonList().add(this.btn_add);
-	    gui.getButtonList().add(this.btn_remove);
-        gui.getButtonList().add(this.btn_covert);
+        int topY = (gui.getHeight() - 135) / 2;
+        this.menu = new ScrollMenu((GuiScreen)gui, topX + 8, topY + 19, 227, 108, 2, this.getProfesionList()) {
+
+			@Override
+			public String getDisplayString(String listStr) {
+				return listStr;
+			}
+
+			@Override
+			public void onSetButton() {
+				PacketDispatcher.sendToServer(new PacketVillagerProfession(VillagerRegistry.instance().getRegistry().getValue(new ResourceLocation(this.strRefrence.get(this.selected)))));
+        		ClientHelper.getClient().player.closeScreen();
+			}
+        	
+        };
+        this.menu.initGui();
+        this.menu.selected = 0;
 	}
 	
-	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
-		super.actionPerformed(gui, button);
-		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketVillagerProfession(this.professionId));
-            		ClientHelper.mc.player.closeScreen();
-                	break;
-                case 1:
-                	this.professionId += 1;
-                	if(this.professionId >= 5)
-                		this.professionId = 0;
-                	break;
-                case 2:
-                	this.professionId -= 1;
-                	if(this.professionId <= 0)
-                		this.professionId = 4;
-                	break;
-            }
-        }
+	private List<String> getProfesionList() {
+		List<String> list = new ArrayList<String>();
+		for(ResourceLocation location : VillagerRegistry.instance().getRegistry().getKeys())
+			list.add(location.toString());
+		return list;
 	}
-	
+
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagerprofession.info"));
 	}
+
+	@Override
+	public void drawGuiContainerBackgroundLayer(IGuiFilter baseIn, float partialTicks, int xMouse, int yMouse) {
+		super.drawGuiContainerBackgroundLayer(baseIn, partialTicks, xMouse, yMouse);
+		int topX = (baseIn.getWidth() - baseIn.xFakeSize()) / 2;
+	    int topY = (baseIn.getHeight() - 135) / 2;
+        baseIn.getFont().drawString(getFilterName(), topX - baseIn.getFont().getStringWidth(getFilterName()) / 2 + baseIn.xFakeSize() / 2, topY + 7, 0);
+        this.menu.drawGuiContainerBackgroundLayer(partialTicks, xMouse, yMouse);
+	}
 	
 	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
+	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
+		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
+	}
+	
+	@Override
+	public boolean drawBackground(IGuiFilter gui) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
-        gui.getFont().drawString(this.getFilterName(), topX - gui.getFont().getStringWidth(this.getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
-        
-        gui.getFont().drawString("ID: " + this.professionId, topX + 30, topY + 35, 0);
+        int topY = (gui.getHeight() - 135) / 2;
+		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 135);
+		return true;
 	}
 }

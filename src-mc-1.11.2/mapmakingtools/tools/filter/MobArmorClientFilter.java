@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
@@ -24,7 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * @author ProPercivalalb
  */
-public class MobArmorClientFilter extends IFilterClientSpawner {
+public class MobArmorClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButton btnOk;
 	
@@ -44,7 +44,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		gui.setYSize(151);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 151) / 2;
-        this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
+        this.btnOk = new GuiButton(0, topX + 12, topY + 93, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
         this.addMinecartButtons(gui, topX, topY);
         this.onMinecartIndexChange(gui);
@@ -67,8 +67,8 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketMobArmor(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
-            		ClientHelper.mc.player.closeScreen();
+                	PacketDispatcher.sendToServer(new PacketMobArmor(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
+            		ClientHelper.getClient().player.closeScreen();
                     break;
             }
         }
@@ -102,7 +102,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public void updateButtonClicked(IGuiFilter gui) {
 		if(!showErrorIcon(gui))
-			PacketDispatcher.sendToServer(new PacketMobArmorUpdate(gui.getBlockPos(), IFilterClientSpawner.minecartIndex));
+			PacketDispatcher.sendToServer(new PacketMobArmorUpdate(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
 	}
 	
 	@Override
@@ -131,7 +131,7 @@ public class MobArmorClientFilter extends IFilterClientSpawner {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenMobArmor);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_MOB_ARMOUR);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 151) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 151);

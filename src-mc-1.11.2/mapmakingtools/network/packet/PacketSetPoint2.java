@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class PacketSetPoint2 extends AbstractClientMessage {
 	
-public BlockPos pos;
+	public BlockPos pos;
 	
 	public PacketSetPoint2() {}
 	public PacketSetPoint2(BlockPos pos) {

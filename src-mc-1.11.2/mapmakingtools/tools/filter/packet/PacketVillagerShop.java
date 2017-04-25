@@ -94,7 +94,7 @@ public class PacketVillagerShop extends AbstractServerMessage {
 		        		MerchantRecipe recipe = new MerchantRecipe(input1, input2, output, 0, this.recipeUses[i]);
 		        		recipeList.add(recipe);
 		        	}
-		        	ReflectionHelper.setField(EntityVillager.class, villager, 5, recipeList);
+		        	ReflectionHelper.setField(EntityVillager.class, villager, 7, recipeList);
 		        	
 		        	TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagershop.complete");
 					chatComponent.getStyle().setItalic(true);

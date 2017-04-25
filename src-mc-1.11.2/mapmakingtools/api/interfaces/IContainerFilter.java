@@ -21,6 +21,6 @@ public interface IContainerFilter {
 	public BlockPos getBlockPos();
 	public int getEntityId();
 	public World getWorld();
-	public IFilterServer getCurrentFilter();
+	public FilterServer getCurrentFilter();
 	public Entity getEntity();
 }

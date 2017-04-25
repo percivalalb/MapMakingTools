@@ -90,42 +90,56 @@ public class SpawnerUtil {
 		spawnerLogic.setNextSpawnData(randomMinecart);
 	}
 	
-	public static void setMobArmor(MobSpawnerBaseLogic spawnerLogic, ItemStack helment, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack heldItem, int minecartIndex) {
+	public static void setMobArmor(MobSpawnerBaseLogic spawnerLogic, ItemStack helment, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack mainHandItem, ItemStack offHandItem, int minecartIndex) {
 		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		
+		NBTTagCompound compound = getMinecartProperties(randomMinecart);
 		NBTTagList nbttaglist = new NBTTagList();
-		NBTTagCompound nbttagcompound1;
-		//Held Item
-		nbttagcompound1 = new NBTTagCompound();
-		if(heldItem != null) heldItem.writeToNBT(nbttagcompound1);
-		nbttaglist.appendTag(nbttagcompound1);
-		//Boots
-		nbttagcompound1 = new NBTTagCompound();
-		if(boots != null) boots.writeToNBT(nbttagcompound1);
-		nbttaglist.appendTag(nbttagcompound1);
-		//Leggings
-		nbttagcompound1 = new NBTTagCompound();
-		if(leggings != null) leggings.writeToNBT(nbttagcompound1);
-		nbttaglist.appendTag(nbttagcompound1);
-		//Chest
-		nbttagcompound1 = new NBTTagCompound();
-		if(chestplate != null) chestplate.writeToNBT(nbttagcompound1);
-		nbttaglist.appendTag(nbttagcompound1);
-		//Helmet
-		nbttagcompound1 = new NBTTagCompound();
-		if(helment != null) helment.writeToNBT(nbttagcompound1);
-		nbttaglist.appendTag(nbttagcompound1);
-		tag.setTag("Equipment", nbttaglist);
+		
+        for(ItemStack itemstack : new ItemStack[] {boots, leggings, chestplate, helment}) {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+
+            if (!itemstack.isEmpty())
+                itemstack.writeToNBT(nbttagcompound);
+
+            nbttaglist.appendTag(nbttagcompound);
+        }
+
+        compound.setTag("ArmorItems", nbttaglist);
+		
+        NBTTagList nbttaglist1 = new NBTTagList();
+
+        for (ItemStack itemstack1 : new ItemStack[] {mainHandItem, offHandItem}) {
+            NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+
+            if (!itemstack1.isEmpty())
+                itemstack1.writeToNBT(nbttagcompound1);
+
+            nbttaglist1.appendTag(nbttagcompound1);
+        }
+        compound.setTag("HandItems", nbttaglist1);
+        
 		spawnerLogic.setNextSpawnData(randomMinecart);
 	}
 	
 	public static ItemStack[] getMobArmor(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		ItemStack[] equipment = new ItemStack[5];
+		ItemStack[] equipment = new ItemStack[4];
 		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
 		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		if (tag.hasKey("Equipment")) {
-			NBTTagList nbttaglist = (NBTTagList)tag.getTag("Equipment");
+		if (tag.hasKey("ArmorItems")) {
+			NBTTagList nbttaglist = (NBTTagList)tag.getTag("ArmorItems");
+
+		    for (int i = 0; i < equipment.length; ++i)
+		    	equipment[i] = new ItemStack(nbttaglist.getCompoundTagAt(i));
+		}
+		return equipment;
+	}
+	
+	public static ItemStack[] getMobHeldItems(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		ItemStack[] equipment = new ItemStack[2];
+		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		if (tag.hasKey("HandItems")) {
+			NBTTagList nbttaglist = (NBTTagList)tag.getTag("HandItems");
 
 		    for (int i = 0; i < equipment.length; ++i)
 		    	equipment[i] = new ItemStack(nbttaglist.getCompoundTagAt(i));
@@ -296,7 +310,7 @@ public class SpawnerUtil {
 	}
 	
 	public static NBTTagCompound getMinecartProperties(WeightedSpawnerEntity minecart) {
-		return minecart.getNbt().getCompoundTag("Entity");
+		return minecart.getNbt();
 	}
 	
 	public static ResourceLocation getMinecartType(WeightedSpawnerEntity minecart) {

@@ -10,9 +10,12 @@ Update List Key
 v2.5.0a
 Updated to MC 1.11.2
 + Added two new quick build commands //outline and //box
++ Added 6 more modifiers for item editor
++ You can now add modifiers that for all equipment slots (e.g add speed to a helment that only gives you speed when you wear it in the helment slot)
 + Added the lastest enchantments and potions to the Item Editor
 + Added the lastest blocks to the block id helper which can be assesed while click your sneak key in the chat menu
 + Many buttons will be grayed out/disable if they are not applicable at the current moment
++ Added option to to edit the generation of a written book in the item editor
 + Added a yellow coloured outline around the first selection point and a light blue around the second
 # Changed the rotations and flip data to use build in system from 1.10, mod blocks should beable to rotated properly	
 # You can now right click or left to insert the block id using the block id helper

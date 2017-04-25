@@ -52,7 +52,7 @@ public class ScreenRenderHandler {
 	private int INDEX_HISTORY = 1;
 	private boolean hasButtonBeenUp = true;
 	public boolean isHelperOpen = false;
-	public RenderItem renderer = ClientHelper.mc.getRenderItem();
+	public RenderItem renderer = ClientHelper.getClient().getRenderItem();
 	public Field chatField = ReflectionHelper.getField(GuiChat.class, 4); // inputField where you enter commands
 	
 	@SubscribeEvent
@@ -62,20 +62,20 @@ public class ScreenRenderHandler {
 	    ScaledResolution resolution = event.getResolution();
 	    ElementType type = event.getType();
 		
-	    EntityPlayer player = ClientHelper.mc.player;
+	    EntityPlayer player = ClientHelper.getClient().player;
 	    World world = player.world;
 	    //TODO
 		ItemStack stack = player.getHeldItemMainhand();
 	    
         int width = resolution.getScaledWidth();
         int height = resolution.getScaledHeight();
-        int mouseX = Mouse.getX() * width / ClientHelper.mc.displayWidth;
-        int mouseY = height - Mouse.getY() * height / ClientHelper.mc.displayHeight - 1;
+        int mouseX = Mouse.getX() * width / ClientHelper.getClient().displayWidth;
+        int mouseY = height - Mouse.getY() * height / ClientHelper.getClient().displayHeight - 1;
 		
-		if(type == ElementType.HELMET && stack != null && stack.getItem() == ModItems.editItem && stack.getMetadata() == 0 && PlayerAccess.canEdit(ClientHelper.mc.player)) {
+		if(type == ElementType.HELMET && stack != null && stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 0 && PlayerAccess.canEdit(ClientHelper.getClient().player)) {
     		
     		PlayerData data = ClientData.playerData;
-    		FontRenderer font = ClientHelper.mc.fontRendererObj;
+    		FontRenderer font = ClientHelper.getClient().fontRenderer;
     		GL11.glPushMatrix();
     		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.disableStandardItemLighting();
@@ -96,13 +96,13 @@ public class ScreenRenderHandler {
     		GL11.glPopMatrix();
 		}
 
-		if(type == ElementType.HELMET && ClientHelper.mc.currentScreen == null && stack != null && stack.getItem() == ModItems.editItem && stack.getMetadata() == 1 && PlayerAccess.canEdit(player)) {
+		if(type == ElementType.HELMET && ClientHelper.getClient().currentScreen == null && stack != null && stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 1 && PlayerAccess.canEdit(player)) {
 			GL11.glPushMatrix();
     		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
-			RayTraceResult objectMouseOver = ClientHelper.mc.objectMouseOver;
+			RayTraceResult objectMouseOver = ClientHelper.getClient().objectMouseOver;
 			
 			if(objectMouseOver != null) {
 	        	List<String> list = new ArrayList<String>();
@@ -152,7 +152,7 @@ public class ScreenRenderHandler {
 	           	
 				}
 				
-            	RenderUtil.drawHoveringText(list, 0, 25, 1000, 200, ClientHelper.mc.fontRendererObj, false);
+            	RenderUtil.drawHoveringText(list, 0, 25, 1000, 200, ClientHelper.getClient().fontRenderer, false);
             	GL11.glEnable(GL11.GL_LIGHTING);
                 GL11.glEnable(GL11.GL_DEPTH_TEST);
                 RenderHelper.enableGUIStandardItemLighting();
@@ -161,11 +161,11 @@ public class ScreenRenderHandler {
 			}
 		}
 		
-	    if(Keyboard.isKeyDown(ClientHelper.mc.gameSettings.keyBindSneak.getKeyCode()) && PlayerAccess.canSeeBlockIdHelper(player)) {
+	    if(Keyboard.isKeyDown(ClientHelper.getClient().gameSettings.keyBindSneak.getKeyCode()) && PlayerAccess.canSeeBlockIdHelper(player)) {
 	    	if(type == RenderGameOverlayEvent.ElementType.HELMET) {
 	    		this.isHelperOpen = true;
-	    		if(ClientHelper.mc.currentScreen instanceof GuiChat) {
-	    			GuiChat chat = (GuiChat)ClientHelper.mc.currentScreen;
+	    		if(ClientHelper.getClient().currentScreen instanceof GuiChat) {
+	    			GuiChat chat = (GuiChat)ClientHelper.getClient().currentScreen;
 	    			int chatPostion = ReflectionHelper.getField(chatField, GuiTextField.class, chat).getCursorPosition();
 	    			boolean isHovering = false;
 
@@ -243,7 +243,7 @@ public class ScreenRenderHandler {
 	    				}
 	    				
 	    				if(mouseX > 4 + 16 * column + renderOffset && mouseX < 4 + 16 * (column + 1) + renderOffset && mouseY > 4 + 16 * row && mouseY < 4 + 16 * (row + 1))
-	    					RenderUtil.drawHoveringText(Arrays.asList(TextFormatting.GREEN + item.getDisplayName(), TextFormatting.ITALIC + String.format("%s %s", Block.REGISTRY.getNameForObject(Block.getBlockFromItem(item.getItem())), item.getItemDamage())), mouseX, mouseY, width, height, ClientHelper.mc.fontRendererObj, true);
+	    					RenderUtil.drawHoveringText(Arrays.asList(TextFormatting.GREEN + item.getDisplayName(), TextFormatting.ITALIC + String.format("%s %s", Block.REGISTRY.getNameForObject(Block.getBlockFromItem(item.getItem())), item.getItemDamage())), mouseX, mouseY, width, height, ClientHelper.getClient().fontRenderer, true);
 	    				column++;
 	    			}
 	    			
@@ -264,8 +264,7 @@ public class ScreenRenderHandler {
 		if(event.getType() != RenderGameOverlayEvent.ElementType.CHAT)
 			return;
 		
-		//isHelperOpen = Mouse.isButtonDown(0);
-		if(ClientHelper.mc.currentScreen instanceof GuiChat) {
+		if(ClientHelper.getClient().currentScreen instanceof GuiChat) {
 			if(this.isHelperOpen) {
 				event.setPosY(event.getPosY() + 10000);
 			}

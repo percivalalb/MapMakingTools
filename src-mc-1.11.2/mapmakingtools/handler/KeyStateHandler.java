@@ -38,30 +38,20 @@ public class KeyStateHandler {
         if (state != keyDown) {
             if (state && !tickEnd) {
             	//Key Pressed
-            	if(PlayerAccess.canEdit(ClientHelper.mc.player) && ClientHelper.mc.currentScreen instanceof GuiContainer) {
-            		GuiContainer container = (GuiContainer)ClientHelper.mc.currentScreen;
-            	    final ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.mc);
+            	if(PlayerAccess.canEdit(ClientHelper.getClient().player) && ClientHelper.getClient().currentScreen instanceof GuiContainer) {
+            		GuiContainer container = (GuiContainer)ClientHelper.getClient().currentScreen;
+            	    final ScaledResolution scaledresolution = new ScaledResolution(ClientHelper.getClient());
                     int i = scaledresolution.getScaledWidth();
                     int j = scaledresolution.getScaledHeight();
-                    int xMouse = Mouse.getX() * i / ClientHelper.mc.displayWidth;
-                    int yMouse = j - Mouse.getY() * j / ClientHelper.mc.displayHeight - 1;
+                    int xMouse = Mouse.getX() * i / ClientHelper.getClient().displayWidth;
+                    int yMouse = j - Mouse.getY() * j / ClientHelper.getClient().displayHeight - 1;
             		for (int j1 = 0; j1 < container.inventorySlots.inventorySlots.size(); ++j1) {
                         Slot slot = (Slot)container.inventorySlots.inventorySlots.get(j1);
                         
                         if (slot.inventory instanceof InventoryPlayer && this.isPointInRegion(container, slot.xPos, slot.yPos, 16, 16, xMouse, yMouse) && slot.canBeHovered()) {
                         	InventoryPlayer playerInventory = (InventoryPlayer)slot.inventory;
                         	if(slot.getHasStack()) {
-                        		ItemStack stack = slot.getStack();
-                        		int index = slot.getSlotIndex();
-                        		if(index >= 36)
-                        			index -= 36;
-                        		
-                        		if(index >= 5 && index <= 8 && playerInventory.getStackInSlot(36 + 3 - (index - 5)) == stack) {
-                        			index = 36 +  3 - (index - 5);
-                        		}
-
-                            	PacketDispatcher.sendToServer(new PacketOpenItemEditor(index));
-                            	
+                            	PacketDispatcher.sendToServer(new PacketOpenItemEditor(slot.getSlotIndex()));
                         	}
                         }
             		}
@@ -75,11 +65,11 @@ public class KeyStateHandler {
         }
     }
     
-    protected boolean isPointInRegion(GuiContainer container, int par1, int par2, int par3, int par4, int par5, int par6) {
-        int k1 = ReflectionHelper.getField(GuiContainer.class, Integer.TYPE, container, 4);
-        int l1 = ReflectionHelper.getField(GuiContainer.class, Integer.TYPE, container, 5);
-        par5 -= k1;
-        par6 -= l1;
-        return par5 >= par1 - 1 && par5 < par1 + par3 + 1 && par6 >= par2 - 1 && par6 < par2 + par4 + 1;
+    public boolean isPointInRegion(GuiContainer container, int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
+        int i = ReflectionHelper.getField(GuiContainer.class, Integer.TYPE, container, 4); //GuiContainer.guiLeft
+        int j = ReflectionHelper.getField(GuiContainer.class, Integer.TYPE, container, 5); //GuiContainer.guiTop
+        pointX = pointX - i;
+        pointY = pointY - j;
+        return pointX >= rectX - 1 && pointX < rectX + rectWidth + 1 && pointY >= rectY - 1 && pointY < rectY + rectHeight + 1;
     }
 }

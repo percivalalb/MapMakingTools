@@ -5,7 +5,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
@@ -28,11 +28,11 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class CustomGiveClientFilter extends IFilterClient {
+public class CustomGiveClientFilter extends FilterClient {
 
 	public GuiButton btnOk;
 	public GuiTextField tempCommand;
-	public ItemStack lastStack = null;
+	public ItemStack lastStack = ItemStack.EMPTY;
 	public String lastText = "";
 	
 	@Override
@@ -76,7 +76,7 @@ public class CustomGiveClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketCustomGive(gui.getBlockPos()));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                 	break;
             }
         }
@@ -89,7 +89,7 @@ public class CustomGiveClientFilter extends IFilterClient {
 		
 		if(!(ItemStack.areItemStacksEqual(stack, this.lastStack) && ItemStack.areItemStackTagsEqual(stack, this.lastStack))) {
 			
-			if(stack != null) {
+			if(!stack.isEmpty()) {
 				String command = "/give @p";
 				command += " " + Item.REGISTRY.getNameForObject(stack.getItem());
 				command += " " + stack.getCount();
@@ -105,7 +105,7 @@ public class CustomGiveClientFilter extends IFilterClient {
 			else {
 				this.tempCommand.setText("");
 				this.lastText = "";
-				this.lastStack = null;
+				this.lastStack = ItemStack.EMPTY;
 				this.tempCommand.setCursorPositionZero();
 			}
 			
@@ -128,7 +128,7 @@ public class CustomGiveClientFilter extends IFilterClient {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenOneSlot);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_ONE_SLOT);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 104) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 104);

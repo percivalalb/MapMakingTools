@@ -8,10 +8,12 @@ import net.minecraftforge.fml.relauncher.Side;
  * @author ProPercivalalb
  */
 public class ClientHelper {
-
-	public static final Minecraft mc = Minecraft.getMinecraft();
 	
 	public static boolean isClient() {
 		return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+	}
+	
+	public static Minecraft getClient() {
+		return Minecraft.getMinecraft();
 	}
 }

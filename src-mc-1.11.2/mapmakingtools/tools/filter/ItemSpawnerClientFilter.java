@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.api.interfaces.IFilterClientSpawner;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
@@ -24,7 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * @author ProPercivalalb
  */
-public class ItemSpawnerClientFilter extends IFilterClientSpawner {
+public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButton btnOk;
 	
@@ -100,7 +100,7 @@ public class ItemSpawnerClientFilter extends IFilterClientSpawner {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketItemSpawner(gui.getBlockPos(), minecartIndex));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                     break;
             }
         }
@@ -109,7 +109,7 @@ public class ItemSpawnerClientFilter extends IFilterClientSpawner {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenOneSlot);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_ONE_SLOT);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 104) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 104);

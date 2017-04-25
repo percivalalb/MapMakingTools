@@ -1,6 +1,6 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;
@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class ConvertToDropperServerFilter extends IFilterServer {
+public class ConvertToDropperServerFilter extends FilterServer {
 
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, BlockPos pos) {

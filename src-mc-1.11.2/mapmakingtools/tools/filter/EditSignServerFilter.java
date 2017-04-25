@@ -1,6 +1,6 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class EditSignServerFilter extends IFilterServer {
+public class EditSignServerFilter extends FilterServer {
 
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, BlockPos pos) {

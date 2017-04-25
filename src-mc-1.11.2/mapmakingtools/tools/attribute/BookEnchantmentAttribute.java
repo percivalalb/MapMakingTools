@@ -172,6 +172,8 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
 		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Enchantments");
 		
+		this.btn_remove.enabled = false;
+		
 		itemEditor.getButtonList().add(this.btn_add);
 		itemEditor.getButtonList().add(this.btn_remove);
 		itemEditor.getButtonList().add(this.btn_remove_all);
@@ -197,6 +199,8 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 	public void mouseClicked(IGuiItemEditor itemEditor, int xMouse, int yMouse, int mouseButton) {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
+		
+		this.btn_remove.enabled = this.scrollMenuRemove.selected != -1;
 	}
 
 	@Override

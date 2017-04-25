@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonTextColour;
@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class EditSignClientFilter extends IFilterClient {
+public class EditSignClientFilter extends FilterClient {
 
 	private GuiButtonTextColour btnColourLine1;
 	private GuiTextFieldNonInteractable txtLine1;
@@ -111,8 +111,8 @@ public class EditSignClientFilter extends IFilterClient {
                 case 0:
                 	break;
                 	//PacketTypeHandler.populatePacketAndSendToServer(new PacketConvertToDispenser(gui.x, gui.y, gui.z));
-                	//ClientHelper.mc.displayGuiScreen(null);
-                   // ClientHelper.mc.setIngameFocus();
+                	//ClientHelper.getClient().displayGuiScreen(null);
+                   // ClientHelper.getClient().setIngameFocus();
                 case 1:
                 	if(this.txtLine1.isFocused()) {
                 		String text = txtLine1.getText();
@@ -137,7 +137,7 @@ public class EditSignClientFilter extends IFilterClient {
                 	break;
                 case 2:
                 	PacketDispatcher.sendToServer(new PacketSignEdit(gui.getBlockPos(), new ITextComponent[] {new TextComponentString(this.txtLine1.getText()), new TextComponentString(this.txtLine2.getText()), new TextComponentString(this.txtLine3.getText()), new TextComponentString(this.txtLine4.getText())}));
-                	ClientHelper.mc.player.closeScreen();
+                	ClientHelper.getClient().player.closeScreen();
                 	break;
             }
         }

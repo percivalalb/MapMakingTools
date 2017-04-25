@@ -10,6 +10,8 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -17,21 +19,21 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class PacketVillagerProfession extends AbstractServerMessage {
 
-	public int professionId;
+	public VillagerProfession professionId;
 	
 	public PacketVillagerProfession() {}
-	public PacketVillagerProfession(int profession) {
+	public PacketVillagerProfession(VillagerProfession profession) {
 		this.professionId = profession;
 	}
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.professionId = packetbuffer.readInt();
+		this.professionId = VillagerRegistry.getById(packetbuffer.readInt());
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeInt(this.professionId);
+		packetbuffer.writeInt(VillagerRegistry.getId(this.professionId));
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class PacketVillagerProfession extends AbstractServerMessage {
 					EntityVillager villager = (EntityVillager)entity;
 					villager.setProfession(this.professionId);
 					
-					TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagerprofession.complete", this.professionId);
+					TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagerprofession.complete", this.professionId.getRegistryName());
 					chatComponent.getStyle().setItalic(true);
 					player.sendMessage(chatComponent);
 				}

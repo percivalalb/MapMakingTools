@@ -7,10 +7,10 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * @author ProPercivalalb
  */
-public abstract class IFilterServer extends IFilter {
+public abstract class FilterServer extends FilterBase {
 
 	public void addSlots(IContainerFilter container) {}
-	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer par1EntityPlayer, int par2) { return null; }
+	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer playerIn, int index) { return null; }
 
 	public String getSaveId() { return null; }
 	public void readFromNBT(NBTTagCompound tag) {}

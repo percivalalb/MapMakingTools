@@ -25,4 +25,5 @@ public abstract class IItemAttribute {
 	public void keyTyped(IGuiItemEditor itemEditor, char character, int keyId) {}
 	public void mouseClicked(IGuiItemEditor itemEditor, int xMouse, int yMouse, int mouseButton) {}
 	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {}
+	public void drawToolTips(IGuiItemEditor guiItemEditor, int xMouse, int yMouse) {}
 }

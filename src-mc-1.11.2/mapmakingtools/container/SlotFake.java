@@ -28,15 +28,15 @@ public class SlotFake extends Slot implements IPhantomSlot {
 
 	@Override
 	public void setIsUnlimited(boolean isUnlimited) {
-		if(this.inventory instanceof IUnlimitedInventory)
-			((IUnlimitedInventory)this.inventory).setSlotUnlimited(this.getSlotIndex(), isUnlimited);
+		if(this.inventory instanceof InventoryUnlimited)
+			((InventoryUnlimited)this.inventory).setSlotUnlimited(this.getSlotIndex(), isUnlimited);
 		this.isUnlimited = isUnlimited;
 	}
 
 	@Override
 	public boolean isUnlimited() {
-		if(this.inventory instanceof IUnlimitedInventory)
-			return ((IUnlimitedInventory)this.inventory).isSlotUnlimited(this.getSlotIndex());
+		if(this.inventory instanceof InventoryUnlimited)
+			return ((InventoryUnlimited)this.inventory).isSlotUnlimited(this.getSlotIndex());
 		return this.isUnlimited;
 	}
 

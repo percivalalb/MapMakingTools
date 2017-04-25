@@ -4,8 +4,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.api.interfaces.IFilterServer;
-import mapmakingtools.container.IUnlimitedInventory;
+import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -20,9 +20,9 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class CustomGiveServerFilter extends IFilterServer {
+public class CustomGiveServerFilter extends FilterServer {
 
-	public static Map<String, CustomGive> invMap = new Hashtable<String, CustomGive>();
+	public static Map<String, InventoryUnlimited> invMap = new Hashtable<String, InventoryUnlimited>();
 	
 	@Override
 	public void addSlots(IContainerFilter container) {
@@ -81,38 +81,14 @@ public class CustomGiveServerFilter extends IFilterServer {
 		return tag; 
 	}
 	
-	public CustomGive getInventory(IContainerFilter containerFilter) {
-		String username = containerFilter.getPlayer().getName().toLowerCase();
-	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new CustomGive(1));
-	    	
-		return invMap.get(username);
+	public InventoryUnlimited getInventory(IContainerFilter containerFilter) {
+		return this.getInventory(containerFilter.getPlayer().getName().toLowerCase());
 	}
 	
-	public CustomGive getInventory(String username) {
+	public InventoryUnlimited getInventory(String username) {
 	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new CustomGive(1));
+	    	invMap.put(username, new InventoryUnlimited("Custoe Give", false, 1));
 	    	
 		return invMap.get(username);
-	}
-
-	public class CustomGive extends IUnlimitedInventory {
-
-		public boolean[] umlimited;
-		
-		public CustomGive(int inventorySize) {
-			super("Custom Give", false, inventorySize);
-			this.umlimited = new boolean[inventorySize];
-		}
-		
-		@Override
-		public boolean isSlotUnlimited(int slotIndex) {
-			return this.umlimited[slotIndex];
-		}
-		
-		@Override
-		public void setSlotUnlimited(int slotIndex, boolean isUnlimited) {
-			this.umlimited[slotIndex] = isUnlimited;
-		}
 	}
 }

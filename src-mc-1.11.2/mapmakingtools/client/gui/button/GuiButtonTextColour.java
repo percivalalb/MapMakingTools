@@ -23,8 +23,8 @@ public class GuiButtonTextColour extends GuiButton {
     public void drawButton(Minecraft minecraft, int xMouse, int yMouse) {
         if (this.visible) {
         	TextColour colour = getCurrentColour(textColourIndex);
-        	FontRenderer fontrenderer = minecraft.fontRendererObj;
-            minecraft.getTextureManager().bindTexture(ResourceReference.buttonTextColour);
+        	FontRenderer fontrenderer = minecraft.fontRenderer;
+            minecraft.getTextureManager().bindTexture(ResourceReference.BUTTON_TEXT_COLOUR);
             GL11.glColor4f(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
             this.hovered = xMouse >= this.xPosition && yMouse >= this.yPosition && xMouse < this.xPosition + this.width && yMouse < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.hovered);

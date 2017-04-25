@@ -1,10 +1,10 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 
 /**
  * @author ProPercivalalb
  */
-public class BabyMonsterServerFilter extends IFilterServer {
+public class BabyMonsterServerFilter extends FilterServer {
 
 }

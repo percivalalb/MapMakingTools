@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class ConvertToDispenserClientFilter extends IFilterClient {
+public class ConvertToDispenserClientFilter extends FilterClient {
 
 	public GuiButtonData btn_covert;
 	
@@ -60,7 +60,7 @@ public class ConvertToDispenserClientFilter extends IFilterClient {
             switch (button.id) {
                 case 0:
                 	PacketDispatcher.sendToServer(new PacketConvertToDispenser(gui.getBlockPos()));
-            		ClientHelper.mc.player.closeScreen();
+            		ClientHelper.getClient().player.closeScreen();
                 	break;
             }
         }

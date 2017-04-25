@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.api.interfaces.IFilterServer;
-import mapmakingtools.container.IUnlimitedInventory;
+import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -22,7 +22,7 @@ import net.minecraft.village.MerchantRecipeList;
 /**
  * @author ProPercivalalb
  */
-public class VillagerShopServerFilter extends IFilterServer {
+public class VillagerShopServerFilter extends FilterServer {
 
 	public static Map<UUID, Integer> maxRecipesMap = new Hashtable<UUID, Integer>();
 	public static Map<UUID, Integer> tradeCountMap = new Hashtable<UUID, Integer>();

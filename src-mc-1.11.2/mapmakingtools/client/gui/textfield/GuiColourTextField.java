@@ -45,7 +45,7 @@ public class GuiColourTextField extends GuiAdvancedTextField {
 			drawRect(this.xPos + this.xClick - 1, this.yPos + this.yClick - 1, this.xPos + this.xClick + 60 + 1, this.yPos + this.yClick + 30 + 1, -14079702);
 			drawRect(this.xPos + this.xClick, this.yPos + this.yClick, this.xPos + this.xClick + 60, this.yPos + this.yClick + 26, -6908265);
 		  	TextColour colour = getCurrentColour(textColourIndex);
-			ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.buttonTextColour);
+			ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.BUTTON_TEXT_COLOUR);
 	        GL11.glColor4f(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
 	        boolean field_146123_n = xMouse >= this.xPos + this.xClick + 3 && yMouse >= this.yPos + this.yClick + 3 && xMouse < this.xPos + this.xClick + 3 + 20 && yMouse < this.yPos + this.yClick + 3 + 20;
 	        int hoverState = this.getHoverState(field_146123_n);

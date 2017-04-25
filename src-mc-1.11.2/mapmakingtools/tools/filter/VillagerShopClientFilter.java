@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import mapmakingtools.api.interfaces.IFilterClient;
+import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.GuiSmallButton;
@@ -27,7 +27,7 @@ import net.minecraft.village.MerchantRecipeList;
 /**
  * @author ProPercivalalb
  */
-public class VillagerShopClientFilter extends IFilterClient {
+public class VillagerShopClientFilter extends FilterClient {
 
 	public static int[] recipeUses = new int[9];
 	
@@ -139,7 +139,7 @@ public class VillagerShopClientFilter extends IFilterClient {
 		for(int var1 = 0; var1 < gui.getButtonList().size(); ++var1) {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
     		if(listBt.id >= 4 && listBt.id <= 12) {
-        		if(listBt.mousePressed(ClientHelper.mc, xMouse, yMouse)) {
+        		if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         			List<String> list = Arrays.asList(TextFormatting.BLUE + "Trade " + (listBt.id - 3), "Uses: " + this.recipeUses[listBt.id - 4], "Left Click = " + TextFormatting.RED+ "-1", "Right Click = " + TextFormatting.GREEN + "+1");
         			gui.drawHoveringText2(list, xMouse, yMouse);
         		}
@@ -175,7 +175,7 @@ public class VillagerShopClientFilter extends IFilterClient {
             for (int l = 0; l < gui.getButtonList().size(); ++l) {
                 GuiButton guibutton = (GuiButton)gui.getButtonList().get(l);
 
-                if (guibutton.mousePressed(ClientHelper.mc, xMouse, yMouse)) {
+                if (guibutton.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
                 	//gui.selectedButton = guibutton;
                     if(guibutton.id >= 4 && guibutton.id <= 12) {
                     	this.recipeUses[guibutton.id - 4] = this.recipeUses[guibutton.id - 4] + 1;
@@ -207,7 +207,7 @@ public class VillagerShopClientFilter extends IFilterClient {
                 	PacketDispatcher.sendToServer(new PacketVillagerShop(gui.getEntityId(), this.recipeUses));
                     
                 case 1:
-                    ClientHelper.mc.player.closeScreen();
+                    ClientHelper.getClient().player.closeScreen();
                     break;
                 case 2:
                 	recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());
@@ -228,7 +228,7 @@ public class VillagerShopClientFilter extends IFilterClient {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.mc.getTextureManager().bindTexture(ResourceReference.screenVillagerShop);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_VILLAGER_SHOP);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 190) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 190);

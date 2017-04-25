@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.UUID;
 
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSetPoint1;
@@ -21,8 +22,8 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class PlayerData {
 
-	private Hashtable<Integer, BlockPos> pos1 = new Hashtable<Integer, BlockPos>();
-	private Hashtable<Integer, BlockPos> pos2 = new Hashtable<Integer, BlockPos>();
+	private Hashtable<Integer, BlockPos> DIMID_POS1 = new Hashtable<Integer, BlockPos>();
+	private Hashtable<Integer, BlockPos> DIMID_POS2 = new Hashtable<Integer, BlockPos>();
 	private ActionStorage actionStorage = new ActionStorage(this);
 	
 	public UUID uuid;
@@ -30,6 +31,7 @@ public class PlayerData {
 	public PlayerData(NBTTagCompound tag) {
 		this.readFromNBT(tag);
 	}
+	
 	public PlayerData(UUID uuid) {
 		this.uuid = uuid;
 	}
@@ -38,20 +40,29 @@ public class PlayerData {
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 			return MapMakingTools.proxy.getPlayerEntity();
 
-		return ServerHelper.mcServer.getPlayerList().getPlayerByUUID(this.uuid);
+		return ServerHelper.getServer().getPlayerList().getPlayerByUUID(this.uuid);
 	}
 	
 	public World getPlayerWorld() {
 		return this.getPlayer().world;
 	}
 	
+	public BlockPos getFirstPoint(int dimId) {	
+		return this.DIMID_POS1.get(dimId);
+	}
+	
 	public BlockPos getFirstPoint() {	
-		return this.pos1.get(this.getPlayer().world.provider.getDimension());
+		return this.getFirstPoint(this.getPlayer().world.provider.getDimension());
+	}
+	
+	public BlockPos getSecondPoint(int dimId) {
+		return this.DIMID_POS2.get(dimId);
 	}
 	
 	public BlockPos getSecondPoint() {
-		return this.pos2.get(this.getPlayer().world.provider.getDimension());
+		return this.getSecondPoint(this.getPlayer().world.provider.getDimension());
 	}
+	
 	
 	public int[] getSelectionSize() {
 		return new int[] {this.getMaxX() - this.getMinX() + 1, this.getMaxY() - this.getMinY() + 1, this.getMaxZ() - this.getMinZ() + 1};
@@ -68,9 +79,9 @@ public class PlayerData {
 	public boolean setFirstPoint(BlockPos pos) {
 		int dimId = this.getPlayer().world.provider.getDimension();
 		if(pos != null)
-			this.pos1.put(dimId, pos);
+			this.DIMID_POS1.put(dimId, pos.toImmutable());
 		else
-			this.pos1.remove(dimId);
+			this.DIMID_POS1.remove(dimId);
 		return true;
 	}
 	
@@ -83,9 +94,9 @@ public class PlayerData {
 	public boolean setSecondPoint(BlockPos pos) {
 		int dimId = this.getPlayer().world.provider.getDimension();
 		if(pos != null)
-			this.pos2.put(dimId, pos);
+			this.DIMID_POS2.put(dimId, pos.toImmutable());
 		else
-			this.pos2.remove(dimId);
+			this.DIMID_POS2.remove(dimId);
 		return true;
 	}
 	
@@ -102,17 +113,17 @@ public class PlayerData {
 		NBTTagList list1 = new NBTTagList();
 		NBTTagList list2 = new NBTTagList();
 		
-		for(int key : this.pos1.keySet()) {
+		for(int key : this.DIMID_POS1.keySet()) {
 			NBTTagCompound tag1 = new NBTTagCompound();
 			tag1.setInteger("dim", key);
-			tag1.setLong("pos", pos1.get(key).toLong());
+			tag1.setLong("pos", DIMID_POS1.get(key).toLong());
 			list1.appendTag(tag1);
 		}
 		
-		for(int key : this.pos2.keySet()) {
+		for(int key : this.DIMID_POS2.keySet()) {
 			NBTTagCompound tag2 = new NBTTagCompound();
 			tag2.setInteger("dim", key);
-			tag2.setLong("pos", pos2.get(key).toLong());
+			tag2.setLong("pos", DIMID_POS2.get(key).toLong());
 			list2.appendTag(tag2);
 		}
 		
@@ -130,13 +141,13 @@ public class PlayerData {
 		for(int i = 0; i < list1.tagCount(); ++i) {
 			NBTTagCompound tag1 = list1.getCompoundTagAt(i);
 			int dim = tag1.getInteger("dim");
-			pos1.put(dim, BlockPos.fromLong(tag1.getLong("pos")));
+			DIMID_POS1.put(dim, BlockPos.fromLong(tag1.getLong("pos")));
 		}
 		
 		for(int i = 0; i < list2.tagCount(); ++i) {
 			NBTTagCompound tag2 = list2.getCompoundTagAt(i);
 			int dim = tag2.getInteger("dim");
-			pos2.put(dim, BlockPos.fromLong(tag2.getLong("pos")));
+			DIMID_POS2.put(dim, BlockPos.fromLong(tag2.getLong("pos")));
 		}
 		
 		this.uuid = UUID.fromString(tag.getString("uuid"));

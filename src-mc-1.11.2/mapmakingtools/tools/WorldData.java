@@ -7,8 +7,9 @@ import java.util.HashMap;
 
 import com.google.common.base.Strings;
 
-import mapmakingtools.api.interfaces.IFilterServer;
+import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.manager.FilterManager;
+import mapmakingtools.helper.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,8 +28,11 @@ public class WorldData {
 		
 		String uuid = player.getUniqueID().toString();
 		
-		if(!PLAYER_POINTS.containsKey(uuid))
+		if(!PLAYER_POINTS.containsKey(uuid)) {
+			
+			LogHelper.info("Create player profile");
 			PLAYER_POINTS.put(uuid, new PlayerData(player.getUniqueID()));
+		}
 		
 		return PLAYER_POINTS.get(uuid);
 	}
@@ -54,7 +58,7 @@ public class WorldData {
 			
 			data.setTag("playerPoints", list);
 			
-			for(IFilterServer filter : FilterManager.getServerMap()) {
+			for(FilterServer filter : FilterManager.getServerMap()) {
 				if(Strings.isNullOrEmpty(filter.getSaveId()))
 					continue;
 				String key = "filter:" + filter.getSaveId();
@@ -88,7 +92,7 @@ public class WorldData {
 				PLAYER_POINTS.put(tag.getString("uuid"), new PlayerData(tag));
 			}
 			
-			for(IFilterServer filter : FilterManager.getServerMap()) {
+			for(FilterServer filter : FilterManager.getServerMap()) {
 				if(Strings.isNullOrEmpty(filter.getSaveId()))
 					continue;
 				String key = "filter:" + filter.getSaveId();
