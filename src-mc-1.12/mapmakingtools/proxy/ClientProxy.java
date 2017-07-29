@@ -54,7 +54,8 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerEventHandlers() {
 		super.registerEventHandlers();
-		ClientRegistry.registerKeyBinding(MouseInput.KEY_ITEM_EDITOR);
+		ClientRegistry.registerKeyBinding(KeyStateHandler.keyItemEditor);
+		MinecraftForge.EVENT_BUS.register(new KeyStateHandler());
     	MinecraftForge.EVENT_BUS.register(new RenderWorld());
     	MinecraftForge.EVENT_BUS.register(new GameOverlay());
     	MinecraftForge.EVENT_BUS.register(new MouseInput());
