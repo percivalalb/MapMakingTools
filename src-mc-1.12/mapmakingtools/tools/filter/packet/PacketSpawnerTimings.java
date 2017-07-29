@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
@@ -68,7 +68,7 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
-			if(!NumberParse.areIntegers(this.minDelay, this.maxDelay, this.spawnRadius, this.spawnCount, this.entityCap, this.detectionRange)) {
+			if(!Numbers.areIntegers(this.minDelay, this.maxDelay, this.spawnRadius, this.spawnCount, this.entityCap, this.detectionRange)) {
 				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.notint");
 				chatComponent.getStyle().setItalic(true);
 				chatComponent.getStyle().setColor(TextFormatting.RED);
@@ -76,12 +76,12 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 				return;
 			}
 			
-			int minDelayNo = NumberParse.getInteger(this.minDelay);
-			int maxDelayNo = NumberParse.getInteger(this.maxDelay);
-			int spawnRadiusNo = NumberParse.getInteger(this.spawnRadius);
-			int spawnCountNo = NumberParse.getInteger(this.spawnCount);
-			int entityCapNo = NumberParse.getInteger(this.entityCap);
-			int detectionRadiusNo = NumberParse.getInteger(this.detectionRange);
+			int minDelayNo = Numbers.parse(this.minDelay);
+			int maxDelayNo = Numbers.parse(this.maxDelay);
+			int spawnRadiusNo = Numbers.parse(this.spawnRadius);
+			int spawnCountNo = Numbers.parse(this.spawnCount);
+			int entityCapNo = Numbers.parse(this.entityCap);
+			int detectionRadiusNo = Numbers.parse(this.detectionRange);
 			
 			SpawnerUtil.setMinDelay(spawner.getSpawnerBaseLogic(), minDelayNo);
 			SpawnerUtil.setMaxDelay(spawner.getSpawnerBaseLogic(), maxDelayNo);

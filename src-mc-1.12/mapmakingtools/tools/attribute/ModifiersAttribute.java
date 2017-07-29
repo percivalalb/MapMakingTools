@@ -14,7 +14,7 @@ import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.client.gui.button.GuiSmallButtonData;
 import mapmakingtools.client.render.RenderUtil;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.ReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -52,7 +52,7 @@ public class ModifiersAttribute extends IItemAttribute {
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
 		if(data >= 0 && data < MODIFIERS.length) {
-			if(!Strings.isNullOrEmpty(this.fld_attack.get(data).getText()) && NumberParse.isDouble(this.fld_attack.get(data).getText())) {
+			if(!Strings.isNullOrEmpty(this.fld_attack.get(data).getText()) && Numbers.isDouble(this.fld_attack.get(data).getText())) {
 				EntityEquipmentSlot equipmentSlot = EntityEquipmentSlot.values()[this.btn_slot.getData()];
 				
 				this.onItemCreation(stack, -1);
@@ -67,7 +67,7 @@ public class ModifiersAttribute extends IItemAttribute {
 			        }
 		        }
 
-				double amount = NumberParse.getDouble(this.fld_attack.get(data).getText());
+				double amount = Numbers.getDouble(this.fld_attack.get(data).getText());
 				int operation = this.btn_operation.get(data).getData();
 				amount /= (operation > 0 ? 100 : 1);
 				stack.addAttributeModifier(MODIFIERS[data].attributeName, MODIFIERS[data].getEdited(amount, operation), equipmentSlot);

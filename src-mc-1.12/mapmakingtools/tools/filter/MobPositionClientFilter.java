@@ -9,7 +9,7 @@ import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
@@ -123,20 +123,20 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 			if(isRelative) {
-				if(NumberParse.isDouble(this.txt_xPosition.getText()))
-					this.txt_xPosition.setText("" + (NumberParse.getDouble(this.txt_xPosition.getText()) - gui.getBlockPos().getX()));
-				if(NumberParse.isDouble(this.txt_yPosition.getText()))
-					this.txt_yPosition.setText("" + (NumberParse.getDouble(this.txt_yPosition.getText()) - gui.getBlockPos().getY()));
-				if(NumberParse.isDouble(this.txt_zPosition.getText()))
-					this.txt_zPosition.setText("" + (NumberParse.getDouble(this.txt_zPosition.getText()) - gui.getBlockPos().getZ()));
+				if(Numbers.isDouble(this.txt_xPosition.getText()))
+					this.txt_xPosition.setText("" + (Numbers.getDouble(this.txt_xPosition.getText()) - gui.getBlockPos().getX()));
+				if(Numbers.isDouble(this.txt_yPosition.getText()))
+					this.txt_yPosition.setText("" + (Numbers.getDouble(this.txt_yPosition.getText()) - gui.getBlockPos().getY()));
+				if(Numbers.isDouble(this.txt_zPosition.getText()))
+					this.txt_zPosition.setText("" + (Numbers.getDouble(this.txt_zPosition.getText()) - gui.getBlockPos().getZ()));
 			}
 			else {
-				if(NumberParse.isDouble(this.txt_xPosition.getText()))
-					this.txt_xPosition.setText("" + (NumberParse.getDouble(this.txt_xPosition.getText()) + gui.getBlockPos().getX()));
-				if(NumberParse.isDouble(this.txt_yPosition.getText()))
-					this.txt_yPosition.setText("" + (NumberParse.getDouble(this.txt_yPosition.getText()) + gui.getBlockPos().getY()));
-				if(NumberParse.isDouble(this.txt_zPosition.getText()))
-					this.txt_zPosition.setText("" + (NumberParse.getDouble(this.txt_zPosition.getText()) + gui.getBlockPos().getZ()));
+				if(Numbers.isDouble(this.txt_xPosition.getText()))
+					this.txt_xPosition.setText("" + (Numbers.getDouble(this.txt_xPosition.getText()) + gui.getBlockPos().getX()));
+				if(Numbers.isDouble(this.txt_yPosition.getText()))
+					this.txt_yPosition.setText("" + (Numbers.getDouble(this.txt_yPosition.getText()) + gui.getBlockPos().getY()));
+				if(Numbers.isDouble(this.txt_zPosition.getText()))
+					this.txt_zPosition.setText("" + (Numbers.getDouble(this.txt_zPosition.getText()) + gui.getBlockPos().getZ()));
 			}
 		}
 	}
@@ -146,7 +146,7 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 		xText = this.txt_xPosition.getText();
 		yText = this.txt_yPosition.getText();
 		zText = this.txt_zPosition.getText();
-		this.btn_ok.enabled = NumberParse.areDoubles(xText, yText, zText);
+		this.btn_ok.enabled = Numbers.areDoubles(xText, yText, zText);
 	}
 	
 	@Override

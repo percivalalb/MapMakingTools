@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
@@ -54,7 +54,7 @@ public class CommandRotate extends CommandBase {
 		if(args.length < 1)
 			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		else {
-			Rotation rotation = Rotation.values()[NumberParse.getInteger(args[0]) / 90];
+			Rotation rotation = Rotation.values()[Numbers.parse(args[0]) / 90];
 
 
 			if(rotation == null)

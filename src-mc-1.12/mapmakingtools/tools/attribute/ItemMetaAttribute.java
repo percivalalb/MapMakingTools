@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiSmallButton;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,8 +29,8 @@ public class ItemMetaAttribute extends IItemAttribute {
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
 		if(!Strings.isNullOrEmpty(this.meta) && data == 0)
-			if(NumberParse.isInteger(this.meta))
-				stack.setItemDamage(NumberParse.getInteger(this.meta));
+			if(Numbers.isInteger(this.meta))
+				stack.setItemDamage(Numbers.parse(this.meta));
 		
 		if(data == 1) {
 			if(!stack.hasTagCompound()) {

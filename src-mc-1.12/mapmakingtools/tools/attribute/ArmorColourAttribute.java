@@ -7,7 +7,7 @@ import com.google.common.base.Strings;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +34,7 @@ public class ArmorColourAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		if(!Strings.isNullOrEmpty(this.colourint) && data == 0) {
 		
-			if(NumberParse.isInteger(this.colourint)) {
+			if(Numbers.isInteger(this.colourint)) {
 				if(!stack.hasTagCompound())
 					stack.setTagCompound(new NBTTagCompound());
 			
@@ -42,7 +42,7 @@ public class ArmorColourAttribute extends IItemAttribute {
 					stack.getTagCompound().setTag("display", new NBTTagCompound());
 			
 				NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
-				nbttagcompound.setInteger("color", NumberParse.getInteger(this.colourint));
+				nbttagcompound.setInteger("color", Numbers.parse(this.colourint));
 			}
 		}
 		
@@ -123,8 +123,8 @@ public class ArmorColourAttribute extends IItemAttribute {
 		if(textbox == this.fld_colourint) {
 			this.colourint = this.fld_colourint.getText();
 			
-			if(!Strings.isNullOrEmpty(this.colourint) && NumberParse.isInteger(this.colourint)) {
-				int integer = NumberParse.getInteger(this.colourint);
+			if(!Strings.isNullOrEmpty(this.colourint) && Numbers.isInteger(this.colourint)) {
+				int integer = Numbers.parse(this.colourint);
 				if(integer > 16777215) {
 					integer = 16777215;
 					this.fld_colourint.setText(String.valueOf(integer));

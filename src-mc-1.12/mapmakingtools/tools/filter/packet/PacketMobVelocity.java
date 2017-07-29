@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
@@ -60,7 +60,7 @@ public class PacketMobVelocity extends AbstractServerMessage {
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
-			if(!NumberParse.areDoubles(this.xMotion, this.yMotion, this.zMotion)) {
+			if(!Numbers.areDoubles(this.xMotion, this.yMotion, this.zMotion)) {
 				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobvelocity.notint");
 				chatComponent.getStyle().setItalic(true);
 				chatComponent.getStyle().setColor(TextFormatting.RED);
@@ -68,9 +68,9 @@ public class PacketMobVelocity extends AbstractServerMessage {
 				return;
 			}
 			
-			double xMotionNO = NumberParse.getDouble(this.xMotion);
-			double yMotionNO = NumberParse.getDouble(this.yMotion);
-			double zMotionNO = NumberParse.getDouble(this.zMotion);
+			double xMotionNO = Numbers.getDouble(this.xMotion);
+			double yMotionNO = Numbers.getDouble(this.yMotion);
+			double zMotionNO = Numbers.getDouble(this.zMotion);
 			
 			SpawnerUtil.setVelocity(spawner.getSpawnerBaseLogic(), xMotionNO, yMotionNO, zMotionNO, this.minecartIndex);
 			PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);

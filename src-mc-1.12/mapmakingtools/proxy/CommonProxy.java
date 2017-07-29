@@ -122,7 +122,7 @@ public class CommonProxy implements IGuiHandler {
     }
 
     public void postInit(FMLPostInitializationEvent event) {
-
+    	
     }
     
     protected void registerEventHandlers() {

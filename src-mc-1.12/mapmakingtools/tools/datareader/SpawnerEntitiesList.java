@@ -7,8 +7,10 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.helper.Numbers;
 
 /**
  * @author ProPercivalalb
@@ -35,31 +37,10 @@ public class SpawnerEntitiesList {
 	}
 	
 	public static void readDataFromFile() {
-		try {
-			BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/data/spawnerentities.txt"))); 
-			String line = "";
-			while((line = paramReader.readLine()) != null) {
-				
-				if(line.isEmpty() || line.startsWith("#"))
-					continue;
-				
-				String[] dataParts = line.split(" ~~~ ");
-				
-				String entity = dataParts[0];
-				
-				addEntity(entity);
-				
-				if(dataParts.length >= 2) {
-					String nbtData = dataParts[1];
-					addNBTForEntity(entity, nbtData);
-				}
-			}
-	    }
-		catch(Exception e) {
-			e.printStackTrace();
-	    }
-		finally {
-			Collections.sort(entityList);
-		}
+		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/spawnerentities.txt");
+		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length > 1);
+		parts.forEach(arr -> addEntity(arr[0]));
+		
+		Collections.sort(entityList);
 	}
 }

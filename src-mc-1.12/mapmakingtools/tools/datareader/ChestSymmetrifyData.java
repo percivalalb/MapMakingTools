@@ -7,9 +7,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 
 /**
  * @author ProPercivalalb
@@ -79,31 +80,8 @@ public class ChestSymmetrifyData {
 	}
 	
 	public static void readDataFromFile() {
-		try {
-			BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/data/chestpatterns.txt"))); 
-			String line = "";
-			while((line = paramReader.readLine()) != null) {
-				
-				if(line.isEmpty() || line.startsWith("#"))
-					continue;
-				
-				String[] dataParts = line.split(" ~~~ ");
-				if(dataParts.length != 4)
-					continue;
-					
-				if(!NumberParse.isInteger(dataParts[0]))
-					continue;
-					
-				int items = NumberParse.getInteger(dataParts[0]);
-				String row1 = dataParts[1];
-				String row2 = dataParts[2];
-				String row3 = dataParts[3];
-				
-				addChestPattern(items, row1, row2, row3);
-			}
-	    }
-		catch(Exception e) {
-			e.printStackTrace();
-	    }
+		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/chestpatterns.txt");
+		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length == 4 && Numbers.isInteger(arr[0]));
+		parts.forEach(arr -> addChestPattern(Numbers.parse(arr[0]), arr[1], arr[2], arr[3]));
 	}
 }

@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
@@ -99,7 +99,7 @@ public class MobVelocityClientFilter extends FilterMobSpawnerBase {
 		xText = this.txt_xMotion.getText();
 		yText = this.txt_yMotion.getText();
 		zText = this.txt_zMotion.getText();
-		this.btn_ok.enabled = NumberParse.areDoubles(xText, yText, zText);
+		this.btn_ok.enabled = Numbers.areDoubles(xText, yText, zText);
 	}
 	
 	@Override

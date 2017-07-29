@@ -6,7 +6,7 @@ import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketCreeperProperties;
@@ -112,7 +112,7 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 	public void updateScreen(IGuiFilter gui) {
 		fuseText = this.txt_fuse.getText();
 		radiusText = this.txt_radius.getText();
-		this.btn_ok.enabled = NumberParse.areIntegers(fuseText, radiusText);
+		this.btn_ok.enabled = Numbers.areIntegers(fuseText, radiusText);
 	}
 	
 	@Override

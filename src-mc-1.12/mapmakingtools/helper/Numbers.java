@@ -3,7 +3,7 @@ package mapmakingtools.helper;
 /**
  * @author ProPercivalalb
  */
-public class NumberParse {
+public class Numbers {
 	
 	public static boolean areIntegers(String... texts) {
 		for(String text : texts) {
@@ -46,7 +46,7 @@ public class NumberParse {
 		return 0.0D;
 	}
 	
-	public static int getInteger(String text) {
+	public static int parse(String text) {
 		try {
 			return new Integer(text);
 		}

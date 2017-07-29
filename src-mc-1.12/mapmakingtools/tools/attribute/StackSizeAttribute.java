@@ -2,7 +2,7 @@ package mapmakingtools.tools.attribute;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,8 +25,8 @@ public class StackSizeAttribute extends IItemAttribute {
 		if(this.stacksize == null)
 			return;
 		
-		if(NumberParse.isInteger(this.stacksize))
-			stack.setCount(NumberParse.getInteger(this.stacksize));
+		if(Numbers.isInteger(this.stacksize))
+			stack.setCount(Numbers.parse(this.stacksize));
 	}
 
 	@Override

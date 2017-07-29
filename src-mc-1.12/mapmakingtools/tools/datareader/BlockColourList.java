@@ -5,9 +5,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 
 /**
  * @author ProPercivalalb
@@ -26,7 +27,7 @@ public class BlockColourList {
 			int dist = newRed * newRed + newGreen * newGreen + newBlue * newBlue;
 			if(dist < closest) {
 				closest = dist;
-				best = new Object[] {cache.block, cache.blockMeta};
+				best = new Object[] {cache.block, cache.meta};
 			}
 		}
 		return best;
@@ -52,43 +53,19 @@ public class BlockColourList {
 	}
 	
 	public static void readDataFromFile() {
-		try {
-			BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/data/colourblockmap.txt"))); 
-			String line = "";
-			while((line = paramReader.readLine()) != null) {
-				
-				if(line.isEmpty() || line.startsWith("#"))
-					continue;
-				
-				String[] dataParts = line.split(" ~~~ ");
-				if(dataParts.length != 5)
-					continue;
-					
-				if(!NumberParse.areIntegers(dataParts[1], dataParts[2], dataParts[3], dataParts[4]))
-					continue;
-					
-				String block = dataParts[0];
-				int meta = NumberParse.getInteger(dataParts[1]);
-				int red = NumberParse.getInteger(dataParts[2]);
-				int green = NumberParse.getInteger(dataParts[3]);
-				int blue = NumberParse.getInteger(dataParts[4]);
-				
-				putBlockColour(block, meta, red, green, blue);
-			}
-	    }
-		catch(Exception e) {
-			e.printStackTrace();
-	    }
+		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/colourblockmap.txt");
+		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length == 5).filter(arr -> Numbers.areIntegers(arr[1], arr[2], arr[3], arr[4]));
+		parts.forEach(arr -> putBlockColour(arr[0], Numbers.parse(arr[1]), Numbers.parse(arr[2]), Numbers.parse(arr[3]), Numbers.parse(arr[4])));
 	}
 	
 	public static class ColourCache {
 		
 		public String block;
-		public int blockMeta, red, green, blue;
+		public int meta, red, green, blue;
 		
 		public ColourCache(String block, int blockMeta, int red, int green, int blue) {
 			this.block = block;
-			this.blockMeta = blockMeta;
+			this.meta = blockMeta;
 			this.red = red;
 			this.green = green;
 			this.blue = blue;

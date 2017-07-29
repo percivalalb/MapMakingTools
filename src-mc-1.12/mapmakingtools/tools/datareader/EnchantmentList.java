@@ -5,9 +5,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Stream;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 
 /**
  * @author ProPercivalalb
@@ -37,29 +38,8 @@ public class EnchantmentList {
 	}
 	
 	public static void readDataFromFile() {
-		try {
-			BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/data/enchantments.txt"))); 
-			String line = "";
-			while((line = paramReader.readLine()) != null) {
-				
-				if(line.isEmpty() || line.startsWith("#"))
-					continue;
-				
-				String[] dataParts = line.split(" ~~~ ");
-				if(dataParts.length != 2)
-					continue;
-					
-				if(!NumberParse.isInteger(dataParts[1]))
-					continue;
-				
-				String customId = dataParts[0];
-				int enchantmentId = NumberParse.getInteger(dataParts[1]);
-				
-				addEnchantment(customId, enchantmentId);
-			}
-	    }
-		catch(Exception e) {
-			e.printStackTrace();
-	    }
+		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/enchantments.txt");
+		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length == 2).filter(arr -> Numbers.isInteger(arr[1]));
+		parts.forEach(arr -> addEnchantment(arr[0], Numbers.parse(arr[1])));
 	}
 }

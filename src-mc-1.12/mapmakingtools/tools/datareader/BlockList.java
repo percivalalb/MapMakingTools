@@ -5,9 +5,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -36,29 +37,8 @@ public class BlockList {
 	}
 	
 	public static void readDataFromFile() {
-		try {
-			BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream("/assets/mapmakingtools/data/blocks.txt"))); 
-			String line = "";
-			while((line = paramReader.readLine()) != null) {
-				
-				if(line.isEmpty() || line.startsWith("#"))
-					continue;
-				
-				String[] dataParts = line.split(" ~~~ ");
-				if(dataParts.length != 2)
-					continue;
-					
-				if(!NumberParse.isInteger(dataParts[1]))
-					continue;
-					
-				String block = dataParts[0];
-				int meta = NumberParse.getInteger(dataParts[1]);
-				
-				addStack(block, meta);
-			}
-	    }
-		catch(Exception e) {
-			e.printStackTrace();
-	    }
+		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/blocks.txt");
+		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length == 2 && Numbers.isInteger(arr[1]));
+		parts.forEach(arr -> addStack(arr[0], Numbers.parse(arr[1])));
 	}
 }

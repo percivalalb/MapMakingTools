@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
@@ -124,7 +124,7 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 		spawnCountText = this.txt_spawnCount.getText();
 		entityCapText = this.txt_entityCap.getText();
 		detectionRangeText = this.txt_detectionRange.getText();
-		this.btn_ok.enabled = NumberParse.areIntegers(minDelayText, maxDelayText, spawnRadiusText, spawnCountText, entityCapText, detectionRangeText);
+		this.btn_ok.enabled = Numbers.areIntegers(minDelayText, maxDelayText, spawnRadiusText, spawnCountText, entityCapText, detectionRangeText);
 	}
 	
 	@Override

@@ -10,7 +10,7 @@ import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.button.GuiSmallButton;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.PotionList;
 import mapmakingtools.tools.item.nbt.PotionNBT;
 import net.minecraft.client.gui.GuiButton;
@@ -53,7 +53,7 @@ public class PotionAttribute extends IItemAttribute {
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
 		if(!Strings.isNullOrEmpty(this.level) && !Strings.isNullOrEmpty(this.duration) && this.selected != -1 && data == 0) {
-			if(NumberParse.isInteger(this.level)) {
+			if(Numbers.isInteger(this.level)) {
 				Potion potion = Potion.getPotionById(PotionList.getPotionId(PotionList.getCustomId(this.selected)));
 				
 				if(potion == null)
@@ -66,8 +66,8 @@ public class PotionAttribute extends IItemAttribute {
 						PotionNBT.addPotionEffects(stack, Potion.getIdFromPotion(effect.getPotion()), effect.getAmplifier() + 1, effect.getDuration(), effect.getIsAmbient(), effect.doesShowParticles());
 					}
 				}
-				int lvl = NumberParse.getInteger(this.level);
-				int dur = NumberParse.getInteger(this.duration);
+				int lvl = Numbers.parse(this.level);
+				int dur = Numbers.parse(this.duration);
 				PotionNBT.addPotionEffects(stack, Potion.getIdFromPotion(potion), lvl, dur, false, this.showParticles);
 			}
 		}
@@ -170,7 +170,7 @@ public class PotionAttribute extends IItemAttribute {
 			public String getDisplayString(String listStr) {
 				String[] split = listStr.split(" ~~~ ");
 				
-				Potion potion = Potion.getPotionById(NumberParse.getInteger(split[0]));
+				Potion potion = Potion.getPotionById(Numbers.parse(split[0]));
 				
 				
 				
@@ -178,7 +178,7 @@ public class PotionAttribute extends IItemAttribute {
 					return listStr;
 				
 				String localised = I18n.translateToLocal(potion.getName());
-				int lvl = NumberParse.getInteger(split[1]);
+				int lvl = Numbers.parse(split[1]);
 				
 				
 				return localised + " " + (lvl + 1) + " (" + split[2] + " ticks,  Visable: " + split[3] + ")";

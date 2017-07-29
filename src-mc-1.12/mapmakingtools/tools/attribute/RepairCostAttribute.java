@@ -2,7 +2,7 @@ package mapmakingtools.tools.attribute;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,8 +25,8 @@ public class RepairCostAttribute extends IItemAttribute {
 		if(this.cost == null)
 			return;
 		
-		if(NumberParse.isInteger(this.cost))
-			stack.setRepairCost(NumberParse.getInteger(this.cost));
+		if(Numbers.isInteger(this.cost))
+			stack.setRepairCost(Numbers.parse(this.cost));
 	}
 
 	@Override

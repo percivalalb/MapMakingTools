@@ -8,7 +8,7 @@ import com.google.common.base.Strings;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.EnchantmentList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -46,13 +46,13 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
 		if(this.level != null && this.selected != -1 && data == 0) {
-			if(NumberParse.isInteger(this.level)) {
+			if(Numbers.isInteger(this.level)) {
 				Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
 				
 				if(enchantment == null)
 					return;
 				
-				((ItemEnchantedBook)Items.ENCHANTED_BOOK).addEnchantment(stack, new EnchantmentData(enchantment, NumberParse.getInteger(this.level)));
+				((ItemEnchantedBook)Items.ENCHANTED_BOOK).addEnchantment(stack, new EnchantmentData(enchantment, Numbers.parse(this.level)));
 			}
 		}
 		
@@ -154,12 +154,12 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 			public String getDisplayString(String listStr) {
 				String[] split = listStr.split(" ~~~ ");
 				
-				Enchantment enchantment = Enchantment.getEnchantmentByID(NumberParse.getInteger(split[0]));
+				Enchantment enchantment = Enchantment.getEnchantmentByID(Numbers.parse(split[0]));
 				
 				if(enchantment == null)
 					return listStr;
 				
-				String localised = enchantment.getTranslatedName(NumberParse.getInteger(split[1]));
+				String localised = enchantment.getTranslatedName(Numbers.parse(split[1]));
 				
 				return localised;
 			}

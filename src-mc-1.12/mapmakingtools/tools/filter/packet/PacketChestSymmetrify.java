@@ -56,7 +56,7 @@ public class PacketChestSymmetrify extends AbstractServerMessage {
 			int currentCount = 0;
 			for(int index = 0; index < chest.getSizeInventory(); ++index) {
 				ItemStack stack = chest.getStackInSlot(index);
-				if(stack != null) {
+				if(!stack.isEmpty()) {
 					stacksInChest.add(stack);
 					chest.setInventorySlotContents(index, ItemStack.EMPTY);
 					++currentCount;

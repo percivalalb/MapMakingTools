@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
@@ -56,7 +56,7 @@ public class CommandFlip extends CommandBase {
 		if(args.length < 1)
 			throw new WrongUsageException(this.getUsage(sender), new Object[0]);
 		else {
-			Mirror mirror = Mirror.values()[NumberParse.getInteger(args[0])];
+			Mirror mirror = Mirror.values()[Numbers.parse(args[0])];
 
 
 			if(mirror.equals(Mirror.NONE))

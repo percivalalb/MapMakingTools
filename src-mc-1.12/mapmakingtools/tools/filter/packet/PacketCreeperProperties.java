@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
@@ -60,7 +60,7 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 
-			if(!NumberParse.areIntegers(this.fuseTime, this.explosionRadius)) {
+			if(!Numbers.areIntegers(this.fuseTime, this.explosionRadius)) {
 				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.creeperproperties.notint");
 				chatComponent.getStyle().setItalic(true);
 				chatComponent.getStyle().setColor(TextFormatting.RED);
@@ -68,8 +68,8 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 				return;
 			}
 			
-			int fuseTimeNO = NumberParse.getInteger(this.fuseTime);
-			int explosionRadiusNO = NumberParse.getInteger(this.explosionRadius);
+			int fuseTimeNO = Numbers.parse(this.fuseTime);
+			int explosionRadiusNO = Numbers.parse(this.explosionRadius);
 			
 			SpawnerUtil.setCreeperFuse(spawner.getSpawnerBaseLogic(), fuseTimeNO, this.minecartIndex);
 			SpawnerUtil.setCreeperExplosionRadius(spawner.getSpawnerBaseLogic(), explosionRadiusNO, this.minecartIndex);

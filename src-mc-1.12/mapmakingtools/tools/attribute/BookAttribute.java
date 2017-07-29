@@ -2,7 +2,7 @@ package mapmakingtools.tools.attribute;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +47,7 @@ public class BookAttribute extends IItemAttribute {
 			if(!stack.hasTagCompound())
 				stack.setTagCompound(new NBTTagCompound());
 
-			stack.getTagCompound().setInteger("generation", NumberParse.getInteger(this.generation));
+			stack.getTagCompound().setInteger("generation", Numbers.parse(this.generation));
 		}
 		else if(data == 3) {
 			ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount(), stack.getItemDamage());

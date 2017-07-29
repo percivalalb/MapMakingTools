@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.helper.NumberParse;
+import mapmakingtools.helper.Numbers;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
@@ -64,7 +64,7 @@ public class PacketMobPosition extends AbstractServerMessage {
 		if(tile instanceof TileEntityMobSpawner) {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
-			if(!NumberParse.areDoubles(this.xPos, this.yPos, this.zPos)) {
+			if(!Numbers.areDoubles(this.xPos, this.yPos, this.zPos)) {
 				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobposition.notint");
 				chatComponent.getStyle().setItalic(true);
 				chatComponent.getStyle().setColor(TextFormatting.RED);
@@ -72,9 +72,9 @@ public class PacketMobPosition extends AbstractServerMessage {
 				return;
 			}
 			
-			double xPosNO = NumberParse.getDouble(this.xPos);
-			double yPosNO = NumberParse.getDouble(this.yPos);
-			double zPosNO = NumberParse.getDouble(this.zPos);
+			double xPosNO = Numbers.getDouble(this.xPos);
+			double yPosNO = Numbers.getDouble(this.yPos);
+			double zPosNO = Numbers.getDouble(this.zPos);
 			if(this.relative) {
 				xPosNO += this.pos.getX();
 				yPosNO += this.pos.getY();

@@ -7,6 +7,9 @@ Update List Key
 (*) A bug fix
 (/) Other
 
+2.5.1.*** - WIP
+* Fixed chest symmetrify not working
+
 2.5.0.94 - 29th July 2017
 Updated to MC 1.12
 + Added two new quick build commands //outline and //box
