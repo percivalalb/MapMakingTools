@@ -1,5 +1,5 @@
 [{
-	"modid": "MapMakingTools",
+	"modid": "mapmakingtools",
 	"name": "Map Making Tools",
 	"description": "Very useful for making custom adventure maps.",
 	"version": "${MOD_VERSION}",
