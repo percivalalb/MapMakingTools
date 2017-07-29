@@ -37,7 +37,7 @@ public class PacketOpenItemEditor extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_ITEM_EDITOR, player.world, this.slotIndex, 0, 0);
+		player.openGui(MapMakingTools.INSTANCE, CommonProxy.GUI_ID_ITEM_EDITOR, player.world, this.slotIndex, 0, 0);
 	}
 
 }

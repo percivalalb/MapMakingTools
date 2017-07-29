@@ -132,7 +132,7 @@ public class CommandWorldTransfer extends CommandBase {
 			PacketDispatcher.sendTo(new PacketPasteNotify(name), player);
 		}
 		else if("gui".equals(mode)) {
-			player.openGui(MapMakingTools.instance, CommonProxy.GUI_ID_WORLD_TRANSFER, player.world, 0, 0, 0);
+			player.openGui(MapMakingTools.INSTANCE, CommonProxy.GUI_ID_WORLD_TRANSFER, player.world, 0, 0, 0);
 		}
 		
 	}

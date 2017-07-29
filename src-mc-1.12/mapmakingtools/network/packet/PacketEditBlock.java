@@ -37,7 +37,7 @@ public class PacketEditBlock extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!player.world.isRemote) {
 			LogHelper.info("Logging times");
-			player.openGui(MapMakingTools.instance, CommonProxy.ID_FILTER_BLOCK, player.world, this.pos.getX(), this.pos.getY(), this.pos.getZ());
+			player.openGui(MapMakingTools.INSTANCE, CommonProxy.ID_FILTER_BLOCK, player.world, this.pos.getX(), this.pos.getY(), this.pos.getZ());
 		}
 	}
 }

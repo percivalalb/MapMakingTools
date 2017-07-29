@@ -13,6 +13,7 @@ import mapmakingtools.client.model.ModelHelper;
 import mapmakingtools.handler.BlockHighlightHandler;
 import mapmakingtools.handler.GuiOpenHandler;
 import mapmakingtools.handler.KeyStateHandler;
+import mapmakingtools.handler.MouseInput;
 import mapmakingtools.handler.ScreenRenderHandler;
 import mapmakingtools.handler.WorldOverlayHandler;
 import mapmakingtools.helper.LogHelper;
@@ -95,16 +96,9 @@ public class ClientProxy extends CommonProxy {
     	MinecraftForge.EVENT_BUS.register(new ScreenRenderHandler());
     	MinecraftForge.EVENT_BUS.register(new GuiOpenHandler());
     	MinecraftForge.EVENT_BUS.register(new BlockHighlightHandler());
-    	
-    	ModelHelper.registerItem(ModItems.EDIT_ITEM, 0, "mapmakingtools:edit_item");
-    	ModelHelper.registerItem(ModItems.EDIT_ITEM, 1, "mapmakingtools:wrench");
-    	ModelBakery.registerItemVariants(ModItems.EDIT_ITEM, new ResourceLocation(Reference.MOD_ID, "edit_item"), new ResourceLocation(Reference.MOD_ID, "wrench"));
+    	MinecraftForge.EVENT_BUS.register(new MouseInput());
 
     	
-	}
-	
-	public void registerItem(ItemModelMesher itemModelMesher, Item itm, int subType, String identifier) {
-		itemModelMesher.register(itm, subType, new ModelResourceLocation(identifier, "inventory"));
 	}
 	
 	@Override

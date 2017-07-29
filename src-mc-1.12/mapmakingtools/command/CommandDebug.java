@@ -40,7 +40,7 @@ public class CommandDebug extends CommandBase {
 		
 		if(args.length >= 1) {
 			if(args[0].toLowerCase().equals("reloadrotations")) {
-				MapMakingTools.proxy.registerRotation();
+				MapMakingTools.PROXY.registerRotation();
 			}
 		}
 	}

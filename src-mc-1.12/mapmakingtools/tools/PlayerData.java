@@ -38,7 +38,7 @@ public class PlayerData {
 	
 	public EntityPlayer getPlayer() {
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-			return MapMakingTools.proxy.getPlayerEntity();
+			return MapMakingTools.PROXY.getPlayerEntity();
 
 		return ServerHelper.getServer().getPlayerList().getPlayerByUUID(this.uuid);
 	}

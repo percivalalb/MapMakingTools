@@ -25,36 +25,35 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 public class MapMakingTools {
 
 	@Instance(value = Reference.MOD_ID)
-	public static MapMakingTools instance;
+	public static MapMakingTools INSTANCE;
 	
 	@SidedProxy(clientSide = Reference.SP_CLIENT, serverSide = Reference.SP_SERVER)
-    public static CommonProxy proxy;
+    public static CommonProxy PROXY;
 	
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	ConfigurationHandler.loadConfig(new Configuration(event.getSuggestedConfigurationFile()));
-    	proxy.onPreLoad();
+    	PROXY.onPreLoad();
     	PacketDispatcher.registerPackets();
     }
     
     @EventHandler
     public void onInit(FMLInitializationEvent event) {
-    	NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+    	NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, PROXY);
     	MinecraftForge.EVENT_BUS.register(new ActionHandler());
     	MinecraftForge.EVENT_BUS.register(new WorldSaveHandler());
     	MinecraftForge.EVENT_BUS.register(new EntityJoinWorldHandler());
     	MinecraftForge.EVENT_BUS.register(new PlayerTrackerHandler());
-    	ModItems.inti();
-    	proxy.registerFilters();
-    	proxy.registerRotation();
-    	proxy.registerItemAttribute();
-    	proxy.registerForceKill();
-    	proxy.registerHandlers();
+    	PROXY.registerFilters();
+    	PROXY.registerRotation();
+    	PROXY.registerItemAttribute();
+    	PROXY.registerForceKill();
+    	PROXY.registerHandlers();
     }
     
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-    	proxy.onPostLoad();
+    	PROXY.onPostLoad();
     }
     
     @EventHandler
