@@ -2,14 +2,14 @@ package codechicken.nei.api;
 
 import java.util.List;
 
-import codechicken.nei.VisiblityData;
+import codechicken.nei.VisibilityData;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
 public interface INEIGuiHandler {
 
-	VisiblityData modifyVisiblity(GuiContainer gui,
-			VisiblityData currentVisibility);
+	VisibilityData modifyVisiblity(GuiContainer gui,
+			VisibilityData currentVisibility);
 
 	List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui);
 

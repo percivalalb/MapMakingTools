@@ -2,7 +2,6 @@ package mapmakingtools.api.manager;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 import net.minecraft.entity.Entity;

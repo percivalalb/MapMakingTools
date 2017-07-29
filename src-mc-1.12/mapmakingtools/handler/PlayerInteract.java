@@ -23,25 +23,25 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class ActionHandler {
+public class PlayerInteract {
 
 	@SubscribeEvent
 	public void onRightClick(RightClickBlock event) {
 		
 		EntityPlayer player = event.getEntityPlayer();
-		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+		EnumHand hand = event.getHand();
+		ItemStack stack = player.getHeldItem(hand);
 		World world = player.world;
 		BlockPos pos = event.getPos();
 		EnumFacing side = event.getFace();
 		
 		//Is Client world or is doing off hand calculation
-		if(world.isRemote || event.getHand().equals(EnumHand.OFF_HAND)) {
+		if(world.isRemote || hand.equals(EnumHand.OFF_HAND)) {
 			if(PlayerAccess.canEdit(player)) {
 				if(stack.getItem() == ModItems.EDIT_ITEM) {
 					event.setCanceled(true);

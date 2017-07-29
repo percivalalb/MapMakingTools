@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 /**
  * @author ProPercivalalb
  */
-public class PlayerTrackerHandler {
+public class PlayerTracker {
 
 	@SubscribeEvent
 	public void login(PlayerLoggedInEvent event) {

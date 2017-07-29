@@ -7,28 +7,22 @@ import org.lwjgl.opengl.GL11;
 
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
-import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.tools.datareader.SpawnerEntitiesList;
-import mapmakingtools.tools.filter.packet.PacketMobType;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
+import net.minecraftforge.registries.GameData;
 
 /**
  * @author ProPercivalalb
@@ -36,6 +30,7 @@ import net.minecraft.util.text.TextFormatting;
 public class VillagerProfessionClientFilter extends FilterClient {
 
 	public ScrollMenu menu;
+	public RegistryNamespaced<ResourceLocation, VillagerProfession> REGISTRY = GameData.getWrapper(VillagerProfession.class);
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -69,7 +64,7 @@ public class VillagerProfessionClientFilter extends FilterClient {
 
 			@Override
 			public void onSetButton() {
-				PacketDispatcher.sendToServer(new PacketVillagerProfession(VillagerRegistry.instance().getRegistry().getValue(new ResourceLocation(this.strRefrence.get(this.selected)))));
+				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(new ResourceLocation(this.strRefrence.get(this.selected)))));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
@@ -80,7 +75,7 @@ public class VillagerProfessionClientFilter extends FilterClient {
 	
 	private List<String> getProfesionList() {
 		List<String> list = new ArrayList<String>();
-		for(ResourceLocation location : VillagerRegistry.instance().getRegistry().getKeys())
+		for(ResourceLocation location : REGISTRY.getKeys())
 			list.add(location.toString());
 		return list;
 	}

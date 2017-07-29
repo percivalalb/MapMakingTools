@@ -1,19 +1,5 @@
 package mapmakingtools.tools;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Hashtable;
-
-import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.enums.MovementType;
-import mapmakingtools.helper.LogHelper;
-import mapmakingtools.helper.NumberParse;
-import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 /**
  * @author ProPercivalalb
  */
@@ -61,7 +47,7 @@ public class RotationLoader {
 		    
 		    if(blockIdentifier != null) {
 				map.put(blockIdentifier, modeData);
-				LogHelper.info("Loaded movement data for %s", blockIdentifier);
+				MapMakingTools.LOGGER.info("Loaded movement data for %s", blockIdentifier);
 			}
 		}
 		catch(Exception e) {

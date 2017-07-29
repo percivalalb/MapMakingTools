@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 import com.google.common.base.Strings;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.manager.FilterManager;
-import mapmakingtools.helper.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,7 +30,7 @@ public class WorldData {
 		
 		if(!PLAYER_POINTS.containsKey(uuid)) {
 			
-			LogHelper.info("Create player profile");
+			MapMakingTools.LOGGER.info("Create player profile");
 			PLAYER_POINTS.put(uuid, new PlayerData(player.getUniqueID()));
 		}
 		

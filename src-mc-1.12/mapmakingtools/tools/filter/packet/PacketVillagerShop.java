@@ -2,8 +2,8 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.filter.VillagerShopServerFilter;
@@ -47,31 +47,31 @@ public class PacketVillagerShop extends AbstractServerMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
-		LogHelper.info("dawe " + this.entityId);
+		MapMakingTools.LOGGER.info("dawe " + this.entityId);
 		if(player.openContainer instanceof IContainerFilter) {
-			LogHelper.info("filter " + this.entityId);
+			MapMakingTools.LOGGER.info("filter " + this.entityId);
 			IContainerFilter container = (IContainerFilter)player.openContainer;
 			if(container.getCurrentFilter() instanceof VillagerShopServerFilter) {
-				LogHelper.info("shop " + this.entityId);
+				MapMakingTools.LOGGER.info("shop " + this.entityId);
 				VillagerShopServerFilter shop = (VillagerShopServerFilter)container.getCurrentFilter();
 		        World world = player.world;
 		        Entity entity = world.getEntityByID(this.entityId);
 		        if(entity instanceof EntityVillager) {
-		        	LogHelper.info("villager " + this.entityId);
+		        	MapMakingTools.LOGGER.info("villager " + this.entityId);
 		        	EntityVillager villager = (EntityVillager)entity;
 		        	MerchantRecipeList recipeList = new MerchantRecipeList();
 		        	
 		        	for(int i = 0; i < shop.getAmountRecipes(container.getPlayer()); ++i) {
-			        	LogHelper.info("amount " + i);
+			        	MapMakingTools.LOGGER.info("amount " + i);
 		        		ItemStack input1 = shop.getInventory(container).getStackInSlot(i * 3);
 		        		ItemStack input2 = shop.getInventory(container).getStackInSlot(i * 3 + 1);
 		        		ItemStack output = shop.getInventory(container).getStackInSlot(i * 3 + 2);
 		        		if(input1 != null)
-		        			LogHelper.info("input1 " + input1.toString());
+		        			MapMakingTools.LOGGER.info("input1 " + input1.toString());
 		        		if(input2 != null)
-		        			LogHelper.info("input2 " + input2.toString());
+		        			MapMakingTools.LOGGER.info("input2 " + input2.toString());
 		        		if(output != null)
-		        			LogHelper.info("output " + output.toString());
+		        			MapMakingTools.LOGGER.info("output " + output.toString());
 		        		
 		        		if(input1 == null && input2 != null) {
 		        			input1 = input2.copy();

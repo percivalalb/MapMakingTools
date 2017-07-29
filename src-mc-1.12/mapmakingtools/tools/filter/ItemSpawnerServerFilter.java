@@ -3,11 +3,10 @@ package mapmakingtools.tools.filter;
 import java.util.Hashtable;
 import java.util.Map;
 
-import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotFake;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

@@ -3,9 +3,6 @@ package mapmakingtools.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

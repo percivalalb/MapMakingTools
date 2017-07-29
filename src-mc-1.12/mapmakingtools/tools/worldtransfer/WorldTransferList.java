@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import mapmakingtools.helper.LogHelper;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.tools.BlockCache;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -109,7 +109,7 @@ public class WorldTransferList {
 	
 	public static void readFromFile() {
 		try {
-			LogHelper.info("" + saveFile.getAbsolutePath());
+			MapMakingTools.LOGGER.info("" + saveFile.getAbsolutePath());
 			if(!saveFile.exists()) {
 				FileOutputStream outputStream = new FileOutputStream(saveFile);
 			    CompressedStreamTools.writeCompressed(new NBTTagCompound(), outputStream);
@@ -141,7 +141,7 @@ public class WorldTransferList {
 			}
 			
 			for(String name : map.keySet()) {
-				LogHelper.info("  Name: \"%s\", Blocks: %d", name, map.get(name).size());
+				MapMakingTools.LOGGER.info("  Name: \"%s\", Blocks: %d", name, map.get(name).size());
 			}
 			
 			inputStream.close();

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * @author ProPercivalalb
  */
-public class WorldSaveHandler {
+public class WordSave {
 	
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load event) {

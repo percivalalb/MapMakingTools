@@ -10,15 +10,14 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.FilterClient;
+import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.ButtonType;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.client.gui.button.GuiTabSelect;
 import mapmakingtools.container.ContainerFilter;
-import mapmakingtools.container.IPhantomSlot;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
@@ -30,7 +29,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -84,6 +82,13 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	    this.entityId = entityId;
 	    this.mode = TargetType.ENTITY;
 	    this.getContainerFilter().setEntityId(entityId);
+	}
+	
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    	this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override

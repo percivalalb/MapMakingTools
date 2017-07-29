@@ -1,7 +1,5 @@
 package mapmakingtools.client.gui.button;
 
-import net.minecraft.client.gui.GuiButton;
-
 /**
  * @author ProPercivalalb
  */

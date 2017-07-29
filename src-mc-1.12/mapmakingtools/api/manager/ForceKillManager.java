@@ -6,18 +6,21 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IForceKill;
-import mapmakingtools.helper.LogHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.registries.ForgeRegistry;
 
 /**
  * @author ProPercivalalb
  */
 public class ForceKillManager {
 	
-	private static final Map<String, IForceKill> map = new Hashtable<String, IForceKill>();
+	private static final Map<String, IForceKill> map = Maps.newHashMap();
 	private static final List<String> nameList = new ArrayList<String>();
 	
 	public static void killGiven(String name, Entity entity, EntityPlayerMP player) {
@@ -27,7 +30,6 @@ public class ForceKillManager {
 		if(kill.onCommand(entity)) {
 			entity.setDead();
 			entity.world.removeEntity(entity);
-			//PacketTypeHandler.populatePacketAndSendToClient(new PacketRemoveEntityFromWorld(entity.entityId), player);
 		}
 	}
 	
@@ -45,12 +47,12 @@ public class ForceKillManager {
 	 * @param forceKill The instance you want to register
 	 */
 	public static void registerHandler(String name, IForceKill forceKill) {
-		if(nameList.contains(name)) {
-			LogHelper.warning("You can't register and Force Kill class with the same name as another!");
-			return;
+		if(nameList.contains(name))
+			MapMakingTools.LOGGER.warn("You can't register and Force Kill class with the same name as another!");
+		else {
+			map.put(name, forceKill);
+			nameList.add(name);
 		}
-		map.put(name, forceKill);
-		nameList.add(name);
 	}
 	
 	/**

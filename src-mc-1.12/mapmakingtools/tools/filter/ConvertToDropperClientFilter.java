@@ -2,21 +2,21 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketConvertToDropper;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 /**
@@ -39,7 +39,7 @@ public class ConvertToDropperClientFilter extends FilterClient {
 	@Override
 	public boolean isApplicable(EntityPlayer player, World world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
-		LogHelper.info(pos.toString());
+		MapMakingTools.LOGGER.info(pos.toString());
 		if(tile != null && tile.getClass() == TileEntityDispenser.class)
 			return true;
 		return false;

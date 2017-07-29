@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.helper.LogHelper;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
@@ -47,7 +47,7 @@ public class PacketCommandBlockAlias extends AbstractServerMessage {
 
 		TileEntity tile = player.world.getTileEntity(this.pos);
 		if(tile instanceof TileEntityCommandBlock) {
-			LogHelper.info("YES");
+			MapMakingTools.LOGGER.info("YES");
 			TileEntityCommandBlock commandBlock = (TileEntityCommandBlock)tile;
 			commandBlock.getCommandBlockLogic().setName(this.name);
 				//player.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("filter.commandBlockName.complete", name));

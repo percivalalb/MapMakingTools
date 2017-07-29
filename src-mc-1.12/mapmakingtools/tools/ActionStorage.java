@@ -2,10 +2,8 @@ package mapmakingtools.tools;
 
 import java.util.ArrayList;
 
-import mapmakingtools.api.enums.MovementType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 

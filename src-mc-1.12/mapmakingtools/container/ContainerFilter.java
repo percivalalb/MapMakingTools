@@ -2,12 +2,10 @@ package mapmakingtools.container;
 
 import java.util.List;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.api.interfaces.FilterServer;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.api.interfaces.IContainerFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -57,7 +55,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	    this.inventorySlots.clear();
 	    this.inventoryItemStacks.clear();
 	    this.filterCurrent = this.filterList.get(selected);
-	    LogHelper.info(this.filterCurrent + " " + FMLCommonHandler.instance().getEffectiveSide());
+	    MapMakingTools.LOGGER.info(this.filterCurrent + " " + FMLCommonHandler.instance().getEffectiveSide());
 	    if(this.filterCurrent != null)
 	    	this.filterCurrent.addSlots(this);
 	}
@@ -113,7 +111,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	//Phantom Slot
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		LogHelper.info("Server: " + !player.world.isRemote + " " + FMLCommonHandler.instance().getEffectiveSide() + " " + clickTypeIn);
+		MapMakingTools.LOGGER.info("Server: " + !player.world.isRemote + " " + FMLCommonHandler.instance().getEffectiveSide() + " " + clickTypeIn);
 		Slot slot = slotId < 0 || slotId >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotId);
 		if(slot instanceof IPhantomSlot) {
 			return slotClickPhantom(slot, dragType, clickTypeIn, player);

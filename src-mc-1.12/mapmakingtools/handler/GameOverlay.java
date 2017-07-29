@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL12;
 import mapmakingtools.ModItems;
 import mapmakingtools.client.render.RenderUtil;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.ClientData;
 import mapmakingtools.tools.PlayerAccess;
@@ -39,7 +38,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -47,7 +45,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * @author ProPercivalalb
  **/
-public class ScreenRenderHandler {
+public class GameOverlay {
 	
 	private int INDEX_HISTORY = 1;
 	private boolean hasButtonBeenUp = true;

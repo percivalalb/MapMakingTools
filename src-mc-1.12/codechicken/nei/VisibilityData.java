@@ -1,6 +1,6 @@
 package codechicken.nei;
 
-public class VisiblityData {
+public class VisibilityData {
 
 	public boolean showNEI;
 

@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * @author ProPercivalalb
  */
-public class WorldOverlayHandler {
+public class RenderWorld {
 	
 	private static Minecraft mc = Minecraft.getMinecraft();
 	private static boolean hasCheckedVersion = false;

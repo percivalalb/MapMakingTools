@@ -3,10 +3,9 @@ package mapmakingtools.network.packet;
 import java.io.IOException;
 
 import mapmakingtools.api.manager.FakeWorldManager;
-import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
-import mapmakingtools.util.SpawnerUtil;
 import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;

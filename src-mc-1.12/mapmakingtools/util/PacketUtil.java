@@ -2,7 +2,6 @@ package mapmakingtools.util;
 
 import mapmakingtools.helper.ServerHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 

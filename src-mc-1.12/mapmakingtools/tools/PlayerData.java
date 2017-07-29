@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.UUID;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.LogHelper;
 import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSetPoint1;

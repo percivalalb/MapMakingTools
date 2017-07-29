@@ -13,7 +13,6 @@ import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiSmallButton;
-import mapmakingtools.client.gui.button.GuiTabSelect;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
@@ -125,6 +124,13 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     	if(itemCurrent != null)
     		itemCurrent.populateFromItem(this, this.getStack(), true);
     }
+	
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    	this.renderHoveredToolTip(mouseX, mouseY);
+	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {

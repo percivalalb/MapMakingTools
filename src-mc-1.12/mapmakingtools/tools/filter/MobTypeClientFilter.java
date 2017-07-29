@@ -15,9 +15,9 @@ import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb

@@ -1,7 +1,6 @@
 package mapmakingtools.tools.attribute;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -12,7 +11,6 @@ import com.google.common.collect.Multimap;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonData;
-import mapmakingtools.client.gui.button.GuiButtonTextColour;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.client.gui.button.GuiSmallButtonData;
 import mapmakingtools.client.render.RenderUtil;
@@ -20,8 +18,6 @@ import mapmakingtools.helper.NumberParse;
 import mapmakingtools.helper.ReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -31,6 +27,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb

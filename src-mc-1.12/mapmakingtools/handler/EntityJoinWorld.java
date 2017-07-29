@@ -6,13 +6,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * @author ProPercivalalb
  */
-public class EntityJoinWorldHandler {
+public class EntityJoinWorld {
 
 	public static boolean shouldSpawnEntities = true;
 	
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-		if(!EntityJoinWorldHandler.shouldSpawnEntities)
+		if(!EntityJoinWorld.shouldSpawnEntities)
 			event.setCanceled(true);
 	}
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.IFilterProvider;
 import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.interfaces.IFilterProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;

@@ -2,7 +2,7 @@ package mapmakingtools.integration.nei;
 
 import java.util.List;
 
-import codechicken.nei.VisiblityData;
+import codechicken.nei.VisibilityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
 import mapmakingtools.client.gui.GuiFilter;
@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 public class NEIGuiHandler implements INEIGuiHandler {
 
 	@Override
-	public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) { 
+	public VisibilityData modifyVisiblity(GuiContainer gui, VisibilityData currentVisibility) { 
 		if(gui instanceof GuiItemEditor || gui instanceof GuiFilter || gui instanceof GuiWorldTransfer)
 			currentVisibility.showNEI = false;
 		return currentVisibility;

@@ -1,4 +1,4 @@
-package mapmakingtools.handler;
+package mapmakingtools;
 
 import mapmakingtools.command.CommandBox;
 import mapmakingtools.command.CommandClearPoints;
@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 /**
  * @author ProPercivalalb
  */
-public class CommandHandler {
+public class ModCommands {
 
     public static void initCommands(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandClearPoints());

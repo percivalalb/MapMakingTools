@@ -2,22 +2,17 @@ package mapmakingtools.proxy;
 
 import java.util.List;
 
-import mapmakingtools.ModItems;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiWorldTransfer;
-import mapmakingtools.client.model.ModelHelper;
-import mapmakingtools.handler.BlockHighlightHandler;
-import mapmakingtools.handler.GuiOpenHandler;
 import mapmakingtools.handler.KeyStateHandler;
 import mapmakingtools.handler.MouseInput;
-import mapmakingtools.handler.ScreenRenderHandler;
-import mapmakingtools.handler.WorldOverlayHandler;
-import mapmakingtools.helper.LogHelper;
-import mapmakingtools.lib.Reference;
+import mapmakingtools.handler.GameOverlay;
+import mapmakingtools.handler.RenderWorld;
 import mapmakingtools.tools.attribute.ArmorColourAttribute;
 import mapmakingtools.tools.attribute.BlockDestroyAttribute;
 import mapmakingtools.tools.attribute.BookAttribute;
@@ -35,17 +30,13 @@ import mapmakingtools.tools.attribute.StackSizeAttribute;
 import mapmakingtools.tools.attribute.TooltipFlagsAttribute;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.util.IThreadListener;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
@@ -53,6 +44,44 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  */
 public class ClientProxy extends CommonProxy {
 
+	@Override
+	public void postInit(FMLPostInitializationEvent event) {
+		super.postInit(event);
+		MapMakingTools.LOGGER.info("Loading World Transfer file");
+		WorldTransferList.readFromFile();
+	}
+	
+	@Override
+	public void registerEventHandlers() {
+		super.registerEventHandlers();
+		ClientRegistry.registerKeyBinding(KeyStateHandler.keyItemEditor);
+		MinecraftForge.EVENT_BUS.register(new KeyStateHandler());
+    	MinecraftForge.EVENT_BUS.register(new RenderWorld());
+    	MinecraftForge.EVENT_BUS.register(new GameOverlay());
+    	MinecraftForge.EVENT_BUS.register(new MouseInput());
+	}
+	
+	@Override
+	public void registerItemAttribute() {
+		ItemEditorManager.registerItemHandler(new ItemNameAttribute());
+		ItemEditorManager.registerItemHandler(new LoreAttribute());
+		ItemEditorManager.registerItemHandler(new TooltipFlagsAttribute());
+		ItemEditorManager.registerItemHandler(new StackSizeAttribute());
+		ItemEditorManager.registerItemHandler(new ItemMetaAttribute());
+		ItemEditorManager.registerItemHandler(new RepairCostAttribute());
+		ItemEditorManager.registerItemHandler(new BlockDestroyAttribute());
+		ItemEditorManager.registerItemHandler(new CanPlaceOnAttribute());
+		ItemEditorManager.registerItemHandler(new ModifiersAttribute());
+		ItemEditorManager.registerItemHandler(new EnchantmentAttribute());
+		ItemEditorManager.registerItemHandler(new BookEnchantmentAttribute());
+		ItemEditorManager.registerItemHandler(new PotionAttribute());
+		ItemEditorManager.registerItemHandler(new BookAttribute());
+		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
+		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
+		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
+	}
+	
+	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		BlockPos pos = new BlockPos(x, y, z);
@@ -74,51 +103,6 @@ public class ClientProxy extends CommonProxy {
 			return new GuiWorldTransfer();
 		}
 		return null;
-	}
-	
-	@Override
-	public void onPreLoad() {
-		super.onPreLoad();
-	}
-	
-	@Override
-	public void onPostLoad() {
-		super.onPostLoad();
-    	LogHelper.info("Loading World Transfer file");
-		WorldTransferList.readFromFile();
-	}
-	
-	@Override
-	public void registerHandlers() {
-		ClientRegistry.registerKeyBinding(KeyStateHandler.keyItemEditor);
-		MinecraftForge.EVENT_BUS.register(new KeyStateHandler());
-    	MinecraftForge.EVENT_BUS.register(new WorldOverlayHandler());
-    	MinecraftForge.EVENT_BUS.register(new ScreenRenderHandler());
-    	MinecraftForge.EVENT_BUS.register(new GuiOpenHandler());
-    	MinecraftForge.EVENT_BUS.register(new BlockHighlightHandler());
-    	MinecraftForge.EVENT_BUS.register(new MouseInput());
-
-    	
-	}
-	
-	@Override
-	public void registerItemAttribute() {
-		ItemEditorManager.registerItemHandler(new ItemNameAttribute());
-		ItemEditorManager.registerItemHandler(new LoreAttribute());
-		ItemEditorManager.registerItemHandler(new TooltipFlagsAttribute());
-		ItemEditorManager.registerItemHandler(new StackSizeAttribute());
-		ItemEditorManager.registerItemHandler(new ItemMetaAttribute());
-		ItemEditorManager.registerItemHandler(new RepairCostAttribute());
-		ItemEditorManager.registerItemHandler(new BlockDestroyAttribute());
-		ItemEditorManager.registerItemHandler(new CanPlaceOnAttribute());
-		ItemEditorManager.registerItemHandler(new ModifiersAttribute());
-		ItemEditorManager.registerItemHandler(new EnchantmentAttribute());
-		ItemEditorManager.registerItemHandler(new BookEnchantmentAttribute());
-		ItemEditorManager.registerItemHandler(new PotionAttribute());
-		ItemEditorManager.registerItemHandler(new BookAttribute());
-		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
-		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
-		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
 	}
 	
 	@Override
