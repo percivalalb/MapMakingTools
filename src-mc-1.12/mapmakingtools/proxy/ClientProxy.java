@@ -9,7 +9,6 @@ import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiWorldTransfer;
-import mapmakingtools.handler.KeyStateHandler;
 import mapmakingtools.handler.MouseInput;
 import mapmakingtools.handler.GameOverlay;
 import mapmakingtools.handler.RenderWorld;
