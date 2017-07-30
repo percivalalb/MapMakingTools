@@ -192,10 +192,10 @@ public class ModifiersAttribute extends IItemAttribute {
 		}
 
 		
-		this.btn_convert = new GuiButton(-1, x + 10, y + height - 44, 130, 20, "Convert default to nbt");
+		this.btn_convert = new GuiButton(-1, x + 10, y + height - 23, 130, 20, "Convert default to nbt");
 		itemEditor.getButtonList().add(this.btn_convert);
 		
-		this.btn_removeall = new GuiButton(-2, x + 10, y + height - 23, 130, 20, "Remove all Modifiers");
+		this.btn_removeall = new GuiButton(-2, x + 145, y + height - 23, 130, 20, "Remove all Modifiers");
 		itemEditor.getButtonList().add(this.btn_removeall);
 	}
 
