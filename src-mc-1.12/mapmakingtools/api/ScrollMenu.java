@@ -226,6 +226,11 @@ public abstract class ScrollMenu {
 		this.selected = index;
 	}
 	
+	/** Checks if index is outside display list size **/
+	public boolean isIndexValid() {
+		return this.selected != -1 && this.selected < this.strRefrence.size();
+	}
+	
 	public abstract void onSetButton();
 	
 	public abstract String getDisplayString(String listStr);

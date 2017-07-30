@@ -42,7 +42,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(this.level != null && this.selected != -1 && data == 0) {
+		if(this.level != null && this.scrollMenuAdd.isIndexValid() && data == 0) {
 			if(Numbers.isInteger(this.level)) {
 				Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
 				
@@ -54,7 +54,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 			}
 		}
 		
-		if(this.selectedDelete != -1 && data == 1) {
+		if(this.scrollMenuRemove.isIndexValid() && data == 1) {
 			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("ench", 9)) {
 		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("ench", 10);
 		        nbttaglist.removeTag(this.selectedDelete);
@@ -189,7 +189,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
-		this.btn_remove.enabled = this.scrollMenuRemove.selected != -1;
+		this.btn_remove.enabled = this.scrollMenuRemove.isIndexValid();
 	}
 
 	@Override

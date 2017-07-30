@@ -38,7 +38,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(this.selected != -1 && data == 0) {
+		if(this.scrollMenuAdd.isIndexValid() && data == 0) {
 			if(!stack.hasTagCompound())
 				stack.setTagCompound(new NBTTagCompound());
 			
@@ -56,7 +56,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 				list.appendTag(new NBTTagString(scrollMenuAdd.strRefrence.get(this.selected)));
 		}
 		
-		if(this.selectedDelete != -1 && data == 1) {
+		if(this.scrollMenuRemove.isIndexValid() && data == 1) {
 			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", 9)) {
 		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CanDestroy", 8);
 		        nbttaglist.removeTag(this.selectedDelete);
@@ -179,7 +179,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
-		this.btn_remove.enabled = this.scrollMenuRemove.selected != -1;
+		this.btn_remove.enabled = this.scrollMenuRemove.isIndexValid();
 	}
 
 	@Override

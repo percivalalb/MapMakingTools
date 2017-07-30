@@ -35,13 +35,7 @@ public class ArmorColourAttribute extends IItemAttribute {
 		if(!Strings.isNullOrEmpty(this.colourint) && data == 0) {
 		
 			if(Numbers.isInteger(this.colourint)) {
-				if(!stack.hasTagCompound())
-					stack.setTagCompound(new NBTTagCompound());
-			
-				if(!stack.getTagCompound().hasKey("display", 10))
-					stack.getTagCompound().setTag("display", new NBTTagCompound());
-			
-				NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
+				NBTTagCompound nbttagcompound = stack.getOrCreateSubCompound("display");
 				nbttagcompound.setInteger("color", Numbers.parse(this.colourint));
 			}
 		}

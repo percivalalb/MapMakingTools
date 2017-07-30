@@ -52,7 +52,7 @@ public class PotionAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(!Strings.isNullOrEmpty(this.level) && !Strings.isNullOrEmpty(this.duration) && this.selected != -1 && data == 0) {
+		if(!Strings.isNullOrEmpty(this.level) && !Strings.isNullOrEmpty(this.duration) && this.scrollMenuAdd.isIndexValid() && data == 0) {
 			if(Numbers.isInteger(this.level)) {
 				Potion potion = Potion.getPotionById(PotionList.getPotionId(PotionList.getCustomId(this.selected)));
 				
@@ -72,7 +72,7 @@ public class PotionAttribute extends IItemAttribute {
 			}
 		}
 		
-		if(this.selectedDelete != -1 && data == 1) {
+		if(this.scrollMenuRemove.isIndexValid() && data == 1) {
 			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CustomPotionEffects", 9)) {
 		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CustomPotionEffects", 10);
 		        nbttaglist.removeTag(this.selectedDelete);
@@ -239,7 +239,7 @@ public class PotionAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
-		this.btn_remove.enabled = this.scrollMenuRemove.selected != -1;
+		this.btn_remove.enabled = this.scrollMenuRemove.isIndexValid();
 	}
 
 	@Override
