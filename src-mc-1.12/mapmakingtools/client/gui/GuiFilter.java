@@ -65,8 +65,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         }	
         else {
         	int index = this.filterList.indexOf(filterCurrent);
-        	////PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
-			//this.getContainerFilter().setSelected(index);
+        	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
+        	this.getContainerFilter().setSelected(index);
         }
 	}
 	
@@ -227,8 +227,9 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         		GuiTabSelect tab = (GuiTabSelect)(GuiButton)this.buttonList.get(i);
         		if(tab.filter == filterCurrent) {
         			int index = this.filterList.indexOf(filterCurrent);
-        			PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
         			this.getContainerFilter().setSelected(index);
+        			PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
+
         			tab.isSelected = true;
         		}
     		}

@@ -38,7 +38,7 @@ public class SpawnerEntitiesList {
 	
 	public static void readDataFromFile() {
 		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/spawnerentities.txt");
-		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length > 1);
+		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length >= 1);
 		parts.forEach(arr -> addEntity(arr[0]));
 		
 		Collections.sort(entityList);

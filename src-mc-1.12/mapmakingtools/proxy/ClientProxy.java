@@ -9,7 +9,7 @@ import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiWorldTransfer;
-import mapmakingtools.handler.MouseInput;
+import mapmakingtools.handler.KeyboardInput;
 import mapmakingtools.handler.GameOverlay;
 import mapmakingtools.handler.RenderWorld;
 import mapmakingtools.tools.attribute.ArmorColourAttribute;
@@ -53,10 +53,10 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerEventHandlers() {
 		super.registerEventHandlers();
-		ClientRegistry.registerKeyBinding(MouseInput.KEY_ITEM_EDITOR);
+		ClientRegistry.registerKeyBinding(KeyboardInput.KEY_ITEM_EDITOR);
     	MinecraftForge.EVENT_BUS.register(new RenderWorld());
     	MinecraftForge.EVENT_BUS.register(new GameOverlay());
-    	MinecraftForge.EVENT_BUS.register(new MouseInput());
+    	MinecraftForge.EVENT_BUS.register(new KeyboardInput());
 	}
 	
 	@Override

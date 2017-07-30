@@ -15,7 +15,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class MouseInput {
+public class KeyboardInput {
 
     public static final KeyBinding KEY_ITEM_EDITOR = new KeyBinding("mapmakingtools.key.itemeditor", Keyboard.KEY_M, "mapmakingtools.key.category");
 

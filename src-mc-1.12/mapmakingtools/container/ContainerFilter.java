@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb
@@ -35,7 +36,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	public ContainerFilter(List<FilterServer> filterList, EntityPlayer player) {
 		this.filterList = filterList;
 		this.player = player;
-		this.addSlot(new SlotFake(player.inventory, 0, 14, 39));
+		//this.addSlot(new SlotFake(player.inventory, 0, 14, 39));
 	}
 	
 	public ContainerFilter setEntityId(int entityId) {
@@ -111,18 +112,19 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	//Phantom Slot
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		MapMakingTools.LOGGER.info("Server: " + !player.world.isRemote + " " + FMLCommonHandler.instance().getEffectiveSide() + " " + clickTypeIn);
 		Slot slot = slotId < 0 || slotId >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotId);
+		
 		if(slot instanceof IPhantomSlot) {
-			return slotClickPhantom(slot, dragType, clickTypeIn, player);
+			if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+				this.slotClickPhantom(slot, dragType, clickTypeIn, player);
+			return ItemStack.EMPTY;
 		}
 
 		return super.slotClick(slotId, dragType, clickTypeIn, player);
 	}
 
 	
-	private ItemStack slotClickPhantom(Slot slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		ItemStack stack = ItemStack.EMPTY;
+	private void slotClickPhantom(Slot slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
 		IPhantomSlot phantomSlot = (IPhantomSlot)slot;
 		InventoryPlayer playerInv = player.inventory;
 		ItemStack stackHeld = playerInv.getItemStack();
@@ -148,8 +150,16 @@ public class ContainerFilter extends Container implements IContainerFilter {
 			}
 		}
 		this.detectAndSendChanges();
-		return stack;
 	}
+	
+	public static boolean canMerge(ItemStack a, ItemStack b) {
+        // Checks item, damage
+        if (!ItemStack.areItemsEqual(a, b)) {
+            return false;
+        }
+        // checks tags and caps
+        return ItemStack.areItemStackTagsEqual(a, b);
+    }
 	
 	@Override
 	public List<Slot> getInventorySlots() {

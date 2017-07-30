@@ -68,12 +68,12 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
 			throw new RuntimeException("Invalid side " + ctx.side.name() + " for " + msg.getClass().getSimpleName());
 		
 		IThreadListener thread = MapMakingTools.PROXY.getThreadFromContext(ctx);
-		// pretty much copied straight from vanilla code, see {@link PacketThreadUtil#checkThreadAndEnqueue}
-		thread.addScheduledTask(new Runnable() {
-			public void run() {
-				msg.process(MapMakingTools.PROXY.getPlayerEntity(ctx), ctx.side);
-			}
-		});
+		if(thread.isCallingFromMinecraftThread()) {
+			msg.process(MapMakingTools.PROXY.getPlayerEntity(ctx), ctx.side);
+		}
+		else {
+			thread.addScheduledTask(() -> msg.process(MapMakingTools.PROXY.getPlayerEntity(ctx), ctx.side));
+		}
 		
 		return null;
 	}

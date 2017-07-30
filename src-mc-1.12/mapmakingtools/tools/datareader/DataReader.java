@@ -14,9 +14,8 @@ public class DataReader {
 	/** Returns a Stream of all the lines that aren't empty and don't start in # **/
 	public static Stream<String> loadResource(String resourceName) {
 		BufferedReader paramReader = new BufferedReader(new InputStreamReader(MapMakingTools.class.getResourceAsStream(resourceName))); 
-		Stream<String> lines = paramReader.lines();
-		lines = lines.filter(line -> !line.startsWith("#"));
-		lines = lines.filter(line -> !line.replaceAll("\\s", "").isEmpty());
-		return lines;
+		return paramReader.lines()
+		.filter(line -> !line.startsWith("#"))
+		.filter(line -> !line.replaceAll("\\s", "").isEmpty());
 	}
 }

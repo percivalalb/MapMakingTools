@@ -1,9 +1,11 @@
 package mapmakingtools.handler;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.ModItems;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.network.packet.PacketUpdateEntity;
+import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
@@ -35,7 +37,7 @@ public class PlayerInteract {
 		
 		EntityPlayer player = event.getEntityPlayer();
 		EnumHand hand = event.getHand();
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		World world = player.world;
 		BlockPos pos = event.getPos();
 		EnumFacing side = event.getFace();
@@ -78,7 +80,7 @@ public class PlayerInteract {
 						SpawnerUtil.confirmHasRandomMinecart(spawnerLogic);
 					}
 							
-							
+					//player.openGui(MapMakingTools.INSTANCE, CommonProxy.ID_FILTER_BLOCK, player.world, pos.getX(), pos.getY(), pos.getZ());		
 					PacketDispatcher.sendTo(new PacketUpdateBlock(tileEntity, pos, false), player);
 					event.setCanceled(true);
 				}

@@ -3,6 +3,7 @@ package mapmakingtools.tools.filter;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.minecraft.entity.EntityLiving;
 import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.InventoryUnlimited;
@@ -54,9 +55,6 @@ public class MobArmorServerFilter extends FilterServer {
 	
 	@Override
 	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer playerIn, int index) {
-		Slot slot = (Slot)container.getInventorySlots().get(index);
-		return slot != null ? slot.getStack() : ItemStack.EMPTY;
-		/**
 		ItemStack itemstack = ItemStack.EMPTY;
 	    Slot slot = (Slot)container.getInventorySlots().get(index);
 
@@ -78,7 +76,6 @@ public class MobArmorServerFilter extends FilterServer {
                 if (!container.mergeItemStacks(itemstack1, 4, 6, false))
                     return ItemStack.EMPTY;
 	        }
-                
 	        
 	        if(itemstack1.isEmpty())
                 slot.putStack(ItemStack.EMPTY);
@@ -89,7 +86,7 @@ public class MobArmorServerFilter extends FilterServer {
                 return ItemStack.EMPTY;
 	    }
 
-	    return itemstack;**/
+	    return itemstack;
 	}
 	
 	@Override
