@@ -1,11 +1,10 @@
 package mapmakingtools.client.gui.textfield;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.client.gui.button.GuiAdvancedTextField;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLLog;
 
@@ -46,7 +45,7 @@ public class GuiColourTextField extends GuiAdvancedTextField {
 			drawRect(this.xPos + this.xClick, this.yPos + this.yClick, this.xPos + this.xClick + 60, this.yPos + this.yClick + 26, -6908265);
 		  	TextColour colour = getCurrentColour(textColourIndex);
 			ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.BUTTON_TEXT_COLOUR);
-	        GL11.glColor4f(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
+	        GlStateManager.color(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
 	        boolean field_146123_n = xMouse >= this.xPos + this.xClick + 3 && yMouse >= this.yPos + this.yClick + 3 && xMouse < this.xPos + this.xClick + 3 + 20 && yMouse < this.yPos + this.yClick + 3 + 20;
 	        int hoverState = this.getHoverState(field_146123_n);
 	        this.drawTexturedModalRect(this.xPos + this.xClick + 3, yPos + this.yClick + 3, 0, 46 + hoverState * 20, 20 / 2, 20 / 2);//top left

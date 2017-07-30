@@ -2,8 +2,6 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IGuiFilter;
@@ -15,6 +13,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -127,7 +126,7 @@ public class CustomGiveClientFilter extends FilterClient {
 	
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_ONE_SLOT);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 104) / 2;

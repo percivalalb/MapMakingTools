@@ -3,8 +3,6 @@ package mapmakingtools.handler;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketOpenItemEditor;
 import net.minecraft.client.gui.GuiScreen;

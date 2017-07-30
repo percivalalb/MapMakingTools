@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
@@ -22,6 +21,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -134,7 +134,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         //this.mc.getTextureManager().bindTexture(ResourceReference.itemEditor);
         int guiXCentre = this.width / 2;
         int guiYCentre = this.height / 2;
@@ -146,9 +146,9 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         
         this.mc.getTextureManager().bindTexture(ResourceReference.ITEM_EDITOR_SLOT);
         this.drawTexturedModalRect(topX, topY, 0, 0, 35, 35);
-        GL11.glScaled(0.5F, 0.5F, 0.5F);
+        GlStateManager.scale(0.5F, 0.5F, 0.5F);
         this.mc.fontRenderer.drawString("Slot: " + slotIndex, topX + 32, topY + 21, 0);
-        GL11.glScaled(2.0F, 2.0F, 2.0F);
+        GlStateManager.scale(2.0F, 2.0F, 2.0F);
 
         for(GuiTextField field : this.textboxList)
         	field.drawTextBox();
@@ -170,11 +170,11 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 		if(itemCurrent != null)
 			itemCurrent.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
 		
-		GL11.glTranslatef((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
+		GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
 		if(itemCurrent != null)
 			itemCurrent.drawToolTips(this, xMouse, yMouse);
 		
-		GL11.glTranslatef((float)this.guiLeft, (float)this.guiTop, 0.0F);
+		GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
 	}
 	
 	@Override

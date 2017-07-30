@@ -1,11 +1,10 @@
 package mapmakingtools.client.gui.button;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.lib.ResourceReference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * @author ProPercivalalb
@@ -25,7 +24,7 @@ public class GuiButtonTextColour extends GuiButton {
         	TextColour colour = getCurrentColour(textColourIndex);
         	FontRenderer fontrenderer = mc.fontRenderer;
         	mc.getTextureManager().bindTexture(ResourceReference.BUTTON_TEXT_COLOUR);
-            GL11.glColor4f(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
+            GlStateManager.color(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
             if(this.width < 20 && this.height < 20) {
@@ -49,7 +48,7 @@ public class GuiButtonTextColour extends GuiButton {
             }
 
             this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, l);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
 	}
 	

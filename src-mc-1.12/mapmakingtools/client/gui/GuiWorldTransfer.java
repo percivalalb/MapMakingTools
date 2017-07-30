@@ -1,13 +1,12 @@
 package mapmakingtools.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.container.ContainerWorldTransfer;
 import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextComponentTranslation;
 
 /**
@@ -58,23 +57,23 @@ public class GuiWorldTransfer extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(ResourceReference.WORLD_TRANSFER);
         int topX = (this.width - 183) / 2;
         int topY = (this.height - 215) / 2;
         this.drawTexturedModalRect(topX, topY, 0, 0, 183, 215);
         
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 		double scale = 1.7D;
-		GL11.glScaled(scale, scale, scale);
+		GlStateManager.scale(scale, scale, scale);
 		this.fontRenderer.drawStringWithShadow("World Transfer", (int)((topX + 13) / scale), (int)((topY + 13) / scale), -1);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		scale = 0.8D;
-		GL11.glScaled(scale, scale, scale);
+		GlStateManager.scale(scale, scale, scale);
 		this.fontRenderer.drawString("Cross-world copy and pasting", (int)((topX + 13) / scale), (int)((topY + 28) / scale), 0);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		
 		this.fontRenderer.drawStringWithShadow("Name", topX + 13, topY + 38, 4210752);
 		

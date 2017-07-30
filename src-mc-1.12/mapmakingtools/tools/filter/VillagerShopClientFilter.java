@@ -16,6 +16,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerRecipeAmounts;
 import mapmakingtools.tools.filter.packet.PacketVillagerShop;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -135,7 +136,7 @@ public class VillagerShopClientFilter extends FilterClient {
 
 	@Override
 	public void drawGuiContainerForegroundLayer(IGuiFilter gui, int xMouse, int yMouse) {
-		GL11.glTranslatef((float)-gui.getGuiLeft(), (float)-gui.getGuiTop(), 0.0F);
+		GlStateManager.translate((float)-gui.getGuiLeft(), (float)-gui.getGuiTop(), 0.0F);
 		for(int var1 = 0; var1 < gui.getButtonList().size(); ++var1) {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
     		if(listBt.id >= 4 && listBt.id <= 12) {
@@ -145,7 +146,7 @@ public class VillagerShopClientFilter extends FilterClient {
         		}
     		}
     	}
-		GL11.glTranslatef((float)gui.getGuiLeft(), (float)gui.getGuiTop(), 0.0F);
+		GlStateManager.translate((float)gui.getGuiLeft(), (float)gui.getGuiTop(), 0.0F);
 	}
 	
 	@Override
@@ -227,7 +228,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_VILLAGER_SHOP);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 190) / 2;

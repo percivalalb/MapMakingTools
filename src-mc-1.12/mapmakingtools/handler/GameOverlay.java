@@ -8,7 +8,6 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import mapmakingtools.ModItems;
 import mapmakingtools.client.render.RenderUtil;
@@ -24,6 +23,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.Entity;
@@ -74,11 +74,11 @@ public class GameOverlay {
     		
     		PlayerData data = ClientData.playerData;
     		FontRenderer font = ClientHelper.getClient().fontRenderer;
-    		GL11.glPushMatrix();
-    		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+    		GlStateManager.pushMatrix();
+    		GlStateManager.disableRescaleNormal();
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
             
             if(data.hasSelectedPoints()) {
         		int[] size = data.getSelectionSize();
@@ -87,19 +87,19 @@ public class GameOverlay {
             else
             	font.drawStringWithShadow("Nothing Selected", 4, 4, -1);
             	
-    		GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
             RenderHelper.enableGUIStandardItemLighting();
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-    		GL11.glPopMatrix();
+            GlStateManager.enableRescaleNormal();
+    		GlStateManager.popMatrix();
 		}
 
 		if(type == ElementType.HELMET && ClientHelper.getClient().currentScreen == null && stack != null && stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 1 && PlayerAccess.canEdit(player)) {
-			GL11.glPushMatrix();
-    		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.pushMatrix();
+    		GlStateManager.disableRescaleNormal();
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
 			RayTraceResult objectMouseOver = ClientHelper.getClient().objectMouseOver;
 			
 			if(objectMouseOver != null) {
@@ -151,11 +151,11 @@ public class GameOverlay {
 				}
 				
             	RenderUtil.drawHoveringText(list, 0, 25, 1000, 200, ClientHelper.getClient().fontRenderer, false);
-            	GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
+            	GlStateManager.enableLighting();
+            	GlStateManager.enableDepth();
                 RenderHelper.enableGUIStandardItemLighting();
-                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        		GL11.glPopMatrix();
+                GlStateManager.enableRescaleNormal();
+        		GlStateManager.popMatrix();
 			}
 		}
 		
@@ -174,17 +174,17 @@ public class GameOverlay {
 	    			int totalHeight = MathHelper.ceil((double)BlockList.getListSize() / (double)totalWidth);
 	    			int renderOffset = (width - 8 - totalWidth * 16) / 2;
 	    			
-	    			GL11.glPushMatrix();
+	    			GlStateManager.pushMatrix();
 	    			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-	    			GL11.glDisable(GL11.GL_TEXTURE_2D);
+	    			GlStateManager.disableTexture2D();
 	    			this.clipToSize(2, 2, width - 4, height - 20, resolution);
-	    			GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+	    			GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
 	    			RenderUtil.drawTexturedModalRect(2, 2, 0, 0, width - 4, 4 + totalHeight * 16);
-	    			GL11.glEnable(GL11.GL_TEXTURE_2D);
-                	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            		GL11.glScalef(scale, scale, scale);
+	    			GlStateManager.enableTexture2D();
+                	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            		GlStateManager.scale(scale, scale, scale);
             		RenderHelper.enableGUIStandardItemLighting();
-                	GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                	GlStateManager.enableRescaleNormal();
                 	this.renderer.zLevel = 200F;
 	    			
 	    			int row = 0;
@@ -204,10 +204,10 @@ public class GameOverlay {
 
 
 	                	if(mouseX > 4 + 16 * column + renderOffset && mouseX < 4 + 16 * (column + 1) + renderOffset && mouseY > 4 + 16 * row && mouseY < 4 + 16 * (row + 1)) {
-	                		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	                		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	                		GlStateManager.disableTexture2D();
+	                		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	                		RenderUtil.drawTexturedModalRect(4 + 16 * column + renderOffset, 4 + 16 * row, 0, 0, 16, 16);
-	                		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	                		GlStateManager.enableTexture2D();
 
 		    				if((Mouse.isButtonDown(1) || Mouse.isButtonDown(0)) && hasButtonBeenUp) {
 				    			String txtToInsert = String.format((ReflectionHelper.getField(chatField, GuiTextField.class, chat).getText().endsWith(" ") ? "" : " ") +"%s %s ", Block.REGISTRY.getNameForObject(Block.getBlockFromItem(item.getItem())), item.getItemDamage());
@@ -246,8 +246,8 @@ public class GameOverlay {
 	    			}
 	    			
 	            	RenderHelper.disableStandardItemLighting();
-	    			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	    			GL11.glPopMatrix();
+	    			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	    			GlStateManager.popMatrix();
 	            }
 	    	}
 	    }

@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.FilterClient;
@@ -26,6 +24,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,7 +61,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         if(!this.filterList.contains(filterCurrent)) {
         	filterCurrent = null;
         	currentPage = 1;
-        }	
+        }
         else {
         	int index = this.filterList.indexOf(filterCurrent);
         	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
@@ -97,7 +96,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         int topY = (this.height - this.yFakeSize()) / 2;
         
 		if(filterCurrent == null || !filterCurrent.drawBackground(this)) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SMALL);
 			this.drawTexturedModalRect(topX, topY, 0, 0, this.xFakeSize(), this.yFakeSize());
 		}
@@ -105,12 +104,12 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		if(filterCurrent != null)
 			filterCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
 		else {
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			double scale = 1.7D;
-			GL11.glScaled(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 			this.fontRenderer.drawString("Minecraft Filters", (int)((topX + 10) / scale), (int)((topY + 15) / scale), 0);
-			GL11.glScaled(0.588D, 0.588D, 0.588D);
-			GL11.glPopMatrix();
+			GlStateManager.scale(0.588D, 0.588D, 0.588D);
+			GlStateManager.popMatrix();
 		}
 		
 		for(int i = 0; i < this.textboxList.size(); ++i)
@@ -125,7 +124,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		if(filterCurrent != null)
 			filterCurrent.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
 		
-		GL11.glTranslatef((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
+		GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
 		for(int var1 = 0; var1 < this.buttonList.size(); ++var1) {
     		GuiButton listBt = (GuiButton)this.buttonList.get(var1);
     		if(listBt instanceof GuiTabSelect) {
@@ -170,7 +169,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	}
 		if(filterCurrent != null)
 			filterCurrent.drawToolTips(this, xMouse, yMouse);
-		GL11.glTranslatef((float)this.guiLeft, (float)this.guiTop, 0.0F);
+		GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
     }
 
 	@Override
@@ -331,11 +330,11 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     }
     
     protected void drawHoveringText(List text, int mouseX, int mouseY, FontRenderer font) {
-        if (!text.isEmpty()) {
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        if(!text.isEmpty()) {
+        	GlStateManager.disableRescaleNormal();
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
             int k = 0;
             Iterator iterator = text.iterator();
 
@@ -387,10 +386,10 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 
             this.zLevel = 0.0F;
             itemRender.zLevel = 0.0F;
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
             RenderHelper.enableStandardItemLighting();
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.enableRescaleNormal();
         }
     }
     

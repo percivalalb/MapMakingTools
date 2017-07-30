@@ -9,6 +9,7 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceReference;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
 
@@ -74,8 +75,8 @@ public abstract class ScrollMenu {
 	}
 	
 	public void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
-        GL11.glPushMatrix();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.clipToSize();
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
         int var9;
@@ -94,18 +95,18 @@ public abstract class ScrollMenu {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         
         RenderHelper.enableStandardItemLighting();
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
         
         if (this.scrollHeight <= this.height && this.strRefrence.size() > 0)
             this.drawScrollBar();
         
         this.drawScrollList();
         
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
         RenderHelper.disableStandardItemLighting();
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         
         if (this.scrollHeight <= this.height && this.strRefrence.size() > 0) {
             xMouse -= this.xPosition;

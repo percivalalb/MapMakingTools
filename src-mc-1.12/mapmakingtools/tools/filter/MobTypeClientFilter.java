@@ -2,8 +2,6 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
@@ -15,6 +13,7 @@ import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
@@ -110,7 +109,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 135) / 2;

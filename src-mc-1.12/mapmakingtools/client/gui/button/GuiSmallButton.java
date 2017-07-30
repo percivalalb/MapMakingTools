@@ -1,11 +1,10 @@
 package mapmakingtools.client.gui.button;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.helper.ClientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * @author ProPercivalalb
@@ -21,7 +20,7 @@ public class GuiSmallButton extends GuiButton {
         if(this.visible) {
         	FontRenderer fontRenderer = mc.fontRenderer;
         	mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = i >= this.x && j >= y && i < this.x + this.width && j < y + this.height;
             int hoverState = getHoverState(this.hovered);
             this.drawTexturedModalRect(this.x, y, 0, 46 + hoverState * 20, this.width / 2, this.height / 2);//top left

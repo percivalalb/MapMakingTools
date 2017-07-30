@@ -2,8 +2,6 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
@@ -13,6 +11,7 @@ import mapmakingtools.lib.ResourceReference;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -84,7 +83,7 @@ public class FillInventoryClientFilter extends FilterClient {
 	
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_ONE_SLOT);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 104) / 2;

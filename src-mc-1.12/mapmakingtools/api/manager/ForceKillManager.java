@@ -2,7 +2,6 @@ package mapmakingtools.api.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import mapmakingtools.api.interfaces.IForceKill;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.registries.ForgeRegistry;
 
 /**
  * @author ProPercivalalb

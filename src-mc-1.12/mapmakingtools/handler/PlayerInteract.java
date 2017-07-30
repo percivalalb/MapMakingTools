@@ -1,11 +1,9 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.ModItems;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.network.packet.PacketUpdateEntity;
-import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
