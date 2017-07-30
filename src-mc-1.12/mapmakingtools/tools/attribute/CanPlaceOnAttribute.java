@@ -7,6 +7,7 @@ import java.util.List;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.helper.NBTUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -38,44 +39,30 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(this.scrollMenuAdd.isIndexValid() && data == 0) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
+		switch(data) {
+		case 0: //Add selected value to NBTTagList
+			if(!this.scrollMenuAdd.isIndexValid()) break;
+
+			NBTTagList tagList = NBTUtil.getOrCreateSubList(stack, "CanPlaceOn", NBTUtil.ID_STRING);
 			
-			if(!stack.getTagCompound().hasKey("CanPlaceOn", 9))
-				stack.getTagCompound().setTag("CanPlaceOn", new NBTTagList());
+			String possibleBlock = this.scrollMenuAdd.strRefrence.get(this.selected);
 			
-			NBTTagList list = stack.getTagCompound().getTagList("CanPlaceOn", 8);
-			boolean hasTag = false;
-			for(int i = 0; i < list.tagCount(); i++) {
-				if(list.getStringTagAt(i).equals(scrollMenuAdd.strRefrence.get(this.selected)))
-					hasTag = true;
-			}
+			if(!NBTUtil.contains(tagList, possibleBlock))
+				tagList.appendTag(new NBTTagString(possibleBlock));
 			
-			if(!hasTag)
-				list.appendTag(new NBTTagString(scrollMenuAdd.strRefrence.get(this.selected)));
-		}
-		
-		if(this.scrollMenuRemove.isIndexValid() && data == 1) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanPlaceOn", 9)) {
-		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CanPlaceOn", 8);
-		        nbttaglist.removeTag(this.selectedDelete);
-		        if(nbttaglist.hasNoTags()) {
-		        	stack.getTagCompound().removeTag("CanPlaceOn");
-		        	if(stack.getTagCompound().hasNoTags())
-		        		stack.setTagCompound(null);
-		        }
-			}
-		}
-		
-		if(data == 2) {
-			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("CanPlaceOn", 9)) {
-					stack.getTagCompound().removeTag("CanPlaceOn");
-					if(stack.getTagCompound().hasNoTags())
-						stack.setTagCompound(null);
-				}
-			}
+			break;
+		case 1: //Remove selected value to NBTTagList
+			if(!this.scrollMenuRemove.isIndexValid()) break;
+			
+			NBTUtil.removeTagFromSubList(stack, "CanPlaceOn", NBTUtil.ID_STRING, this.selectedDelete);
+			NBTUtil.hasEmptyTagCompound(stack, true);
+			
+			break;
+		case 2:
+			NBTUtil.removeSubList(stack, "CanPlaceOn");
+			NBTUtil.hasEmptyTagCompound(stack, true);
+			
+			break;
 		}
 	}
 
