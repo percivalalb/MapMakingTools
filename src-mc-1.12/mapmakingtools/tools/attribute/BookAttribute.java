@@ -2,6 +2,7 @@ package mapmakingtools.tools.attribute;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.helper.NBTUtil;
 import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -30,32 +31,32 @@ public class BookAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(this.name != null && data == 0) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
+		switch(data) {
+		case 0:
+			if(this.name == null) break;
 			
-			stack.getTagCompound().setString("title", this.name);
-		}
-		
-		else if(this.author != null && data == 1) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
+			NBTUtil.getOrCreateTagCompound(stack).setString("title", this.name);
 			
-			stack.getTagCompound().setString("author", this.author);
-		}
-		else if(this.generation != null && data == 2) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
-
-			stack.getTagCompound().setInteger("generation", Numbers.parse(this.generation));
-		}
-		else if(data == 3) {
+			break;
+		case 1:
+			if(this.author == null) break;
+			
+			NBTUtil.getOrCreateTagCompound(stack).setString("author", this.author);
+			
+			break;
+		case 2:
+			if(this.author == null) break;
+			
+			NBTUtil.getOrCreateTagCompound(stack).setInteger("generation", Numbers.parse(this.generation));
+			
+			break;
+		case 3:
 			ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount(), stack.getItemDamage());
 			
-			if(stack.getTagCompound().hasNoTags())
-				stack.setTagCompound(null);
+			NBTUtil.hasEmptyTagCompound(stack, true);
+			
+			break;
 		}
-		
 	}
 
 	@Override
@@ -67,13 +68,13 @@ public class BookAttribute extends IItemAttribute {
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		if(first) {
 			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("title", 8)) {
+				if(stack.getTagCompound().hasKey("title", NBTUtil.ID_STRING)) {
 					this.fld_name.setText(stack.getTagCompound().getString("title"));
 				}
-				if(stack.getTagCompound().hasKey("author", 8)) {
+				if(stack.getTagCompound().hasKey("author", NBTUtil.ID_STRING)) {
 					this.fld_author.setText(stack.getTagCompound().getString("author"));
 				}
-				if(stack.getTagCompound().hasKey("generation", 99)) {
+				if(stack.getTagCompound().hasKey("generation", NBTUtil.ID_NUMBER)) {
 					this.fld_generation.setText("" + stack.getTagCompound().getInteger("generation"));
 				}
 			}

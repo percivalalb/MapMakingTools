@@ -6,9 +6,12 @@ import net.minecraft.nbt.NBTTagList;
 
 public class NBTUtil {
 
+	public static final int ID_BOOLEAN = 1;
 	public static final int ID_INTEGER = 3;
 	public static final int ID_STRING = 8;
 	public static final int ID_LIST = 9;
+	public static final int ID_COMPOUND = 10;
+	public static final int ID_NUMBER = 99;
 	
 	public static NBTTagCompound getOrCreateTagCompound(ItemStack stack) {
 		if(!stack.hasTagCompound())
@@ -44,10 +47,10 @@ public class NBTUtil {
 	
 	public static void removeTagFromSubList(ItemStack stack, String key, int tagId, int tagIndex) {
 		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(key, ID_LIST)) {
-	        NBTTagList tagList = stack.getTagCompound().getTagList(key, ID_STRING);
+	        NBTTagList tagList = stack.getTagCompound().getTagList(key, tagId);
 	        tagList.removeTag(tagIndex);
 	        
-	        if(tagList.tagCount() == 0)
+	        if(tagList.hasNoTags())
 	        	removeSubList(stack, key);
 		}
     }
@@ -66,4 +69,21 @@ public class NBTUtil {
 		
 		return false;
 	}
+	
+	public static void removeSubCompound(ItemStack stack, String key) {
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(key, ID_COMPOUND))
+            stack.getTagCompound().removeTag(key);
+    }
+	
+	public static void removeTagFromSubCompound(ItemStack stack, String key, int tagId, String tagKey) {
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(key, ID_COMPOUND)) {
+			NBTTagCompound subCompound = stack.getTagCompound().getCompoundTag(key);
+			
+			if(subCompound.hasKey(tagKey, tagId))
+				subCompound.removeTag(tagKey);
+	        
+	        if(subCompound.hasNoTags())
+	        	removeSubCompound(stack, key);
+		}
+    }
 }

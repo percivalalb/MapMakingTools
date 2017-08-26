@@ -7,6 +7,7 @@ import com.google.common.base.Strings;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.helper.NBTUtil;
 import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -32,26 +33,19 @@ public class ArmorColourAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(!Strings.isNullOrEmpty(this.colourint) && data == 0) {
-		
-			if(Numbers.isInteger(this.colourint)) {
-				NBTTagCompound nbttagcompound = stack.getOrCreateSubCompound("display");
-				nbttagcompound.setInteger("color", Numbers.parse(this.colourint));
-			}
-		}
-		
-		if(data == 1) {
-			if(stack.hasTagCompound())
-				if(stack.getTagCompound().hasKey("display", 10))
-					if(stack.getTagCompound().getCompoundTag("display").hasKey("color", 3)) {
-						stack.getTagCompound().getCompoundTag("display").removeTag("color");
-						if(stack.getTagCompound().getCompoundTag("display").hasNoTags()) {
-							stack.getTagCompound().removeTag("display");
-							if(stack.getTagCompound().hasNoTags())
-								stack.setTagCompound(null);
-						}
-						
-					}
+		switch(data) {
+		case 0:
+			if(!Numbers.isInteger(this.colourint)) break;
+			
+			NBTTagCompound nbttagcompound = stack.getOrCreateSubCompound("display");
+			nbttagcompound.setInteger("color", Numbers.parse(this.colourint));
+			
+			break;
+		case 1:
+			NBTUtil.removeTagFromSubCompound(stack, "display", NBTUtil.ID_INTEGER, "color");
+			NBTUtil.hasEmptyTagCompound(stack, true);
+			
+			break;
 		}
 	}
 

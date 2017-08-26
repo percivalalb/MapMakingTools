@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.helper.NBTUtil;
 import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -28,27 +29,24 @@ public class ItemMetaAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(!Strings.isNullOrEmpty(this.meta) && data == 0)
-			if(Numbers.isInteger(this.meta))
-				stack.setItemDamage(Numbers.parse(this.meta));
-		
-		if(data == 1) {
-			if(!stack.hasTagCompound()) {
-				stack.setTagCompound(new NBTTagCompound());
+		switch(data) {
+		case 0:
+			if(!Numbers.isInteger(this.meta)) break;
+			
+			stack.setItemDamage(Numbers.parse(this.meta));
+			
+			break;
+		case 1:
+			NBTTagCompound tagCompound = NBTUtil.getOrCreateTagCompound(stack);
+			if(!tagCompound.hasKey("Unbreakable", NBTUtil.ID_BOOLEAN) || !tagCompound.getBoolean("Unbreakable"))
 				stack.getTagCompound().setBoolean("Unbreakable", true);
-			}
 			else {
-				if(!stack.getTagCompound().hasKey("Unbreakable", 1))
-					stack.getTagCompound().setBoolean("Unbreakable", true);
-				else {
-					
-					if(stack.getTagCompound().getBoolean("Unbreakable"))
-						stack.getTagCompound().removeTag("Unbreakable");
+				tagCompound.removeTag("Unbreakable");
 				
-					if(stack.getTagCompound().hasNoTags())
-						stack.setTagCompound(null);
-				}
+				NBTUtil.hasEmptyTagCompound(stack, true);
 			}
+				
+			break;
 		}
 	}
 

@@ -8,6 +8,7 @@ import com.google.common.base.Strings;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.helper.NBTUtil;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.EnchantmentList;
 import net.minecraft.client.gui.GuiButton;
@@ -42,35 +43,25 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(this.level != null && this.scrollMenuAdd.isIndexValid() && data == 0) {
-			if(Numbers.isInteger(this.level)) {
-				Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
-				
-				if(enchantment == null)
-					return;
-				
-				
-				stack.addEnchantment(enchantment, Numbers.parse(this.level));
-			}
-		}
-		
-		if(this.scrollMenuRemove.isIndexValid() && data == 1) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("ench", 9)) {
-		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("ench", 10);
-		        nbttaglist.removeTag(this.selectedDelete);
-		        if(nbttaglist.tagCount() == 0)
-		        	stack.getTagCompound().removeTag("ench");
-			}
-		}
-		
-		if(data == 2) {
-			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("ench", 9)) {
-					stack.getTagCompound().removeTag("ench");
-					if(stack.getTagCompound().hasNoTags())
-						stack.setTagCompound(null);
-				}
-			}
+		switch(data) {
+		case 0:
+			if(!this.scrollMenuAdd.isIndexValid() || !Numbers.isInteger(this.level)) break;
+			
+			Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
+			
+			if(enchantment == null) break;
+			
+			stack.addEnchantment(enchantment, Numbers.parse(this.level));
+			break;
+		case 1:
+			if(!this.scrollMenuRemove.isIndexValid()) break;
+			
+			NBTUtil.removeTagFromSubList(stack, "ench", NBTUtil.ID_COMPOUND, this.selectedDelete);
+			break;
+		case 2:
+			NBTUtil.removeSubList(stack, "ench");
+			NBTUtil.hasEmptyTagCompound(stack, true);
+			break;
 		}
 	}
 

@@ -7,8 +7,15 @@ Update List Key
 (*) A bug fix
 (/) Other
 
-2.5.1.*** - WIP
+2.5.0.*** - WIP
+* Fixed the world going dark when in F1 mode
+
+2.5.0.103 - 30th July 2017
+* Fixed crash when removing items from a scroll menu
 * Fixed chest symmetrify not working
+* Fixed glitchy inventory slots in filter gui
+* Fixed still interacting with blocks even when using Quick Build Axe or Wrench
+* Fixed crash when shift clicking items
 
 2.5.0.94 - 29th July 2017
 Updated to MC 1.12
