@@ -45,7 +45,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		switch(data) {
 		case 0:
-			if(!this.scrollMenuAdd.isIndexValid() || !Numbers.isInteger(this.level)) break;
+			if(!this.scrollMenuAdd.hasSelection() || !Numbers.isInteger(this.level)) break;
 			
 			Enchantment enchantment = Enchantment.getEnchantmentByID(EnchantmentList.getEnchantmentId(EnchantmentList.getCustomId(this.selected)));
 			
@@ -54,7 +54,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 			stack.addEnchantment(enchantment, Numbers.parse(this.level));
 			break;
 		case 1:
-			if(!this.scrollMenuRemove.isIndexValid()) break;
+			if(!this.scrollMenuRemove.hasSelection()) break;
 			
 			NBTUtil.removeTagFromSubList(stack, "ench", NBTUtil.ID_COMPOUND, this.selectedDelete);
 			break;
@@ -72,7 +72,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		this.scrollMenuRemove.selected = -1;
+		this.scrollMenuRemove.clearSelected();
 		this.selectedDelete = -1;
 		
 		List<String> list = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
 			}
 		}
-		this.scrollMenuRemove.strRefrence = list;
+		this.scrollMenuRemove.elements = list;
 		this.scrollMenuRemove.initGui();
 	}
 
@@ -107,7 +107,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				EnchantmentAttribute.selected = this.selected;
+				EnchantmentAttribute.selected = this.getRecentSelection();
 			}
 
 			@Override
@@ -127,7 +127,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				EnchantmentAttribute.selectedDelete = this.selected;
+				EnchantmentAttribute.selectedDelete = this.getRecentSelection();
 			}
 
 			@Override
@@ -180,7 +180,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
-		this.btn_remove.enabled = this.scrollMenuRemove.isIndexValid();
+		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();
 	}
 
 	@Override

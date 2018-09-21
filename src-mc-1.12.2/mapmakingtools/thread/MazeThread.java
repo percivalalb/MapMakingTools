@@ -34,20 +34,20 @@ public class MazeThread extends Thread {
 		//synchronized(this.world) {
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
 
-			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getFirstPoint(), data.getSecondPoint());
+			Iterable<BlockPos> positions = BlockPos.getAllInBox(this.data.getFirstPoint(), this.data.getSecondPoint());
 			
 			HashMap<Long, Integer> groups = new HashMap<Long, Integer>();
 			int group = 0;
 			for(BlockPos pos : positions) {
-				list.add(BlockCache.createCache(data.getPlayer(), world, pos));
+				list.add(BlockCache.createCache(this.data.getPlayer(), this.world, pos));
 				
-				if ((pos.getX() - data.getMinX()) % 2 == 1 && (pos.getZ() - data.getMinZ()) % 2 == 1 && pos.getX() != data.getMaxX() && pos.getZ() != data.getMaxZ()) {
-					WorldAction.setBlockToAir(world, pos, false);
+				if ((pos.getX() - this.data.getMinX()) % 2 == 1 && (pos.getZ() - this.data.getMinZ()) % 2 == 1 && pos.getX() != this.data.getMaxX() && pos.getZ() != this.data.getMaxZ()) {
+					WorldAction.setBlockToAir(this.world, pos, false);
 					groups.put(new BlockPos(pos.getX(), 0, pos.getZ()).toLong(), group);
 					group += 1;
 				}
 				else
-					WorldAction.setBlock(world, pos, state, false);
+					WorldAction.setBlock(this.world, pos, this.state, false);
 			}
 			
 			while(true) {
@@ -81,8 +81,8 @@ public class MazeThread extends Thread {
 						groups.put(spot, thisid);
 				
 				//Clear pathway
-				for(int y = data.getMinY(); y <= data.getMaxY(); y++)
-					WorldAction.setBlockToAir(world, dir.add(0, y, 0).add(intersectionPos), false);
+				for(int y = this.data.getMinY(); y <= this.data.getMaxY(); y++)
+					WorldAction.setBlockToAir(this.world, dir.add(0, y, 0).add(intersectionPos), false);
 				
 				//Checks if all groups are the same - all pathways are connected
 				boolean done = true;
@@ -97,11 +97,11 @@ public class MazeThread extends Thread {
 					break;
 			}
 			
-			data.getActionStorage().addUndo(list);
+			this.data.getActionStorage().addUndo(list);
 
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.REGISTRY.getNameForObject(state.getBlock()));
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.REGISTRY.getNameForObject(this.state.getBlock()));
 			chatComponent.getStyle().setItalic(true);
-			data.getPlayer().sendMessage(chatComponent);
+			this.data.getPlayer().sendMessage(chatComponent);
 		//}
 		
 /**

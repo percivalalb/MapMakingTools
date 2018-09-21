@@ -40,7 +40,7 @@ public class ResourceReference {
      * @return The whole path string including the given parameter.
      */
     public static String getGuiTexturePath(String textureFileName) {
-	    return String.format("%s/gui/%s", new Object[] {getOverrideTexturesPath(), textureFileName});
+	    return String.format("%s/gui/%s", getOverrideTexturesPath(), textureFileName);
 	}
     
     public static ResourceLocation getTexture(String texturePath) {

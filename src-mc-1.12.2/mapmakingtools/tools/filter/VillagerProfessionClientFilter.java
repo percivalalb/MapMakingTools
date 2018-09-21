@@ -63,13 +63,13 @@ public class VillagerProfessionClientFilter extends FilterClient {
 
 			@Override
 			public void onSetButton() {
-				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(new ResourceLocation(this.strRefrence.get(this.selected)))));
+				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(new ResourceLocation(this.elements.get(this.getRecentSelection())))));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
         };
         this.menu.initGui();
-        this.menu.selected = 0;
+        this.menu.setSelected(0);
 	}
 	
 	private List<String> getProfesionList() {

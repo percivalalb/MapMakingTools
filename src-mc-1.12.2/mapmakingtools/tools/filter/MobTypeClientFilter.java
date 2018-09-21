@@ -57,14 +57,14 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 
 			@Override
 			public void onSetButton() {
-				MobTypeClientFilter.selected = this.selected;
-				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.strRefrence.get(this.selected), FilterMobSpawnerBase.minecartIndex));
+				MobTypeClientFilter.selected = this.getRecentSelection();
+				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.elements.get(MobTypeClientFilter.selected), FilterMobSpawnerBase.minecartIndex));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
         };
         this.menu.initGui();
-        this.menu.selected = selected;
+        this.menu.setSelected(selected);
         
         this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
         //gui.getButtonList().add(this.btnOk);

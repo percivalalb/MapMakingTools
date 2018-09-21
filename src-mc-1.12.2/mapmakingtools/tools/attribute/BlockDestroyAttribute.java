@@ -40,18 +40,18 @@ public class BlockDestroyAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		switch(data) {
 		case 0: //Add selected value to NBTTagList
-			if(!this.scrollMenuAdd.isIndexValid()) break;
+			if(!this.scrollMenuAdd.hasSelection()) break;
 
 			NBTTagList tagList = NBTUtil.getOrCreateSubList(stack, "CanDestory", NBTUtil.ID_STRING);
 			
-			String possibleBlock = this.scrollMenuAdd.strRefrence.get(this.selected);
+			String possibleBlock = this.scrollMenuAdd.elements.get(this.selected);
 			
 			if(!NBTUtil.contains(tagList, possibleBlock))
 				tagList.appendTag(new NBTTagString(possibleBlock));
 			
 			break;
 		case 1: //Remove selected value to NBTTagList
-			if(!this.scrollMenuRemove.isIndexValid()) break;
+			if(!this.scrollMenuRemove.hasSelection()) break;
 			
 			NBTUtil.removeTagFromSubList(stack, "CanDestroy", NBTUtil.ID_STRING, this.selectedDelete);
 			NBTUtil.hasEmptyTagCompound(stack, true);
@@ -72,14 +72,14 @@ public class BlockDestroyAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		this.scrollMenuRemove.selected = -1;
+		this.scrollMenuRemove.clearSelected();
 		this.selectedDelete = -1;
 		
 		//TODO
-		this.scrollMenuAdd.strRefrence = new ArrayList<String>();
+		this.scrollMenuAdd.elements = new ArrayList<String>();
 		for(Object key : Block.REGISTRY.getKeys())
-			this.scrollMenuAdd.strRefrence.add(((ResourceLocation)key).toString());
-		Collections.sort(this.scrollMenuAdd.strRefrence);
+			this.scrollMenuAdd.elements.add(((ResourceLocation)key).toString());
+		Collections.sort(this.scrollMenuAdd.elements);
 		
 		this.scrollMenuAdd.initGui();
 		
@@ -91,7 +91,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 				list.add(String.format("%s", blockId));
 			}
 		}
-		this.scrollMenuRemove.strRefrence = list;
+		this.scrollMenuRemove.elements = list;
 		this.scrollMenuRemove.initGui();
 	}
 
@@ -112,7 +112,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				BlockDestroyAttribute.selected = this.selected;
+				BlockDestroyAttribute.selected = this.getRecentSelection();
 			}
 
 			@Override
@@ -125,7 +125,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				BlockDestroyAttribute.selectedDelete = this.selected;
+				BlockDestroyAttribute.selectedDelete = this.getRecentSelection();
 			}
 
 			@Override
@@ -166,7 +166,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
-		this.btn_remove.enabled = this.scrollMenuRemove.isIndexValid();
+		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();
 	}
 
 	@Override

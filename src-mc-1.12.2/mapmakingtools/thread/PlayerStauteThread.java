@@ -1,20 +1,35 @@
 package mapmakingtools.thread;
 
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import com.google.common.collect.Iterables;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.properties.Property;
+
+import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.datareader.BlockColourList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
+import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -95,6 +110,9 @@ public class PlayerStauteThread implements Runnable {
     	this.hat = hat;
     	this.multiplyier = multiplyier;
     }
+    
+	private static Field PROFILE_CACHE_FLD = ReflectionHelper.getField(TileEntitySkull.class, 5);
+	private static Field SESSION_SERVICE_FLD = ReflectionHelper.getField(TileEntitySkull.class, 6);
 	
 	@Override
 	public void run() {
@@ -104,9 +122,46 @@ public class PlayerStauteThread implements Runnable {
 		
 		BufferedImage img = null;
 		
+		
+		// Test code
+		
+		
+		
+		
+		GameProfile playerProfile = new GameProfile((UUID)null, this.target);
+		TileEntitySkull.updateGameprofile(playerProfile);
+		Map<Type, MinecraftProfileTexture> map = ReflectionHelper.getField(SESSION_SERVICE_FLD, MinecraftSessionService.class, null).getTextures(playerProfile, false);
+		
+		
+		if(map.containsKey(Type.SKIN))
+		{
+			FMLLog.info(map.get(Type.SKIN).getUrl());
+		
+		
+		}
+            		   
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if(true) return;
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		try {
+			//TileEntitySkullRenderer
 			//URL url = MapMakingTools.class.getResource("/assets/minecraft/textures/entity/steve.png");
-			
 	    	String urlPath = String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] {target});
 	    	URL url = new URL(urlPath);
 			img = ImageIO.read(url);

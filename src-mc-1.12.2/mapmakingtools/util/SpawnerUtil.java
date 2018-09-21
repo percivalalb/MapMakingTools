@@ -22,15 +22,15 @@ import net.minecraftforge.fml.common.FMLLog;
  */
 public class SpawnerUtil {
 
+	private static Field spawnDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 0);
+	private static Field potentialSpawnsListField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 1);
+	private static Field randomMinecartField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 2);
 	private static Field minDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 5);
 	private static Field maxDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 6);
-	private static Field spawnDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 0);
-	private static Field spawnRadiusField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 11);
 	private static Field spawnCountField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 7);
 	private static Field entityCapField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 9);
 	private static Field detectionRadiusField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 10);
-	private static Field potentialSpawnsListField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 1);
-	private static Field randomMinecartField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 2);
+	private static Field spawnRadiusField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 11);
 	
 	public static ResourceLocation getMobId(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		if(minecartIndex == -1)

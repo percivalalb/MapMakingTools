@@ -7,6 +7,7 @@ import com.google.common.base.Strings;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.helper.ArrayUtil;
 import mapmakingtools.helper.NBTUtil;
 import mapmakingtools.helper.Numbers;
 import net.minecraft.client.gui.GuiButton;
@@ -78,16 +79,17 @@ public class ArmorColourAttribute extends IItemAttribute {
 		itemEditor.getFontRenderer().drawString("Hexadecimal", x + 86, y + 17, -1);
 	}
 
-	private List<Character> list = Arrays.asList(new Character[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'});
+	private char[] HEX_CHARACTERS = "0123456789abcdefABCDEF".toCharArray();
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		this.fld_colourint = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 28, 80, 13);
 		this.fld_colourhex = new GuiTextField(1, itemEditor.getFontRenderer(), x + 86, y + 28, 80, 13) {
 		    @Override
-			public boolean textboxKeyTyped(char p_146201_1_, int p_146201_2_) {
-		    	if(list.contains(p_146201_1_) || 14 == p_146201_2_ || 203 == p_146201_2_ || 205 == p_146201_2_)
-		    		return super.textboxKeyTyped(p_146201_1_, p_146201_2_);
+			public boolean textboxKeyTyped(char typedChar, int keyCode) {
+		    	
+		    	if(ArrayUtil.contains(HEX_CHARACTERS, typedChar) || 14 == keyCode || 203 == keyCode || 205 == keyCode)
+		    		return super.textboxKeyTyped(typedChar, keyCode);
 		    	return false;
 		    }
 		};

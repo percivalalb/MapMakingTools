@@ -86,11 +86,11 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		this.scrollMenuRemove.selected = -1;
+		this.scrollMenuRemove.clearSelected();
 		this.selectedDelete = -1;
 		
 		if(!stack.hasTagCompound()) {
-			this.scrollMenuRemove.strRefrence = new ArrayList<String>();
+			this.scrollMenuRemove.elements = new ArrayList<String>();
 			this.scrollMenuRemove.initGui();
 			return;
 		}
@@ -103,7 +103,7 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
 			}
 		}
-		this.scrollMenuRemove.strRefrence = list;
+		this.scrollMenuRemove.elements = list;
 		this.scrollMenuRemove.initGui();
 	}
 
@@ -127,7 +127,7 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				BookEnchantmentAttribute.selected = this.selected;
+				BookEnchantmentAttribute.selected = this.getRecentSelection();
 			}
 
 			@Override
@@ -147,7 +147,7 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 
 			@Override
 			public void onSetButton() {
-				BookEnchantmentAttribute.selectedDelete = this.selected;
+				BookEnchantmentAttribute.selectedDelete = this.getRecentSelection();
 			}
 
 			@Override
@@ -200,7 +200,7 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
-		this.btn_remove.enabled = this.scrollMenuRemove.selected != -1;
+		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();
 	}
 
 	@Override
