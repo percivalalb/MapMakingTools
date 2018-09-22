@@ -38,6 +38,7 @@ public class PacketSkullModify extends AbstractServerMessage {
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
+		
 		ItemStack item = player.getHeldItemMainhand();
 		if(item == null)
 			return;

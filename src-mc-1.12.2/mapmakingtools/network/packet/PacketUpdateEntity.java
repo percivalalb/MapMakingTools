@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.network.AbstractMessage;
 import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +41,9 @@ public class PacketUpdateEntity extends AbstractMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		Entity entity = player.world.getEntityByID(this.entityId);
 		
 		if(entity == null)

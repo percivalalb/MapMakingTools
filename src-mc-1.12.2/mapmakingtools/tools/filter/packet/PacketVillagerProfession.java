@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.VillagerProfessionServerFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -38,6 +39,9 @@ public class PacketVillagerProfession extends AbstractServerMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		if(player.openContainer instanceof IContainerFilter) {
 			IContainerFilter container = (IContainerFilter)player.openContainer;
 			if(container.getCurrentFilter() instanceof VillagerProfessionServerFilter) {

@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, guiFactory = Reference.GUI_FACTORY)
 public class MapMakingTools {
 
 	@Instance(value = Reference.MOD_ID)
@@ -30,7 +30,7 @@ public class MapMakingTools {
 	
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-    	ConfigurationHandler.loadConfig(new Configuration(event.getSuggestedConfigurationFile()));
+    	ConfigurationHandler.init(new Configuration(event.getSuggestedConfigurationFile()));
     	PROXY.preInit(event);
     	PacketDispatcher.registerPackets();
     }

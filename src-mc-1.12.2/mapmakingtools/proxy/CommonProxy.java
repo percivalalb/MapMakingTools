@@ -9,6 +9,7 @@ import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.container.ContainerWorldTransfer;
+import mapmakingtools.handler.ConfigChange;
 import mapmakingtools.handler.EntityJoinWorld;
 import mapmakingtools.handler.PlayerInteract;
 import mapmakingtools.handler.PlayerTracker;
@@ -130,6 +131,7 @@ public class CommonProxy implements IGuiHandler {
     	MinecraftForge.EVENT_BUS.register(new WordSave());
     	MinecraftForge.EVENT_BUS.register(new EntityJoinWorld());
     	MinecraftForge.EVENT_BUS.register(new PlayerTracker());
+    	MinecraftForge.EVENT_BUS.register(new ConfigChange());
     }
 	
 	public void registerFilters() {

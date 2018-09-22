@@ -3,6 +3,7 @@ package mapmakingtools.network.packet;
 import java.io.IOException;
 
 import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
+import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -40,6 +41,9 @@ public class PacketBiomeUpdate extends AbstractClientMessage {
 	
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		Iterable<BlockPos> positions = BlockPos.getAllInBox(new BlockPos(this.pos1.getX(), 0, this.pos1.getZ()), new BlockPos(this.pos2.getX(), 0, this.pos2.getZ()));
 		
 		for(BlockPos pos : positions) {

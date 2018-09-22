@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.proxy.CommonProxy;
+import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -34,6 +35,9 @@ public class PacketEditEntity extends AbstractServerMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		player.openGui(MapMakingTools.INSTANCE, CommonProxy.ID_FILTER_ENTITY, player.world, this.entityId, 0, 0);
 	}
 

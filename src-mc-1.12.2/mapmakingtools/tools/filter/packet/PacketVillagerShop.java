@@ -6,6 +6,7 @@ import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
+import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.VillagerShopServerFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -47,6 +48,9 @@ public class PacketVillagerShop extends AbstractServerMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		MapMakingTools.LOGGER.info("dawe " + this.entityId);
 		if(player.openContainer instanceof IContainerFilter) {
 			MapMakingTools.LOGGER.info("filter " + this.entityId);

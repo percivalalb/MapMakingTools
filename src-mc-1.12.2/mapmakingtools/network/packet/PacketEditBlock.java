@@ -5,6 +5,7 @@ import java.io.IOException;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.proxy.CommonProxy;
+import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +35,9 @@ public class PacketEditBlock extends AbstractServerMessage {
 	
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		if(!player.world.isRemote) {
 			MapMakingTools.LOGGER.info("Logging times");
 			player.openGui(MapMakingTools.INSTANCE, CommonProxy.ID_FILTER_BLOCK, player.world, this.pos.getX(), this.pos.getY(), this.pos.getZ());

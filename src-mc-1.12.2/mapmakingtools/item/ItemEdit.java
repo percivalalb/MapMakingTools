@@ -2,6 +2,7 @@ package mapmakingtools.item;
 
 import java.util.List;
 
+import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +49,7 @@ public class ItemEdit extends Item {
     
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player) {
-        if(stack != null && stack.getMetadata() == 0)
+        if(stack != null && stack.getMetadata() == 0 && PlayerAccess.canEdit(player))
         	return true;
         
         return false;

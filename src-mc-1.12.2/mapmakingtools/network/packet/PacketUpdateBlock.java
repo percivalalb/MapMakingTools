@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
+import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,6 +51,9 @@ public class PacketUpdateBlock extends AbstractClientMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
+		if(!PlayerAccess.canEdit(player))
+			return;
+		
 		World world = player.world;
 		TileEntity tileEntity = world.getTileEntity(this.pos);
 		
