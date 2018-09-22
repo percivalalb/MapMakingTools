@@ -89,6 +89,9 @@ public class CommandBlockAliasClientFilter extends FilterClient {
                 	PacketDispatcher.sendToServer(new PacketCommandBlockAlias(gui.getBlockPos(), fld_alias.getText() + "\u00a7r"));
                 	ClientHelper.getClient().player.closeScreen();
                 	break;
+                case 1:
+                	ClientHelper.getClient().player.closeScreen();
+                	break;
                 case 4:
                 	if(this.fld_alias.isFocused()) {
                 		String text = fld_alias.getText();

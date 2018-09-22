@@ -6,6 +6,7 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -34,16 +35,19 @@ public class GuiTabSelect extends GuiButton {
         	FontRenderer fontRenderer = mc.fontRenderer;
         	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         	mc.getTextureManager().bindTexture(ResourceLib.TABS);
-        	boolean error = filter.showErrorIcon(gui);
-            int difference = isSelected ? 32 : 30;
-            this.drawTexturedModalRect(this.x + (isSelected && type == ButtonType.RIGHT ? -2 : 0), this.y, 0 + (isSelected ? 30 : 0), 28 * (type == ButtonType.LEFT ? 1 : 0), difference, 27 * (type == ButtonType.LEFT ? 2 : 1));//top left
+        	
+        	boolean error = this.filter.showErrorIcon(this.gui);
+            boolean left = this.type == ButtonType.LEFT;
+            
+            this.drawTexturedModalRect(this.x + (this.isSelected ? -2 : 0), this.y, this.isSelected ? 30 : 0, (left ? 28 : 0), this.isSelected ? 34 : 30, 28);//top left
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            String path = this.filter.getIconPath();
             mc.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
-            this.drawModalRectWithCustomSizedTexture(this.x + 5 + (type == ButtonType.LEFT ? 3 : 0), this.y + 5, 0, 0, 16, 16, 16, 16);
+            
+            Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 3 : 0), this.y + 5, 0, 0, 16, 16, 16, 16);
+            
             mc.getTextureManager().bindTexture(ResourceLib.getCached("textures/filter/error.png"));
             if(error) {
-            	this.drawModalRectWithCustomSizedTexture(this.x + 5 + (type == ButtonType.LEFT ? 3 : 0), this.y + 5, 0, 0, 16, 16, 16, 16);
+            	Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 3 : 0), this.y + 5, 0, 0, 16, 16, 16, 16);
             }
             GlStateManager.popMatrix();
     	}

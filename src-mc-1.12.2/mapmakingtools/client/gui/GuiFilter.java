@@ -22,6 +22,7 @@ import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSelectedFilter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -47,7 +48,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	private static int currentPage = 1;
 	private int maxPages = 1;
 	
-	private List textboxList = new ArrayList();
+	private List<GuiTextField> textboxList = new ArrayList<>();
 	
 	private GuiFilter(List<FilterClient> filters, EntityPlayer player) {
 		super(new ContainerFilter(FilterManager.getServerFiltersFromList(filters), player));
@@ -183,22 +184,22 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         int topY = (this.height - this.yFakeSize()) / 2;
 
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 6) {
-            this.buttonList.add(new GuiTabSelect(150, topX - 29, topY + 9, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 6), this));
+            this.buttonList.add(new GuiTabSelect(150, topX - 29, topY + 7, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 6), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 5) {
         	this.buttonList.add(new GuiTabSelect(151, topX - 29, topY + 36, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 5), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 4) {
-        	this.buttonList.add(new GuiTabSelect(152, topX - 29, topY + 63, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 4), this));
+        	this.buttonList.add(new GuiTabSelect(152, topX - 29, topY + 65, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 4), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 3) {
-        	this.buttonList.add(new GuiTabSelect(153, topX + xFakeSize() - 1, topY + 9, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 3), this));
+        	this.buttonList.add(new GuiTabSelect(153, topX + xFakeSize() - 1, topY + 7, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 3), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 2) {
         	this.buttonList.add(new GuiTabSelect(154, topX + xFakeSize() - 1, topY + 36, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 2), this));
         }
         if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 1) {
-        	this.buttonList.add(new GuiTabSelect(155, topX + xFakeSize() - 1, topY + 63, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 1), this));
+        	this.buttonList.add(new GuiTabSelect(155, topX + xFakeSize() - 1, topY + 65, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 1), this));
         }
         
         if(this.filterList.size() > 6) {
@@ -329,14 +330,14 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	}
     }
     
-    protected void drawHoveringText(List text, int mouseX, int mouseY, FontRenderer font) {
+    protected void drawHoveringText(List<String> text, int mouseX, int mouseY, FontRenderer font) {
         if(!text.isEmpty()) {
         	GlStateManager.disableRescaleNormal();
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
             int k = 0;
-            Iterator iterator = text.iterator();
+            Iterator<String> iterator = text.iterator();
 
             while (iterator.hasNext()) {
                 String s = (String)iterator.next();
@@ -459,17 +460,17 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	}
 
 	@Override
-	public List getLabelList() {
+	public List<GuiLabel> getLabelList() {
 		return this.labelList;
 	}
 
 	@Override
-	public List getButtonList() {
+	public List<GuiButton> getButtonList() {
 		return this.buttonList;
 	}
 
 	@Override
-	public List getTextBoxList() {
+	public List<GuiTextField> getTextBoxList() {
 		return this.textboxList;
 	}
 	
