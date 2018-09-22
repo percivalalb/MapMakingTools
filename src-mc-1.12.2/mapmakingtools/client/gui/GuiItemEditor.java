@@ -17,9 +17,10 @@ import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,15 +32,16 @@ import net.minecraft.util.math.MathHelper;
  */
 public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
+	private static final int ATTRIBUTE_BUTTON_ID_START = 100;
+	
 	private int slotIndex;
 	private EntityPlayer player;
-	private ScaledResolution resolution;
 	private ArrayList<GuiTextField> textboxList = new ArrayList<GuiTextField>();
 
 	private Hashtable<IItemAttribute, Boolean> itemMap;
 	private List<IItemAttribute> itemList;
 	private static IItemAttribute itemCurrent;
-	private int currentPage = 1;
+	private int currentPage = 0;
 	private int maxPages = 1;
 	
 	public GuiItemEditor(EntityPlayer player, int slotIndex) {
@@ -75,7 +77,6 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	@Override
     public void initGui() {
     	super.initGui();
-		this.resolution = new ScaledResolution(this.mc);
 		this.xSize = this.width - 26;
 		this.ySize = this.height - 26;
 		int topX = (this.width - this.xSize) / 2;
@@ -87,41 +88,32 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     	this.buttonList.clear();
     	this.labelList.clear();
     	
-    	
     	int size = this.itemList.size();
+    	int perPage = Math.max(MathHelper.floor((this.ySize - 25) / 15D), 1);
     	
-    	int temp = 0;
-    	while((temp + 1) * 15 + topY + 30 < this.guiTop + this.ySize)
-    		temp += 1;
-    	
-    	if(temp < size) {
-    		size = temp;
+    	if(perPage < size) {
     		this.buttonList.add(new GuiButton(98, topX + 32, topY + 7, 20, 20, "<"));
     	    this.buttonList.add(new GuiButton(99, topX + 55, topY + 7, 20, 20, ">"));
     	}
     	
-    	if(size < 1)
-    		size = 1;
-    	
-		this.maxPages = MathHelper.ceil(this.itemList.size() / (double)size);
+		this.maxPages = MathHelper.ceil(size / (double)perPage);
 		
-		if(this.currentPage > this.maxPages)
-    		this.currentPage = 1;
+		if(this.currentPage >= this.maxPages)
+    		this.currentPage = 0;
 		
-    	for(int i = 0; i < size; ++i) {
-    		if(((this.currentPage - 1) * size + i) >= this.itemList.size())
-    			continue;
-    		IItemAttribute item = this.itemList.get((this.currentPage - 1) * size + i);
-    		GuiSmallButton button = new GuiSmallButton(100 + (this.currentPage - 1) * size + i, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
+    	for(int i = 0; i < perPage; ++i) {
+    		int index = this.currentPage * perPage + i;
+    		if(index >= size) continue;
+    		IItemAttribute item = this.itemList.get(index);
+    		GuiSmallButton button = new GuiSmallButton(ATTRIBUTE_BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
     		button.enabled = this.itemMap.get(item);
     		this.buttonList.add(button);
     	}
     	
-    	if(itemCurrent != null)
+    	if(itemCurrent != null) {
     		itemCurrent.initGui(this, this.getStack(), 150, this.guiTop, this.guiLeft + this.xSize - 150, this.ySize);
-    	
-    	if(itemCurrent != null)
     		itemCurrent.populateFromItem(this, this.getStack(), true);
+    	}
     }
 	
 	@Override
@@ -134,31 +126,22 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        //this.mc.getTextureManager().bindTexture(ResourceReference.itemEditor);
-        int guiXCentre = this.width / 2;
-        int guiYCentre = this.height / 2;
-        this.xSize = this.width - 26;
-		this.ySize = this.height - 26;
-		int topX = (this.width - this.xSize) / 2;
-        int topY = (this.height - this.ySize) / 2;
-        //this.drawTexturedModalRect(guiXCentre - 175 / 2, guiYCentre - 132 / 2, 0, 0, 175, 132);
         
         this.mc.getTextureManager().bindTexture(ResourceLib.ITEM_EDITOR_SLOT);
-        this.drawTexturedModalRect(topX, topY, 0, 0, 35, 35);
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 35, 35);
         GlStateManager.scale(0.5F, 0.5F, 0.5F);
-        this.mc.fontRenderer.drawString("Slot: " + slotIndex, topX + 32, topY + 21, 0);
+        this.mc.fontRenderer.drawString("Slot: " + slotIndex, this.guiLeft + 32, this.guiTop + 21, 0);
         GlStateManager.scale(2.0F, 2.0F, 2.0F);
 
         for(GuiTextField field : this.textboxList)
         	field.drawTextBox();
         
-        this.drawRect(150, this.guiTop, this.guiLeft + this.xSize, this.guiTop + this.ySize, new Color(255, 255, 255, 75).getRGB());
+        Gui.drawRect(150, this.guiTop, this.guiLeft + this.xSize, this.guiTop + this.ySize, new Color(255, 255, 255, 75).getRGB());
         
-        if(itemCurrent != null)
+        if(itemCurrent != null) {
         	itemCurrent.drawInterface(this, 150, this.guiTop, this.guiLeft + this.xSize - 150, this.ySize);
-        
-        if(itemCurrent != null)
         	itemCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
+        }
         
     }
 	
@@ -166,14 +149,13 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	protected void drawGuiContainerForegroundLayer(int xMouse, int yMouse) {
 		super.drawGuiContainerForegroundLayer(xMouse, yMouse);
 		
-		if(itemCurrent != null)
+		if(itemCurrent != null) {
 			itemCurrent.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
-		
-		GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
-		if(itemCurrent != null)
+			
+			GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
 			itemCurrent.drawToolTips(this, xMouse, yMouse);
-		
-		GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
+			GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
+		}
 	}
 	
 	@Override
@@ -217,20 +199,20 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	public void actionPerformed(GuiButton button) {
 		if(button.enabled) {
 			if(button.id == 98) {
-        		if(this.currentPage > 1) {
+        		if(this.currentPage > 0) {
         			--currentPage;
         			this.initGui();
         		}
 			}
         	else if(button.id == 99) {
-        		if(this.currentPage < this.maxPages) {
+        		if(this.currentPage < this.maxPages - 1) {
         			++currentPage;
         			this.initGui();
         		}
 			}
 			
-        	else if(button.id >= 100 && button.id < 100 + this.itemList.size()) {
-				this.itemCurrent = this.itemList.get(button.id - 100);
+        	else if(button.id >= ATTRIBUTE_BUTTON_ID_START && button.id < ATTRIBUTE_BUTTON_ID_START + this.itemList.size()) {
+				itemCurrent = this.itemList.get(button.id - ATTRIBUTE_BUTTON_ID_START);
 				this.initGui();
 			}
 		}
@@ -256,17 +238,17 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	}
 
 	@Override
-	public List getLabelList() {
+	public List<GuiLabel> getLabelList() {
 		return this.labelList;
 	}
 
 	@Override
-	public List getButtonList() {
+	public List<GuiButton> getButtonList() {
 		return this.buttonList;
 	}
 
 	@Override
-	public List getTextBoxList() {
+	public List<GuiTextField> getTextBoxList() {
 		return this.textboxList;
 	}
 	
