@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -83,7 +83,7 @@ public class LoreAttribute extends IItemAttribute {
 						this.loreFields.add(textField);
 						itemEditor.getTextBoxList().add(textField);
 						
-						GuiSmallButton minusButton = new GuiSmallButton(l, this.x + 2, this.y + 54 + l * 21, 13, 12, "-");
+						GuiButtonSmall minusButton = new GuiButtonSmall(l, this.x + 2, this.y + 54 + l * 21, 13, 12, "-");
 						this.minusButtons.add(minusButton);
 						itemEditor.getButtonList().add(minusButton);
                     }
@@ -99,8 +99,8 @@ public class LoreAttribute extends IItemAttribute {
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
-	    this.btn_add = new GuiSmallButton(-1, x + 2, y + 30, 13, 12, "+");
-	    this.btn_remove = new GuiSmallButton(3, x + 2, y + 16, 13, 12, "-");
+	    this.btn_add = new GuiButtonSmall(-1, x + 2, y + 30, 13, 12, "+");
+	    this.btn_remove = new GuiButtonSmall(3, x + 2, y + 16, 13, 12, "-");
 	    itemEditor.getButtonList().add(this.btn_add);
 		//itemEditor.getButtonList().add(this.btn_remove);
 		
@@ -130,7 +130,7 @@ public class LoreAttribute extends IItemAttribute {
 			this.loreFields.add(textField);
 			itemEditor.getTextBoxList().add(textField);
 			
-			GuiSmallButton minusButton = new GuiSmallButton(this.minusButtons.size(), this.x + 2, this.y + 54 + this.minusButtons.size() * 21, 13, 12, "-");
+			GuiButtonSmall minusButton = new GuiButtonSmall(this.minusButtons.size(), this.x + 2, this.y + 54 + this.minusButtons.size() * 21, 13, 12, "-");
 			this.minusButtons.add(minusButton);
 			itemEditor.getButtonList().add(minusButton);
 			

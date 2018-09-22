@@ -11,8 +11,8 @@ import com.google.common.collect.Multimap;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonData;
-import mapmakingtools.client.gui.button.GuiSmallButton;
-import mapmakingtools.client.gui.button.GuiSmallButtonData;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
+import mapmakingtools.client.gui.button.GuiButtonSmallData;
 import mapmakingtools.client.render.RenderUtil;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.ReflectionHelper;
@@ -36,7 +36,7 @@ import net.minecraft.util.text.translation.I18n;
 public class ModifiersAttribute extends IItemAttribute {
 	
 	private List<GuiTextField> fld_attack = new ArrayList<GuiTextField>();
-	private List<GuiSmallButtonData> btn_operation = new ArrayList<GuiSmallButtonData>();
+	private List<GuiButtonSmallData> btn_operation = new ArrayList<GuiButtonSmallData>();
 	private List<GuiButton> but_add = new ArrayList<GuiButton>();
 	private GuiButton[] btn_remove;
 	private GuiButton btn_convert;
@@ -128,7 +128,7 @@ public class ModifiersAttribute extends IItemAttribute {
 					 this.btn_operation.get(i).setData(attributemodifier.getOperation());
 					 this.btn_operation.get(i).displayString = "" + this.btn_operation.get(i).getData();
 					 if(this.btn_remove[i] == null) {
-						 this.btn_remove[i] = new GuiSmallButton(i + MODIFIERS.length, this.x + 310, this.y + 38 + i * 17, 16, 16, "-");
+						 this.btn_remove[i] = new GuiButtonSmall(i + MODIFIERS.length, this.x + 310, this.y + 38 + i * 17, 16, 16, "-");
 						 itemEditor.getButtonList().add(this.btn_remove[i]);
 					 }
 					 foundAtAll = true;
@@ -182,9 +182,9 @@ public class ModifiersAttribute extends IItemAttribute {
 		itemEditor.getButtonList().add(this.btn_slot);
 		
 		for(int i = 0; i < MODIFIERS.length; i++) {
-			this.btn_operation.add(new GuiSmallButtonData(i + 2 * this.MODIFIERS.length, this.x + 247, this.y + 38 + i * 17, 16, 16, "0"));
+			this.btn_operation.add(new GuiButtonSmallData(i + 2 * this.MODIFIERS.length, this.x + 247, this.y + 38 + i * 17, 16, 16, "0"));
 			itemEditor.getButtonList().add(this.btn_operation.get(i));
-			this.but_add.add(new GuiSmallButton(i, x + 275, y + 38 + i * 17, 40, 16, "Add"));
+			this.but_add.add(new GuiButtonSmall(i, x + 275, y + 38 + i * 17, 40, 16, "Add"));
 			itemEditor.getButtonList().add(this.but_add.get(i));
 			this.fld_attack.add(new GuiTextField(i, itemEditor.getFontRenderer(), x + 122, y + 39 + i * 17, 120, 14));
 			itemEditor.getTextBoxList().add(this.fld_attack.get(i));
@@ -209,7 +209,7 @@ public class ModifiersAttribute extends IItemAttribute {
 		}
 		
 		else if(button.id >= MODIFIERS.length * 2 && button.id < MODIFIERS.length * 3) {
-			GuiSmallButtonData btn = this.btn_operation.get(button.id - MODIFIERS.length * 2);
+			GuiButtonSmallData btn = this.btn_operation.get(button.id - MODIFIERS.length * 2);
 			btn.setData((btn.getData() + 1) % 3);
 			btn.displayString = "" + btn.getData();
 			//itemEditor.sendUpdateToServer(button.id);

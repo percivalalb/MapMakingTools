@@ -2,7 +2,7 @@ package mapmakingtools.tools.attribute;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.client.gui.button.GuiTickButton;
+import mapmakingtools.client.gui.button.GuiButtonTick;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,13 +13,13 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class TooltipFlagsAttribute extends IItemAttribute {
 
-	private GuiTickButton btn_ench;
-	private GuiTickButton btn_modif;
-	private GuiTickButton btn_unbreak;
-	private GuiTickButton btn_destroy;
-	private GuiTickButton btn_place;
-	private GuiTickButton btn_normal;
-	private GuiTickButton btn_all;
+	private GuiButtonTick btn_ench;
+	private GuiButtonTick btn_modif;
+	private GuiButtonTick btn_unbreak;
+	private GuiButtonTick btn_destroy;
+	private GuiButtonTick btn_place;
+	private GuiButtonTick btn_normal;
+	private GuiButtonTick btn_all;
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, ItemStack stack) {
@@ -108,13 +108,13 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		//this.buttonList.add(this.beaconConfirmButton = new GuiBeacon.ConfirmButton(-1, this.guiLeft + 164, this.guiTop + 107));
-	    this.btn_ench = new GuiTickButton(0, x + 102, y + 16, true);
-	    this.btn_modif = new GuiTickButton(1, x + 102, y + 38, true);
-	    this.btn_unbreak = new GuiTickButton(2, x + 102, y + 60, true);
-	    this.btn_destroy = new GuiTickButton(3, x + 102, y + 82, true);
-	    this.btn_place = new GuiTickButton(4, x + 102, y + 104, true);
-	    this.btn_normal = new GuiTickButton(5, x + 102, y + 126, true);
-	    this.btn_all = new GuiTickButton(6, x + 112, y + height - 29, true);
+	    this.btn_ench = new GuiButtonTick(0, x + 102, y + 16, true);
+	    this.btn_modif = new GuiButtonTick(1, x + 102, y + 38, true);
+	    this.btn_unbreak = new GuiButtonTick(2, x + 102, y + 60, true);
+	    this.btn_destroy = new GuiButtonTick(3, x + 102, y + 82, true);
+	    this.btn_place = new GuiButtonTick(4, x + 102, y + 104, true);
+	    this.btn_normal = new GuiButtonTick(5, x + 102, y + 126, true);
+	    this.btn_all = new GuiButtonTick(6, x + 112, y + height - 29, true);
 	    
 		itemEditor.getButtonList().add(this.btn_ench);
 		itemEditor.getButtonList().add(this.btn_modif);
@@ -128,17 +128,17 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 	@Override
 	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
 		if(button.id >= 0 && button.id <= 5) {
-			((GuiTickButton)button).setTicked(!((GuiTickButton)button).isTicked());
+			((GuiButtonTick)button).setTicked(!((GuiButtonTick)button).isTicked());
 			itemEditor.sendUpdateToServer(0);
 		}
 		if(button.id == 6) {
-			((GuiTickButton)button).setTicked(!((GuiTickButton)button).isTicked());
-		    this.btn_ench.setTicked(((GuiTickButton)button).isTicked());
-		    this.btn_modif.setTicked(((GuiTickButton)button).isTicked());
-		    this.btn_unbreak.setTicked(((GuiTickButton)button).isTicked());
-		    this.btn_destroy.setTicked(((GuiTickButton)button).isTicked());
-		    this.btn_place.setTicked(((GuiTickButton)button).isTicked());
-		    this.btn_normal.setTicked(((GuiTickButton)button).isTicked());
+			((GuiButtonTick)button).setTicked(!((GuiButtonTick)button).isTicked());
+		    this.btn_ench.setTicked(((GuiButtonTick)button).isTicked());
+		    this.btn_modif.setTicked(((GuiButtonTick)button).isTicked());
+		    this.btn_unbreak.setTicked(((GuiButtonTick)button).isTicked());
+		    this.btn_destroy.setTicked(((GuiButtonTick)button).isTicked());
+		    this.btn_place.setTicked(((GuiButtonTick)button).isTicked());
+		    this.btn_normal.setTicked(((GuiButtonTick)button).isTicked());
 			itemEditor.sendUpdateToServer(0);
 		}
 	}

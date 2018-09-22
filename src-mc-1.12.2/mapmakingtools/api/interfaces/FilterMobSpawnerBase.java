@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.api.manager.FakeWorldManager;
-import mapmakingtools.client.gui.button.GuiMinecartIndexButton;
+import mapmakingtools.client.gui.button.GuiButtonPotentialSpawns;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobArmorAddIndex;
@@ -49,7 +49,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 		
 		int i = 0;
 		for(WeightedSpawnerEntity randomMinecart : minecarts) {
-			GuiMinecartIndexButton button = new GuiMinecartIndexButton(200 + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
+			GuiButtonPotentialSpawns button = new GuiButtonPotentialSpawns(200 + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
 			if(i != minecartIndex)
 				button.enabled = false;
 			minecartButtons.add(button);

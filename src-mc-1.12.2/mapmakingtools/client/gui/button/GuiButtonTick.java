@@ -5,12 +5,12 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiTickButton extends GuiButton {
+public class GuiButtonTick extends GuiButton {
 	
 	 private static final ResourceLocation BEACON_TEXTURES = new ResourceLocation("textures/gui/container/beacon.png");
      private boolean ticked;
      
-     public GuiTickButton(int id, int xPosition, int yPosition, boolean ticked) {
+     public GuiButtonTick(int id, int xPosition, int yPosition, boolean ticked) {
      	super(id, xPosition, yPosition, 22, 22, "");
      	this.ticked = ticked;
      }

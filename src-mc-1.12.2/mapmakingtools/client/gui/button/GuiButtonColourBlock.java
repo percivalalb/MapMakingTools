@@ -9,12 +9,12 @@ import net.minecraft.client.renderer.GlStateManager;
 /**
  * @author ProPercivalalb
  */
-public class GuiButtonTextColour extends GuiButton {
+public class GuiButtonColourBlock extends GuiButton {
 
 	public int textColourIndex = TextColour.GOLD.ordinal();
 	private Minecraft mc = Minecraft.getMinecraft();
 	
-	public GuiButtonTextColour(int id, int xPosition, int yPosition, int width, int height) {
+	public GuiButtonColourBlock(int id, int xPosition, int yPosition, int width, int height) {
 		super(id, xPosition, yPosition, width, height, "");
 	}
 

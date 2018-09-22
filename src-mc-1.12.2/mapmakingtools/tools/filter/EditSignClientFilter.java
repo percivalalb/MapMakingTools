@@ -5,8 +5,8 @@ import java.util.List;
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
-import mapmakingtools.client.gui.button.GuiButtonTextColour;
-import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiButtonColourBlock;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.client.gui.textfield.GuiTextFieldNonInteractable;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
@@ -28,7 +28,7 @@ import net.minecraft.world.World;
  */
 public class EditSignClientFilter extends FilterClient {
 
-	private GuiButtonTextColour btnColourLine1;
+	private GuiButtonColourBlock btnColourLine1;
 	private GuiTextFieldNonInteractable txtLine1;
 	private GuiTextFieldNonInteractable txtLine2;
 	private GuiTextFieldNonInteractable txtLine3;
@@ -60,11 +60,11 @@ public class EditSignClientFilter extends FilterClient {
 		super.initGui(gui);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-	    this.btnColourLine1 = new GuiButtonTextColour(0, topX + 25, topY + 22, 20, 20);
+	    this.btnColourLine1 = new GuiButtonColourBlock(0, topX + 25, topY + 22, 20, 20);
 	    this.btnInsert = new GuiButton(1, topX + 15, topY + 46, 40, 20, "Insert");
-	    this.btnOk = new GuiSmallButton(2, topX + (gui.xFakeSize() / 2) - (40 / 2), topY + 80, 40, 16, "Set");
+	    this.btnOk = new GuiButtonSmall(2, topX + (gui.xFakeSize() / 2) - (40 / 2), topY + 80, 40, 16, "Set");
 	    this.txtLine1 = new GuiTextFieldNonInteractable(0, gui.getFont(), topX + 70, topY + 22, 100, 12);
-	    this.txtLine1.setMaxStringLength(15);
+	    this.txtLine1.setMaxStringLength(150);
 	    this.txtLine2 = new GuiTextFieldNonInteractable(1, gui.getFont(), topX + 70, topY + 37, 100, 12);
 	    this.txtLine2.setMaxStringLength(15);
 	    this.txtLine3 = new GuiTextFieldNonInteractable(2, gui.getFont(), topX + 70, topY + 52, 100, 12);
@@ -92,7 +92,7 @@ public class EditSignClientFilter extends FilterClient {
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
-			if(button instanceof GuiButtonTextColour) {
+			if(button instanceof GuiButtonColourBlock) {
 				if(this.txtLine1.isFocused()) {
             		txtLine1.missMouseClick = true;
             	}
@@ -105,7 +105,7 @@ public class EditSignClientFilter extends FilterClient {
             	else if(this.txtLine4.isFocused()) {
             		txtLine4.missMouseClick = true;
             	}
-               	((GuiButtonTextColour)button).leftClick();
+               	((GuiButtonColourBlock)button).leftClick();
             }
             switch (button.id) {
                 case 0:

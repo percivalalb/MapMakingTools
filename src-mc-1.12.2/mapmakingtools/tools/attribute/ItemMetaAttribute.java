@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
@@ -70,7 +70,7 @@ public class ItemMetaAttribute extends IItemAttribute {
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		this.fld_meta = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 15, 80, 13);
 		this.fld_meta.setMaxStringLength(5);
-		this.btn_unbreakable = new GuiSmallButton(0, x + 2, y + 30, 120, 20, "Toggle Unbreakable");
+		this.btn_unbreakable = new GuiButtonSmall(0, x + 2, y + 30, 120, 20, "Toggle Unbreakable");
 		itemEditor.getTextBoxList().add(this.fld_meta);
 		itemEditor.getButtonList().add(this.btn_unbreakable);
 	}

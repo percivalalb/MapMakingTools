@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.GlStateManager;
 /**
  * @author ProPercivalalb
  */
-public class GuiSmallButton extends GuiButton {
+public class GuiButtonSmall extends GuiButton {
     
-	public GuiSmallButton(int id, int xPosition, int yPosition, int width, int height, String text) {
+	public GuiButtonSmall(int id, int xPosition, int yPosition, int width, int height, String text) {
         super(id, xPosition, yPosition, width, height, text);
     }
     

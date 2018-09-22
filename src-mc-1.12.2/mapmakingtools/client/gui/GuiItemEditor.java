@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
-import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.container.ContainerItemEditor;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
@@ -105,7 +105,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     		int index = this.currentPage * perPage + i;
     		if(index >= size) continue;
     		IItemAttribute item = this.itemList.get(index);
-    		GuiSmallButton button = new GuiSmallButton(ATTRIBUTE_BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
+    		GuiButtonSmall button = new GuiButtonSmall(ATTRIBUTE_BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
     		button.enabled = this.itemMap.get(item);
     		this.buttonList.add(button);
     	}

@@ -9,7 +9,7 @@ import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonData;
-import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.PotionList;
 import mapmakingtools.tools.item.nbt.PotionNBT;
@@ -192,7 +192,7 @@ public class PotionAttribute extends IItemAttribute {
 			this.btn_particles.displayString = "No Particles";
 
 		this.fld_lvl.setMaxStringLength(5);
-		this.btn_add = new GuiSmallButton(0, x + width - 20, y + height / 2 - 20, 16, 16, "+");
+		this.btn_add = new GuiButtonSmall(0, x + width - 20, y + height / 2 - 20, 16, 16, "+");
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
 		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Effects");
 		

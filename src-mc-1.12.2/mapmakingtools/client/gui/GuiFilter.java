@@ -12,9 +12,8 @@ import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FilterManager;
-import mapmakingtools.client.gui.button.ButtonType;
-import mapmakingtools.client.gui.button.GuiSmallButton;
-import mapmakingtools.client.gui.button.GuiTabSelect;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
+import mapmakingtools.client.gui.button.GuiHorizontalTab;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceLib;
@@ -135,8 +134,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
 		for(GuiButton button : this.buttonList) {
 			
-    		if(button instanceof GuiTabSelect) {
-        		GuiTabSelect tabButton = (GuiTabSelect)button;
+    		if(button instanceof GuiHorizontalTab) {
+        		GuiHorizontalTab tabButton = (GuiHorizontalTab)button;
         		if(tabButton.isMouseAbove(xMouse, yMouse)) {
         			
         			List<String> list = new ArrayList<String>();
@@ -149,8 +148,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
-    		else if(button instanceof GuiSmallButton && button.id == 156) {
-    			GuiSmallButton smallButton = (GuiSmallButton)button;
+    		else if(button instanceof GuiButtonSmall && button.id == 156) {
+    			GuiButtonSmall smallButton = (GuiButtonSmall)button;
         		if(smallButton.isMouseAbove(xMouse, yMouse)) {
         			List<String> list = filter.getFilterInfo(this);
         			this.drawHoveringText(list, xMouse, yMouse);
@@ -200,11 +199,11 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	int y = topYF + 7 + i * 29;
         	
         	if(this.filterList.size() > tabIndex + i) {
-        		this.buttonList.add(new GuiTabSelect(150 + i, topXF - (30 - 1), y, ButtonType.LEFT, filterList.get(tabIndex + i), this));
+        		this.buttonList.add(new GuiHorizontalTab(150 + i, topXF - (30 - 1), y, GuiHorizontalTab.Side.LEFT, filterList.get(tabIndex + i), this));
         	}
         	
         	if(this.filterList.size() > tabIndex + i + 3) {
-             	this.buttonList.add(new GuiTabSelect(153 + i, topXF + FAKE_WIDTH - 1, y, ButtonType.RIGHT, filterList.get(tabIndex + i + 3), this));
+             	this.buttonList.add(new GuiHorizontalTab(153 + i, topXF + FAKE_WIDTH - 1, y, GuiHorizontalTab.Side.RIGHT, filterList.get(tabIndex + i + 3), this));
             }
         }
 
@@ -222,15 +221,15 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         
         if(filter != null) {
         	if(filter.getFilterInfo(this) != null)
-        		this.buttonList.add(new GuiSmallButton(156, topXF + 5, topY + 4, 13, 12, "?"));
+        		this.buttonList.add(new GuiButtonSmall(156, topXF + 5, topY + 4, 13, 12, "?"));
         
         	if(filter.hasUpdateButton(this))
-        		this.buttonList.add(new GuiSmallButton(157, topXF + 20, topY + 4, 8, 8, "" + (char)8595));
+        		this.buttonList.add(new GuiButtonSmall(157, topXF + 20, topY + 4, 8, 8, "" + (char)8595));
         }
 	
         for(int i = 0; i < this.buttonList.size(); ++i) {
-    		if(this.buttonList.get(i) instanceof GuiTabSelect) {
-        		GuiTabSelect tab = (GuiTabSelect)(GuiButton)this.buttonList.get(i);
+    		if(this.buttonList.get(i) instanceof GuiHorizontalTab) {
+        		GuiHorizontalTab tab = (GuiHorizontalTab)(GuiButton)this.buttonList.get(i);
         		if(tab.filter == filter) {
         			int index = this.filterList.indexOf(filter);
         			this.getContainerFilter().setSelected(index);
@@ -286,8 +285,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
                 case 153:
                 case 154:
                 case 155:
-                	if(button instanceof GuiTabSelect)
-                		unSelectBut((GuiTabSelect)button);
+                	if(button instanceof GuiHorizontalTab)
+                		unSelectBut((GuiHorizontalTab)button);
                 	break;
                 case 157:
                 	filter.updateButtonClicked(this);
@@ -324,14 +323,14 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	return ((ContainerFilter)this.inventorySlots);
     }
     
-    public void unSelectBut(GuiTabSelect button) {
+    public void unSelectBut(GuiHorizontalTab button) {
     	filter = button.filter;
     	this.initGui();
     	for(int i = 0; i < this.buttonList.size(); ++i) {
     		GuiButton listBt = (GuiButton)this.buttonList.get(i);
     		if(listBt.id == button.id) {
-    			if(listBt instanceof GuiTabSelect)
-    				((GuiTabSelect)listBt).isSelected = true;
+    			if(listBt instanceof GuiHorizontalTab)
+    				((GuiHorizontalTab)listBt).isSelected = true;
     		}
     	}
     }

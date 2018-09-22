@@ -1,6 +1,6 @@
 package mapmakingtools.client.gui;
 
-import mapmakingtools.client.gui.button.GuiSmallButton;
+import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.container.ContainerWorldTransfer;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
@@ -29,7 +29,7 @@ public class GuiWorldTransfer extends GuiContainer {
 
         int i = 0;
         for(String name : WorldTransferList.getNameList()) {
-        	this.buttonList.add(new GuiSmallButton(i, topX + 135, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, 30, this.fontRenderer.FONT_HEIGHT, "----"));
+        	this.buttonList.add(new GuiButtonSmall(i, topX + 135, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, 30, this.fontRenderer.FONT_HEIGHT, "----"));
         	i += 1;
         }
 	}
