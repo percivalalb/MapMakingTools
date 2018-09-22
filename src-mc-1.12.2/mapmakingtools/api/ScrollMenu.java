@@ -1,9 +1,8 @@
 package mapmakingtools.api;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -20,7 +19,7 @@ import net.minecraft.util.math.MathHelper;
 /**
  * @author ProPercivalalb
  */
-public abstract class ScrollMenu {
+public abstract class ScrollMenu<T> {
 
 	private static int ELEMENT_HEIGHT = 14;
 	
@@ -48,21 +47,28 @@ public abstract class ScrollMenu {
 	public int noRow;
 	
 	// Elements in table, index increases across columns
-	public List<String> elements;
+	public List<T> elements;
 	
-	// The maximum number of selected items
+	// The maximum number of selected items, -1 indicates unlimited can be selected 
 	public int maxSelected;
+	public boolean canHaveNoneSelected;
 	
 	
-	public ScrollMenu(GuiScreen screen, int xPosition, int yPosition, int width, int height, int noColumns, List<String> elements) {
+	public ScrollMenu(GuiScreen screen, int xPosition, int yPosition, int width, int height, int noColumns, List<T> elements) {
+		this(screen, xPosition, yPosition, width, height, noColumns);
+		this.elements = ImmutableList.copyOf(elements);
+	}
+	
+	public ScrollMenu(GuiScreen screen, int xPosition, int yPosition, int width, int height, int noColumns) {
 		this.screen = screen;
 		this.x = xPosition;
 		this.y = yPosition;
 		this.width = width;
 		this.height = height;
 		this.noCol = noColumns;
-		this.elements = ImmutableList.copyOf(elements);
-		this.maxSelected = 2;
+		this.elements = Collections.emptyList();
+		this.maxSelected = 1;
+		this.canHaveNoneSelected = true;
 	}
 	
 	public void initGui() {
@@ -92,9 +98,9 @@ public abstract class ScrollMenu {
 		this.screen.mc.getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
 		
     	int columnSize = this.width / this.noCol;
-    	for(int c = 0; c < this.noRow; c++) {
+    	for(int c = 0; c < this.noCol; c++) {
     		for(int r = 0; r < this.noRow; r++) {
-        		int index = r * this.noRow + c;
+        		int index = r * this.noCol + c;
         		if(index >= this.elements.size()) break;
         		
 	        	
@@ -124,10 +130,14 @@ public abstract class ScrollMenu {
             mouseX -= this.x;
             mouseY -= this.y;
 
-            if(Mouse.isButtonDown(0))
-                if(mouseX >= this.width - 19 && mouseX < this.width - 2 && mouseY >= 6 && mouseY < this.height - 6)
+            if(Mouse.isButtonDown(0)) {
+                if(mouseX >= this.width - 19 && mouseX < this.width - 2 && mouseY >= 6 && mouseY < this.height - 6) {
                     this.isScrolling = true;
-            else this.isScrolling = false;
+                }
+            }
+            else { 
+            	this.isScrolling = false;
+            }
 
             if(this.isScrolling) {
                 this.scrollY = (mouseY - 6) * this.listHeight / (this.height - (this.scrollHeight >> 1));
@@ -164,17 +174,16 @@ public abstract class ScrollMenu {
 	private void drawScrollList() {
 	    this.clipToSize();
 
-	    
 	    int columnSize = this.width / this.noCol;
-    	for(int c = 0; c < this.noRow; c++) {
+    	for(int c = 0; c < this.noCol; c++) {
     		for(int r = 0; r < this.noRow; r++) {
-        		int index = r * this.noRow + c;
+        		int index = r * this.noCol + c;
         		if(index >= this.elements.size()) break;
         		
 	        	
 	            int posX = this.x + 12 + (columnSize * c);
 	            int posY = this.y + (ELEMENT_HEIGHT * r) + 2 - this.scrollY;
-	            String displayStr = this.getDisplayString((String)this.elements.get(index));
+	            String displayStr = this.getDisplayString(this.elements.get(index));
 	            this.screen.mc.fontRenderer.drawString(displayStr, posX, posY, 16777215);
     		}
     	}
@@ -183,11 +192,9 @@ public abstract class ScrollMenu {
 	}
 	
 	private boolean mouseInRadioButton(int mouseX, int mouseY, int buttonIndex) {
-		int row = (buttonIndex - (buttonIndex % this.noCol)) / this.noCol;
-		int column = buttonIndex;
-		while(column >= this.noCol)
-			column -= this.noCol;
-    	int columnSize = this.width / (this.noCol) - column;
+		int row = MathHelper.floor(buttonIndex / (double)this.noCol);
+		int column = buttonIndex % this.noCol;
+    	int columnSize = this.width / this.noCol;
 
         int var4 = 2 + columnSize * column;
 	    int var5 = (14 * row) + 2 - this.scrollY;
@@ -203,6 +210,9 @@ public abstract class ScrollMenu {
 	             if(this.mouseInRadioButton(xMouse, yMouse, buttonIndex)) {
 	                 if(this.setSelected(buttonIndex))
 	                	 this.onSetButton();
+	                 //else
+	                 //	 this.onRemoveButton();
+	                	 
 	                 break;
 	             }
 	         }
@@ -222,16 +232,22 @@ public abstract class ScrollMenu {
 	}
 	
 	public boolean setSelected(int index) {
-		if(index <= 0 || index >= this.elements.size())
+		if(index < 0 || index >= this.elements.size())
 			return false;
 		
-		if(!this.selected.contains(index)) {
+		int selIndex = this.selected.indexOf(index);
+		
+		// Index is not currently selected
+		if(selIndex == -1) {
 			this.selected.add(index);
 			
-			if(this.selected.size() > this.maxSelected)
+			if(this.maxSelected != -1 && this.selected.size() > this.maxSelected)
 				this.selected.remove(0);
 			
 			return true;
+		} 
+		else if(this.canHaveNoneSelected || this.selected.size() > 1) {
+			this.selected.remove(selIndex);
 		}
 		
 		return false;
@@ -246,15 +262,29 @@ public abstract class ScrollMenu {
 		this.selected.clear();
 	}
 	
-	public int getRecentSelection() {
+	public int getRecentIndex() {
 		return this.selected.get(this.selected.size() - 1);
 	}
 	
-	public int getOldestSelection() {
+	public int getOldestIndex() {
 		return this.selected.get(0);
+	}
+	
+	public List<T> getSelected() {
+		List<T> selected = new ArrayList<>();
+		for(int i : this.selected) {
+			selected.add(this.elements.get(i));
+		}
+		return selected;
+	}
+	
+	public T getRecentSelection() {
+		return this.elements.get(this.getRecentIndex());
 	}
 	
 	public abstract void onSetButton();
 	
-	public abstract String getDisplayString(String listStr);
+	public String getDisplayString(T listStr) {
+		return listStr.toString();
+	}
 }

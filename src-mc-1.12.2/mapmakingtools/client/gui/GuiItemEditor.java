@@ -61,14 +61,13 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	public ItemStack createNewStack(int data) {
 		if(this.getStack().isEmpty())
 			return ItemStack.EMPTY;
+		
 		ItemStack stack = this.getStack();
 		
-		
-		if(itemCurrent != null)
+		if(itemCurrent != null) {
     		itemCurrent.onItemCreation(stack, data);
-		
-		if(itemCurrent != null)
     		itemCurrent.populateFromItem(this, stack, false);
+		}
 		
 		return stack;
 	}

@@ -17,14 +17,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
  */
 public class BlockDestroyAttribute extends IItemAttribute {
 
-	private ScrollMenu scrollMenuAdd;
-	private ScrollMenu scrollMenuRemove;
+	private ScrollMenu<String> scrollMenuAdd;
+	private ScrollMenu<String> scrollMenuRemove;
 	private GuiButton btn_add;
 	private GuiButton btn_remove;
 	private GuiButton btn_remove_all;
@@ -42,12 +43,14 @@ public class BlockDestroyAttribute extends IItemAttribute {
 		case 0: //Add selected value to NBTTagList
 			if(!this.scrollMenuAdd.hasSelection()) break;
 
-			NBTTagList tagList = NBTUtil.getOrCreateSubList(stack, "CanDestory", NBTUtil.ID_STRING);
+			NBTTagList tagList = NBTUtil.getOrCreateSubList(stack, "CanDestroy", NBTUtil.ID_STRING);
 			
-			String possibleBlock = this.scrollMenuAdd.elements.get(this.selected);
-			
-			if(!NBTUtil.contains(tagList, possibleBlock))
+			String possibleBlock = this.scrollMenuAdd.getRecentSelection();
+			FMLLog.info(possibleBlock);
+			if(!NBTUtil.contains(tagList, possibleBlock)) {
 				tagList.appendTag(new NBTTagString(possibleBlock));
+				FMLLog.info("add");
+			}
 			
 			break;
 		case 1: //Remove selected value to NBTTagList
@@ -84,11 +87,10 @@ public class BlockDestroyAttribute extends IItemAttribute {
 		this.scrollMenuAdd.initGui();
 		
 		List<String> list = new ArrayList<String>();
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", 9)) {
-			NBTTagList destoryList = stack.getTagCompound().getTagList("CanDestroy", 8);
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanDestroy", NBTUtil.ID_LIST)) {
+			NBTTagList destoryList = stack.getTagCompound().getTagList("CanDestroy", NBTUtil.ID_STRING);
 			for(int i = 0; i < destoryList.tagCount(); ++i) {
-				String blockId = destoryList.getStringTagAt(i);
-				list.add(String.format("%s", blockId));
+				list.add(destoryList.getStringTagAt(i));
 			}
 		}
 		this.scrollMenuRemove.elements = list;
@@ -108,37 +110,25 @@ public class BlockDestroyAttribute extends IItemAttribute {
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
-		this.scrollMenuAdd = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, new ArrayList<String>()) {
-
+		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2) {
 			@Override
 			public void onSetButton() {
-				BlockDestroyAttribute.selected = this.getRecentSelection();
+				BlockDestroyAttribute.selected = this.getRecentIndex();
 			}
-
-			@Override
-			public String getDisplayString(String listStr) {
-				return listStr;
-			}
-			
 		};
-		this.scrollMenuRemove = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1, new ArrayList<String>()) {
-
+		
+		this.scrollMenuRemove = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1) {
 			@Override
 			public void onSetButton() {
-				BlockDestroyAttribute.selectedDelete = this.getRecentSelection();
+				BlockDestroyAttribute.selectedDelete = this.getRecentIndex();
 			}
-
-			@Override
-			public String getDisplayString(String listStr) {
-				return listStr;
-			}
-			
 		};
 		
 		this.btn_add = new GuiButton(0, x + 2, y + height / 2 - 23, 50, 20, "Add");
 		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
 		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Blocks");
 		
+		this.btn_add.enabled = false;
 		this.btn_remove.enabled = false;
 		
 		itemEditor.getButtonList().add(this.btn_add);
@@ -166,6 +156,7 @@ public class BlockDestroyAttribute extends IItemAttribute {
 		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
 		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
 		
+		this.btn_add.enabled = this.scrollMenuAdd.hasSelection();
 		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();
 	}
 

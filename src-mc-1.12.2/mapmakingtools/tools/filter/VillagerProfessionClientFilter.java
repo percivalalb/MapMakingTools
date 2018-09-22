@@ -28,7 +28,7 @@ import net.minecraftforge.registries.GameData;
  */
 public class VillagerProfessionClientFilter extends FilterClient {
 
-	public ScrollMenu menu;
+	public ScrollMenu<ResourceLocation> menu;
 	public RegistryNamespaced<ResourceLocation, VillagerProfession> REGISTRY = GameData.getWrapper(VillagerProfession.class);
 	
 	@Override
@@ -54,16 +54,11 @@ public class VillagerProfessionClientFilter extends FilterClient {
 		gui.setYSize(135);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 135) / 2;
-        this.menu = new ScrollMenu((GuiScreen)gui, topX + 8, topY + 19, 227, 108, 2, this.getProfesionList()) {
-
-			@Override
-			public String getDisplayString(String listStr) {
-				return listStr;
-			}
+        this.menu = new ScrollMenu<ResourceLocation>((GuiScreen)gui, topX + 8, topY + 19, 227, 108, 2, this.getProfesionList()) {
 
 			@Override
 			public void onSetButton() {
-				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(new ResourceLocation(this.elements.get(this.getRecentSelection())))));
+				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(this.getRecentSelection())));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
@@ -72,10 +67,10 @@ public class VillagerProfessionClientFilter extends FilterClient {
         this.menu.setSelected(0);
 	}
 	
-	private List<String> getProfesionList() {
-		List<String> list = new ArrayList<String>();
+	private List<ResourceLocation> getProfesionList() {
+		List<ResourceLocation> list = new ArrayList<ResourceLocation>();
 		for(ResourceLocation location : REGISTRY.getKeys())
-			list.add(location.toString());
+			list.add(location);
 		return list;
 	}
 

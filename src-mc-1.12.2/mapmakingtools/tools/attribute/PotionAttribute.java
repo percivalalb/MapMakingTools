@@ -31,8 +31,8 @@ import net.minecraft.util.text.translation.I18n;
  */
 public class PotionAttribute extends IItemAttribute {
 
-	private ScrollMenu scrollMenuAdd;
-	private ScrollMenu scrollMenuRemove;
+	private ScrollMenu<String> scrollMenuAdd;
+	private ScrollMenu<String> scrollMenuRemove;
 	private GuiButton btn_add;
 	private GuiButton btn_remove;
 	private GuiButton btn_remove_all;
@@ -106,9 +106,9 @@ public class PotionAttribute extends IItemAttribute {
 		this.selectedDelete = -1;
 		
 		List<String> list = new ArrayList<String>();
-		List potionList = PotionUtils.getEffectsFromStack(stack);
+		List<PotionEffect> potionList = PotionUtils.getEffectsFromStack(stack);
 		for(int i = 0; potionList != null && i < potionList.size(); ++i) {
-			PotionEffect effect = (PotionEffect)potionList.get(i);
+			PotionEffect effect = potionList.get(i);
 			list.add(String.format("%d ~~~ %d ~~~ %d ~~~ %b", Potion.getIdFromPotion(effect.getPotion()), effect.getAmplifier(), effect.getDuration(), effect.doesShowParticles()));
 		}
 		this.scrollMenuRemove.elements = list;
@@ -139,11 +139,11 @@ public class PotionAttribute extends IItemAttribute {
 		this.duration = null;
 		this.selectedDelete = -1;
 		
-		this.scrollMenuAdd = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, PotionList.getPotions()) {
+		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, PotionList.getPotions()) {
 
 			@Override
 			public void onSetButton() {
-				PotionAttribute.selected = this.getRecentSelection();
+				PotionAttribute.selected = this.getRecentIndex();
 			}
 
 			@Override
@@ -159,11 +159,11 @@ public class PotionAttribute extends IItemAttribute {
 			}
 			
 		};
-		this.scrollMenuRemove = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1, new ArrayList<String>()) {
+		this.scrollMenuRemove = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1) {
 
 			@Override
 			public void onSetButton() {
-				PotionAttribute.selectedDelete = this.getRecentSelection();
+				PotionAttribute.selectedDelete = this.getRecentIndex();
 			}
 
 			@Override

@@ -24,7 +24,7 @@ import net.minecraft.util.text.translation.I18n;
 public class MobTypeClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButton btnOk;
-	public ScrollMenu menu;
+	public ScrollMenu<String> menu;
 	public static int selected = SpawnerEntitiesList.getEntities().indexOf("minecraft:pig");
 	
 	@Override
@@ -43,7 +43,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 		gui.setYSize(135);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 135) / 2;
-        this.menu = new ScrollMenu((GuiScreen)gui, topX + 8, topY + 19, 227, 108, 2, SpawnerEntitiesList.getEntities()) {
+        this.menu = new ScrollMenu<String>((GuiScreen)gui, topX + 8, topY + 19, 227, 108, 2, SpawnerEntitiesList.getEntities()) {
 
 			@Override
 			public String getDisplayString(String listStr) {
@@ -57,7 +57,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 
 			@Override
 			public void onSetButton() {
-				MobTypeClientFilter.selected = this.getRecentSelection();
+				MobTypeClientFilter.selected = this.getRecentIndex();
 				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.elements.get(MobTypeClientFilter.selected), FilterMobSpawnerBase.minecartIndex));
         		ClientHelper.getClient().player.closeScreen();
 			}

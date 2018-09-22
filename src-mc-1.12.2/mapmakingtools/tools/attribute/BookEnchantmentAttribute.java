@@ -28,8 +28,8 @@ import net.minecraft.util.text.translation.I18n;;
  */
 public class BookEnchantmentAttribute extends IItemAttribute {
 
-	private ScrollMenu scrollMenuAdd;
-	private ScrollMenu scrollMenuRemove;
+	private ScrollMenu<String> scrollMenuAdd;
+	private ScrollMenu<String> scrollMenuRemove;
 	private GuiButton btn_add;
 	private GuiButton btn_remove;
 	private GuiButton btn_remove_all;
@@ -123,11 +123,11 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
-		this.scrollMenuAdd = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, EnchantmentList.getEnchantments()) {
+		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, EnchantmentList.getEnchantments()) {
 
 			@Override
 			public void onSetButton() {
-				BookEnchantmentAttribute.selected = this.getRecentSelection();
+				BookEnchantmentAttribute.selected = this.getRecentIndex();
 			}
 
 			@Override
@@ -143,11 +143,11 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 			}
 			
 		};
-		this.scrollMenuRemove = new ScrollMenu((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1, new ArrayList<String>()) {
+		this.scrollMenuRemove = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1) {
 
 			@Override
 			public void onSetButton() {
-				BookEnchantmentAttribute.selectedDelete = this.getRecentSelection();
+				BookEnchantmentAttribute.selectedDelete = this.getRecentIndex();
 			}
 
 			@Override
