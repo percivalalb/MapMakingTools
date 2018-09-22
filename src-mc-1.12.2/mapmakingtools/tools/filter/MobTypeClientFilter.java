@@ -7,7 +7,7 @@ import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.packet.PacketMobType;
@@ -110,7 +110,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SCROLL);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 135) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 135);

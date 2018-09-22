@@ -2,7 +2,7 @@ package mapmakingtools.client.gui;
 
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.container.ContainerWorldTransfer;
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -58,7 +58,7 @@ public class GuiWorldTransfer extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(ResourceReference.WORLD_TRANSFER);
+        this.mc.getTextureManager().bindTexture(ResourceLib.WORLD_TRANSFER);
         int topX = (this.width - 183) / 2;
         int topY = (this.height - 215) / 2;
         this.drawTexturedModalRect(topX, topY, 0, 0, 183, 215);

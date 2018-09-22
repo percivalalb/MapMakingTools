@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
 
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -95,7 +95,7 @@ public abstract class ScrollMenu<T> {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         
 		this.clipToSize();
-		this.screen.mc.getTextureManager().bindTexture(ResourceReference.SCREEN_SCROLL);
+		this.screen.mc.getTextureManager().bindTexture(ResourceLib.SCREEN_SCROLL);
 		
     	int columnSize = this.width / this.noCol;
     	for(int c = 0; c < this.noCol; c++) {

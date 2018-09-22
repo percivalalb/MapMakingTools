@@ -1,6 +1,6 @@
 package mapmakingtools.client.gui.button;
 
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -23,7 +23,7 @@ public class GuiButtonTextColour extends GuiButton {
         if (this.visible) {
         	TextColour colour = getCurrentColour(textColourIndex);
         	FontRenderer fontrenderer = mc.fontRenderer;
-        	mc.getTextureManager().bindTexture(ResourceReference.BUTTON_TEXT_COLOUR);
+        	mc.getTextureManager().bindTexture(ResourceLib.BUTTON_TEXT_COLOUR);
             GlStateManager.color(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);

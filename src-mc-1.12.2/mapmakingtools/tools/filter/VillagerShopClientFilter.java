@@ -11,7 +11,7 @@ import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerRecipeAmounts;
 import mapmakingtools.tools.filter.packet.PacketVillagerShop;
@@ -229,7 +229,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_VILLAGER_SHOP);
+		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_VILLAGER_SHOP);
 		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getHeight() - 190) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 190);

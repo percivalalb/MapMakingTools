@@ -17,7 +17,7 @@ import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.client.gui.button.GuiTabSelect;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.helper.ClientHelper;
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketSelectedFilter;
 import net.minecraft.client.gui.FontRenderer;
@@ -97,7 +97,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         
 		if(filterCurrent == null || !filterCurrent.drawBackground(this)) {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			ClientHelper.getClient().getTextureManager().bindTexture(ResourceReference.SCREEN_SMALL);
+			ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SMALL);
 			this.drawTexturedModalRect(topX, topY, 0, 0, this.xFakeSize(), this.yFakeSize());
 		}
 		

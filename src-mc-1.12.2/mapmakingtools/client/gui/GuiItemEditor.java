@@ -13,7 +13,7 @@ import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiSmallButton;
 import mapmakingtools.container.ContainerItemEditor;
-import mapmakingtools.lib.ResourceReference;
+import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import net.minecraft.client.gui.FontRenderer;
@@ -143,7 +143,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         int topY = (this.height - this.ySize) / 2;
         //this.drawTexturedModalRect(guiXCentre - 175 / 2, guiYCentre - 132 / 2, 0, 0, 175, 132);
         
-        this.mc.getTextureManager().bindTexture(ResourceReference.ITEM_EDITOR_SLOT);
+        this.mc.getTextureManager().bindTexture(ResourceLib.ITEM_EDITOR_SLOT);
         this.drawTexturedModalRect(topX, topY, 0, 0, 35, 35);
         GlStateManager.scale(0.5F, 0.5F, 0.5F);
         this.mc.fontRenderer.drawString("Slot: " + slotIndex, topX + 32, topY + 21, 0);
