@@ -3,8 +3,6 @@ package mapmakingtools.tools.filter;
 import java.util.Arrays;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FilterManager;
@@ -66,8 +64,8 @@ public class VillagerShopClientFilter extends FilterClient {
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
 		gui.setYSize(190);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-	    int topY = (gui.getHeight() - 190) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+	    int topY = gui.getGuiY();
 	    this.btn_ok = new GuiButton(0, topX + 12, topY + 108, 20, 20, "OK");
 	    this.btn_add = new GuiSmallButton(2, topX + 224, topY + 68, 13, 12, "+");
 	    this.btn_remove = new GuiSmallButton(3, topX + 224, topY + 54, 13, 12, "-");
@@ -125,34 +123,26 @@ public class VillagerShopClientFilter extends FilterClient {
 	public List<String> getFilterInfo(IGuiFilter gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagershop.info"));
 	}
-	
-	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 190) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
-	}
 
 	@Override
 	public void drawGuiContainerForegroundLayer(IGuiFilter gui, int xMouse, int yMouse) {
-		GlStateManager.translate((float)-gui.getGuiLeft(), (float)-gui.getGuiTop(), 0.0F);
+		GlStateManager.translate((float)-gui.getGuiX(), (float)-gui.getGuiY(), 0.0F);
 		for(int var1 = 0; var1 < gui.getButtonList().size(); ++var1) {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
     		if(listBt.id >= 4 && listBt.id <= 12) {
         		if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         			List<String> list = Arrays.asList(TextFormatting.BLUE + "Trade " + (listBt.id - 3), "Uses: " + this.recipeUses[listBt.id - 4], "Left Click = " + TextFormatting.RED+ "-1", "Right Click = " + TextFormatting.GREEN + "+1");
-        			gui.drawHoveringText2(list, xMouse, yMouse);
+        			gui.drawHoveringTooltip(list, xMouse, yMouse);
         		}
     		}
     	}
-		GlStateManager.translate((float)gui.getGuiLeft(), (float)gui.getGuiTop(), 0.0F);
+		GlStateManager.translate((float)gui.getGuiX(), (float)gui.getGuiY(), 0.0F);
 	}
 	
 	@Override
 	public void updateScreen(IGuiFilter gui) {
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 190) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 		
 		int recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());
 		    
@@ -230,8 +220,8 @@ public class VillagerShopClientFilter extends FilterClient {
 	public boolean drawBackground(IGuiFilter gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_VILLAGER_SHOP);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 190) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = (gui.getScreenHeight() - 190) / 2;
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 190);
 	    for(int i = 0; i < ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer()) && i < 9; ++i)
 	    	gui.drawTexturedModalRectangle(topX + 19 + (i * 18) + (i * 5), topY + 23, 0, 190, 18, 58);

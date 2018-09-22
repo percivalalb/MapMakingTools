@@ -85,11 +85,11 @@ public class GuiWorldTransfer extends GuiContainer {
 		for(String name : WorldTransferList.getNameList()) {
 			this.fontRenderer.drawStringWithShadow(name, topX + 13, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, -1);
 			this.fontRenderer.drawStringWithShadow("" + WorldTransferList.getAreaFromName(name).size(), topX + 75, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, -1);
-			//GL11.glDisable(GL11.GL_TEXTURE_2D);
+			//GlStateManager.disableTexture2D();
 			
 			//this.drawRect(topX + 135, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, topX + 135 + 7, topY + 50 + i * this.fontRenderer.FONT_HEIGHT + 7, Color.red.getRGB());
 			
-			//GL11.glEnable(GL11.GL_TEXTURE_2D);
+			//GlStateManager.enableTexture2D();
 			
 			i += 1;
 		}

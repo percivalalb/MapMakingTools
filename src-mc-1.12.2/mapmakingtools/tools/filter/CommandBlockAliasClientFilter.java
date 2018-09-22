@@ -53,8 +53,8 @@ public class CommandBlockAliasClientFilter extends FilterClient {
 	@Override
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
         this.fld_alias = new GuiTextFieldNonInteractable(0, gui.getFont(), topX + 20, topY +  45, 200, 20);
         this.fld_alias.setMaxStringLength(32);
         this.btn_ok = new GuiButton(0, topX + 140, topY + 70, 60, 20, "OK");
@@ -128,14 +128,6 @@ public class CommandBlockAliasClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
-	}
-	
-	@Override
 	public void drawToolTips(IGuiFilter gui, int xMouse, int yMouse) {
 		for(int var1 = 0; var1 < gui.getButtonList().size(); ++var1) {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
@@ -145,7 +137,7 @@ public class CommandBlockAliasClientFilter extends FilterClient {
         			List<String> list = new ArrayList<String>();
         			list.add(tab.getCurrentColour(tab.textColourIndex).getName());
         			list.add((tab.textColourIndex + 1) + "/" + GuiButtonTextColour.TextColour.values().length);
-        			gui.drawHoveringText2(list, xMouse, yMouse);
+        			gui.drawHoveringTooltip(list, xMouse, yMouse);
         		}
     		}
     	}

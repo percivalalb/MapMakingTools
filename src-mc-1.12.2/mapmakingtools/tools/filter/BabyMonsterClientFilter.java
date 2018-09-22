@@ -38,8 +38,8 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	@Override
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
         this.btn_covert = new GuiButtonData(0, topX + 20, topY + 37, 200, 20, "Turn into Baby");
         TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
 		if(tile instanceof TileEntityMobSpawner) {
@@ -69,8 +69,8 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
@@ -78,15 +78,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	public List<String> getFilterInfo(IGuiFilter gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.babymonster.info"));
 	}
-	
-	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
-	}
-	
+
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) {
 		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());

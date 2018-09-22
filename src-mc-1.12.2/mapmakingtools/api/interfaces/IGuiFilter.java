@@ -17,14 +17,13 @@ import net.minecraft.world.World;
 public interface IGuiFilter {
 
 	public int xFakeSize();
-	public int yFakeSize();
-	public int getWidth();
-	public int getHeight();
-	public int getGuiTop();
-	public int getGuiLeft();
+	public int getScreenWidth();
+	public int getScreenHeight();
+	public int getGuiY();
+	public int getGuiX();
 	public IContainerFilter getFilterContainer();
 	public void setYSize(int newYSize);
-	public void drawHoveringText2(List<String> text, int mouseX, int mouseY);
+	public void drawHoveringTooltip(List<String> text, int mouseX, int mouseY);
 	
 	public BlockPos getBlockPos();
 	public int getEntityId();

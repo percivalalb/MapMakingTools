@@ -58,8 +58,8 @@ public class EditSignClientFilter extends FilterClient {
 	@Override
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 	    this.btnColourLine1 = new GuiButtonTextColour(0, topX + 25, topY + 22, 20, 20);
 	    this.btnInsert = new GuiButton(1, topX + 15, topY + 46, 40, 20, "Insert");
 	    this.btnOk = new GuiSmallButton(2, topX + (gui.xFakeSize() / 2) - (40 / 2), topY + 80, 40, 16, "Set");
@@ -151,13 +151,5 @@ public class EditSignClientFilter extends FilterClient {
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.signedit.info"));
-	}
-	
-	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
 	}
 }

@@ -51,8 +51,8 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
 		gui.setYSize(135);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 135) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
         this.btn_ok = new GuiButton(0, topX + 140, topY + 101, 60, 20, "OK");
         this.btn_ok.enabled = false;
         this.btn_cancel = new GuiButton(1, topX + 40, topY + 101, 60, 20, "Cancel");
@@ -81,9 +81,8 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	@Override
 	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-	    int topY = (gui.getHeight() - 135) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+	    int topY = gui.getGuiY();
         gui.getFont().drawString("X Coordinate", topX + 20, topY + 27, 4210752);
         gui.getFont().drawString("Y Coordinate", topX + 120, topY + 27, 4210752);
         gui.getFont().drawString("Z Coordinate", topX + 20, topY + 62, 4210752);
@@ -150,8 +149,8 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 135) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
@@ -164,8 +163,8 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	public boolean drawBackground(IGuiFilter gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_MEDIUM);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 135) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 135);
 		return true;
 	}

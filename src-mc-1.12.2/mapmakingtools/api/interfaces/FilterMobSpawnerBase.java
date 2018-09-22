@@ -133,7 +133,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
     			//list.add("NBT: ");
     			//list.add(SpawnerUtil.getMinecartProperties(minecarts.get(tempButton.id - 200)).toString());
     			
-    			gui.drawHoveringText2(list, xMouse, yMouse);
+    			gui.drawHoveringTooltip(list, xMouse, yMouse);
 			}
 		}
 	}

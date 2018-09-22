@@ -56,10 +56,10 @@ public class CustomGiveClientFilter extends FilterClient {
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
 		gui.setYSize(104);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 104) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
         this.btnOk = new GuiButton(0, topX + 20, topY + 61, 20, 20, "OK");
-        this.tempCommand = new GuiTextField(0, gui.getFont(), gui.getWidth() / 2 - 150, topY + 110, 300, 20);
+        this.tempCommand = new GuiTextField(0, gui.getFont(), gui.getScreenWidth() / 2 - 150, topY + 110, 300, 20);
         this.tempCommand.setMaxStringLength(32767);
         this.tempCommand.setEnabled(false);
         this.tempCommand.setText(this.lastText);
@@ -117,19 +117,11 @@ public class CustomGiveClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 104) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
-	}
-	
-	@Override
 	public boolean drawBackground(IGuiFilter gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_ONE_SLOT);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 104) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 104);
 		return true;
 	}

@@ -38,6 +38,9 @@ import net.minecraft.world.World;
  */
 public class GuiFilter extends GuiContainer implements IGuiFilter {
 
+	public static final int FAKE_HEIGHT = 100;
+	public static final int FAKE_WIDTH = 240;
+	
 	//Extra data the class holds
 	public EntityPlayer player;
     public BlockPos pos;
@@ -54,8 +57,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	
 	private GuiFilter(List<FilterClient> filters, EntityPlayer player) {
 		super(new ContainerFilter(FilterManager.getServerFiltersFromList(filters), player));
-		this.xSize = 302;
-        this.ySize = 100;
+		this.xSize = FAKE_WIDTH + 31 * 2; // This stops items being dropped as it covers the tabs
+        this.ySize = FAKE_HEIGHT;
         this.filterList = filters;
         this.player = player;
         this.maxPages = MathHelper.ceil(this.filterList.size() / 6D);
@@ -95,22 +98,24 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
-		int topX = (this.width - this.xFakeSize()) / 2;
-        int topY = (this.height - this.yFakeSize()) / 2;
+		int topXF = (this.width - FAKE_WIDTH) / 2;
+        int topY = (this.height - this.ySize) / 2;
         
 		if(filter == null || !filter.drawBackground(this)) {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SMALL);
-			this.drawTexturedModalRect(topX, topY, 0, 0, this.xFakeSize(), this.yFakeSize());
+			this.drawTexturedModalRect(topXF, topY, 0, 0, FAKE_WIDTH, FAKE_HEIGHT);
 		}
 		
-		if(filter != null)
+		if(filter != null) {
 			filter.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
+			this.fontRenderer.drawString(filter.getFilterName(), topXF - this.fontRenderer.getStringWidth(filter.getFilterName()) / 2 + FAKE_WIDTH / 2, topY + 6, 0);
+		}
 		else {
 			GlStateManager.pushMatrix();
 			double scale = 1.7D;
 			GlStateManager.scale(scale, scale, scale);
-			this.fontRenderer.drawString("Minecraft Filters", (int)((topX + 10) / scale), (int)((topY + 15) / scale), 0);
+			this.fontRenderer.drawString("Minecraft Filters", (int)((topXF + 10) / scale), (int)((topY + 15) / scale), 0);
 			GlStateManager.scale(0.588D, 0.588D, 0.588D);
 			GlStateManager.popMatrix();
 		}
@@ -121,8 +126,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int xMouse, int yMouse) {
-		int topX = (this.width - this.xFakeSize()) / 2;
-        int topY = (this.height - this.yFakeSize()) / 2;
+		int topXF = (this.width - FAKE_WIDTH) / 2;
+        int topY = (this.height - this.ySize) / 2;
         
 		if(filter != null)
 			filter.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
@@ -147,7 +152,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     		else if(button instanceof GuiSmallButton && button.id == 156) {
     			GuiSmallButton smallButton = (GuiSmallButton)button;
         		if(smallButton.isMouseAbove(xMouse, yMouse)) {
-        			List<String> list = this.filter.getFilterInfo(this);
+        			List<String> list = filter.getFilterInfo(this);
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
@@ -184,41 +189,44 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	this.textboxList.clear();
     	this.buttonList.clear();
     	this.labelList.clear();
-    	int topX = (this.width - this.xFakeSize()) / 2;
-        int topY = (this.height - this.yFakeSize()) / 2;
+    	
+    	this.setYSize(FAKE_HEIGHT);
+    	
+    	int topXF = (this.width - FAKE_WIDTH) / 2;
+        int topYF = (this.height - FAKE_HEIGHT) / 2;
 
-        // Left tabs
         for(int i = 0; i < 3; ++i) {
         	int tabIndex = currentPage == -1 ? 0 : currentPage * 6;
+        	int y = topYF + 7 + i * 29;
         	
         	if(this.filterList.size() > tabIndex + i) {
-        		this.buttonList.add(new GuiTabSelect(150 + i, topX - 29, topY + 7 + i * 29, ButtonType.LEFT, filterList.get(tabIndex + i), this));
+        		this.buttonList.add(new GuiTabSelect(150 + i, topXF - (30 - 1), y, ButtonType.LEFT, filterList.get(tabIndex + i), this));
         	}
         	
         	if(this.filterList.size() > tabIndex + i + 3) {
-             	this.buttonList.add(new GuiTabSelect(153 + i, topX + xFakeSize(), topY + 7 + i * 29, ButtonType.RIGHT, filterList.get(tabIndex + i + 3), this));
+             	this.buttonList.add(new GuiTabSelect(153 + i, topXF + FAKE_WIDTH - 1, y, ButtonType.RIGHT, filterList.get(tabIndex + i + 3), this));
             }
         }
 
         if(this.filterList.size() > 6) {
-        	this.buttonList.add(new GuiButton(148, topX + xFakeSize() + 3,  topY - 15, 20, 20, "<"));
-        	this.buttonList.add(new GuiButton(149, topX + xFakeSize() + 26, topY - 15, 20, 20, ">"));
+        	this.buttonList.add(new GuiButton(148, topXF + FAKE_WIDTH + 3,  topYF - 15, 20, 20, "<"));
+        	this.buttonList.add(new GuiButton(149, topXF + FAKE_WIDTH + 26, topYF - 15, 20, 20, ">"));
         }
 
-        this.setYSize(100);
-        
         if(filter != null)
         	filter.initGui(this);
         else {}
         	//this.buttonList.add(new GuiButtonCancel(this, -1, k + 210, l + 70, 112, 220)); //cancel
         
-        int realtopY = (this.height - this.ySize) / 2;
+        int topY = (this.height - this.ySize) / 2;
         
-        if(filter != null && filter.getFilterInfo(this) != null)
-        	this.buttonList.add(new GuiSmallButton(156, topX + 5, realtopY + 4, 13, 12, "?"));
+        if(filter != null) {
+        	if(filter.getFilterInfo(this) != null)
+        		this.buttonList.add(new GuiSmallButton(156, topXF + 5, topY + 4, 13, 12, "?"));
         
-        if(filter != null && filter.hasUpdateButton(this))
-        	this.buttonList.add(new GuiSmallButton(157, topX + 20, realtopY + 4, 8, 8, "" + (char)8595));
+        	if(filter.hasUpdateButton(this))
+        		this.buttonList.add(new GuiSmallButton(157, topXF + 20, topY + 4, 8, 8, "" + (char)8595));
+        }
 	
         for(int i = 0; i < this.buttonList.size(); ++i) {
     		if(this.buttonList.get(i) instanceof GuiTabSelect) {
@@ -239,8 +247,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	if(filter != null)
     		filter.updateScreen(this);
     	
-    	for(int i = 0; i < this.textboxList.size(); ++i)
-        	((GuiTextField)this.textboxList.get(i)).updateCursorCounter();
+    	for(GuiTextField textField : this.textboxList)
+    		textField.updateCursorCounter();
     }
 	
     @Override
@@ -297,8 +305,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	if (charIndex == Keyboard.KEY_ESCAPE)
         		ClientHelper.getClient().player.closeScreen();
         
-        for(int i = 0; i < this.textboxList.size(); ++i)
-        	((GuiTextField)this.textboxList.get(i)).textboxKeyTyped(cha, charIndex);
+        for(GuiTextField textField : this.textboxList)
+        	textField.textboxKeyTyped(cha, charIndex);
     }
     
     @Override
@@ -308,8 +316,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         if(filter != null)
         	filter.mouseClicked(this, xMouse, yMouse, mouseButton);
        
-        for(int i = 0; i < this.textboxList.size(); ++i)
-        	((GuiTextField)this.textboxList.get(i)).mouseClicked(xMouse, yMouse, mouseButton);
+        for(GuiTextField textField : this.textboxList)
+        	textField.mouseClicked(xMouse, yMouse, mouseButton);
     }
     
     public ContainerFilter getContainerFilter() {
@@ -328,107 +336,37 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	}
     }
     
-    protected void drawHoveringText(List<String> text, int mouseX, int mouseY, FontRenderer font) {
-        if(!text.isEmpty()) {
-        	GlStateManager.disableRescaleNormal();
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-            int k = 0;
-            Iterator<String> iterator = text.iterator();
-
-            while (iterator.hasNext()) {
-                String s = (String)iterator.next();
-                int l = font.getStringWidth(s);
-
-                if (l > k)
-                    k = l;
-            }
-
-            int j2 = mouseX + 12;
-            int k2 = mouseY - 12;
-            int i1 = 8;
-
-            if (text.size() > 1)
-                i1 += 2 + (text.size() - 1) * 10;
-
-            if (j2 + k > this.width)
-                j2 -= 28 + k;
-
-            if (k2 + i1 + 6 > this.height)
-                k2 = this.height - i1 - 6;
-
-            this.zLevel = 300.0F;
-            itemRender.zLevel = 300.0F;
-            int j1 = -267386864;
-            this.drawGradientRect(j2 - 3, k2 - 4, j2 + k + 3, k2 - 3, j1, j1);
-            this.drawGradientRect(j2 - 3, k2 + i1 + 3, j2 + k + 3, k2 + i1 + 4, j1, j1);
-            this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 + i1 + 3, j1, j1);
-            this.drawGradientRect(j2 - 4, k2 - 3, j2 - 3, k2 + i1 + 3, j1, j1);
-            this.drawGradientRect(j2 + k + 3, k2 - 3, j2 + k + 4, k2 + i1 + 3, j1, j1);
-            int k1 = 1347420415;
-            int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
-            this.drawGradientRect(j2 - 3, k2 - 3 + 1, j2 - 3 + 1, k2 + i1 + 3 - 1, k1, l1);
-            this.drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
-            this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
-            this.drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
-
-            for (int i2 = 0; i2 < text.size(); ++i2) {
-                String s1 = (String)text.get(i2);
-                font.drawStringWithShadow(s1, j2, k2, -1);
-
-                if (i2 == 0)
-                    k2 += 2;
-
-                k2 += 10;
-            }
-
-            this.zLevel = 0.0F;
-            itemRender.zLevel = 0.0F;
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
-        }
-    }
-    
-    
     ///////////////////////////////  IGuiFilter overridden methods  ///////////////////////////////
     
+    // Size of the main menu that tabs positions are based off
     @Override
     public int xFakeSize() {
-		return 240;
-	}
-	
-    @Override
-	public int yFakeSize() {
-		return 100;
+		return FAKE_WIDTH;
 	}
     
 	@Override
-	public int getWidth() {
+	public int getScreenWidth() {
 		return this.width;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getScreenHeight() {
 		return this.height;
 	}
 	
 	@Override
-	public int getGuiTop() {
+	public int getGuiY() {
 		return this.guiTop;
 	}
 
 	@Override
-	public int getGuiLeft() {
+	public int getGuiX() {
 		return this.guiLeft;
 	}
 	
     @Override
 	public void setYSize(int newYSize) {
 		this.ySize = newYSize;
-        this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 	}
 
@@ -453,7 +391,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	}
     
 	@Override
-	public void drawHoveringText2(List<String> text, int mouseX, int mouseY) {
+	public void drawHoveringTooltip(List<String> text, int mouseX, int mouseY) {
 		this.drawHoveringText(text, mouseX, mouseY, ClientHelper.getClient().fontRenderer);
 	}
 

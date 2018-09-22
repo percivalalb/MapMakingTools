@@ -52,8 +52,8 @@ public class VillagerProfessionClientFilter extends FilterClient {
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
 		gui.setYSize(135);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 135) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
         this.menu = new ScrollMenu<ResourceLocation>((GuiScreen)gui, topX + 8, topY + 19, 227, 108, 2, this.getProfesionList()) {
 
 			@Override
@@ -82,9 +82,6 @@ public class VillagerProfessionClientFilter extends FilterClient {
 	@Override
 	public void drawGuiContainerBackgroundLayer(IGuiFilter baseIn, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(baseIn, partialTicks, xMouse, yMouse);
-		int topX = (baseIn.getWidth() - baseIn.xFakeSize()) / 2;
-	    int topY = (baseIn.getHeight() - 135) / 2;
-        baseIn.getFont().drawString(getFilterName(), topX - baseIn.getFont().getStringWidth(getFilterName()) / 2 + baseIn.xFakeSize() / 2, topY + 7, 0);
         this.menu.drawGuiContainerBackgroundLayer(partialTicks, xMouse, yMouse);
 	}
 	
@@ -98,8 +95,8 @@ public class VillagerProfessionClientFilter extends FilterClient {
 	public boolean drawBackground(IGuiFilter gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SCROLL);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - 135) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
 		gui.drawTexturedModalRectangle(topX, topY, 0, 0, gui.xFakeSize(), 135);
 		return true;
 	}

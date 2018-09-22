@@ -46,8 +46,8 @@ public class ChestSymmetrifyClientFilter extends FilterClient {
 	@Override
 	public void initGui(IGuiFilter gui) {
 		super.initGui(gui);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
+		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
+        int topY = gui.getGuiY();
         this.btn_covert = new GuiButtonData(0, topX + 20, topY + 37, 200, 20, "Symmetrify");
 		
         gui.getButtonList().add(this.btn_covert);
@@ -69,13 +69,5 @@ public class ChestSymmetrifyClientFilter extends FilterClient {
 	@Override
 	public List<String> getFilterInfo(IGuiFilter gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.chestsymmetrify.info"));
-	}
-	
-	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
-		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
-		int topX = (gui.getWidth() - gui.xFakeSize()) / 2;
-        int topY = (gui.getHeight() - gui.yFakeSize()) / 2;
-        gui.getFont().drawString(getFilterName(), topX - gui.getFont().getStringWidth(getFilterName()) / 2 + gui.xFakeSize() / 2, topY + 10, 0);
 	}
 }
