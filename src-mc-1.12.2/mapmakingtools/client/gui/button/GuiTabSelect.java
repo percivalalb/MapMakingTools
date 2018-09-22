@@ -40,10 +40,12 @@ public class GuiTabSelect extends GuiButton {
             boolean selected = this.isSelected;
             
             this.drawTexturedModalRect(this.x + (selected ? -2 : 0), this.y, error ? (selected ? 94 : 64) : (selected ? 30 : 0), (left ? 28 : 0), selected ? 34 : 30, 28);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            mc.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
             
+            if(error)
+            	GlStateManager.color(0.7F, 0.25F, 0.25F, 1.0F);
+            mc.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
             Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 4 : 0), this.y + 6, 0, 0, 16, 16, 16, 16);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
     	}
 	}
