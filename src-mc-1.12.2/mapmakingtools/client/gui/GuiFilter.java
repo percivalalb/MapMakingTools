@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 /**
@@ -44,8 +45,9 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	public TargetType mode;
 	
 	private List<FilterClient> filterList;
-	private static FilterClient filterCurrent;
-	private static int currentPage = 1;
+	private static FilterClient filter;
+	
+	private static int currentPage = 0;
 	private int maxPages = 1;
 	
 	private List<GuiTextField> textboxList = new ArrayList<>();
@@ -56,15 +58,15 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         this.ySize = 100;
         this.filterList = filters;
         this.player = player;
-        this.maxPages = (this.filterList.size() + (filterList.size() % 6)) / 6;
+        this.maxPages = MathHelper.ceil(this.filterList.size() / 6D);
         
         //If the last selected filter is not in this new gui reset it
-        if(!this.filterList.contains(filterCurrent)) {
-        	filterCurrent = null;
-        	currentPage = 1;
+        if(!this.filterList.contains(filter)) {
+        	filter = null;
+        	currentPage = 0;
         }
         else {
-        	int index = this.filterList.indexOf(filterCurrent);
+        	int index = this.filterList.indexOf(filter);
         	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
         	this.getContainerFilter().setSelected(index);
         }
@@ -96,14 +98,14 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		int topX = (this.width - this.xFakeSize()) / 2;
         int topY = (this.height - this.yFakeSize()) / 2;
         
-		if(filterCurrent == null || !filterCurrent.drawBackground(this)) {
+		if(filter == null || !filter.drawBackground(this)) {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SMALL);
 			this.drawTexturedModalRect(topX, topY, 0, 0, this.xFakeSize(), this.yFakeSize());
 		}
 		
-		if(filterCurrent != null)
-			filterCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
+		if(filter != null)
+			filter.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
 		else {
 			GlStateManager.pushMatrix();
 			double scale = 1.7D;
@@ -113,8 +115,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 			GlStateManager.popMatrix();
 		}
 		
-		for(int i = 0; i < this.textboxList.size(); ++i)
-        	((GuiTextField)this.textboxList.get(i)).drawTextBox();
+		for(GuiTextField textField : this.textboxList) 
+			textField.drawTextBox();
 	}
 	
 	@Override
@@ -122,29 +124,30 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		int topX = (this.width - this.xFakeSize()) / 2;
         int topY = (this.height - this.yFakeSize()) / 2;
         
-		if(filterCurrent != null)
-			filterCurrent.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
+		if(filter != null)
+			filter.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
 		
 		GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
-		for(int var1 = 0; var1 < this.buttonList.size(); ++var1) {
-    		GuiButton listBt = (GuiButton)this.buttonList.get(var1);
-    		if(listBt instanceof GuiTabSelect) {
-        		GuiTabSelect button = (GuiTabSelect)listBt;
-        		if(button.isMouseAbove(xMouse, yMouse)) {
+		for(GuiButton button : this.buttonList) {
+			
+    		if(button instanceof GuiTabSelect) {
+        		GuiTabSelect tabButton = (GuiTabSelect)button;
+        		if(tabButton.isMouseAbove(xMouse, yMouse)) {
+        			
         			List<String> list = new ArrayList<String>();
-        			list.add(button.filter.getFilterName());
-        			if(button.filter.showErrorIcon(this)) {
-        				String errorMessage = button.filter.getErrorMessage(this);
+        			list.add(tabButton.filter.getFilterName());
+        			if(tabButton.filter.showErrorIcon(this)) {
+        				String errorMessage = tabButton.filter.getErrorMessage(this);
         				if(errorMessage != null)
         					list.add(errorMessage);
         			}
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
-    		else if(listBt instanceof GuiSmallButton && listBt.id == 156) {
-    			GuiSmallButton button = (GuiSmallButton)listBt;
-        		if(button.isMouseAbove(xMouse, yMouse)) {
-        			List<String> list = this.filterCurrent.getFilterInfo(this);
+    		else if(button instanceof GuiSmallButton && button.id == 156) {
+    			GuiSmallButton smallButton = (GuiSmallButton)button;
+        		if(smallButton.isMouseAbove(xMouse, yMouse)) {
+        			List<String> list = this.filter.getFilterInfo(this);
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
@@ -168,8 +171,9 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         	//	}
     		//}
     	}
-		if(filterCurrent != null)
-			filterCurrent.drawToolTips(this, xMouse, yMouse);
+		if(filter != null)
+			filter.drawToolTips(this, xMouse, yMouse);
+		
 		GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
     }
 
@@ -183,25 +187,19 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     	int topX = (this.width - this.xFakeSize()) / 2;
         int topY = (this.height - this.yFakeSize()) / 2;
 
-        if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 6) {
-            this.buttonList.add(new GuiTabSelect(150, topX - 29, topY + 7, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 6), this));
+        // Left tabs
+        for(int i = 0; i < 3; ++i) {
+        	int tabIndex = currentPage == -1 ? 0 : currentPage * 6;
+        	
+        	if(this.filterList.size() > tabIndex + i) {
+        		this.buttonList.add(new GuiTabSelect(150 + i, topX - 29, topY + 7 + i * 29, ButtonType.LEFT, filterList.get(tabIndex + i), this));
+        	}
+        	
+        	if(this.filterList.size() > tabIndex + i + 3) {
+             	this.buttonList.add(new GuiTabSelect(153 + i, topX + xFakeSize(), topY + 7 + i * 29, ButtonType.RIGHT, filterList.get(tabIndex + i + 3), this));
+            }
         }
-        if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 5) {
-        	this.buttonList.add(new GuiTabSelect(151, topX - 29, topY + 36, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 5), this));
-        }
-        if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 4) {
-        	this.buttonList.add(new GuiTabSelect(152, topX - 29, topY + 65, ButtonType.LEFT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 4), this));
-        }
-        if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 3) {
-        	this.buttonList.add(new GuiTabSelect(153, topX + xFakeSize() - 1, topY + 7, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 3), this));
-        }
-        if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 2) {
-        	this.buttonList.add(new GuiTabSelect(154, topX + xFakeSize() - 1, topY + 36, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 2), this));
-        }
-        if(this.filterList.size() > (currentPage == 0 ? 1 : currentPage) * 6 - 1) {
-        	this.buttonList.add(new GuiTabSelect(155, topX + xFakeSize() - 1, topY + 65, ButtonType.RIGHT, filterList.get((currentPage == 0 ? 1 : currentPage) * 6 - 1), this));
-        }
-        
+
         if(this.filterList.size() > 6) {
         	this.buttonList.add(new GuiButton(148, topX + xFakeSize() + 3,  topY - 15, 20, 20, "<"));
         	this.buttonList.add(new GuiButton(149, topX + xFakeSize() + 26, topY - 15, 20, 20, ">"));
@@ -209,24 +207,24 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 
         this.setYSize(100);
         
-        if(filterCurrent != null)
-        	filterCurrent.initGui(this);
+        if(filter != null)
+        	filter.initGui(this);
         else {}
         	//this.buttonList.add(new GuiButtonCancel(this, -1, k + 210, l + 70, 112, 220)); //cancel
         
         int realtopY = (this.height - this.ySize) / 2;
         
-        if(filterCurrent != null && filterCurrent.getFilterInfo(this) != null)
+        if(filter != null && filter.getFilterInfo(this) != null)
         	this.buttonList.add(new GuiSmallButton(156, topX + 5, realtopY + 4, 13, 12, "?"));
         
-        if(filterCurrent != null && filterCurrent.hasUpdateButton(this))
+        if(filter != null && filter.hasUpdateButton(this))
         	this.buttonList.add(new GuiSmallButton(157, topX + 20, realtopY + 4, 8, 8, "" + (char)8595));
 	
         for(int i = 0; i < this.buttonList.size(); ++i) {
     		if(this.buttonList.get(i) instanceof GuiTabSelect) {
         		GuiTabSelect tab = (GuiTabSelect)(GuiButton)this.buttonList.get(i);
-        		if(tab.filter == filterCurrent) {
-        			int index = this.filterList.indexOf(filterCurrent);
+        		if(tab.filter == filter) {
+        			int index = this.filterList.indexOf(filter);
         			this.getContainerFilter().setSelected(index);
         			PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
 
@@ -238,8 +236,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 
 	@Override
     public void updateScreen() {
-    	if(filterCurrent != null)
-    		filterCurrent.updateScreen(this);
+    	if(filter != null)
+    		filter.updateScreen(this);
     	
     	for(int i = 0; i < this.textboxList.size(); ++i)
         	((GuiTextField)this.textboxList.get(i)).updateCursorCounter();
@@ -253,8 +251,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     
     @Override
 	public void actionPerformed(GuiButton button) {
-        if(filterCurrent != null)
-        	filterCurrent.actionPerformed(this, button);
+        if(filter != null)
+        	filter.actionPerformed(this, button);
     	
     	if (button.enabled) {
             switch (button.id) {
@@ -263,13 +261,13 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
             		break;
             
             	case 148:
-            		if(this.currentPage > 1) {
+            		if(currentPage > 0) {
             			--currentPage;
             			this.initGui();
             		}
             		break;
             	case 149:
-            		if(this.currentPage <= maxPages) {
+            		if(currentPage < maxPages - 1) {
             			++currentPage;
             			this.initGui();
             		}
@@ -284,7 +282,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
                 		unSelectBut((GuiTabSelect)button);
                 	break;
                 case 157:
-                	filterCurrent.updateButtonClicked(this);
+                	filter.updateButtonClicked(this);
                 default:
             }
         }
@@ -292,10 +290,10 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     
     @Override
     protected void keyTyped(char cha, int charIndex) {
-        if(filterCurrent != null)
-        	filterCurrent.keyTyped(this, cha, charIndex);
+        if(filter != null)
+        	filter.keyTyped(this, cha, charIndex);
         
-        if(filterCurrent == null || filterCurrent.doClosingKeysWork(this, cha, charIndex))
+        if(filter == null || filter.doClosingKeysWork(this, cha, charIndex))
         	if (charIndex == Keyboard.KEY_ESCAPE)
         		ClientHelper.getClient().player.closeScreen();
         
@@ -307,8 +305,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     protected void mouseClicked(int xMouse, int yMouse, int mouseButton) throws IOException {
         super.mouseClicked(xMouse, yMouse, mouseButton);
         
-        if(filterCurrent != null)
-        	filterCurrent.mouseClicked(this, xMouse, yMouse, mouseButton);
+        if(filter != null)
+        	filter.mouseClicked(this, xMouse, yMouse, mouseButton);
        
         for(int i = 0; i < this.textboxList.size(); ++i)
         	((GuiTextField)this.textboxList.get(i)).mouseClicked(xMouse, yMouse, mouseButton);
@@ -319,7 +317,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
     }
     
     public void unSelectBut(GuiTabSelect button) {
-    	filterCurrent = button.filter;
+    	filter = button.filter;
     	this.initGui();
     	for(int i = 0; i < this.buttonList.size(); ++i) {
     		GuiButton listBt = (GuiButton)this.buttonList.get(i);

@@ -44,8 +44,6 @@ public class GuiTabSelect extends GuiButton {
             mc.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
             
             Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 4 : 0), this.y + 6, 0, 0, 16, 16, 16, 16);
-            
-            mc.getTextureManager().bindTexture(ResourceLib.getCached("textures/filter/error.png"));
             GlStateManager.popMatrix();
     	}
 	}
