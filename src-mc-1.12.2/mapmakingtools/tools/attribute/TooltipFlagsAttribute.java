@@ -96,7 +96,6 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
 		itemEditor.getFontRenderer().drawString("Enchantment", x + 6, y + 25, 10526880);
 		itemEditor.getFontRenderer().drawString("Attribute Modifiers", x + 6, y + 47, 10526880);
 		itemEditor.getFontRenderer().drawString("Unbreakable", x + 6, y + 69, 10526880);

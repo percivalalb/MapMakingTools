@@ -109,7 +109,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 		
 		if(filter != null) {
 			filter.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
-			this.fontRenderer.drawString(filter.getFilterName(), topXF - this.fontRenderer.getStringWidth(filter.getFilterName()) / 2 + FAKE_WIDTH / 2, topY + 6, 0);
+			this.fontRenderer.drawString(filter.getFilterName(), topXF - this.fontRenderer.getStringWidth(filter.getFilterName()) / 2 + FAKE_WIDTH / 2, topY + 6, 1);
 		}
 		else {
 			GlStateManager.pushMatrix();

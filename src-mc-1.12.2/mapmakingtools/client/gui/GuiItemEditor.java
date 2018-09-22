@@ -139,6 +139,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         Gui.drawRect(150, this.guiTop, this.guiLeft + this.xSize, this.guiTop + this.ySize, new Color(255, 255, 255, 75).getRGB());
         
         if(itemCurrent != null) {
+        	this.fontRenderer.drawString(itemCurrent.getAttributeName(), 152, this.guiTop + 2, 1);
         	itemCurrent.drawInterface(this, 150, this.guiTop, this.guiLeft + this.xSize - 150, this.ySize);
         	itemCurrent.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
         }

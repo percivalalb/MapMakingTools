@@ -111,7 +111,7 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
 		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-		if(minecarts.size() <= 0) return true;
+		if(minecarts.size() <= minecartIndex) return true;
 		WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
 		String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
 		if(mobId.equals("minecraft:zombie") || mobId.equals("minecraft:zombie_pigman") || mobId.equals("minecraft:skeleton")) {
