@@ -2,8 +2,8 @@ package mapmakingtools.tools.attribute;
 
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NBTUtil;
 import mapmakingtools.helper.Numbers;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;

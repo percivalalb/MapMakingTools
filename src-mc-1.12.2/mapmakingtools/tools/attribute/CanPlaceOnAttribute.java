@@ -7,7 +7,7 @@ import java.util.List;
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
-import mapmakingtools.helper.NBTUtil;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
