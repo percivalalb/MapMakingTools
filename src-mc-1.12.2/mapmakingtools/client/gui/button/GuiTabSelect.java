@@ -32,23 +32,20 @@ public class GuiTabSelect extends GuiButton {
     public void drawButton(Minecraft mc, int i, int j, float partialTicks) {
         if(this.visible) {
         	GlStateManager.pushMatrix();
-        	FontRenderer fontRenderer = mc.fontRenderer;
         	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         	mc.getTextureManager().bindTexture(ResourceLib.TABS);
         	
         	boolean error = this.filter.showErrorIcon(this.gui);
             boolean left = this.type == ButtonType.LEFT;
+            boolean selected = this.isSelected;
             
-            this.drawTexturedModalRect(this.x + (this.isSelected ? -2 : 0), this.y, this.isSelected ? 30 : 0, (left ? 28 : 0), this.isSelected ? 34 : 30, 28);//top left
+            this.drawTexturedModalRect(this.x + (selected ? -2 : 0), this.y, error ? (selected ? 94 : 64) : (selected ? 30 : 0), (left ? 28 : 0), selected ? 34 : 30, 28);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             mc.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
             
-            Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 3 : 0), this.y + 5, 0, 0, 16, 16, 16, 16);
+            Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 4 : 0), this.y + 6, 0, 0, 16, 16, 16, 16);
             
             mc.getTextureManager().bindTexture(ResourceLib.getCached("textures/filter/error.png"));
-            if(error) {
-            	Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 3 : 0), this.y + 5, 0, 0, 16, 16, 16, 16);
-            }
             GlStateManager.popMatrix();
     	}
 	}
