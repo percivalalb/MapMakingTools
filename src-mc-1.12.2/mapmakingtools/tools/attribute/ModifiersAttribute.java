@@ -157,7 +157,6 @@ public class ModifiersAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
 		itemEditor.getFontRenderer().drawString("OP", x + 250, y + 25, 16777120);
 		for(int i = 0; i < MODIFIERS.length; i++)
 			itemEditor.getFontRenderer().drawString(I18n.translateToLocal("attribute.name." + MODIFIERS[i].attributeName), x + 6, y + 42 + i * 17, 16777120);

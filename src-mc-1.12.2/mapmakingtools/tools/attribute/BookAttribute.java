@@ -83,7 +83,6 @@ public class BookAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
 		itemEditor.getFontRenderer().drawString("Title", x + 2, y + 17, -1);
 		itemEditor.getFontRenderer().drawString("Author", x + 86, y + 17, -1);
 		itemEditor.getFontRenderer().drawString("Generation", x + 170, y + 17, -1);

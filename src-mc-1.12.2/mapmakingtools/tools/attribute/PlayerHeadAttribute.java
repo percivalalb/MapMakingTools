@@ -45,7 +45,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
+		
 	}
 
 	@Override

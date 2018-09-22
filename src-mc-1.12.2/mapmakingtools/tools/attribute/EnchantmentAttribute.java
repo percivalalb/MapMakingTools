@@ -89,7 +89,6 @@ public class EnchantmentAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
 		if(Strings.isNullOrEmpty(this.fld_lvl.getText()) && !this.fld_lvl.isFocused()) {
 			itemEditor.getFontRenderer().drawString("Level", x + 6, y + height / 2 - 17, 13882323);
 		}

@@ -117,7 +117,6 @@ public class PotionAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString(this.getAttributeName(), x + 2, y + 2, 1);
 		if(Strings.isNullOrEmpty(this.fld_lvl.getText()) && !this.fld_lvl.isFocused()) {
 			itemEditor.getFontRenderer().drawString("Level", x + 6, y + height / 2 - 17, 13882323);
 		}
@@ -171,8 +170,6 @@ public class PotionAttribute extends IItemAttribute {
 				String[] split = listStr.split(" ~~~ ");
 				
 				Potion potion = Potion.getPotionById(Numbers.parse(split[0]));
-				
-				
 				
 				if(potion == null)
 					return listStr;
