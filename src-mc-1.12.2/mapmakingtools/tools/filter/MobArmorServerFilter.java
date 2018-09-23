@@ -5,13 +5,14 @@ import java.util.Map;
 
 import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotArmor;
 import mapmakingtools.container.SlotFake;
 import mapmakingtools.container.SlotFakeArmor;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class MobArmorServerFilter extends FilterServer {
 
 	private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
-	public static Map<String, InventoryUnlimited> invMap = new Hashtable<String, InventoryUnlimited>();
+	public static Map<String, IInventory> invMap = new Hashtable<String, IInventory>();
 	
 	@Override
 	public void addSlots(IContainerFilter container) {
@@ -107,7 +108,6 @@ public class MobArmorServerFilter extends FilterServer {
 	            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(k);
 
 	            this.getInventory(username).setInventorySlotContents(k, new ItemStack(nbttagcompound1.getCompoundTag("item")));
-	            this.getInventory(username).umlimited[k] = nbttagcompound1.getBoolean("isUnlimited");
 	        }
 		}
 	}
@@ -122,7 +122,6 @@ public class MobArmorServerFilter extends FilterServer {
 			NBTTagList nbttaglist = new NBTTagList();
 			for(int i = 0; i < this.getInventory(key).getSizeInventory(); ++i) {
 				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-				nbttagcompound1.setBoolean("isUnlimited", this.getInventory(key).isSlotUnlimited(i));
 				data.setTag("item", this.getInventory(key).getStackInSlot(i).writeToNBT(new NBTTagCompound()));
 
 				nbttaglist.appendTag(nbttagcompound1);
@@ -134,13 +133,13 @@ public class MobArmorServerFilter extends FilterServer {
 		return tag;
 	}
 	
-	public InventoryUnlimited getInventory(IContainerFilter containerFilter) {
+	public IInventory getInventory(IContainerFilter containerFilter) {
 		return this.getInventory(containerFilter.getPlayer().getName().toLowerCase());
 	}
 	
-	public InventoryUnlimited getInventory(String username) {
+	public IInventory getInventory(String username) {
 	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new InventoryUnlimited("Mob Armour", false, 6));
+	    	invMap.put(username, new InventoryBasic("Mob Armour", false, 6));
 	    	
 		return invMap.get(username);
 	}

@@ -5,9 +5,10 @@ import java.util.Map;
 
 import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +23,7 @@ import net.minecraft.world.World;
  */
 public class CustomGiveServerFilter extends FilterServer {
 
-	public static Map<String, InventoryUnlimited> invMap = new Hashtable<String, InventoryUnlimited>();
+	public static Map<String, IInventory> invMap = new Hashtable<String, IInventory>();
 	
 	@Override
 	public void addSlots(IContainerFilter container) {
@@ -61,7 +62,6 @@ public class CustomGiveServerFilter extends FilterServer {
 			if(data.hasKey("item")) {
 				ItemStack stack = new ItemStack(data.getCompoundTag("item"));
 				this.getInventory(username).setInventorySlotContents(0, stack);
-				this.getInventory(username).setSlotUnlimited(0, isUnlimited);
 			}
 		}
 	}
@@ -72,7 +72,6 @@ public class CustomGiveServerFilter extends FilterServer {
 		for(String key : invMap.keySet()) {
 			NBTTagCompound data = new NBTTagCompound();
 			data.setString("username", key);
-			data.setBoolean("isUnlimited", this.getInventory(key).isSlotUnlimited(0));
 			if(!this.getInventory(key).getStackInSlot(0).isEmpty())
 				data.setTag("item", this.getInventory(key).getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 			list.appendTag(data);
@@ -81,13 +80,13 @@ public class CustomGiveServerFilter extends FilterServer {
 		return tag; 
 	}
 	
-	public InventoryUnlimited getInventory(IContainerFilter containerFilter) {
+	public IInventory getInventory(IContainerFilter containerFilter) {
 		return this.getInventory(containerFilter.getPlayer().getName().toLowerCase());
 	}
 	
-	public InventoryUnlimited getInventory(String username) {
+	public IInventory getInventory(String username) {
 	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new InventoryUnlimited("Custom Give", false, 1));
+	    	invMap.put(username, new InventoryBasic("Custom Give", false, 1));
 	    	
 		return invMap.get(username);
 	}

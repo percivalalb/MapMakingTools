@@ -5,10 +5,10 @@ import java.util.Map;
 
 import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
  */
 public class FillInventoryServerFilter extends FilterServer {
 
-	public static Map<String, FillInventory> invMap = new Hashtable<String, FillInventory>();
+	public static Map<String, IInventory> invMap = new Hashtable<String, IInventory>();
 	
 	@Override
 	public void addSlots(IContainerFilter container) {
@@ -57,11 +57,9 @@ public class FillInventoryServerFilter extends FilterServer {
 		for(int i = 0; i < list.tagCount(); ++i) {
 			NBTTagCompound data = list.getCompoundTagAt(i);
 			String username = data.getString("username");
-			boolean isUnlimited = data.getBoolean("isUnlimited");
 			if(data.hasKey("item")) {
 				ItemStack stack = new ItemStack(data.getCompoundTag("item"));
 				this.getInventory(username).setInventorySlotContents(0, stack);
-				this.getInventory(username).setSlotUnlimited(0, isUnlimited);
 			}
 		}
 	}
@@ -72,7 +70,6 @@ public class FillInventoryServerFilter extends FilterServer {
 		for(String key : invMap.keySet()) {
 			NBTTagCompound data = new NBTTagCompound();
 			data.setString("username", key);
-			data.setBoolean("isUnlimited", this.getInventory(key).isSlotUnlimited(0));
 			if(!this.getInventory(key).getStackInSlot(0).isEmpty())
 				data.setTag("item", this.getInventory(key).getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 			list.appendTag(data);
@@ -81,38 +78,14 @@ public class FillInventoryServerFilter extends FilterServer {
 		return tag; 
 	}
 	
-	public FillInventory getInventory(IContainerFilter containerFilter) {
-		String username = containerFilter.getPlayer().getName().toLowerCase();
-	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new FillInventory(1));
-	    	
-		return invMap.get(username);
+	public IInventory getInventory(IContainerFilter containerFilter) {
+		return this.getInventory(containerFilter.getPlayer().getName().toLowerCase());
 	}
 	
-	public FillInventory getInventory(String username) {
+	public IInventory getInventory(String username) {
 	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new FillInventory(1));
+	    	invMap.put(username, new InventoryBasic("Fill Inventory", false, 1));
 	    	
 		return invMap.get(username);
-	}
-
-	public class FillInventory extends InventoryUnlimited {
-
-		public boolean[] umlimited;
-		
-		public FillInventory(int inventorySize) {
-			super("Fill Inventory", false, inventorySize);
-			this.umlimited = new boolean[inventorySize];
-		}
-		
-		@Override
-		public boolean isSlotUnlimited(int slotIndex) {
-			return this.umlimited[slotIndex];
-		}
-		
-		@Override
-		public void setSlotUnlimited(int slotIndex, boolean isUnlimited) {
-			this.umlimited[slotIndex] = isUnlimited;
-		}
 	}
 }
