@@ -2,6 +2,7 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
+import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
@@ -14,11 +15,16 @@ import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -26,6 +32,12 @@ import net.minecraft.util.text.translation.I18n;
 public class MobArmorClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButton btnOk;
+	
+	@Override
+	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
+		FMLLog.info("TEASDWAE");
+		return entityIn instanceof EntityLiving; 
+	}
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -45,8 +57,10 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
         int topY = gui.getGuiY();
         this.btnOk = new GuiButton(0, topX + 12, topY + 93, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
-        this.addMinecartButtons(gui, topX, topY);
-        this.onMinecartIndexChange(gui);
+        if(gui.getTargetType() == TargetType.BLOCK) {
+	        this.addMinecartButtons(gui, topX, topY);
+	        this.onMinecartIndexChange(gui);
+        }
 	}
 
 	@Override
@@ -65,7 +79,7 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketMobArmor(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
+                	PacketDispatcher.sendToServer(new PacketMobArmor(FilterMobSpawnerBase.minecartIndex));
             		ClientHelper.getClient().player.closeScreen();
                     break;
             }
@@ -76,7 +90,8 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+        if(gui.getTargetType() == TargetType.BLOCK)
+        	this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override
@@ -99,26 +114,30 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void updateButtonClicked(IGuiFilter gui) {
-		if(!showErrorIcon(gui))
+		if(gui.getTargetType() == TargetType.BLOCK && !showErrorIcon(gui))
 			PacketDispatcher.sendToServer(new PacketMobArmorUpdate(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
 	}
 	
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) { 
-		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(!(tile instanceof TileEntityMobSpawner))
-			return true;
-		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-		
-		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-		if(minecarts.size() <= minecartIndex) return true;
-		WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
-		String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
-		if(mobId.equals("minecraft:zombie") || mobId.equals("minecraft:zombie_pigman") || mobId.equals("minecraft:skeleton")) {
-			return false;
+		if(gui.getTargetType() == TargetType.BLOCK) {
+			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(!(tile instanceof TileEntityMobSpawner))
+				return true;
+			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+			
+			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			if(minecarts.size() <= minecartIndex) return true;
+			WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
+			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
+			if(mobId.equals("minecraft:zombie") || mobId.equals("minecraft:zombie_pigman") || mobId.equals("minecraft:skeleton")) {
+				return false;
+			}
+			
+			return true; 
 		}
 		
-		return true; 
+		return false;
 	}
 	
 	@Override

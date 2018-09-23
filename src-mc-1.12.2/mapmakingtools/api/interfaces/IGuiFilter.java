@@ -2,6 +2,7 @@ package mapmakingtools.api.interfaces;
 
 import java.util.List;
 
+import mapmakingtools.api.enums.TargetType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
@@ -25,8 +26,11 @@ public interface IGuiFilter {
 	public void setYSize(int newYSize);
 	public void drawHoveringTooltip(List<String> text, int mouseX, int mouseY);
 	
+	public TargetType getTargetType();
 	public BlockPos getBlockPos();
 	public int getEntityId();
+	public Entity getEntity();
+	
 	public World getWorld();
 	public EntityPlayer getPlayer();
 	public List<GuiLabel> getLabelList();
@@ -34,5 +38,4 @@ public interface IGuiFilter {
 	public List<GuiTextField> getTextBoxList();
 	public FontRenderer getFont();
 	public void drawTexturedModalRectangle(int par1, int par2, int par3, int par4, int par5, int par6);
-	public Entity getEntity();
 }

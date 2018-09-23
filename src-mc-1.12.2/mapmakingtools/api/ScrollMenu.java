@@ -103,7 +103,6 @@ public abstract class ScrollMenu<T> {
         		int index = r * this.noCol + c;
         		if(index >= this.elements.size()) break;
         		
-	        	
 	            int posX = this.x + 2 + (columnSize * c);
 	            int posY = this.y + (ELEMENT_HEIGHT * r) + 2 - this.scrollY;
 	

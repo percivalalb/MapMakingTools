@@ -162,6 +162,11 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	}
 
 	@Override
+	public TargetType getTargetType() {
+		return this.mode;
+	}
+	
+	@Override
 	public BlockPos getBlockPos() {
 		return this.pos;
 	}
@@ -169,6 +174,11 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	@Override
 	public int getEntityId() {
 		return this.entityId;
+	}
+	
+	@Override
+	public Entity getEntity() {
+		return this.getWorld().getEntityByID(this.getEntityId());
 	}
 
 	@Override
@@ -179,10 +189,5 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	@Override
 	public FilterServer getCurrentFilter() {
 		return this.filterCurrent;
-	}
-
-	@Override
-	public Entity getEntity() {
-		return this.getWorld().getEntityByID(this.getEntityId());
 	}
 }

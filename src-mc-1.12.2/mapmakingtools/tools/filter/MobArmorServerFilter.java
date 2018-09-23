@@ -5,6 +5,7 @@ import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.SlotArmor;
 import mapmakingtools.container.SlotFake;
 import mapmakingtools.container.SlotFakeArmor;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -21,6 +22,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class MobArmorServerFilter extends FilterServerInventory {
 
 	private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
+	
+	@Override
+	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
+		return entityIn instanceof EntityLiving; 
+	}
 	
 	@Override
 	public void addSlots(IContainerFilter container) {

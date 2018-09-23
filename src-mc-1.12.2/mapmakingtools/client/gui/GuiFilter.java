@@ -368,6 +368,11 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	}
 
 	@Override
+	public TargetType getTargetType() {
+		return this.mode;
+	}
+    
+	@Override
 	public BlockPos getBlockPos() {
 		return this.pos;
 	}
@@ -375,6 +380,11 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	@Override
 	public int getEntityId() {
 		return this.entityId;
+	}
+	
+	@Override
+	public Entity getEntity() {
+		return this.getWorld().getEntityByID(this.getEntityId());
 	}
 	
 	@Override
@@ -420,10 +430,5 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	@Override
 	public IContainerFilter getFilterContainer() {
 		return (IContainerFilter)this.inventorySlots;
-	}
-	
-	@Override
-	public Entity getEntity() {
-		return this.getWorld().getEntityByID(this.getEntityId());
 	}
 }

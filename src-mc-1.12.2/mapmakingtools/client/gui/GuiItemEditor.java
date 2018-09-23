@@ -32,7 +32,7 @@ import net.minecraft.util.math.MathHelper;
  */
 public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
-	private static final int ATTRIBUTE_BUTTON_ID_START = 100;
+	private static final int BUTTON_ID_START = 100;
 	
 	private int slotIndex;
 	private EntityPlayer player;
@@ -105,7 +105,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     		int index = this.currentPage * perPage + i;
     		if(index >= size) continue;
     		IItemAttribute item = this.itemList.get(index);
-    		GuiButtonSmall button = new GuiButtonSmall(ATTRIBUTE_BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
+    		GuiButtonSmall button = new GuiButtonSmall(BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
     		button.enabled = this.itemMap.get(item);
     		this.buttonList.add(button);
     	}
@@ -212,8 +212,8 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         		}
 			}
 			
-        	else if(button.id >= ATTRIBUTE_BUTTON_ID_START && button.id < ATTRIBUTE_BUTTON_ID_START + this.itemList.size()) {
-				itemCurrent = this.itemList.get(button.id - ATTRIBUTE_BUTTON_ID_START);
+        	else if(button.id >= BUTTON_ID_START && button.id < BUTTON_ID_START + this.itemList.size()) {
+				itemCurrent = this.itemList.get(button.id - BUTTON_ID_START);
 				this.initGui();
 			}
 		}
