@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,11 +22,10 @@ import net.minecraft.village.MerchantRecipeList;
 /**
  * @author ProPercivalalb
  */
-public class VillagerShopServerFilter extends FilterServer {
+public class VillagerShopServerFilter extends FilterServerInventory {
 
 	public static Map<UUID, Integer> maxRecipesMap = new Hashtable<UUID, Integer>();
 	public static Map<UUID, Integer> tradeCountMap = new Hashtable<UUID, Integer>();
-	public static Map<UUID, VillagerShopInventory> invMap = new Hashtable<UUID, VillagerShopInventory>();
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, Entity entity) {
@@ -51,32 +52,34 @@ public class VillagerShopServerFilter extends FilterServer {
 	}
 	
 	public void addOnlySlots(IContainerFilter container) {
+		EntityPlayer player = container.getPlayer();
+		IInventory inventory = this.getInventory(container);
+		
 		container.getInventorySlots().clear();
 		
 		for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 9; ++j)
-				container.addSlot(new Slot(container.getPlayer().inventory, j + i * 9 + 9, 40 + j * 18, 109 + i * 18));
+				container.addSlot(new Slot(player.inventory, j + i * 9 + 9, 40 + j * 18, 109 + i * 18));
 		
 		for (int i = 0; i < 9; ++i)
-	    	container.addSlot(new Slot(container.getPlayer().inventory, i, 40 + i * 18, 167));
+	    	container.addSlot(new Slot(player.inventory, i, 40 + i * 18, 167));
 
-	    for (int i = 0; i < this.getAmountRecipes(container.getPlayer()) && i < 9; ++i) {
-	    	container.addSlot(new SlotFake(this.getInventory(container), i * 3, 	20 + (i * 18) + (i * 5), 24));
-	    	container.addSlot(new SlotFake(this.getInventory(container), i * 3 + 1, 20 + (i * 18) + (i * 5), 42));
-	    	container.addSlot(new SlotFake(this.getInventory(container), i * 3 + 2, 20 + (i * 18) + (i * 5), 64));
+	    for (int i = 0; i < this.getAmountRecipes(player) && i < 9; ++i) {
+	    	container.addSlot(new SlotFake(inventory, i * 3, 	20 + (i * 18) + (i * 5), 24));
+	    	container.addSlot(new SlotFake(inventory, i * 3 + 1, 20 + (i * 18) + (i * 5), 42));
+	    	container.addSlot(new SlotFake(inventory, i * 3 + 2, 20 + (i * 18) + (i * 5), 64));
 	    }
 		
-		EntityPlayer player = container.getPlayer();
 		Entity entity = container.getEntity();
-			
+		
 		if(entity instanceof EntityVillager) {
 			EntityVillager villager = (EntityVillager)entity;
 		    MerchantRecipeList recipeList = villager.getRecipes(player);
 		    for (int i = 0; i < this.getAmountRecipes(player) && i < 9 && i < recipeList.size(); ++i) {
-		    MerchantRecipe recipes = (MerchantRecipe)recipeList.get(i);
-		       	this.getInventory(player).setInventorySlotContents(i * 3, recipes.getItemToBuy());
-		        this.getInventory(player).setInventorySlotContents(i * 3 + 1, recipes.getSecondItemToBuy());
-		        this.getInventory(player).setInventorySlotContents(i * 3 + 2, recipes.getItemToSell());
+		    	MerchantRecipe recipes = (MerchantRecipe)recipeList.get(i);
+		    	inventory.setInventorySlotContents(i * 3, recipes.getItemToBuy());
+		    	inventory.setInventorySlotContents(i * 3 + 1, recipes.getSecondItemToBuy());
+		        inventory.setInventorySlotContents(i * 3 + 2, recipes.getItemToSell());
 		    }
 		}
 	}
@@ -87,21 +90,8 @@ public class VillagerShopServerFilter extends FilterServer {
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound tag) {
-		NBTTagList list = (NBTTagList)tag.getTag("playerData");
-		for(int i = 0; i < list.tagCount(); ++i) {
-			
-		}
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) { 
-		NBTTagList list = new NBTTagList();
-		for(UUID uuid : invMap.keySet()) {
-			
-		}
-		tag.setTag("playerData", list);
-		return tag; 
+	public IInventory createInventory() {
+		return new InventoryBasic("Villager Shop", false, 45);
 	}
 	
 	public int getAmountRecipes(IContainerFilter container) {
@@ -116,27 +106,5 @@ public class VillagerShopServerFilter extends FilterServer {
 		if(!maxRecipesMap.containsKey(uuid))
 			return 0;
 		return maxRecipesMap.get(uuid);
-	}
-	
-	public VillagerShopInventory getInventory(IContainerFilter container) {
-		return getInventory(container.getPlayer());
-	}
-	
-	public VillagerShopInventory getInventory(EntityPlayer player) {
-		return getInventory(player.getUniqueID());
-	}
-	
-	public VillagerShopInventory getInventory(UUID uuid) {
-	    if(!invMap.containsKey(uuid))
-	    	invMap.put(uuid, new VillagerShopInventory(256 * 3));
-	    	
-		return invMap.get(uuid);
-	}
-
-	public class VillagerShopInventory extends InventoryBasic {
-		
-		public VillagerShopInventory(int inventorySize) {
-			super("Villager Shop", false, inventorySize);
-		}
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.SlotArmor;
 import mapmakingtools.container.SlotFake;
@@ -23,10 +24,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author ProPercivalalb
  */
-public class MobArmorServerFilter extends FilterServer {
+public class MobArmorServerFilter extends FilterServerInventory {
 
 	private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
-	public static Map<String, IInventory> invMap = new Hashtable<String, IInventory>();
 	
 	@Override
 	public void addSlots(IContainerFilter container) {
@@ -97,50 +97,7 @@ public class MobArmorServerFilter extends FilterServer {
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound tag) {
-		NBTTagList list = (NBTTagList)tag.getTag("playerData");
-		for(int i = 0; i < list.tagCount(); ++i) {
-			NBTTagCompound data = list.getCompoundTagAt(i);
-			String username = data.getString("username");
-			NBTTagList nbttaglist = (NBTTagList)data.getTag("items");
-
-	        for (int k = 0; k < nbttaglist.tagCount(); ++k) {
-	            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(k);
-
-	            this.getInventory(username).setInventorySlotContents(k, new ItemStack(nbttagcompound1.getCompoundTag("item")));
-	        }
-		}
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) { 
-		NBTTagList list = new NBTTagList();
-		for(String key : invMap.keySet()) {
-			NBTTagCompound data = new NBTTagCompound();
-			data.setString("username", key);
-			
-			NBTTagList nbttaglist = new NBTTagList();
-			for(int i = 0; i < this.getInventory(key).getSizeInventory(); ++i) {
-				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-				data.setTag("item", this.getInventory(key).getStackInSlot(i).writeToNBT(new NBTTagCompound()));
-
-				nbttaglist.appendTag(nbttagcompound1);
-			}
-			data.setTag("items", nbttaglist);
-			list.appendTag(data);
-		}
-		tag.setTag("playerData", list);
-		return tag;
-	}
-	
-	public IInventory getInventory(IContainerFilter containerFilter) {
-		return this.getInventory(containerFilter.getPlayer().getName().toLowerCase());
-	}
-	
-	public IInventory getInventory(String username) {
-	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new InventoryBasic("Mob Armour", false, 6));
-	    	
-		return invMap.get(username);
+	public IInventory createInventory() {
+		return new InventoryBasic("Mob Armour", false, 6);
 	}
 }
