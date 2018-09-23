@@ -19,7 +19,7 @@ public class FakeWorldManager {
 
 	public static void putTileEntity(TileEntity tileEntity, World world, BlockPos pos, NBTTagCompound dataRecived) {
 		try {
-			List key = Arrays.asList(world.provider.getDimension(), pos.toLong());
+			List<Object> key = Arrays.asList(world.provider.getDimension(), pos.toLong());
 			
 			TileEntity newTileEntity = tileEntity.getClass().newInstance();
 			newTileEntity.readFromNBT(dataRecived);
@@ -40,7 +40,7 @@ public class FakeWorldManager {
 	}
 	
 	public static TileEntity getTileEntity(World world, BlockPos pos) {
-		List key = Arrays.asList(world.provider.getDimension(), pos.toLong());
+		List<Object> key = Arrays.asList(world.provider.getDimension(), pos.toLong());
 		return fakeTileEntities.get(key);
 	}
 }

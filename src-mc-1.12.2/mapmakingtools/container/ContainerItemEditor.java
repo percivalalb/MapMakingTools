@@ -14,10 +14,7 @@ public class ContainerItemEditor extends Container {
 	
 	public ContainerItemEditor(EntityPlayer player, int slotIndex) {
 		this.slotIndex = slotIndex;
-		byte b0 = 51;
-		int i;
 
-		
 		this.addSlotToContainer(new Slot(player.inventory, slotIndex, 10, 10) {
 			@Override 
 			public boolean isItemValid(ItemStack stack) {
