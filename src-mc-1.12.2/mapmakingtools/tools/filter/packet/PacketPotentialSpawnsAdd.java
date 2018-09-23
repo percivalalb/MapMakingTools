@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -23,13 +22,13 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * @author ProPercivalalb
  */
-public class PacketMobArmorRemoveIndex extends AbstractServerMessage {
+public class PacketPotentialSpawnsAdd extends AbstractServerMessage {
 
 	public BlockPos pos;
 	public int minecartIndex;
 	
-	public PacketMobArmorRemoveIndex() {}
-	public PacketMobArmorRemoveIndex(BlockPos pos, int minecartIndex) {
+	public PacketPotentialSpawnsAdd() {}
+	public PacketPotentialSpawnsAdd(BlockPos pos, int minecartIndex) {
 		this.pos = pos;
 		this.minecartIndex = minecartIndex;
 	}
@@ -57,15 +56,15 @@ public class PacketMobArmorRemoveIndex extends AbstractServerMessage {
 			ContainerFilter container = (ContainerFilter)player.openContainer;
 			if(tile instanceof TileEntityMobSpawner) {
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-
+					
 				List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-				minecarts.remove(this.minecartIndex);
-				spawner.getSpawnerBaseLogic().setNextSpawnData((WeightedSpawnerEntity)WeightedRandom.getRandomItem(spawner.getSpawnerBaseLogic().getSpawnerWorld().rand, minecarts));
-				
+				WeightedSpawnerEntity randomMinecart = new WeightedSpawnerEntity();
+				minecarts.add(this.minecartIndex, randomMinecart);
+				spawner.getSpawnerBaseLogic().setNextSpawnData(randomMinecart);
 				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
 				PacketUtil.sendTileEntityUpdateToWatching(spawner);
 					
-				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.removeIndex");
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.addIndex");
 				chatComponent.getStyle().setItalic(true);
 				player.sendMessage(chatComponent);
 			}

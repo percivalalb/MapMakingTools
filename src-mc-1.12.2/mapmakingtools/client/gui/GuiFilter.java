@@ -146,9 +146,9 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
     		}
-    		else if(button instanceof GuiButtonSmall && button.id == 156) {
+    		else if(button.id == 156) {
     			GuiButtonSmall smallButton = (GuiButtonSmall)button;
-        		if(smallButton.isMouseAbove(xMouse, yMouse)) {
+        		if(smallButton.isMouseOver()) {
         			List<String> list = filter.getFilterInfo(this);
         			this.drawHoveringText(list, xMouse, yMouse);
         		}
@@ -222,7 +222,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
         		this.buttonList.add(new GuiButtonSmall(156, topXF + 5, topY + 4, 13, 12, "?"));
         
         	if(filter.hasUpdateButton(this))
-        		this.buttonList.add(new GuiButtonSmall(157, topXF + 20, topY + 4, 8, 8, "" + (char)8595));
+        		this.buttonList.add(new GuiButtonSmall(157, topXF + 20, topY + 4, 13, 12, "v"));
         }
 	
         for(int i = 0; i < this.buttonList.size(); ++i) {

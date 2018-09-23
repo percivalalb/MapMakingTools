@@ -1,6 +1,5 @@
 package mapmakingtools.client.gui.button;
 
-import mapmakingtools.helper.ClientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -42,8 +41,4 @@ public class GuiButtonSmall extends GuiButton {
         	}
     	}
 	}
-    
-    public boolean isMouseAbove(int mouseX, int mouseY) {
-    	return this.mousePressed(ClientHelper.getClient(), mouseX, mouseY);
-    }
 }

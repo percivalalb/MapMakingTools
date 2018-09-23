@@ -15,5 +15,4 @@ public class GuiButtonPotentialSpawns extends GuiButtonSmall {
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 	    return this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 	}
-
 }
