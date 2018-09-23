@@ -1,18 +1,11 @@
 package mapmakingtools.tools.filter;
 
-import java.util.Hashtable;
-import java.util.Map;
-
-import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.SlotFake;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 /**
  * @author ProPercivalalb

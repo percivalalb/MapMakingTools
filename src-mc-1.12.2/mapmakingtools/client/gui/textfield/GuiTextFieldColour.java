@@ -3,7 +3,6 @@ package mapmakingtools.client.gui.textfield;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLLog;

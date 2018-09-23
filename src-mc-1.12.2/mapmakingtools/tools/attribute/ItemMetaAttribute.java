@@ -1,7 +1,5 @@
 package mapmakingtools.tools.attribute;
 
-import com.google.common.base.Strings;
-
 import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonSmall;

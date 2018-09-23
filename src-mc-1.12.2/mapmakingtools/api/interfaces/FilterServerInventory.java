@@ -1,7 +1,6 @@
 package mapmakingtools.api.interfaces;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 

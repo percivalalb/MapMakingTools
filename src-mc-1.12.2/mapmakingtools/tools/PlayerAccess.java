@@ -2,7 +2,6 @@ package mapmakingtools.tools;
 
 import mapmakingtools.lib.Constants;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
