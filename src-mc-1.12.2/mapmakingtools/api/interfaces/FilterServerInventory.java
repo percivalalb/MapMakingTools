@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public abstract class FilterServerInventory extends FilterServer {
 
-	public static Map<UUID, IInventory> INV_MAP = new HashMap<UUID, IInventory>();
+	public Map<UUID, IInventory> INV_MAP = new HashMap<UUID, IInventory>();
 	
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
