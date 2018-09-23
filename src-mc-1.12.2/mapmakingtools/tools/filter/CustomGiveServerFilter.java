@@ -87,7 +87,7 @@ public class CustomGiveServerFilter extends FilterServer {
 	
 	public InventoryUnlimited getInventory(String username) {
 	    if(!invMap.containsKey(username))
-	    	invMap.put(username, new InventoryUnlimited("Custoe Give", false, 1));
+	    	invMap.put(username, new InventoryUnlimited("Custom Give", false, 1));
 	    	
 		return invMap.get(username);
 	}

@@ -47,7 +47,7 @@ public class MapMakingTools {
     
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        //Initialize the custom commands
+        //Initialise the custom commands
         ModCommands.initCommands(event);
     }
 	

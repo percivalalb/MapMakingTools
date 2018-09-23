@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -109,56 +110,47 @@ public class ContainerFilter extends Container implements IContainerFilter {
         }
 	}
 
-	//Phantom Slot
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		Slot slot = slotId < 0 || slotId >= inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotId);
+		Slot slot = slotId < 0 || slotId >= this.inventorySlots.size() ? null : (Slot) this.inventorySlots.get(slotId);
 		
-		if(slot instanceof IPhantomSlot) {
-			if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-				this.slotClickPhantom(slot, dragType, clickTypeIn, player);
-			return ItemStack.EMPTY;
-		}
-
-		return super.slotClick(slotId, dragType, clickTypeIn, player);
-	}
-
-	
-	private void slotClickPhantom(Slot slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		IPhantomSlot phantomSlot = (IPhantomSlot)slot;
-		InventoryPlayer playerInv = player.inventory;
-		ItemStack stackHeld = playerInv.getItemStack();
-		ItemStack slotStack = slot.getStack();
-		
-		if(!stackHeld.isEmpty()) {
-			ItemStack phantomStack = stackHeld.copy();
-			phantomStack.setCount(!slotStack.isEmpty() ? slotStack.getCount() : 1);
-			slot.putStack(phantomStack);
-		}
-		else if(!slotStack.isEmpty()) {
-			
-			if(clickTypeIn == ClickType.CLONE) {
-				slot.putStack(ItemStack.EMPTY);
-			}
-			else if(clickTypeIn == ClickType.PICKUP) {
-				int stackSize = dragType == 1 ? slotStack.getCount() + 1: slotStack.getCount() - 1;
-
-				if(stackSize < 1) 
-					slot.putStack(ItemStack.EMPTY);
-				else
-					slotStack.setCount(stackSize);
-			}
-		}
-		this.detectAndSendChanges();
-	}
-	
-	public static boolean canMerge(ItemStack a, ItemStack b) {
-        // Checks item, damage
-        if (!ItemStack.areItemsEqual(a, b)) {
-            return false;
+        if(slot instanceof IPhantomSlot) {
+    		ItemStack slotStack = slot.getStack();
+    		ItemStack playerStack = player.inventory.getItemStack();
+        	
+            if (playerStack.isEmpty()) {
+            	
+            	if(!slotStack.isEmpty()) {
+        			if(clickTypeIn == ClickType.CLONE) { // Middle click
+        				slot.putStack(ItemStack.EMPTY);
+        			}
+        			else if(clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE) { //Left/Right click
+        				int change = clickTypeIn == ClickType.QUICK_MOVE ? 8 : 1;
+        				int size = slotStack.getCount() + (dragType == 1 ? change : -change);
+        				size = Math.min(size, slot.getSlotStackLimit());
+        				if(size < 1) {
+        					slot.putStack(ItemStack.EMPTY);
+        				}
+        				else if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+        					slotStack.setCount(size);
+        					this.detectAndSendChanges();
+        				}
+        			}
+             	}
+            } 
+            else if(!playerStack.isEmpty()) {
+    			ItemStack copy = playerStack.copy();
+    			slot.putStack(copy);
+    		}
+            
+            return playerStack;
         }
-        // checks tags and caps
-        return ItemStack.areItemStackTagsEqual(a, b);
+        
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
+	}
+
+	public static boolean canMerge(ItemStack a, ItemStack b) {
+        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
     }
 	
 	@Override

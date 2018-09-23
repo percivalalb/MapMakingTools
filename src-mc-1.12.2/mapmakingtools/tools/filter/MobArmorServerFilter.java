@@ -8,6 +8,7 @@ import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.InventoryUnlimited;
 import mapmakingtools.container.SlotArmor;
 import mapmakingtools.container.SlotFake;
+import mapmakingtools.container.SlotFakeArmor;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -40,7 +41,7 @@ public class MobArmorServerFilter extends FilterServer {
             }
         });
         for (int i = 0; i < 4; ++i) {
-        	container.addSlot(new SlotArmor(container.getPlayer(), getInventory(container), getInventory(container).getSizeInventory() - 1 - i, 40 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
+        	container.addSlot(new SlotFakeArmor(container.getPlayer(), getInventory(container), getInventory(container).getSizeInventory() - 1 - i, 40 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
         }
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 9; ++j){
