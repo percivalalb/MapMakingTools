@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.UUID;
 
 import com.google.common.base.Strings;
 
@@ -20,18 +21,19 @@ import net.minecraft.nbt.NBTTagList;
  */
 public class WorldData {
 
-	private static final HashMap<String, PlayerData> PLAYER_POINTS = new HashMap<String, PlayerData>();
+	private static final HashMap<UUID, PlayerData> PLAYER_POINTS = new HashMap<UUID, PlayerData>();
 	
 	public static PlayerData getPlayerData(EntityPlayer player) {
-		if(player == null)
+		return getPlayerData(player.getUniqueID());
+	}
+	
+	public static PlayerData getPlayerData(UUID uuid) {
+		if(uuid == null)
 			return null;
 		
-		String uuid = player.getUniqueID().toString();
-		
 		if(!PLAYER_POINTS.containsKey(uuid)) {
-			
-			MapMakingTools.LOGGER.info("Create player profile");
-			PLAYER_POINTS.put(uuid, new PlayerData(player.getUniqueID()));
+			MapMakingTools.LOGGER.info("Create player profile for {}", uuid);
+			PLAYER_POINTS.put(uuid, new PlayerData(uuid));
 		}
 		
 		return PLAYER_POINTS.get(uuid);
@@ -52,7 +54,7 @@ public class WorldData {
 	
 			//Write Data
 			NBTTagList list = new NBTTagList();
-			for(String uuid : PLAYER_POINTS.keySet())
+			for(UUID uuid : PLAYER_POINTS.keySet())
 				list.appendTag(PLAYER_POINTS.get(uuid).writeToNBT(new NBTTagCompound()));
 
 			
@@ -60,7 +62,7 @@ public class WorldData {
 			
 			for(FilterServer filter : FilterManager.getServerMap()) {
 				if(Strings.isNullOrEmpty(filter.getSaveId()))
-					continue;
+					continue;                                                                                                                                                                                                                                                                                              
 				String key = "filter:" + filter.getSaveId();
 				data.setTag(key, filter.writeToNBT(new NBTTagCompound()));
 			}
@@ -89,7 +91,7 @@ public class WorldData {
 			NBTTagList list = (NBTTagList)data.getTagList("playerPoints", 10);
 			for(int i = 0; i < list.tagCount(); ++i) {
 				NBTTagCompound tag = list.getCompoundTagAt(i);
-				PLAYER_POINTS.put(tag.getString("uuid"), new PlayerData(tag));
+				PLAYER_POINTS.put(tag.getUniqueId("uuid"), new PlayerData(tag));
 			}
 			
 			for(FilterServer filter : FilterManager.getServerMap()) {

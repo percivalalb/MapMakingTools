@@ -126,7 +126,7 @@ public class PlayerData {
 			list2.appendTag(tag2);
 		}
 		
-		tag.setString("uuid", this.uuid.toString());
+		tag.setUniqueId("uuid", this.uuid);
 		tag.setTag("firstPoint", list1);
 		tag.setTag("secondPoint", list2);
 		
@@ -149,7 +149,7 @@ public class PlayerData {
 			DIMID_POS2.put(dim, BlockPos.fromLong(tag2.getLong("pos")));
 		}
 		
-		this.uuid = UUID.fromString(tag.getString("uuid"));
+		this.uuid = tag.getUniqueId("uuid");
 		return this;
 	}
 	
