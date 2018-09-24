@@ -35,7 +35,6 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
-		FMLLog.info("TEASDWAE");
 		return entityIn instanceof EntityLiving; 
 	}
 	
