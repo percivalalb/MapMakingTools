@@ -8,6 +8,7 @@ public class NBTUtil {
 
 	public static final int ID_BOOLEAN = 1;
 	public static final int ID_INTEGER = 3;
+	public static final int ID_DOUBLE = 6;
 	public static final int ID_STRING = 8;
 	public static final int ID_LIST = 9;
 	public static final int ID_COMPOUND = 10;

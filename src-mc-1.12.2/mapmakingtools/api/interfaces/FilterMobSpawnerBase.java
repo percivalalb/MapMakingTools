@@ -39,9 +39,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 		this.potentialSpawnsCount = potentialSpawns.size();
 		this.potentialSpawnButtons.clear();
 		
-		if(this.potentialSpawnsCount <= potentialSpawnIndex) {
-			potentialSpawnIndex = potentialSpawns.size() - 1;
-		}
+		potentialSpawnIndex = Math.min(potentialSpawnIndex, potentialSpawns.size() - 1);
 			
 		for(int i = 0; i < potentialSpawns.size(); ++i) {
 			GuiButtonPotentialSpawns button = new GuiButtonPotentialSpawns(BUTTON_ID_START + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);

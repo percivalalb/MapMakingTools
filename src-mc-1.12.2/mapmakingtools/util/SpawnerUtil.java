@@ -23,21 +23,21 @@ import net.minecraftforge.fml.common.FMLLog;
  */
 public class SpawnerUtil {
 
-	private static Field spawnDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 0);
-	private static Field potentialSpawnsListField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 1);
-	private static Field randomMinecartField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 2);
-	private static Field minDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 5);
-	private static Field maxDelayField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 6);
-	private static Field spawnCountField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 7);
-	private static Field entityCapField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 9);
-	private static Field detectionRadiusField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 10);
-	private static Field spawnRadiusField = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 11);
+	private static Field FIELD_SPAWN_DELAY = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 0);
+	private static Field FIELD_POTENTIAL_SPAWNS_LIST = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 1);
+	private static Field FIELD_POTENTIAL_SPAWN = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 2);
+	private static Field FIELD_MIN_DELAY = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 5);
+	private static Field FIELD_MAX_DELAY = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 6);
+	private static Field FIELD_SPAWN_COUNT = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 7);
+	private static Field FIELD_ENTITY_CAP = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 9);
+	private static Field FIELD_DETECTION_RADIUS = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 10);
+	private static Field FIELD_SPAWN_RADIUS = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 11);
 	
 	public static ResourceLocation getMobId(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		if(minecartIndex == -1)
-			return getMinecartType(ReflectionHelper.getField(randomMinecartField, WeightedSpawnerEntity.class, spawnerLogic));
+			return getMinecartType(ReflectionHelper.getField(FIELD_POTENTIAL_SPAWN, WeightedSpawnerEntity.class, spawnerLogic));
 		else {
-			WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
+			WeightedSpawnerEntity randomMinecart = getPotentialSpawn(spawnerLogic, minecartIndex);
 			return getMinecartType(randomMinecart);
 		}
 	}
@@ -47,50 +47,45 @@ public class SpawnerUtil {
 			//ReflectionHelper.setField(mobIdField, spawnerLogic, mobId);
 		else {
 			confirmHasRandomMinecart(spawnerLogic);
-			WeightedSpawnerEntity randomMinecart = getPotentialSpawns(spawnerLogic).get(minecartIndex);
-			NBTTagCompound data = randomMinecart.getNbt();
-			data.setString("id", mobId);
-			getPotentialSpawns(spawnerLogic).set(minecartIndex, randomMinecart);
-			spawnerLogic.setNextSpawnData(randomMinecart);
+			NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+			tag.setString("id", mobId);
 		}
 	}
 	
 	public static void setMinDelay(MobSpawnerBaseLogic spawnerLogic, int minDelay) {
-		ReflectionHelper.setField(minDelayField, spawnerLogic, minDelay);
-		ReflectionHelper.setField(spawnDelayField, spawnerLogic, minDelay);
+		ReflectionHelper.setField(FIELD_MIN_DELAY, spawnerLogic, minDelay);
+		ReflectionHelper.setField(FIELD_SPAWN_DELAY, spawnerLogic, minDelay);
 	}
 	
 	public static void setMaxDelay(MobSpawnerBaseLogic spawnerLogic, int maxDelay) {
-		ReflectionHelper.setField(maxDelayField, spawnerLogic, maxDelay);
+		ReflectionHelper.setField(FIELD_MAX_DELAY, spawnerLogic, maxDelay);
 	}
 	
 	public static void setSpawnRadius(MobSpawnerBaseLogic spawnerLogic, int spawnRadius) {
-		ReflectionHelper.setField(spawnRadiusField, spawnerLogic, spawnRadius);
+		ReflectionHelper.setField(FIELD_SPAWN_RADIUS, spawnerLogic, spawnRadius);
 	}
 	
 	public static void setSpawnCount(MobSpawnerBaseLogic spawnerLogic, int spawnCount) {
-		ReflectionHelper.setField(spawnCountField, spawnerLogic, spawnCount);
+		ReflectionHelper.setField(FIELD_SPAWN_COUNT, spawnerLogic, spawnCount);
 	}
 	
 	public static void setEntityCap(MobSpawnerBaseLogic spawnerLogic, int entityCap) {
-		ReflectionHelper.setField(entityCapField, spawnerLogic, entityCap);
+		ReflectionHelper.setField(FIELD_ENTITY_CAP, spawnerLogic, entityCap);
 	}
 	
 	public static void setDetectionRadius(MobSpawnerBaseLogic spawnerLogic, int detectionRadius) {
-		ReflectionHelper.setField(detectionRadiusField, spawnerLogic, detectionRadius);
+		ReflectionHelper.setField(FIELD_DETECTION_RADIUS, spawnerLogic, detectionRadius);
 	}
 	
 	public static void setItemType(MobSpawnerBaseLogic spawnerLogic, ItemStack item, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		tag.setTag("Item", item.writeToNBT(new NBTTagCompound()));
 		
-		spawnerLogic.setNextSpawnData(randomMinecart);
+		//spawnerLogic.setNextSpawnData(randomMinecart);
 	}
 	
 	public static void setMobArmor(MobSpawnerBaseLogic spawnerLogic, ItemStack helment, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack mainHandItem, ItemStack offHandItem, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound compound = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		NBTTagList nbttaglist = new NBTTagList();
 		
         for(ItemStack itemstack : new ItemStack[] {boots, leggings, chestplate, helment}) {
@@ -102,7 +97,7 @@ public class SpawnerUtil {
             nbttaglist.appendTag(nbttagcompound);
         }
 
-        compound.setTag("ArmorItems", nbttaglist);
+        tag.setTag("ArmorItems", nbttaglist);
 		
         NBTTagList nbttaglist1 = new NBTTagList();
 
@@ -114,15 +109,14 @@ public class SpawnerUtil {
 
             nbttaglist1.appendTag(nbttagcompound1);
         }
-        compound.setTag("HandItems", nbttaglist1);
+        tag.setTag("HandItems", nbttaglist1);
         
-		spawnerLogic.setNextSpawnData(randomMinecart);
+		//spawnerLogic.setNextSpawnData(randomMinecart);
 	}
 	
 	public static ItemStack[] getMobArmor(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		ItemStack[] equipment = new ItemStack[4];
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		if (tag.hasKey("ArmorItems")) {
 			NBTTagList nbttaglist = (NBTTagList)tag.getTag("ArmorItems");
 
@@ -134,8 +128,7 @@ public class SpawnerUtil {
 	
 	public static ItemStack[] getMobHeldItems(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		ItemStack[] equipment = new ItemStack[2];
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		if (tag.hasKey("HandItems")) {
 			NBTTagList nbttaglist = (NBTTagList)tag.getTag("HandItems");
 
@@ -146,123 +139,107 @@ public class SpawnerUtil {
 	}
 	
 	public static void setPosition(MobSpawnerBaseLogic spawnerLogic, double x, double y, double z, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		//if((x == 0.0D && y == 0.0D && z == 0.0D)) {
 		//	tag.removeTag("Pos");
 		//}
 		tag.setTag("Pos", newDoubleNBTList(new double[] {x, y, z}));
-		spawnerLogic.setNextSpawnData(randomMinecart);
+		//spawnerLogic.setNextSpawnData(randomMinecart);
 	}
 	
 	public static double getPositionX(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		NBTTagList posList = tag.getTagList("Pos", 6);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+		NBTTagList posList = tag.getTagList("Pos", NBTUtil.ID_DOUBLE);
 		return posList.getDoubleAt(0);
 	}
 	
 	public static double getPositionY(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		NBTTagList posList = tag.getTagList("Pos", 6);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+		NBTTagList posList = tag.getTagList("Pos", NBTUtil.ID_DOUBLE);
 		return posList.getDoubleAt(1);
 	}
 	
 	public static double getPositionZ(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		NBTTagList posList = tag.getTagList("Pos", 6);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+		NBTTagList posList = tag.getTagList("Pos", NBTUtil.ID_DOUBLE);
 		return posList.getDoubleAt(2);
 	}
 	
 	public static boolean isSpawnPositionRandom(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
+		WeightedSpawnerEntity randomMinecart = getPotentialSpawn(spawnerLogic, minecartIndex);
 		NBTTagCompound tag = getMinecartProperties(randomMinecart);
 		return tag.hasKey("Pos", 6);
 	}
 	
 	public static void setVelocity(MobSpawnerBaseLogic spawnerLogic, double xMotion, double yMotion, double zMotion, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		tag.setTag("Motion", newDoubleNBTList(new double[] {xMotion, yMotion, zMotion}));
-		spawnerLogic.setNextSpawnData(randomMinecart);	
+		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static double getMotionX(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		NBTTagList posList = tag.getTagList("Motion", 6);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+		NBTTagList posList = tag.getTagList("Motion", NBTUtil.ID_DOUBLE);
 		return posList.getDoubleAt(0);
 	}
 	
 	public static double getMotionY(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		NBTTagList posList = tag.getTagList("Motion", 6);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+		NBTTagList posList = tag.getTagList("Motion", NBTUtil.ID_DOUBLE);
 		return posList.getDoubleAt(1);
 	}
 	
 	public static double getMotionZ(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		NBTTagList posList = tag.getTagList("Motion", 6);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
+		NBTTagList posList = tag.getTagList("Motion", NBTUtil.ID_DOUBLE);
 		return posList.getDoubleAt(2);
 	}
 	
 	public static void setBabyMonster(MobSpawnerBaseLogic spawnerLogic, boolean baby, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		tag.setBoolean("IsBaby", baby);
-		spawnerLogic.setNextSpawnData(randomMinecart);	
+		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static boolean isBabyMonster(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		return tag.getBoolean("IsBaby");
 	}
 	
 	public static void setCreeperFuse(MobSpawnerBaseLogic spawnerLogic, int fuseTime, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		tag.setShort("Fuse", (short)fuseTime);
-		spawnerLogic.setNextSpawnData(randomMinecart);	
+		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static int getCreeperFuse(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		if(!tag.hasKey("Fuse", 2))
 			return 30;
 		return tag.getShort("Fuse");
 	}
 
 	public static void setCreeperExplosionRadius(MobSpawnerBaseLogic spawnerLogic, int explosionRadius, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		tag.setByte("ExplosionRadius", (byte)explosionRadius);
-		spawnerLogic.setNextSpawnData(randomMinecart);	
+		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static int getExplosionRadius(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		if(!tag.hasKey("ExplosionRadius", 1))
 			return 3;
 		return tag.getByte("ExplosionRadius");
 	}
 	
 	public static void setVillagerProfession(MobSpawnerBaseLogic spawnerLogic, int minecartIndex, int professionId) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		tag.setInteger("Profession", professionId);
-		spawnerLogic.setNextSpawnData(randomMinecart);	
+		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static int getVillagerProfession(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
-		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
-		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		if(!tag.hasKey("Profession", NBTUtil.ID_INTEGER))
 			return 0;
 		return tag.getInteger("Profession");
@@ -282,17 +259,16 @@ public class SpawnerUtil {
 	}
 	
 	public static boolean hasRandomMinecart(MobSpawnerBaseLogic spawnerLogic) {
-		return ReflectionHelper.getField(randomMinecartField, WeightedSpawnerEntity.class, spawnerLogic) != null;
+		return ReflectionHelper.getField(FIELD_POTENTIAL_SPAWN, WeightedSpawnerEntity.class, spawnerLogic) != null;
 	}
 	
 	public static WeightedSpawnerEntity getRandomMinecart(MobSpawnerBaseLogic spawnerLogic) {
-		return ReflectionHelper.getField(randomMinecartField, WeightedSpawnerEntity.class, spawnerLogic);
+		return ReflectionHelper.getField(FIELD_POTENTIAL_SPAWN, WeightedSpawnerEntity.class, spawnerLogic);
 	}
 	
 	public static void confirmHasRandomMinecart(MobSpawnerBaseLogic spawnerLogic) {
 		List<WeightedSpawnerEntity> minecarts = getPotentialSpawns(spawnerLogic);
 		if(minecarts.size() < 1) {
-			FMLLog.info("Add Minecart");
 
 			WeightedSpawnerEntity randomMinecart = new WeightedSpawnerEntity();
 			minecarts.add(randomMinecart);
@@ -304,8 +280,21 @@ public class SpawnerUtil {
 
 	}
 	
+	public static NBTTagCompound getMinecartProperties(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		return getMinecartProperties(getPotentialSpawn(spawnerLogic, minecartIndex));
+	}
+	
+	public static NBTTagCompound getMinecartProperties(WeightedSpawnerEntity minecart) {
+		return minecart.getNbt();
+	}
+	
+	public static WeightedSpawnerEntity getPotentialSpawn(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		return getPotentialSpawns(spawnerLogic).get(minecartIndex);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public static List<WeightedSpawnerEntity> getPotentialSpawns(MobSpawnerBaseLogic spawnerLogic) {
-		return ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic);
+		return ReflectionHelper.getField(FIELD_POTENTIAL_SPAWNS_LIST, List.class, spawnerLogic);
 	}
 	
 	/**
@@ -322,9 +311,6 @@ public class SpawnerUtil {
         return new SPacketUpdateTileEntity(spawner.getPos(), 1, nbttagcompound);
 	}
 	
-	public static NBTTagCompound getMinecartProperties(WeightedSpawnerEntity minecart) {
-		return minecart.getNbt();
-	}
 	
 	public static ResourceLocation getMinecartType(WeightedSpawnerEntity minecart) {
 		String s = minecart.getNbt().getString("id");
