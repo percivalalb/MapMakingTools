@@ -58,7 +58,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 			@Override
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.getRecentIndex();
-				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.elements.get(MobTypeClientFilter.selected), FilterMobSpawnerBase.minecartIndex));
+				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.elements.get(MobTypeClientFilter.selected), FilterMobSpawnerBase.potentialSpawnIndex));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
@@ -68,7 +68,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
         
         this.btnOk = new GuiButton(0, topX + 12, topY + 63, 20, 20, "OK");
         //gui.getButtonList().add(this.btnOk);
-        this.addMinecartButtons(gui, topX, topY);
+        this.addPotentialSpawnButtons(gui, topX, topY);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override

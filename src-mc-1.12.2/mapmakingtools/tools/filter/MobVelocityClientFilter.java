@@ -65,8 +65,8 @@ public class MobVelocityClientFilter extends FilterMobSpawnerBase {
         gui.getTextBoxList().add(this.txt_yMotion);
         gui.getTextBoxList().add(this.txt_zMotion);
         
-        this.addMinecartButtons(gui, topX, topY);
-        this.onMinecartIndexChange(gui);
+        this.addPotentialSpawnButtons(gui, topX, topY);
+        this.onPotentialSpawnChange(gui);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class MobVelocityClientFilter extends FilterMobSpawnerBase {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.minecartIndex));
+                	PacketDispatcher.sendToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.potentialSpawnIndex));
             		ClientHelper.getClient().player.closeScreen();
                     break;
             }
@@ -104,7 +104,7 @@ public class MobVelocityClientFilter extends FilterMobSpawnerBase {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override

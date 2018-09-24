@@ -46,7 +46,7 @@ public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
         
         this.btnOk = new GuiButton(0, topX + 20, topY + 61, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
-        this.addMinecartButtons(gui, topX, topY);
+        this.addPotentialSpawnButtons(gui, topX, topY);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
 		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
 		
 		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
 		if(minecarts.size() <= 0) return true;
-		WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
+		WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
 		ResourceLocation mobId = SpawnerUtil.getMinecartType(randomMinecart);
 		if(mobId.toString().equals("minecraft:item"))
 			return false;
@@ -90,7 +90,7 @@ public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketItemSpawner(gui.getBlockPos(), minecartIndex));
+                	PacketDispatcher.sendToServer(new PacketItemSpawner(gui.getBlockPos(), potentialSpawnIndex));
             		ClientHelper.getClient().player.closeScreen();
                     break;
             }

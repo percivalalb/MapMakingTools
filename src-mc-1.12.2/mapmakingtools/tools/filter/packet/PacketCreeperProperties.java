@@ -1,16 +1,22 @@
 package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
+import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.helper.Numbers;
+import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.BlockPos;
@@ -23,13 +29,11 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class PacketCreeperProperties extends AbstractServerMessage {
 
-	public BlockPos pos;
 	public String fuseTime, explosionRadius;
 	public int minecartIndex;
 	
 	public PacketCreeperProperties() {}
-	public PacketCreeperProperties(BlockPos pos, String fuseTime, String explosionRadius, int minecartIndex) {
-		this.pos = pos;
+	public PacketCreeperProperties(String fuseTime, String explosionRadius, int minecartIndex) {
 		this.fuseTime = fuseTime;
 		this.explosionRadius = explosionRadius;
 		this.minecartIndex = minecartIndex;
@@ -37,7 +41,6 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.pos = packetbuffer.readBlockPos();
 		this.fuseTime = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.explosionRadius = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.minecartIndex = packetbuffer.readInt();
@@ -45,22 +48,22 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeString(this.fuseTime);
 		packetbuffer.writeString(this.explosionRadius);
 		packetbuffer.writeInt(this.minecartIndex);
 	}
 
+	private static Field FIELD_FUSE_TIME = ReflectionHelper.getField(EntityCreeper.class, 5);
+	private static Field FIELD_EXPOSION_RADIUS = ReflectionHelper.getField(EntityCreeper.class, 6);
+	
 	@Override
 	public void process(EntityPlayer player, Side side) {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		TileEntity tile = player.world.getTileEntity(this.pos);
-		if(tile instanceof TileEntityMobSpawner) {
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(player.openContainer instanceof ContainerFilter) {
+			ContainerFilter container = (ContainerFilter)player.openContainer;
 			
-
 			if(!Numbers.areIntegers(this.fuseTime, this.explosionRadius)) {
 				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.creeperproperties.notint");
 				chatComponent.getStyle().setItalic(true);
@@ -72,10 +75,22 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 			int fuseTimeNO = Numbers.parse(this.fuseTime);
 			int explosionRadiusNO = Numbers.parse(this.explosionRadius);
 			
-			SpawnerUtil.setCreeperFuse(spawner.getSpawnerBaseLogic(), fuseTimeNO, this.minecartIndex);
-			SpawnerUtil.setCreeperExplosionRadius(spawner.getSpawnerBaseLogic(), explosionRadiusNO, this.minecartIndex);
-			PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
-			PacketUtil.sendTileEntityUpdateToWatching(spawner);
+			if(container.getTargetType() == TargetType.BLOCK) {
+				TileEntity tile = player.world.getTileEntity(container.getBlockPos());
+				if(tile instanceof TileEntityMobSpawner) {
+					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+
+					SpawnerUtil.setCreeperFuse(spawner.getSpawnerBaseLogic(), fuseTimeNO, this.minecartIndex);
+					SpawnerUtil.setCreeperExplosionRadius(spawner.getSpawnerBaseLogic(), explosionRadiusNO, this.minecartIndex);
+					PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
+					PacketUtil.sendTileEntityUpdateToWatching(spawner);
+				}
+			}
+			else if(container.getTargetType() == TargetType.ENTITY) {
+				EntityCreeper creeper = (EntityCreeper)container.getEntity();
+				ReflectionHelper.setField(FIELD_FUSE_TIME, creeper, fuseTimeNO);
+				ReflectionHelper.setField(FIELD_EXPOSION_RADIUS, creeper, explosionRadiusNO);
+			}
 			
 			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.creeperproperties.complete");
 			chatComponent.getStyle().setItalic(true);

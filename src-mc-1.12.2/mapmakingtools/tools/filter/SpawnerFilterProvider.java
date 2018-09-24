@@ -34,6 +34,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		filterList.add(FilterManager.getClientFilterFromClass(MobArmourClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(CreeperPropertiesClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(ItemSpawnerClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(VillagerProfessionClientFilter.class));
 	}
 
 	@Override
@@ -52,6 +53,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		filterList.add(FilterManager.getServerFilterFromClass(MobArmourServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(CreeperPropertiesServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(ItemSpawnerServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(VillagerProfessionServerFilter.class));
 	}
 
 	@Override

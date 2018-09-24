@@ -75,7 +75,7 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
         gui.getTextBoxList().add(this.txt_yPosition);
         gui.getTextBoxList().add(this.txt_zPosition);
         
-        this.addMinecartButtons(gui, topX, topY);
+        this.addPotentialSpawnButtons(gui, topX, topY);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketMobPosition(gui.getBlockPos(), txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), this.btn_type.getData() == 0, this.minecartIndex));
+                	PacketDispatcher.sendToServer(new PacketMobPosition(gui.getBlockPos(), txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), this.btn_type.getData() == 0, this.potentialSpawnIndex));
             		ClientHelper.getClient().player.closeScreen();
                     break;
                 case 2:
@@ -151,7 +151,7 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override

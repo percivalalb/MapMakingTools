@@ -57,8 +57,8 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
         this.btnOk = new GuiButton(0, topX + 12, topY + 93, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
         if(gui.getTargetType() == TargetType.BLOCK) {
-	        this.addMinecartButtons(gui, topX, topY);
-	        this.onMinecartIndexChange(gui);
+	        this.addPotentialSpawnButtons(gui, topX, topY);
+	        this.onPotentialSpawnChange(gui);
         }
 	}
 
@@ -77,7 +77,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 		super.actionPerformed(gui, button);
 		if(button.enabled) {
             if(button.id == 0) {
-                PacketDispatcher.sendToServer(new PacketMobArmor(FilterMobSpawnerBase.minecartIndex));
+                PacketDispatcher.sendToServer(new PacketMobArmor(FilterMobSpawnerBase.potentialSpawnIndex));
             	ClientHelper.getClient().player.closeScreen();
             }
         }
@@ -86,11 +86,11 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
         if(gui.getTargetType() == TargetType.BLOCK)
-        	this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
+        	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
-	public void onMinecartIndexChange(IGuiFilter gui) {
+	public void onPotentialSpawnChange(IGuiFilter gui) {
 		if(this.showErrorIcon(gui))
 			this.btnOk.enabled = false;
 		else
@@ -110,7 +110,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	@Override
 	public void updateButtonClicked(IGuiFilter gui) {
 		if(!showErrorIcon(gui))
-			PacketDispatcher.sendToServer(new PacketFetchMobArmour(FilterMobSpawnerBase.minecartIndex));
+			PacketDispatcher.sendToServer(new PacketFetchMobArmour(FilterMobSpawnerBase.potentialSpawnIndex));
 	}
 	
 	@Override
@@ -122,8 +122,8 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
 			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-			if(minecarts.size() <= minecartIndex) return true;
-			WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
+			if(minecarts.size() <= potentialSpawnIndex) return true;
+			WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
 			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
 			if(mobId.equals("minecraft:zombie") || mobId.equals("minecraft:zombie_pigman") || mobId.equals("minecraft:skeleton")) {
 				return false;

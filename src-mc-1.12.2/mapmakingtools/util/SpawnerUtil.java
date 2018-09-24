@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import mapmakingtools.helper.ReflectionHelper;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
@@ -250,6 +251,21 @@ public class SpawnerUtil {
 		if(!tag.hasKey("ExplosionRadius", 1))
 			return 3;
 		return tag.getByte("ExplosionRadius");
+	}
+	
+	public static void setVillagerProfession(MobSpawnerBaseLogic spawnerLogic, int minecartIndex, int professionId) {
+		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		tag.setInteger("Profession", professionId);
+		spawnerLogic.setNextSpawnData(randomMinecart);	
+	}
+	
+	public static int getVillagerProfession(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
+		WeightedSpawnerEntity randomMinecart = (WeightedSpawnerEntity)ReflectionHelper.getField(potentialSpawnsListField, List.class, spawnerLogic).get(minecartIndex);
+		NBTTagCompound tag = getMinecartProperties(randomMinecart);
+		if(!tag.hasKey("Profession", NBTUtil.ID_INTEGER))
+			return 0;
+		return tag.getInteger("Profession");
 	}
 
 	protected static NBTTagList newDoubleNBTList(double ... par1ArrayOfDouble) {

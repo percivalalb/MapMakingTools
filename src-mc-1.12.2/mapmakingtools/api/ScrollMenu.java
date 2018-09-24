@@ -68,7 +68,7 @@ public abstract class ScrollMenu<T> {
 		this.noCol = noColumns;
 		this.elements = Collections.emptyList();
 		this.maxSelected = 1;
-		this.canHaveNoneSelected = true;
+		this.canHaveNoneSelected = false;
 	}
 	
 	public void initGui() {
@@ -279,6 +279,10 @@ public abstract class ScrollMenu<T> {
 	
 	public T getRecentSelection() {
 		return this.elements.get(this.getRecentIndex());
+	}
+	
+	public boolean setSelected(T object) {
+		return setSelected(this.elements.indexOf(object));
 	}
 	
 	public abstract void onSetButton();

@@ -83,8 +83,8 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
         gui.getTextBoxList().add(this.txt_entityCap);
         gui.getTextBoxList().add(this.txt_detectionRange);
         
-        this.addMinecartButtons(gui, topX, topY);
-        this.onMinecartIndexChange(gui);
+        this.addPotentialSpawnButtons(gui, topX, topY);
+        this.onPotentialSpawnChange(gui);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override

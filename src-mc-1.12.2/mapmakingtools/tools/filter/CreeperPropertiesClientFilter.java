@@ -2,6 +2,7 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
+import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
@@ -13,6 +14,10 @@ import mapmakingtools.tools.filter.packet.PacketCreeperProperties;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
@@ -31,6 +36,11 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 	
 	public static String fuseText = "30";
 	public static String radiusText = "3";
+	
+	@Override
+	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
+		return entityIn instanceof EntityCreeper; 
+	}
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -61,36 +71,35 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
         gui.getTextBoxList().add(this.txt_radius);
         gui.getTextBoxList().add(this.txt_fuse);
         
-        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(tile instanceof TileEntityMobSpawner) {
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-			//if(SpawnerUtil.isBabyMonster(spawner.getSpawnerBaseLogic(), this.minecartIndex)) {
-			//	this.btn_covert.displayString = "Turn into Adult";
-			//	this.btn_covert.setData(1);
-			//}
-		}
-				
-        this.addMinecartButtons(gui, topX, topY);
+        if(gui.getTargetType() == TargetType.BLOCK) {
+        	this.addPotentialSpawnButtons(gui, topX, topY);
+        	
+	        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(tile instanceof TileEntityMobSpawner) {
+				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+				//if(SpawnerUtil.isBabyMonster(spawner.getSpawnerBaseLogic(), this.minecartIndex)) {
+				//	this.btn_covert.displayString = "Turn into Adult";
+				//	this.btn_covert.setData(1);
+				//}
+			}
+        }
 	}
 	
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketCreeperProperties(gui.getBlockPos(), this.txt_fuse.getText(), this.txt_radius.getText(), this.minecartIndex));
-            		ClientHelper.getClient().player.closeScreen();
-                	break;
+            if(button.id == 0) {
+                PacketDispatcher.sendToServer(new PacketCreeperProperties(this.txt_fuse.getText(), this.txt_radius.getText(), this.potentialSpawnIndex));
+            	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
-        int topY = gui.getGuiY();
-		this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+        if(gui.getTargetType() == TargetType.BLOCK)
+        	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
@@ -116,19 +125,23 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) {
-		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(!(tile instanceof TileEntityMobSpawner))
-			return true;
-		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(gui.getTargetType() == TargetType.BLOCK) {
+			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(!(tile instanceof TileEntityMobSpawner))
+				return true;
+			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+			
+			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			if(minecarts.size() <= potentialSpawnIndex) return true;
+			WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
+			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
+			if(mobId.equals("minecraft:creeper"))
+				return false;
 		
-		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-		if(minecarts.size() <= minecartIndex) return true;
-		WeightedSpawnerEntity randomMinecart = minecarts.get(minecartIndex);
-		String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
-		if(mobId.equals("minecraft:creeper"))
-			return false;
+			return true; 
+		}
 		
-		return true; 
+		return false;
 	}
 	
 	@Override

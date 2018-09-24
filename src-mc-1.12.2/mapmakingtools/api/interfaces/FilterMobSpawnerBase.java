@@ -23,76 +23,76 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	private static final int BUTTON_ID_START = 200;
 	private static final int MAX_POTENTIAL_SPAWNS = 17;
 	
-	public static int minecartIndex = 0;
-	public int minecartsCount = 1;
-	public List<GuiButton> minecartButtons = new ArrayList<>();
+	public static int potentialSpawnIndex = 0;
+	public int potentialSpawnsCount = 1;
+	public List<GuiButton> potentialSpawnButtons = new ArrayList<>();
 	
-	public void addMinecartButtons(IGuiFilter gui, int topX, int topY) {
+	public void addPotentialSpawnButtons(IGuiFilter gui, int topX, int topY) {
 		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-		if(minecarts == null) return;
+		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+		if(potentialSpawns == null) return;
 
-		this.minecartsCount = minecarts.size();
-		this.minecartButtons.clear();
+		this.potentialSpawnsCount = potentialSpawns.size();
+		this.potentialSpawnButtons.clear();
 		
-		if(this.minecartsCount <= minecartIndex) {
-			minecartIndex = minecarts.size() - 1;
-			this.onMinecartIndexChange(gui);
+		if(this.potentialSpawnsCount <= potentialSpawnIndex) {
+			potentialSpawnIndex = potentialSpawns.size() - 1;
 		}
 			
-		for(int i = 0; i < minecarts.size(); ++i) {
+		for(int i = 0; i < potentialSpawns.size(); ++i) {
 			GuiButtonPotentialSpawns button = new GuiButtonPotentialSpawns(BUTTON_ID_START + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
-			button.enabled = i == minecartIndex;
-			this.minecartButtons.add(button);
+			button.enabled = i == potentialSpawnIndex;
+			this.potentialSpawnButtons.add(button);
 			gui.getButtonList().add(button);
 		}
 	}
 	
-	public void removeMinecartButtons(IGuiFilter gui, int xMouse, int yMouse, int mouseButton, int topX, int topY) {
+	public void removePotentialSpawnButtons(IGuiFilter gui, int xMouse, int yMouse, int mouseButton, int topX, int topY) {
 		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
 		if(!(tile instanceof TileEntityMobSpawner))
 			return;
 		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 		
-		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-		if(minecarts == null) return;
+		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+		if(potentialSpawns == null) return;
 		
 		// Check if there enough or too many potential spawns
 		if(mouseButton != 1 && mouseButton != 2) return;
-		if(mouseButton == 2 && minecarts.size() <= 1) return;
-		if(mouseButton == 1 && minecarts.size() >= MAX_POTENTIAL_SPAWNS) return;
+		if(mouseButton == 2 && potentialSpawns.size() <= 1) return;
+		if(mouseButton == 1 && potentialSpawns.size() >= MAX_POTENTIAL_SPAWNS) return;
 		
 		// Find button you are hovering
 		GuiButton button = null;
 		for(GuiButton tempButton : gui.getButtonList())
-			if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + minecartsCount)
+			if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + potentialSpawnsCount)
 				if(tempButton.isMouseOver())
 					button = tempButton;
 		
 		if(button != null) {
 			// Remove old buttons
-			for(GuiButton buttonToRemove : this.minecartButtons)
+			for(GuiButton buttonToRemove : this.potentialSpawnButtons)
 				gui.getButtonList().remove(buttonToRemove);
 			
 			if(mouseButton == 2) {
-				minecarts.remove(button.id - BUTTON_ID_START);
+				potentialSpawns.remove(button.id - BUTTON_ID_START);
 				
 				PacketDispatcher.sendToServer(new PacketPotentialSpawnsRemove(gui.getBlockPos(), button.id - BUTTON_ID_START));
-				if(button.id - BUTTON_ID_START < FilterMobSpawnerBase.minecartIndex)
-					FilterMobSpawnerBase.minecartIndex--;
+				if(button.id - BUTTON_ID_START < FilterMobSpawnerBase.potentialSpawnIndex)
+					FilterMobSpawnerBase.potentialSpawnIndex--;
 			}
 			else if(mouseButton == 1) {
-				minecarts.add(new WeightedSpawnerEntity());
+				potentialSpawns.add(new WeightedSpawnerEntity());
 				PacketDispatcher.sendToServer(new PacketPotentialSpawnsAdd(gui.getBlockPos(), button.id - BUTTON_ID_START + 1));
-				FilterMobSpawnerBase.minecartIndex = button.id - BUTTON_ID_START + 1;
+				FilterMobSpawnerBase.potentialSpawnIndex = button.id - BUTTON_ID_START + 1;
 			}
 		
 			// Readd buttons
-			this.addMinecartButtons(gui, topX, topY);
+			this.addPotentialSpawnButtons(gui, topX, topY);
+			this.onPotentialSpawnChange(gui);
 		}
 	}
 	
@@ -104,16 +104,16 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 				return;
 			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 			
-			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-			if(minecarts == null) return;
+			List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			if(potentialSpawns == null) return;
 			
 			for(GuiButton tempButton : gui.getButtonList()) {
-				if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + minecartsCount) {
+				if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + potentialSpawnsCount) {
 					if(!tempButton.isMouseOver())
 						continue;
 					
 					List<String> list = new ArrayList<>();
-	    			list.add(SpawnerUtil.getMinecartType(minecarts.get(tempButton.id - BUTTON_ID_START)).toString());
+	    			list.add(SpawnerUtil.getMinecartType(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
 	    			//list.add("NBT: ");
 	    			//list.add(SpawnerUtil.getMinecartProperties(minecarts.get(tempButton.id - 200)).toString());
 	    			
@@ -126,16 +126,20 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		if(gui.getTargetType() == TargetType.BLOCK) {
-			if(button.id >= BUTTON_ID_START && button.id <= BUTTON_ID_START + minecartsCount) {
-				minecartIndex = button.id - BUTTON_ID_START;
+			if(button.id >= BUTTON_ID_START && button.id <= BUTTON_ID_START + potentialSpawnsCount) {
+				int newIndex = button.id - BUTTON_ID_START;
 				
-				for(GuiButton tempButton : this.minecartButtons) {
-					tempButton.enabled = tempButton.id - BUTTON_ID_START == minecartIndex;
-					this.onMinecartIndexChange(gui);
+				if(newIndex != potentialSpawnIndex) {
+					potentialSpawnIndex = newIndex;
+				
+					for(GuiButton tempButton : this.potentialSpawnButtons) {
+						tempButton.enabled = tempButton.id - BUTTON_ID_START == potentialSpawnIndex;
+						this.onPotentialSpawnChange(gui);
+					}
 				}
 			}
 		}
 	}
 	
-	public void onMinecartIndexChange(IGuiFilter gui) {}
+	public void onPotentialSpawnChange(IGuiFilter gui) {}
 }

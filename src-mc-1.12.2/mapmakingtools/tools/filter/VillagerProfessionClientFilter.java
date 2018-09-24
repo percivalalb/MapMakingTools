@@ -4,29 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.api.ScrollMenu;
+import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.FilterClient;
+import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
 import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
+import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.registries.GameData;
 
 /**
  * @author ProPercivalalb
  */
-public class VillagerProfessionClientFilter extends FilterClient {
+public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 
 	public ScrollMenu<ResourceLocation> menu;
 	public RegistryNamespaced<ResourceLocation, VillagerProfession> REGISTRY = GameData.getWrapper(VillagerProfession.class);
@@ -58,13 +67,53 @@ public class VillagerProfessionClientFilter extends FilterClient {
 
 			@Override
 			public void onSetButton() {
-				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(this.getRecentSelection())));
+				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(this.getRecentSelection()), FilterMobSpawnerBase.potentialSpawnIndex));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
         };
         this.menu.initGui();
-        this.menu.setSelected(0);
+        
+        if(gui.getTargetType() == TargetType.BLOCK) {
+			this.addPotentialSpawnButtons(gui, topX, topY);
+        	
+	        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(tile instanceof TileEntityMobSpawner) {
+				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+				int prof = SpawnerUtil.getVillagerProfession(spawner.getSpawnerBaseLogic(), FilterMobSpawnerBase.potentialSpawnIndex);
+				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
+			}
+			
+        }
+        else if(gui.getTargetType() == TargetType.ENTITY) {
+        	Entity entity = gui.getEntity();
+        	if(entity instanceof EntityVillager) {
+        		EntityVillager villager = (EntityVillager)entity;
+        		int prof = villager.getProfession();
+				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
+        	}
+        }
+	}
+	
+	@Override
+	public void onPotentialSpawnChange(IGuiFilter gui) {
+		FMLLog.info("CHANGE");
+		if(gui.getTargetType() == TargetType.BLOCK) {
+	        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(tile instanceof TileEntityMobSpawner) {
+				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+				int prof = SpawnerUtil.getVillagerProfession(spawner.getSpawnerBaseLogic(), FilterMobSpawnerBase.potentialSpawnIndex);
+				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
+			}
+        }
+        else if(gui.getTargetType() == TargetType.ENTITY) {
+        	Entity entity = gui.getEntity();
+        	if(entity instanceof EntityVillager) {
+        		EntityVillager villager = (EntityVillager)entity;
+        		int prof = villager.getProfession();
+				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
+        	}
+        }
 	}
 	
 	private List<ResourceLocation> getProfesionList() {
@@ -89,6 +138,29 @@ public class VillagerProfessionClientFilter extends FilterClient {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
+		if(gui.getTargetType() == TargetType.BLOCK)
+        	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
+	}
+	
+	@Override
+	public boolean showErrorIcon(IGuiFilter gui) {
+		if(gui.getTargetType() == TargetType.BLOCK) {
+			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(!(tile instanceof TileEntityMobSpawner))
+				return true;
+			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+			
+			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			if(minecarts.size() <= potentialSpawnIndex) return true;
+			WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
+			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
+			if(mobId.equals("minecraft:villager"))
+				return false;
+		
+			return true; 
+		}
+		
+		return false;
 	}
 	
 	@Override
