@@ -24,7 +24,7 @@ import mapmakingtools.tools.filter.packet.PacketItemSpawner;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsAdd;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsRemove;
-import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
+import mapmakingtools.tools.filter.packet.PacketFetchMobArmour;
 import mapmakingtools.tools.filter.packet.PacketMobPosition;
 import mapmakingtools.tools.filter.packet.PacketMobType;
 import mapmakingtools.tools.filter.packet.PacketMobVelocity;
@@ -88,7 +88,7 @@ public class PacketDispatcher {
 		registerMessage(PacketMobArmor.class);
 		registerMessage(PacketPotentialSpawnsAdd.class);
 		registerMessage(PacketPotentialSpawnsRemove.class);
-		registerMessage(PacketMobArmorUpdate.class);
+		registerMessage(PacketFetchMobArmour.class);
 		registerMessage(PacketMobPosition.class);
 		registerMessage(PacketMobType.class);
 		registerMessage(PacketMobVelocity.class);

@@ -29,7 +29,7 @@ public class PacketBabyMonster extends AbstractServerMessage {
 	public int minecartIndex;
 	
 	public PacketBabyMonster() {}
-	public PacketBabyMonster(BlockPos pos, boolean baby, int minecartIndex) {
+	public PacketBabyMonster(boolean baby, int minecartIndex) {
 		this.baby = baby;
 		this.minecartIndex = minecartIndex;
 	}

@@ -11,7 +11,7 @@ import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobArmor;
-import mapmakingtools.tools.filter.packet.PacketMobArmorUpdate;
+import mapmakingtools.tools.filter.packet.PacketFetchMobArmour;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.FMLLog;
 /**
  * @author ProPercivalalb
  */
-public class MobArmorClientFilter extends FilterMobSpawnerBase {
+public class MobArmourClientFilter extends FilterMobSpawnerBase {
 
 	public GuiButton btnOk;
 	
@@ -68,29 +68,25 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
 	    int topY = gui.getGuiY();
         
-        gui.getFont().drawString("Mob Armor", topX + 40, topY + 30, 4210752);
-        gui.getFont().drawString("Player Armor", topX + 129, topY + 30, 4210752);
+        gui.getFont().drawString("Mob Armour", topX + 40, topY + 30, 4210752);
+        gui.getFont().drawString("Player Armour", topX + 129, topY + 30, 4210752);
 	}
 	
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
-		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketMobArmor(FilterMobSpawnerBase.minecartIndex));
-            		ClientHelper.getClient().player.closeScreen();
-                    break;
+		if(button.enabled) {
+            if(button.id == 0) {
+                PacketDispatcher.sendToServer(new PacketMobArmor(FilterMobSpawnerBase.minecartIndex));
+            	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
-        int topY = gui.getGuiY();
         if(gui.getTargetType() == TargetType.BLOCK)
-        	this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+        	this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
@@ -113,8 +109,8 @@ public class MobArmorClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void updateButtonClicked(IGuiFilter gui) {
-		if(gui.getTargetType() == TargetType.BLOCK && !showErrorIcon(gui))
-			PacketDispatcher.sendToServer(new PacketMobArmorUpdate(gui.getBlockPos(), FilterMobSpawnerBase.minecartIndex));
+		if(!showErrorIcon(gui))
+			PacketDispatcher.sendToServer(new PacketFetchMobArmour(FilterMobSpawnerBase.minecartIndex));
 	}
 	
 	@Override

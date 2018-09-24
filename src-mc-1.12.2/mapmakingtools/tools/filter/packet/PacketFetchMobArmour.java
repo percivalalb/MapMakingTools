@@ -5,16 +5,14 @@ import java.io.IOException;
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.MobArmourServerFilter;
-import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
@@ -25,12 +23,12 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * @author ProPercivalalb
  */
-public class PacketMobArmor extends AbstractServerMessage {
+public class PacketFetchMobArmour extends AbstractServerMessage {
 
 	public int minecartIndex;
 	
-	public PacketMobArmor() {}
-	public PacketMobArmor(int minecartIndex) {
+	public PacketFetchMobArmour() {}
+	public PacketFetchMobArmour(int minecartIndex) {
 		this.minecartIndex = minecartIndex;
 	}
 
@@ -60,25 +58,32 @@ public class PacketMobArmor extends AbstractServerMessage {
 					TileEntity tile = player.world.getTileEntity(container.getBlockPos());
 					if(tile instanceof TileEntityMobSpawner) {
 						TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-						SpawnerUtil.setMobArmor(spawner.getSpawnerBaseLogic(), inventory.getStackInSlot(5), inventory.getStackInSlot(4), inventory.getStackInSlot(3), inventory.getStackInSlot(2), inventory.getStackInSlot(1), inventory.getStackInSlot(0), this.minecartIndex);
-						PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
-						PacketUtil.sendTileEntityUpdateToWatching(spawner);
+						
+						ItemStack[] mobArmor = SpawnerUtil.getMobArmor(spawner.getSpawnerBaseLogic(), this.minecartIndex);
+						ItemStack[] mobHeld = SpawnerUtil.getMobHeldItems(spawner.getSpawnerBaseLogic(), this.minecartIndex);
+						
+						for(int i = 0; i < mobHeld.length; ++i) {
+							inventory.setInventorySlotContents(1 - i, mobHeld[i]);
+					    }
+						for(int i = 0; i < mobArmor.length; ++i) {
+							inventory.setInventorySlotContents(i + 2, mobArmor[i]);
+					    }
 					}
 				}
 				else if(container.getTargetType() == TargetType.ENTITY) {
 					EntityLiving living = (EntityLiving)container.getEntity();
-					living.setItemStackToSlot(EntityEquipmentSlot.HEAD, inventory.getStackInSlot(5));
-					living.setItemStackToSlot(EntityEquipmentSlot.CHEST, inventory.getStackInSlot(4));
-					living.setItemStackToSlot(EntityEquipmentSlot.LEGS, inventory.getStackInSlot(3));
-					living.setItemStackToSlot(EntityEquipmentSlot.FEET, inventory.getStackInSlot(2));
-					living.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, inventory.getStackInSlot(1));
-					living.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, inventory.getStackInSlot(0));
+					inventory.setInventorySlotContents(5, living.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
+					inventory.setInventorySlotContents(4, living.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
+					inventory.setInventorySlotContents(3, living.getItemStackFromSlot(EntityEquipmentSlot.LEGS));
+					inventory.setInventorySlotContents(2, living.getItemStackFromSlot(EntityEquipmentSlot.FEET));
+					inventory.setInventorySlotContents(1, living.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND));
+					inventory.setInventorySlotContents(0, living.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND));
 				}
 					
-				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.complete");
+				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobArmor.update");
 				chatComponent.getStyle().setItalic(true);
 				player.sendMessage(chatComponent);
-			}	
+			}
 		}
 	}
 

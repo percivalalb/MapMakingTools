@@ -31,7 +31,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		filterList.add(FilterManager.getClientFilterFromClass(MobPositionClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(MobVelocityClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(BabyMonsterClientFilter.class));
-		filterList.add(FilterManager.getClientFilterFromClass(MobArmorClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(MobArmourClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(CreeperPropertiesClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(ItemSpawnerClientFilter.class));
 	}
@@ -49,7 +49,7 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		filterList.add(FilterManager.getServerFilterFromClass(MobPositionServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(MobVelocityServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(BabyMonsterServerFilter.class));
-		filterList.add(FilterManager.getServerFilterFromClass(MobArmorServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(MobArmourServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(CreeperPropertiesServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(ItemSpawnerServerFilter.class));
 	}

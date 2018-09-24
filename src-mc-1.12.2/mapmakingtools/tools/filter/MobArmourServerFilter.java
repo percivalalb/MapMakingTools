@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author ProPercivalalb
  */
-public class MobArmorServerFilter extends FilterServerInventory {
+public class MobArmourServerFilter extends FilterServerInventory {
 
 	private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
 	

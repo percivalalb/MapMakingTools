@@ -83,21 +83,17 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketBabyMonster(gui.getBlockPos(), this.btn_covert.getData() == 0, this.minecartIndex));
-            		ClientHelper.getClient().player.closeScreen();
-                	break;
+            if(button.id == 0) {
+                PacketDispatcher.sendToServer(new PacketBabyMonster(this.btn_covert.getData() == 0, this.minecartIndex));
+            	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
-        int topY = gui.getGuiY();
         if(gui.getTargetType() == TargetType.BLOCK)
-        	this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+        	this.removeMinecartButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override

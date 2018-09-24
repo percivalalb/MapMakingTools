@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * @author ProPercivalalb
  */
-public class ArmorColourAttribute extends IItemAttribute {
+public class ArmourColourAttribute extends IItemAttribute {
 
 	private GuiTextField fld_colourint;
 	private GuiTextField fld_colourhex;

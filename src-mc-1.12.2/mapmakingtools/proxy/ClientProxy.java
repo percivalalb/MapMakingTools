@@ -12,7 +12,7 @@ import mapmakingtools.client.gui.GuiWorldTransfer;
 import mapmakingtools.handler.GameOverlay;
 import mapmakingtools.handler.KeyboardInput;
 import mapmakingtools.handler.RenderWorld;
-import mapmakingtools.tools.attribute.ArmorColourAttribute;
+import mapmakingtools.tools.attribute.ArmourColourAttribute;
 import mapmakingtools.tools.attribute.BlockDestroyAttribute;
 import mapmakingtools.tools.attribute.BookAttribute;
 import mapmakingtools.tools.attribute.BookEnchantmentAttribute;
@@ -76,7 +76,7 @@ public class ClientProxy extends CommonProxy {
 		ItemEditorManager.registerItemHandler(new BookAttribute());
 		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
 		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
-		ItemEditorManager.registerItemHandler(new ArmorColourAttribute());
+		ItemEditorManager.registerItemHandler(new ArmourColourAttribute());
 	}
 	
 	
