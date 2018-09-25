@@ -12,11 +12,14 @@ import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketMobPosition;
+import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 
@@ -94,7 +97,7 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketMobPosition(gui.getBlockPos(), txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), this.btn_type.getData() == 0, this.potentialSpawnIndex));
+                	PacketDispatcher.sendToServer(new PacketMobPosition(txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), this.btn_type.getData() == 0, this.potentialSpawnIndex));
             		ClientHelper.getClient().player.closeScreen();
                     break;
                 case 2:
@@ -116,25 +119,25 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	public void redoTextOnBoxs(IGuiFilter gui) {
-		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(tile != null && tile instanceof TileEntityMobSpawner) {
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(SpawnerUtil.isSpawner(gui)) {
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
+			BlockPos spawnerPos = spawnerLogic.getSpawnerPosition();
 			
 			if(isRelative) {
 				if(Numbers.isDouble(this.txt_xPosition.getText()))
-					this.txt_xPosition.setText("" + (Numbers.getDouble(this.txt_xPosition.getText()) - gui.getBlockPos().getX()));
+					this.txt_xPosition.setText("" + (Numbers.getDouble(this.txt_xPosition.getText()) - spawnerPos.getX()));
 				if(Numbers.isDouble(this.txt_yPosition.getText()))
-					this.txt_yPosition.setText("" + (Numbers.getDouble(this.txt_yPosition.getText()) - gui.getBlockPos().getY()));
+					this.txt_yPosition.setText("" + (Numbers.getDouble(this.txt_yPosition.getText()) - spawnerPos.getY()));
 				if(Numbers.isDouble(this.txt_zPosition.getText()))
-					this.txt_zPosition.setText("" + (Numbers.getDouble(this.txt_zPosition.getText()) - gui.getBlockPos().getZ()));
+					this.txt_zPosition.setText("" + (Numbers.getDouble(this.txt_zPosition.getText()) - spawnerPos.getZ()));
 			}
 			else {
 				if(Numbers.isDouble(this.txt_xPosition.getText()))
-					this.txt_xPosition.setText("" + (Numbers.getDouble(this.txt_xPosition.getText()) + gui.getBlockPos().getX()));
+					this.txt_xPosition.setText("" + (Numbers.getDouble(this.txt_xPosition.getText()) + spawnerPos.getX()));
 				if(Numbers.isDouble(this.txt_yPosition.getText()))
-					this.txt_yPosition.setText("" + (Numbers.getDouble(this.txt_yPosition.getText()) + gui.getBlockPos().getY()));
+					this.txt_yPosition.setText("" + (Numbers.getDouble(this.txt_yPosition.getText()) + spawnerPos.getY()));
 				if(Numbers.isDouble(this.txt_zPosition.getText()))
-					this.txt_zPosition.setText("" + (Numbers.getDouble(this.txt_zPosition.getText()) + gui.getBlockPos().getZ()));
+					this.txt_zPosition.setText("" + (Numbers.getDouble(this.txt_zPosition.getText()) + spawnerPos.getZ()));
 			}
 		}
 	}

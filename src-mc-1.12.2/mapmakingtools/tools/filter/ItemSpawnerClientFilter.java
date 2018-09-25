@@ -13,6 +13,7 @@ import mapmakingtools.tools.filter.packet.PacketItemSpawner;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
@@ -58,24 +59,20 @@ public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
-        int topY = gui.getGuiY();
-		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) {
-		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(!(tile instanceof TileEntityMobSpawner))
-			return true;
-		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-		
-		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+		MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
+			
+		List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawnerLogic);
 		if(minecarts.size() <= 0) return true;
 		WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
 		ResourceLocation mobId = SpawnerUtil.getMinecartType(randomMinecart);
 		if(mobId.toString().equals("minecraft:item"))
 			return false;
-		
+			
 		return true; 
 	}
 	
@@ -88,11 +85,9 @@ public class ItemSpawnerClientFilter extends FilterMobSpawnerBase {
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketItemSpawner(gui.getBlockPos(), potentialSpawnIndex));
-            		ClientHelper.getClient().player.closeScreen();
-                    break;
+            if(button.id == 0) {
+                PacketDispatcher.sendToServer(new PacketItemSpawner(potentialSpawnIndex));
+            	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}

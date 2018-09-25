@@ -66,8 +66,12 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		EntityMinecartMobSpawner spawner = (EntityMinecartMobSpawner)entity;
 		filterList.add(FilterManager.getClientFilterFromClass(MobTypeClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(SpawnerTimingClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(MobPositionClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(MobVelocityClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(BabyMonsterClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(MobArmourClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(CreeperPropertiesClientFilter.class));
+		filterList.add(FilterManager.getClientFilterFromClass(ItemSpawnerClientFilter.class));
 		filterList.add(FilterManager.getClientFilterFromClass(VillagerProfessionClientFilter.class));
 	}
 
@@ -79,8 +83,12 @@ public class SpawnerFilterProvider implements IFilterProvider {
 		EntityMinecartMobSpawner spawner = (EntityMinecartMobSpawner)entity;
 		filterList.add(FilterManager.getServerFilterFromClass(MobTypeServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(SpawnerTimingServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(MobPositionServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(MobVelocityServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(BabyMonsterServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(MobArmourServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(CreeperPropertiesServerFilter.class));
+		filterList.add(FilterManager.getServerFilterFromClass(ItemSpawnerServerFilter.class));
 		filterList.add(FilterManager.getServerFilterFromClass(VillagerProfessionServerFilter.class));
 	}
 

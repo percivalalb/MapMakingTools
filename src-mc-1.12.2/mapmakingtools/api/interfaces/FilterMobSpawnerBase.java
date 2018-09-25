@@ -6,6 +6,7 @@ import java.util.List;
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonPotentialSpawns;
+import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsAdd;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsRemove;
@@ -99,8 +100,8 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 					
 				List<String> list = new ArrayList<>();
 	    		list.add(SpawnerUtil.getMinecartType(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
-	    		//list.add("NBT: ");
-	    		//list.add(SpawnerUtil.getMinecartProperties(minecarts.get(tempButton.id - 200)).toString());
+	    		list.add("NBT: ");
+	    		list.add(SpawnerUtil.getMinecartProperties(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
 	    			
 	    		gui.drawHoveringTooltip(list, xMouse, yMouse);
 			}

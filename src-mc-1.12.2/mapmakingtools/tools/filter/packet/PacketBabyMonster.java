@@ -83,5 +83,4 @@ public class PacketBabyMonster extends AbstractServerMessage {
 			player.sendMessage(chatComponent);
 		}
 	}
-
 }

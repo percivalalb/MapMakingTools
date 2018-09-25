@@ -13,7 +13,9 @@ import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
@@ -75,13 +77,15 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 			int fuseTimeNO = Numbers.parse(this.fuseTime);
 			int explosionRadiusNO = Numbers.parse(this.explosionRadius);
 			
-			if(container.getTargetType() == TargetType.BLOCK) {
-				TileEntity tile = player.world.getTileEntity(container.getBlockPos());
-				if(tile instanceof TileEntityMobSpawner) {
-					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+			if(SpawnerUtil.isSpawner(container)) {
+				MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
 
-					SpawnerUtil.setCreeperFuse(spawner.getSpawnerBaseLogic(), fuseTimeNO, this.minecartIndex);
-					SpawnerUtil.setCreeperExplosionRadius(spawner.getSpawnerBaseLogic(), explosionRadiusNO, this.minecartIndex);
+				SpawnerUtil.setCreeperFuse(spawnerLogic, fuseTimeNO, this.minecartIndex);
+				SpawnerUtil.setCreeperExplosionRadius(spawnerLogic, explosionRadiusNO, this.minecartIndex);
+				
+				if(container.getTargetType() == TargetType.BLOCK) {
+					TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
+	
 					PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
 					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 				}
@@ -92,7 +96,7 @@ public class PacketCreeperProperties extends AbstractServerMessage {
 				ReflectionHelper.setField(FIELD_EXPOSION_RADIUS, creeper, explosionRadiusNO);
 			}
 			
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.creeperproperties.complete");
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.babymonster.complete");
 			chatComponent.getStyle().setItalic(true);
 			player.sendMessage(chatComponent);
 		}

@@ -2,6 +2,8 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
+import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;
@@ -11,6 +13,7 @@ import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.BlockPos;
@@ -20,13 +23,11 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketMobVelocity extends AbstractServerMessage {
 
-	public BlockPos pos;
 	public String xMotion, yMotion, zMotion;
 	public int minecartIndex;
 	
 	public PacketMobVelocity() {}
-	public PacketMobVelocity(BlockPos pos, String xMotion, String yMotion, String zMotion, int minecartIndex) {
-		this.pos = pos;
+	public PacketMobVelocity(String xMotion, String yMotion, String zMotion, int minecartIndex) {
 		this.xMotion = xMotion;
 		this.yMotion = yMotion;
 		this.zMotion = zMotion;
@@ -35,7 +36,6 @@ public class PacketMobVelocity extends AbstractServerMessage {
 
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.pos = packetbuffer.readBlockPos();
 		this.xMotion = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.yMotion = packetbuffer.readString(Integer.MAX_VALUE / 4);
 		this.zMotion = packetbuffer.readString(Integer.MAX_VALUE / 4);
@@ -44,7 +44,6 @@ public class PacketMobVelocity extends AbstractServerMessage {
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeString(this.xMotion);
 		packetbuffer.writeString(this.yMotion);
 		packetbuffer.writeString(this.zMotion);
@@ -56,9 +55,10 @@ public class PacketMobVelocity extends AbstractServerMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		TileEntity tile = player.world.getTileEntity(this.pos);
-		if(tile instanceof TileEntityMobSpawner) {
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(player.openContainer instanceof ContainerFilter) {
+			ContainerFilter container = (ContainerFilter)player.openContainer;
+			
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
 			
 			if(!Numbers.areDoubles(this.xMotion, this.yMotion, this.zMotion)) {
 				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobvelocity.notint");
@@ -72,9 +72,14 @@ public class PacketMobVelocity extends AbstractServerMessage {
 			double yMotionNO = Numbers.getDouble(this.yMotion);
 			double zMotionNO = Numbers.getDouble(this.zMotion);
 			
-			SpawnerUtil.setVelocity(spawner.getSpawnerBaseLogic(), xMotionNO, yMotionNO, zMotionNO, this.minecartIndex);
-			PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, pos, true), player);
-			PacketUtil.sendTileEntityUpdateToWatching(spawner);
+			SpawnerUtil.setVelocity(spawnerLogic, xMotionNO, yMotionNO, zMotionNO, this.minecartIndex);
+			
+			if(container.getTargetType() == TargetType.BLOCK) {
+				TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
+
+				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
+				PacketUtil.sendTileEntityUpdateToWatching(spawner);
+			}
 			
 			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobvelocity.complete");
 			chatComponent.getStyle().setItalic(true);

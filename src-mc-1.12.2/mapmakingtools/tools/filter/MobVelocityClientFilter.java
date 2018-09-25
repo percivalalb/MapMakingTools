@@ -83,11 +83,9 @@ public class MobVelocityClientFilter extends FilterMobSpawnerBase {
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketMobVelocity(gui.getBlockPos(), txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), this.potentialSpawnIndex));
-            		ClientHelper.getClient().player.closeScreen();
-                    break;
+            if(button.id == 0) {
+                PacketDispatcher.sendToServer(new PacketMobVelocity(txt_xMotion.getText(), txt_yMotion.getText(), txt_zMotion.getText(), potentialSpawnIndex));
+            	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}
@@ -102,9 +100,7 @@ public class MobVelocityClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
-        int topY = gui.getGuiY();
-		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
