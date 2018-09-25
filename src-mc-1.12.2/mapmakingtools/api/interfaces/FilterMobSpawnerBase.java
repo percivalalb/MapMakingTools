@@ -38,7 +38,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 		this.potentialSpawnsCount = potentialSpawns.size();
 		this.potentialSpawnButtons.clear();
 		
-		potentialSpawnIndex = Math.min(potentialSpawnIndex, potentialSpawns.size() - 1);
+		potentialSpawnIndex = Math.max(Math.min(potentialSpawnIndex, potentialSpawns.size() - 1), 0);
 			
 		for(int i = 0; i < potentialSpawns.size(); ++i) {
 			GuiButtonPotentialSpawns button = new GuiButtonPotentialSpawns(BUTTON_ID_START + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
@@ -90,20 +90,22 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	
 	@Override
 	public void drawToolTips(IGuiFilter gui, int xMouse, int yMouse) {
-		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
-		if(potentialSpawns == null) return;
-			
-		for(GuiButton tempButton : gui.getButtonList()) {
-			if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + potentialSpawnsCount) {
-				if(!tempButton.isMouseOver())
-					continue;
-					
-				List<String> list = new ArrayList<>();
-	    		list.add(SpawnerUtil.getMinecartType(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
-	    		list.add("NBT: ");
-	    		list.add(SpawnerUtil.getMinecartProperties(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
-	    			
-	    		gui.drawHoveringTooltip(list, xMouse, yMouse);
+		if(SpawnerUtil.isSpawner(gui)) {
+			List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
+			if(potentialSpawns == null) return;
+				
+			for(GuiButton tempButton : gui.getButtonList()) {
+				if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + potentialSpawnsCount) {
+					if(!tempButton.isMouseOver())
+						continue;
+						
+					List<String> list = new ArrayList<>();
+		    		list.add(SpawnerUtil.getMinecartType(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
+		    		list.add("NBT: ");
+		    		list.add(SpawnerUtil.getMinecartProperties(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
+		    			
+		    		gui.drawHoveringTooltip(list, xMouse, yMouse);
+				}
 			}
 		}
 	}

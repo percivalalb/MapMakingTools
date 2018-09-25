@@ -6,6 +6,8 @@ import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.manager.FakeWorldManager;
+import mapmakingtools.helper.ServerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -129,7 +131,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
         				if(size < 1) {
         					slot.putStack(ItemStack.EMPTY);
         				}
-        				else if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+        				else if(ServerHelper.isServer()) {
         					slotStack.setCount(size);
         					this.detectAndSendChanges();
         				}
@@ -178,7 +180,8 @@ public class ContainerFilter extends Container implements IContainerFilter {
 	
 	@Override
 	public Entity getEntity() {
-		return this.getWorld().getEntityByID(this.getEntityId());
+		return FakeWorldManager.getEntity(this.getWorld(), this.getEntityId());
+		//return this.getWorld().getEntityByID(this.getEntityId());
 	}
 
 	@Override

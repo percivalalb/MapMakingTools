@@ -137,7 +137,7 @@ public class PlayerInteract {
 		
 		if(stack.getItem() == ModItems.EDIT_ITEM && stack.getMetadata() == 1) {
 			if(!world.isRemote) {
-				PacketDispatcher.sendTo(new PacketUpdateEntity(entity), player);
+				PacketDispatcher.sendTo(new PacketUpdateEntity(entity, false), player);
 				event.setCanceled(true);
 			}
 		}

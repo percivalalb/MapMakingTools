@@ -24,29 +24,27 @@ public class PacketUpdateBlock extends AbstractClientMessage {
 
 	public BlockPos pos;
 	public NBTTagCompound tagCompound;
-	public boolean onUpdate;
+	public boolean onlyUpdate;
 	
 	public PacketUpdateBlock() {}
 	public PacketUpdateBlock(TileEntity tileEntity, BlockPos pos, boolean onlyUpdate) {
 		this.pos = pos;
-		this.tagCompound = new NBTTagCompound();
-		tileEntity.writeToNBT(this.tagCompound);
-		FMLLog.info("On leave " + this.tagCompound.toString());
-		this.onUpdate = onlyUpdate;
+		this.tagCompound = tileEntity.serializeNBT();
+		this.onlyUpdate = onlyUpdate;
 	}
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.pos = packetbuffer.readBlockPos();
 		this.tagCompound = packetbuffer.readCompoundTag();
-		this.onUpdate = packetbuffer.readBoolean();
+		this.onlyUpdate = packetbuffer.readBoolean();
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
 		packetbuffer.writeBlockPos(this.pos);
 		packetbuffer.writeCompoundTag(this.tagCompound);
-		packetbuffer.writeBoolean(this.onUpdate);
+		packetbuffer.writeBoolean(this.onlyUpdate);
 	}
 
 	@Override
@@ -54,22 +52,14 @@ public class PacketUpdateBlock extends AbstractClientMessage {
 		if(!PlayerAccess.canEdit(player))
 			return;
 		
-		World world = player.world;
-		TileEntity tileEntity = world.getTileEntity(this.pos);
+		TileEntity tileEntity = player.world.getTileEntity(this.pos);
 		
 		if(tileEntity == null)
 			return;
-		FMLLog.info(tileEntity.getClass().getName());
-		//tileEntity.readFromNBT(this.tagCompound);
 
-		FakeWorldManager.putTileEntity(tileEntity, world, this.pos, this.tagCompound);
-		if(FakeWorldManager.getTileEntity(world, this.pos) instanceof TileEntityMobSpawner) {
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)FakeWorldManager.getTileEntity(world, this.pos);
-			FMLLog.info(" Size: " + SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic()).size());
-		}
-		
-		FMLLog.info("On arrive " + this.tagCompound.toString());
-		if(!this.onUpdate)
+		FakeWorldManager.putTileEntity(tileEntity, player.world, this.pos, this.tagCompound);
+
+		if(!this.onlyUpdate)
 			PacketDispatcher.sendToServer(new PacketEditBlock(this.pos));
 	}
 

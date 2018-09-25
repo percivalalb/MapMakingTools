@@ -7,6 +7,7 @@ import java.util.UUID;
 import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.SlotFake;
+import mapmakingtools.helper.ServerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,18 +68,20 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 	    	container.addSlot(new SlotFake(inventory, i * 3 + 2, 20 + (i * 18) + (i * 5), 64));
 	    }
 		
-		Entity entity = container.getEntity();
-		
-		if(entity instanceof EntityVillager) {
-			EntityVillager villager = (EntityVillager)entity;
-		    MerchantRecipeList recipeList = villager.getRecipes(player);
-		    for (int i = 0; i < this.getAmountRecipes(player) && i < 9 && i < recipeList.size(); ++i) {
-		    	MerchantRecipe recipes = (MerchantRecipe)recipeList.get(i);
-		    	inventory.setInventorySlotContents(i * 3, recipes.getItemToBuy());
-		    	inventory.setInventorySlotContents(i * 3 + 1, recipes.getSecondItemToBuy());
-		        inventory.setInventorySlotContents(i * 3 + 2, recipes.getItemToSell());
-		    }
-		}
+	    if(ServerHelper.isServer()) {
+			Entity entity = container.getEntity();
+			
+			if(entity instanceof EntityVillager) {
+				EntityVillager villager = (EntityVillager)entity;
+			    MerchantRecipeList recipeList = villager.getRecipes(player);
+			    for (int i = 0; i < this.getAmountRecipes(player) && i < 9 && i < recipeList.size(); ++i) {
+			    	MerchantRecipe recipes = (MerchantRecipe)recipeList.get(i);
+			    	inventory.setInventorySlotContents(i * 3, recipes.getItemToBuy());
+			    	inventory.setInventorySlotContents(i * 3 + 1, recipes.getSecondItemToBuy());
+			        inventory.setInventorySlotContents(i * 3 + 2, recipes.getItemToSell());
+			    }
+			}
+	    }
 	}
 
 	@Override

@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import mapmakingtools.MapMakingTools;
+import mapmakingtools.helper.ServerHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -15,15 +18,18 @@ import net.minecraft.world.World;
  */
 public class FakeWorldManager {
 
-	private static HashMap<List<Object>, TileEntity> fakeTileEntities = new HashMap<List<Object>, TileEntity>();
+	private static TileEntity FAKE_TILE_ENTITY;
+	private static NBTTagCompound FAKE_TILE_ENTITY_DATA;
 
+	private static Entity FAKE_ENTITY;
+	private static NBTTagCompound FAKE_ENTITY_DATA;
+	
 	public static void putTileEntity(TileEntity tileEntity, World world, BlockPos pos, NBTTagCompound dataRecived) {
 		try {
-			List<Object> key = Arrays.asList(world.provider.getDimension(), pos.toLong());
-			
 			TileEntity newTileEntity = tileEntity.getClass().newInstance();
 			newTileEntity.readFromNBT(dataRecived);
-			fakeTileEntities.put(key, newTileEntity);
+			FAKE_TILE_ENTITY = newTileEntity;
+			FAKE_TILE_ENTITY_DATA = dataRecived;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -32,15 +38,36 @@ public class FakeWorldManager {
 	
 	public static void putEntity(Entity entity, NBTTagCompound dataRecived) {
 		try {
-			entity.readFromNBT(dataRecived);
+			
+			Entity newEntity = EntityList.createEntityFromNBT(dataRecived, entity.world);
+			MapMakingTools.LOGGER.error("" + newEntity == null);
+			FAKE_ENTITY = newEntity;
+			FAKE_ENTITY_DATA = dataRecived;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		} 
 	}
 	
+	public static Entity getEntity(World world, int entityId) {
+		if(ServerHelper.isServer())
+			return world.getEntityByID(entityId);
+		
+		// Sanity check
+		if(FAKE_ENTITY == null)
+			MapMakingTools.LOGGER.error("Entity fake failed sanity check");
+		
+		return FAKE_ENTITY;
+	}
+	
 	public static TileEntity getTileEntity(World world, BlockPos pos) {
-		List<Object> key = Arrays.asList(world.provider.getDimension(), pos.toLong());
-		return fakeTileEntities.get(key);
+		if(ServerHelper.isServer())
+			return world.getTileEntity(pos);
+		
+		// Sanity check
+		if(FAKE_TILE_ENTITY == null || !FAKE_TILE_ENTITY.getPos().equals(pos))
+			MapMakingTools.LOGGER.error("TileEntity fake failed sanity check");
+		
+		return FAKE_TILE_ENTITY;
 	}
 }

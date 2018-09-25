@@ -19,24 +19,27 @@ public class PacketUpdateEntity extends AbstractMessage {
 
 	public int entityId;
 	public NBTTagCompound tagCompound;
+	public boolean onlyUpdate;
 	
 	public PacketUpdateEntity() {}
-	public PacketUpdateEntity(Entity entity) {
+	public PacketUpdateEntity(Entity entity, boolean onlyUpdate) {
 		this.entityId = entity.getEntityId();
-		this.tagCompound = new NBTTagCompound();
-		entity.writeToNBT(this.tagCompound);
+		this.tagCompound = entity.serializeNBT();
+		this.onlyUpdate = onlyUpdate;
 	}
 	
 	@Override
 	public void read(PacketBuffer packetbuffer) throws IOException {
 		this.entityId = packetbuffer.readInt();
 		this.tagCompound = packetbuffer.readCompoundTag();
+		this.onlyUpdate = packetbuffer.readBoolean();
 	}
 
 	@Override
 	public void write(PacketBuffer packetbuffer) throws IOException {
 		packetbuffer.writeInt(this.entityId);
 		packetbuffer.writeCompoundTag(this.tagCompound);
+		packetbuffer.writeBoolean(this.onlyUpdate);
 	}
 
 	@Override
@@ -51,7 +54,8 @@ public class PacketUpdateEntity extends AbstractMessage {
 		
 		FakeWorldManager.putEntity(entity, this.tagCompound);
 		
-		PacketDispatcher.sendToServer(new PacketEditEntity(entity));
+		if(!this.onlyUpdate)
+			PacketDispatcher.sendToServer(new PacketEditEntity(entity));
 	}
 
 }

@@ -76,9 +76,9 @@ public class PacketMobPosition extends AbstractServerMessage {
 			double yPosNO = Numbers.getDouble(this.yPos);
 			double zPosNO = Numbers.getDouble(this.zPos);
 			if(this.relative) {
-				xPosNO += container.getBlockPos().getX();
-				yPosNO += container.getBlockPos().getY();
-				zPosNO += container.getBlockPos().getZ();
+				xPosNO += spawnerLogic.getSpawnerPosition().getX();
+				yPosNO += spawnerLogic.getSpawnerPosition().getY();
+				zPosNO += spawnerLogic.getSpawnerPosition().getZ();
 			}
 			
 			SpawnerUtil.setPosition(spawnerLogic, xPosNO, yPosNO, zPosNO, this.minecartIndex);

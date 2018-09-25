@@ -10,6 +10,7 @@ import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.FilterClient;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.client.gui.button.GuiHorizontalTab;
@@ -384,7 +385,8 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	
 	@Override
 	public Entity getEntity() {
-		return this.getWorld().getEntityByID(this.getEntityId());
+		return FakeWorldManager.getEntity(this.getWorld(), this.getEntityId());
+		//return this.getWorld().getEntityByID(this.getEntityId());
 	}
 	
 	@Override

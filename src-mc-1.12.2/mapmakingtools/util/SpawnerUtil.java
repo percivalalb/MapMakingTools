@@ -342,7 +342,7 @@ public class SpawnerUtil {
 			}
 		}
 		else if(gui.getTargetType() == TargetType.ENTITY) {
-			Entity entity = gui.getEntity();
+			Entity entity = FakeWorldManager.getEntity(gui.getWorld(), gui.getEntityId());
 			if(entity instanceof EntityMinecartMobSpawner) {
 				EntityMinecartMobSpawner spawner = (EntityMinecartMobSpawner)entity;
 				return getLogic(spawner);
@@ -359,7 +359,7 @@ public class SpawnerUtil {
 			return tile instanceof TileEntityMobSpawner;
 		}
 		else if(gui.getTargetType() == TargetType.ENTITY) {
-			Entity entity = gui.getEntity();
+			Entity entity = FakeWorldManager.getEntity(gui.getWorld(), gui.getEntityId());
 			return entity instanceof EntityMinecartMobSpawner;
 		}
 		
