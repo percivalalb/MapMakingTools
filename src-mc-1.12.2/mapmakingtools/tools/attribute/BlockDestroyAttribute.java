@@ -46,11 +46,9 @@ public class BlockDestroyAttribute extends IItemAttribute {
 			NBTTagList tagList = NBTUtil.getOrCreateSubList(stack, "CanDestroy", NBTUtil.ID_STRING);
 			
 			String possibleBlock = this.scrollMenuAdd.getRecentSelection();
-			FMLLog.info(possibleBlock);
-			if(!NBTUtil.contains(tagList, possibleBlock)) {
+			
+			if(!NBTUtil.contains(tagList, possibleBlock))
 				tagList.appendTag(new NBTTagString(possibleBlock));
-				FMLLog.info("add");
-			}
 			
 			break;
 		case 1: //Remove selected value to NBTTagList

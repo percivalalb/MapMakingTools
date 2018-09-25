@@ -16,16 +16,15 @@ public class PotionNBT {
 	public static final String POTION_AMBIENT = "Ambient";
 	public static final String POTION_PARTICLES = "ShowParticles";
 	
-	public static void checkHasTag(ItemStack item) {
-		if(!item.hasTagCompound())
-			item.setTagCompound(new NBTTagCompound());
-		if(!item.getTagCompound().hasKey(POTION_TAG, 9))
-			item.getTagCompound().setTag(POTION_TAG, new NBTTagList());
+	public static NBTTagList getOrCreatePotionList(ItemStack item) {
+		return NBTUtil.getOrCreateSubList(item, POTION_TAG, NBTUtil.ID_COMPOUND);
 	}
 	
 	public static void setPotionEffects(ItemStack item, int id, int level, int duration, boolean ambient, boolean showParticles) {
-		checkHasTag(item); 
+		getOrCreatePotionList(item);
+		
 		NBTTagList potionList = new NBTTagList();
+		
 		NBTTagCompound potion = new NBTTagCompound();
 		potion.setByte(POTION_ID, (byte)id);
 		potion.setByte(POTION_AMPLIFIER, (byte)(level - 1));
@@ -33,12 +32,13 @@ public class PotionNBT {
 		potion.setBoolean(POTION_AMBIENT, ambient);
 		potion.setBoolean(POTION_PARTICLES, showParticles);
 		potionList.appendTag(potion);
+		
 		item.getTagCompound().setTag(POTION_TAG, potionList);
 	}
 	
 	public static void addPotionEffects(ItemStack item, int id, int level, int duration, boolean ambient, boolean showParticles) {
-		checkHasTag(item);  
-		NBTTagList potionList = (NBTTagList)item.getTagCompound().getTag(POTION_TAG);
+		NBTTagList potionList = getOrCreatePotionList(item);
+		
 		NBTTagCompound potion = new NBTTagCompound();
 		potion.setByte(POTION_ID, (byte)id);
 		potion.setByte(POTION_AMPLIFIER, (byte)(level - 1));

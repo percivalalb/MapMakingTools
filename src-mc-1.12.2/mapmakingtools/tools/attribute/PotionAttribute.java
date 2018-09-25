@@ -12,12 +12,14 @@ import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.PotionList;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import mapmakingtools.tools.item.nbt.PotionNBT;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,6 +27,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -59,13 +62,6 @@ public class PotionAttribute extends IItemAttribute {
 				if(potion == null)
 					return;
 				
-				if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("CustomPotionEffects", 9)) {
-					List potionList = PotionUtils.getEffectsFromStack(stack);
-					for(int i = 0; potionList != null && i < potionList.size(); ++i) {
-						PotionEffect effect = (PotionEffect)potionList.get(i);
-						PotionNBT.addPotionEffects(stack, Potion.getIdFromPotion(effect.getPotion()), effect.getAmplifier() + 1, effect.getDuration(), effect.getIsAmbient(), effect.doesShowParticles());
-					}
-				}
 				int lvl = Numbers.parse(this.level);
 				int dur = Numbers.parse(this.duration);
 				PotionNBT.addPotionEffects(stack, Potion.getIdFromPotion(potion), lvl, dur, false, this.showParticles);
@@ -73,25 +69,19 @@ public class PotionAttribute extends IItemAttribute {
 		}
 		
 		if(this.scrollMenuRemove.hasSelection() && data == 1) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CustomPotionEffects", 9)) {
-		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("CustomPotionEffects", 10);
-		        nbttaglist.removeTag(this.selectedDelete);
-			}
-			else {
-				PotionNBT.checkHasTag(stack);
-			}
+			boolean hasDefault = NBTUtil.hasTag(stack, "Potion", NBTUtil.ID_STRING);
+			if(hasDefault && this.scrollMenuRemove.getRecentIndex() == 0)
+				NBTUtil.removeTag(stack, "Potion", NBTUtil.ID_STRING);
+			else
+				NBTUtil.removeTagFromSubList(stack, PotionNBT.POTION_TAG, NBTUtil.ID_COMPOUND, this.scrollMenuRemove.getRecentIndex() - (hasDefault ? 1 : 0));
+
+		    NBTUtil.hasEmptyTagCompound(stack, true);
 		}
 		
 		if(data == 2) {
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
-				
-			if(!stack.getTagCompound().hasKey("CustomPotionEffects", 9))
-				stack.getTagCompound().setTag("CustomPotionEffects", new NBTTagList());
-				
-			NBTTagList list = stack.getTagCompound().getTagList("CustomPotionEffects", 10);
-			while(list.tagCount() > 0)
-				list.removeTag(0);
+			NBTUtil.removeTag(stack, "Potion", NBTUtil.ID_STRING);
+			NBTUtil.removeSubList(stack, PotionNBT.POTION_TAG);
+			NBTUtil.hasEmptyTagCompound(stack, true);
 		}
 	}
 
