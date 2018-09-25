@@ -10,7 +10,7 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.tools.filter.packet.PacketMobArmor;
+import mapmakingtools.tools.filter.packet.PacketMobArmour;
 import mapmakingtools.tools.filter.packet.PacketFetchMobArmour;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
@@ -56,9 +57,9 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
         int topY = gui.getGuiY();
         this.btnOk = new GuiButton(0, topX + 12, topY + 93, 20, 20, "OK");
         gui.getButtonList().add(this.btnOk);
-        if(gui.getTargetType() == TargetType.BLOCK) {
+        
+        if(SpawnerUtil.isSpawner(gui)) {
 	        this.addPotentialSpawnButtons(gui, topX, topY);
-	        this.onPotentialSpawnChange(gui);
         }
 	}
 
@@ -77,7 +78,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 		super.actionPerformed(gui, button);
 		if(button.enabled) {
             if(button.id == 0) {
-                PacketDispatcher.sendToServer(new PacketMobArmor(FilterMobSpawnerBase.potentialSpawnIndex));
+                PacketDispatcher.sendToServer(new PacketMobArmour(FilterMobSpawnerBase.potentialSpawnIndex));
             	ClientHelper.getClient().player.closeScreen();
             }
         }
@@ -85,7 +86,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-        if(gui.getTargetType() == TargetType.BLOCK)
+		if(SpawnerUtil.isSpawner(gui))
         	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
@@ -115,13 +116,10 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) { 
-		if(gui.getTargetType() == TargetType.BLOCK) {
-			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(!(tile instanceof TileEntityMobSpawner))
-				return true;
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(SpawnerUtil.isSpawner(gui)) {
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
-			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawnerLogic);
 			if(minecarts.size() <= potentialSpawnIndex) return true;
 			WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
 			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();

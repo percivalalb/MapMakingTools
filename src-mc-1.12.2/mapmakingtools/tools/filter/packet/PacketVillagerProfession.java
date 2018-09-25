@@ -17,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -59,25 +60,29 @@ public class PacketVillagerProfession extends AbstractServerMessage {
 		if(player.openContainer instanceof ContainerFilter) {
 			ContainerFilter container = (ContainerFilter)player.openContainer;
 			
-			if(container.getTargetType() == TargetType.BLOCK) {
-				TileEntity tile = player.world.getTileEntity(container.getBlockPos());
-				if(tile instanceof TileEntityMobSpawner) {
-					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-
-					SpawnerUtil.setVillagerProfession(spawner.getSpawnerBaseLogic(), this.minecartIndex, VillagerRegistry.getId(this.professionId));
+			if(SpawnerUtil.isSpawner(container)) {
+				MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
+			
+				SpawnerUtil.setVillagerProfession(spawnerLogic, this.minecartIndex, VillagerRegistry.getId(this.professionId));
+				
+				if(container.getTargetType() == TargetType.BLOCK) {
+					TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
+	
 					PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
 					PacketUtil.sendTileEntityUpdateToWatching(spawner);
 				}
 			}
 			else if(container.getTargetType() == TargetType.ENTITY) {
-				EntityVillager villager = (EntityVillager)container.getEntity();
-				villager.setProfession(this.professionId);
+				Entity entity = container.getEntity();
+				if(entity instanceof EntityVillager) {
+					EntityVillager villager = (EntityVillager)container.getEntity();
+					villager.setProfession(this.professionId);
+				}
 			}
 			
 			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.villagerprofession.complete", this.professionId.getRegistryName());
 			chatComponent.getStyle().setItalic(true);
 			player.sendMessage(chatComponent);
 		}
-
 	}
 }

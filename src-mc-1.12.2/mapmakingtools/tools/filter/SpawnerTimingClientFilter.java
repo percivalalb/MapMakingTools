@@ -84,7 +84,6 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
         gui.getTextBoxList().add(this.txt_detectionRange);
         
         this.addPotentialSpawnButtons(gui, topX, topY);
-        this.onPotentialSpawnChange(gui);
 	}
 
 	@Override
@@ -104,11 +103,9 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketSpawnerTimings(gui.getBlockPos(), this.txt_minDelay.getText(), this.txt_maxDelay.getText(), this.txt_spawnRadius.getText(), this.txt_spawnCount.getText(), this.txt_entityCap.getText(), this.txt_detectionRange.getText()));
-            		ClientHelper.getClient().player.closeScreen();
-                    break;
+            if(button.id == 0) {
+                PacketDispatcher.sendToServer(new PacketSpawnerTimings(this.txt_minDelay.getText(), this.txt_maxDelay.getText(), this.txt_spawnRadius.getText(), this.txt_spawnCount.getText(), this.txt_entityCap.getText(), this.txt_detectionRange.getText()));
+            	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}

@@ -10,14 +10,18 @@ import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -53,25 +57,30 @@ public class PacketBabyMonster extends AbstractServerMessage {
 		
 		if(player.openContainer instanceof ContainerFilter) {
 			ContainerFilter container = (ContainerFilter)player.openContainer;
-			if(container.getTargetType() == TargetType.BLOCK) {
-		
-				TileEntity tile = player.world.getTileEntity(container.getBlockPos());
-				if(tile instanceof TileEntityMobSpawner) {
-					TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-					
-					SpawnerUtil.setBabyMonster(spawner.getSpawnerBaseLogic(), this.baby, this.minecartIndex);
+			
+			if(SpawnerUtil.isSpawner(container)) {
+				MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
+			
+				SpawnerUtil.setBabyMonster(spawnerLogic, this.baby, this.minecartIndex);
+				
+				if(container.getTargetType() == TargetType.BLOCK) {
+					TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
+	
 					PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
 					PacketUtil.sendTileEntityUpdateToWatching(spawner);
-					
-					TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.babymonster.complete");
-					chatComponent.getStyle().setItalic(true);
-					player.sendMessage(chatComponent);
 				}
 			}
 			else if(container.getTargetType() == TargetType.ENTITY) {
-				EntityZombie living = (EntityZombie)container.getEntity();
-				living.setChild(this.baby);
+				Entity entity = container.getEntity();
+				if(entity instanceof EntityZombie) {
+					EntityZombie zombie = (EntityZombie)container.getEntity();
+					zombie.setChild(this.baby);
+				}
 			}
+			
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.babymonster.complete");
+			chatComponent.getStyle().setItalic(true);
+			player.sendMessage(chatComponent);
 		}
 	}
 

@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public interface IGuiFilter {
+public interface IGuiFilter extends IFilterBase {
 
 	public int xFakeSize();
 	public int getScreenWidth();
@@ -26,13 +26,6 @@ public interface IGuiFilter {
 	public void setYSize(int newYSize);
 	public void drawHoveringTooltip(List<String> text, int mouseX, int mouseY);
 	
-	public TargetType getTargetType();
-	public BlockPos getBlockPos();
-	public int getEntityId();
-	public Entity getEntity();
-	
-	public World getWorld();
-	public EntityPlayer getPlayer();
 	public List<GuiLabel> getLabelList();
 	public List<GuiButton> getButtonList();
 	public List<GuiTextField> getTextBoxList();

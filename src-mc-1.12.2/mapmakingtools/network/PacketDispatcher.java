@@ -21,7 +21,7 @@ import mapmakingtools.tools.filter.packet.PacketCreeperProperties;
 import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import mapmakingtools.tools.filter.packet.PacketFillInventory;
 import mapmakingtools.tools.filter.packet.PacketItemSpawner;
-import mapmakingtools.tools.filter.packet.PacketMobArmor;
+import mapmakingtools.tools.filter.packet.PacketMobArmour;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsAdd;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsRemove;
 import mapmakingtools.tools.filter.packet.PacketFetchMobArmour;
@@ -85,7 +85,7 @@ public class PacketDispatcher {
 		registerMessage(PacketCustomGive.class);
 		registerMessage(PacketFillInventory.class);
 		registerMessage(PacketItemSpawner.class);
-		registerMessage(PacketMobArmor.class);
+		registerMessage(PacketMobArmour.class);
 		registerMessage(PacketPotentialSpawnsAdd.class);
 		registerMessage(PacketPotentialSpawnsRemove.class);
 		registerMessage(PacketFetchMobArmour.class);

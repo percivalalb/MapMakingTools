@@ -11,6 +11,9 @@ import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsAdd;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsRemove;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartMobSpawner;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
@@ -28,12 +31,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	public List<GuiButton> potentialSpawnButtons = new ArrayList<>();
 	
 	public void addPotentialSpawnButtons(IGuiFilter gui, int topX, int topY) {
-		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(!(tile instanceof TileEntityMobSpawner))
-			return;
-		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-		
-		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
 		if(potentialSpawns == null) return;
 
 		this.potentialSpawnsCount = potentialSpawns.size();
@@ -50,12 +48,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	}
 	
 	public void removePotentialSpawnButtons(IGuiFilter gui, int xMouse, int yMouse, int mouseButton, int topX, int topY) {
-		TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(!(tile instanceof TileEntityMobSpawner))
-			return;
-		TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-		
-		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
 		if(potentialSpawns == null) return;
 		
 		// Check if there enough or too many potential spawns
@@ -78,13 +71,13 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 			if(mouseButton == 2) {
 				potentialSpawns.remove(button.id - BUTTON_ID_START);
 				
-				PacketDispatcher.sendToServer(new PacketPotentialSpawnsRemove(gui.getBlockPos(), button.id - BUTTON_ID_START));
+				PacketDispatcher.sendToServer(new PacketPotentialSpawnsRemove(button.id - BUTTON_ID_START));
 				if(button.id - BUTTON_ID_START < FilterMobSpawnerBase.potentialSpawnIndex)
 					FilterMobSpawnerBase.potentialSpawnIndex--;
 			}
 			else if(mouseButton == 1) {
 				potentialSpawns.add(new WeightedSpawnerEntity());
-				PacketDispatcher.sendToServer(new PacketPotentialSpawnsAdd(gui.getBlockPos(), button.id - BUTTON_ID_START + 1));
+				PacketDispatcher.sendToServer(new PacketPotentialSpawnsAdd(button.id - BUTTON_ID_START + 1));
 				FilterMobSpawnerBase.potentialSpawnIndex = button.id - BUTTON_ID_START + 1;
 			}
 		
@@ -96,44 +89,35 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	
 	@Override
 	public void drawToolTips(IGuiFilter gui, int xMouse, int yMouse) {
-		if(gui.getTargetType() == TargetType.BLOCK) {
-			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(!(tile instanceof TileEntityMobSpawner))
-				return;
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
+		if(potentialSpawns == null) return;
 			
-			List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
-			if(potentialSpawns == null) return;
-			
-			for(GuiButton tempButton : gui.getButtonList()) {
-				if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + potentialSpawnsCount) {
-					if(!tempButton.isMouseOver())
-						continue;
+		for(GuiButton tempButton : gui.getButtonList()) {
+			if(tempButton.id >= BUTTON_ID_START && tempButton.id <= BUTTON_ID_START + potentialSpawnsCount) {
+				if(!tempButton.isMouseOver())
+					continue;
 					
-					List<String> list = new ArrayList<>();
-	    			list.add(SpawnerUtil.getMinecartType(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
-	    			//list.add("NBT: ");
-	    			//list.add(SpawnerUtil.getMinecartProperties(minecarts.get(tempButton.id - 200)).toString());
+				List<String> list = new ArrayList<>();
+	    		list.add(SpawnerUtil.getMinecartType(potentialSpawns.get(tempButton.id - BUTTON_ID_START)).toString());
+	    		//list.add("NBT: ");
+	    		//list.add(SpawnerUtil.getMinecartProperties(minecarts.get(tempButton.id - 200)).toString());
 	    			
-	    			gui.drawHoveringTooltip(list, xMouse, yMouse);
-				}
+	    		gui.drawHoveringTooltip(list, xMouse, yMouse);
 			}
 		}
 	}
 	
 	@Override
 	public void actionPerformed(IGuiFilter gui, GuiButton button) {
-		if(gui.getTargetType() == TargetType.BLOCK) {
-			if(button.id >= BUTTON_ID_START && button.id <= BUTTON_ID_START + potentialSpawnsCount) {
-				int newIndex = button.id - BUTTON_ID_START;
+		if(button.id >= BUTTON_ID_START && button.id <= BUTTON_ID_START + potentialSpawnsCount) {
+			int newIndex = button.id - BUTTON_ID_START;
 				
-				if(newIndex != potentialSpawnIndex) {
-					potentialSpawnIndex = newIndex;
+			if(newIndex != potentialSpawnIndex) {
+				potentialSpawnIndex = newIndex;
 				
-					for(GuiButton tempButton : this.potentialSpawnButtons) {
-						tempButton.enabled = tempButton.id - BUTTON_ID_START == potentialSpawnIndex;
-						this.onPotentialSpawnChange(gui);
-					}
+				for(GuiButton tempButton : this.potentialSpawnButtons) {
+					tempButton.enabled = tempButton.id - BUTTON_ID_START == potentialSpawnIndex;
+					this.onPotentialSpawnChange(gui);
 				}
 			}
 		}

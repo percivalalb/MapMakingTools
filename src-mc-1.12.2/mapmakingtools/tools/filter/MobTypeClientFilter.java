@@ -58,7 +58,7 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 			@Override
 			public void onSetButton() {
 				MobTypeClientFilter.selected = this.getRecentIndex();
-				PacketDispatcher.sendToServer(new PacketMobType(gui.getBlockPos(), this.elements.get(MobTypeClientFilter.selected), FilterMobSpawnerBase.potentialSpawnIndex));
+				PacketDispatcher.sendToServer(new PacketMobType(this.getRecentSelection(), FilterMobSpawnerBase.potentialSpawnIndex));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	

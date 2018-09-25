@@ -13,18 +13,11 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public interface IContainerFilter {
+public interface IContainerFilter extends IFilterBase {
 
 	public void addSlot(Slot slot);
-	public EntityPlayer getPlayer();
 	public List<Slot> getInventorySlots();
 	public boolean mergeItemStacks(ItemStack itemstack1, int j, int i, boolean b);
-	
-	public TargetType getTargetType();
-	public BlockPos getBlockPos();
-	public int getEntityId();
-	public Entity getEntity();
-	
-	public World getWorld();
+
 	public FilterServer getCurrentFilter();
 }

@@ -3,8 +3,13 @@ package mapmakingtools.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.interfaces.IFilterBase;
+import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.item.nbt.NBTUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartMobSpawner;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
@@ -12,6 +17,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
@@ -32,6 +38,8 @@ public class SpawnerUtil {
 	private static Field FIELD_ENTITY_CAP = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 9);
 	private static Field FIELD_DETECTION_RADIUS = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 10);
 	private static Field FIELD_SPAWN_RADIUS = ReflectionHelper.getField(MobSpawnerBaseLogic.class, 11);
+	
+	private static Field FIELD_SPAWNER_LOGIC = ReflectionHelper.getField(EntityMinecartMobSpawner.class, 0);
 	
 	public static ResourceLocation getMobId(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		if(minecartIndex == -1)
@@ -319,5 +327,46 @@ public class SpawnerUtil {
 	
 	public static int getMinecartWeight(WeightedSpawnerEntity minecart) {
 		return minecart.getNbt().getInteger("Weight");
+	}
+	
+	public static List<WeightedSpawnerEntity> getPotentialSpawns(IFilterBase gui) {
+		return getPotentialSpawns(getSpawnerLogic(gui));
+	}
+	
+	public static MobSpawnerBaseLogic getSpawnerLogic(IFilterBase gui) {
+		if(gui.getTargetType() == TargetType.BLOCK) {
+			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			if(tile instanceof TileEntityMobSpawner) {
+				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+				return spawner.getSpawnerBaseLogic();
+			}
+		}
+		else if(gui.getTargetType() == TargetType.ENTITY) {
+			Entity entity = gui.getEntity();
+			if(entity instanceof EntityMinecartMobSpawner) {
+				EntityMinecartMobSpawner spawner = (EntityMinecartMobSpawner)entity;
+				return getLogic(spawner);
+			}
+		}
+		
+		return null;
+	}
+	
+	/** Is it a block or minecart spawner */
+	public static boolean isSpawner(IFilterBase gui) {
+		if(gui.getTargetType() == TargetType.BLOCK) {
+			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
+			return tile instanceof TileEntityMobSpawner;
+		}
+		else if(gui.getTargetType() == TargetType.ENTITY) {
+			Entity entity = gui.getEntity();
+			return entity instanceof EntityMinecartMobSpawner;
+		}
+		
+		return false;
+	}
+	
+	public static MobSpawnerBaseLogic getLogic(EntityMinecartMobSpawner minecartMobSpawner) {
+		return ReflectionHelper.getField(FIELD_SPAWNER_LOGIC, MobSpawnerBaseLogic.class, minecartMobSpawner);
 	}
 }

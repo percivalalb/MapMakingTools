@@ -13,13 +13,16 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
+import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
@@ -74,46 +77,32 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
         };
         this.menu.initGui();
         
-        if(gui.getTargetType() == TargetType.BLOCK) {
-			this.addPotentialSpawnButtons(gui, topX, topY);
+        if(SpawnerUtil.isSpawner(gui)) {
+        	this.addPotentialSpawnButtons(gui, topX, topY);
         	
-	        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(tile instanceof TileEntityMobSpawner) {
-				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-				int prof = SpawnerUtil.getVillagerProfession(spawner.getSpawnerBaseLogic(), FilterMobSpawnerBase.potentialSpawnIndex);
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
+			
+			int prof = SpawnerUtil.getVillagerProfession(spawnerLogic, FilterMobSpawnerBase.potentialSpawnIndex);
+			this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
+		}
+		else if(gui.getTargetType() == TargetType.ENTITY) {
+			Entity entity = gui.getEntity();
+			if(entity instanceof EntityVillager) {
+				EntityVillager villager = (EntityVillager)gui.getEntity();
+				int prof = villager.getProfession();
 				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
 			}
-			
-        }
-        else if(gui.getTargetType() == TargetType.ENTITY) {
-        	Entity entity = gui.getEntity();
-        	if(entity instanceof EntityVillager) {
-        		EntityVillager villager = (EntityVillager)entity;
-        		int prof = villager.getProfession();
-				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
-        	}
-        }
+		}
 	}
 	
 	@Override
 	public void onPotentialSpawnChange(IGuiFilter gui) {
-		FMLLog.info("CHANGE");
-		if(gui.getTargetType() == TargetType.BLOCK) {
-	        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(tile instanceof TileEntityMobSpawner) {
-				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-				int prof = SpawnerUtil.getVillagerProfession(spawner.getSpawnerBaseLogic(), FilterMobSpawnerBase.potentialSpawnIndex);
-				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
-			}
-        }
-        else if(gui.getTargetType() == TargetType.ENTITY) {
-        	Entity entity = gui.getEntity();
-        	if(entity instanceof EntityVillager) {
-        		EntityVillager villager = (EntityVillager)entity;
-        		int prof = villager.getProfession();
-				this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
-        	}
-        }
+		if(SpawnerUtil.isSpawner(gui)) {
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
+			
+			int prof = SpawnerUtil.getVillagerProfession(spawnerLogic, FilterMobSpawnerBase.potentialSpawnIndex);
+			this.menu.setSelected(VillagerRegistry.getById(prof).getRegistryName());
+		}
 	}
 	
 	private List<ResourceLocation> getProfesionList() {
@@ -138,19 +127,16 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
 		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
-		if(gui.getTargetType() == TargetType.BLOCK)
+		if(SpawnerUtil.isSpawner(gui))
         	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) {
-		if(gui.getTargetType() == TargetType.BLOCK) {
-			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(!(tile instanceof TileEntityMobSpawner))
-				return true;
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(SpawnerUtil.isSpawner(gui)) {
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
-			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawnerLogic);
 			if(minecarts.size() <= potentialSpawnIndex) return true;
 			WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
 			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();

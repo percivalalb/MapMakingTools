@@ -18,12 +18,15 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 /**
  * @author ProPercivalalb
@@ -53,20 +56,20 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
         this.btn_covert = new GuiButtonData(0, topX + 20, topY + 37, 200, 20, "Turn into Baby");
+        gui.getButtonList().add(this.btn_covert);
         
-        if(gui.getTargetType() == TargetType.BLOCK) {
-	        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(tile instanceof TileEntityMobSpawner) {
-				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-				if(SpawnerUtil.isBabyMonster(spawner.getSpawnerBaseLogic(), this.potentialSpawnIndex)) {
-					this.btn_covert.displayString = "Turn into Adult";
-					this.btn_covert.setData(1);
-				}
+        if(SpawnerUtil.isSpawner(gui)) {
+        	this.addPotentialSpawnButtons(gui, topX, topY);
+        	
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
+			
+			if(SpawnerUtil.isBabyMonster(spawnerLogic, potentialSpawnIndex)) {
+				this.btn_covert.displayString = "Turn into Adult";
+				this.btn_covert.setData(1);
 			}
-	        this.addPotentialSpawnButtons(gui, topX, topY);
-        }
-        else if(gui.getTargetType() == TargetType.ENTITY) {
-        	Entity entity = gui.getEntity();
+		}
+		else if(gui.getTargetType() == TargetType.ENTITY) {
+			Entity entity = gui.getEntity();
         	if(entity instanceof EntityZombie) {
         		EntityZombie zombie = (EntityZombie)entity;
         		if(zombie.isChild()) {
@@ -74,9 +77,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 					this.btn_covert.setData(1);
         		}
         	}
-        }
-				
-        gui.getButtonList().add(this.btn_covert);
+		}
 	}
 	
 	@Override
@@ -84,7 +85,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
             if(button.id == 0) {
-                PacketDispatcher.sendToServer(new PacketBabyMonster(this.btn_covert.getData() == 0, this.potentialSpawnIndex));
+                PacketDispatcher.sendToServer(new PacketBabyMonster(this.btn_covert.getData() == 0, potentialSpawnIndex));
             	ClientHelper.getClient().player.closeScreen();
             }
         }
@@ -92,7 +93,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
-        if(gui.getTargetType() == TargetType.BLOCK)
+		if(SpawnerUtil.isSpawner(gui))
         	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
@@ -103,13 +104,10 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 
 	@Override
 	public boolean showErrorIcon(IGuiFilter gui) {
-		if(gui.getTargetType() == TargetType.BLOCK) {
-			TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-			if(!(tile instanceof TileEntityMobSpawner))
-				return true;
-			TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
+		if(SpawnerUtil.isSpawner(gui)) {
+			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
-			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawner.getSpawnerBaseLogic());
+			List<WeightedSpawnerEntity> minecarts = SpawnerUtil.getPotentialSpawns(spawnerLogic);
 			if(minecarts.size() <= potentialSpawnIndex) return true;
 			WeightedSpawnerEntity randomMinecart = minecarts.get(potentialSpawnIndex);
 			String mobId = SpawnerUtil.getMinecartType(randomMinecart).toString();
