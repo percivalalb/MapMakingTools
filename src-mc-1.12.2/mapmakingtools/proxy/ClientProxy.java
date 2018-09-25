@@ -10,6 +10,7 @@ import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.client.gui.GuiItemEditor;
 import mapmakingtools.client.gui.GuiWorldTransfer;
 import mapmakingtools.handler.GameOverlay;
+import mapmakingtools.handler.GuiOpen;
 import mapmakingtools.handler.KeyboardInput;
 import mapmakingtools.handler.RenderWorld;
 import mapmakingtools.tools.attribute.ArmourColourAttribute;
@@ -57,6 +58,7 @@ public class ClientProxy extends CommonProxy {
     	MinecraftForge.EVENT_BUS.register(new RenderWorld());
     	MinecraftForge.EVENT_BUS.register(new GameOverlay());
     	MinecraftForge.EVENT_BUS.register(new KeyboardInput());
+    	MinecraftForge.EVENT_BUS.register(new GuiOpen());
 	}
 	
 	@Override

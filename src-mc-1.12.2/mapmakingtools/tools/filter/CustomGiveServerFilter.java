@@ -3,6 +3,8 @@ package mapmakingtools.tools.filter;
 import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.container.SlotFake;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartCommandBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -37,6 +39,11 @@ public class CustomGiveServerFilter extends FilterServerInventory {
 		if(tileEntity instanceof TileEntityCommandBlock)
 			return true;
 		return super.isApplicable(player, world, pos);
+	}
+	
+	@Override
+	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
+		return entityIn instanceof EntityMinecartCommandBlock; 
 	}
 	
 	@Override

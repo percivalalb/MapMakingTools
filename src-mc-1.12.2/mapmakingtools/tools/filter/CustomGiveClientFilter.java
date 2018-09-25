@@ -14,6 +14,8 @@ import mapmakingtools.tools.filter.packet.PacketCustomGive;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartCommandBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -51,6 +53,11 @@ public class CustomGiveClientFilter extends FilterClient {
 			return true;
 		return super.isApplicable(player, world, pos);
 	}
+	
+	@Override
+	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
+		return entityIn instanceof EntityMinecartCommandBlock; 
+	}
 
 	@Override
 	public void initGui(IGuiFilter gui) {
@@ -74,7 +81,7 @@ public class CustomGiveClientFilter extends FilterClient {
 		if (button.enabled) {
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketCustomGive(gui.getBlockPos()));
+                	PacketDispatcher.sendToServer(new PacketCustomGive());
             		ClientHelper.getClient().player.closeScreen();
                 	break;
             }

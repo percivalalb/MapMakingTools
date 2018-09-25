@@ -12,8 +12,12 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketCommandBlockAlias;
+import mapmakingtools.util.CommandBlockUtil;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartCommandBlock;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.math.BlockPos;
@@ -49,6 +53,11 @@ public class CommandBlockAliasClientFilter extends FilterClient {
 			return true;
 		return super.isApplicable(player, world, pos);
 	}
+	
+	@Override
+	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
+		return entityIn instanceof EntityMinecartCommandBlock; 
+	}
 
 	@Override
 	public void initGui(IGuiFilter gui) {
@@ -66,13 +75,14 @@ public class CommandBlockAliasClientFilter extends FilterClient {
         gui.getButtonList().add(this.btn_cancel);
         gui.getButtonList().add(this.btnColourLine1);
         gui.getButtonList().add(this.btnInsert);
-        TileEntity tile = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
-		if(tile instanceof TileEntityCommandBlock) {
-			TileEntityCommandBlock commandBlock = (TileEntityCommandBlock)tile;
-			String text = commandBlock.getCommandBlockLogic().getName();
-			if(text.endsWith("\u00a7r") && text.length() >= 2)
-				text = text.substring(0, text.length() - 2);
-			this.fld_alias.setText(text);
+
+        if(CommandBlockUtil.isCommand(gui)) {
+        	CommandBlockBaseLogic logic = CommandBlockUtil.getCommandLogic(gui);
+        	
+			String name = CommandBlockUtil.getName(logic);
+			if(name.endsWith("\u00a7r") && name.length() >= 2)
+				name = name.substring(0, name.length() - 2);
+			this.fld_alias.setText(name);
 		}
 	}
 	
@@ -86,7 +96,7 @@ public class CommandBlockAliasClientFilter extends FilterClient {
             }
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketCommandBlockAlias(gui.getBlockPos(), fld_alias.getText() + "\u00a7r"));
+                	PacketDispatcher.sendToServer(new PacketCommandBlockAlias(fld_alias.getText() + "\u00a7r"));
                 	ClientHelper.getClient().player.closeScreen();
                 	break;
                 case 1:
