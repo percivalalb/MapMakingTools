@@ -6,8 +6,8 @@ import java.util.List;
 import com.google.common.base.Strings;
 
 import mapmakingtools.api.ScrollMenu;
-import mapmakingtools.api.interfaces.IGuiItemEditor;
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IGuiItemEditor;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.EnchantmentList;
 import net.minecraft.client.gui.GuiButton;

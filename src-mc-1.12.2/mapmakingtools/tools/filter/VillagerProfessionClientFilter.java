@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.api.ScrollMenu;
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterClient;
+import mapmakingtools.api.filter.FilterMobSpawnerBase;
+import mapmakingtools.api.filter.IFilterGui;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
@@ -61,7 +61,7 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void initGui(IGuiFilter gui) {
+	public void initGui(IFilterGui gui) {
 		super.initGui(gui);
 		gui.setYSize(135);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
@@ -96,7 +96,7 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void onPotentialSpawnChange(IGuiFilter gui) {
+	public void onPotentialSpawnChange(IFilterGui gui) {
 		if(SpawnerUtil.isSpawner(gui)) {
 			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
@@ -113,18 +113,18 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	}
 
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) {
+	public List<String> getFilterInfo(IFilterGui gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagerprofession.info"));
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter baseIn, float partialTicks, int xMouse, int yMouse) {
+	public void drawGuiContainerBackgroundLayer(IFilterGui baseIn, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(baseIn, partialTicks, xMouse, yMouse);
         this.menu.drawGuiContainerBackgroundLayer(partialTicks, xMouse, yMouse);
 	}
 	
 	@Override
-	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
 		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
 		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
 		if(SpawnerUtil.isSpawner(gui))
@@ -132,7 +132,7 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public boolean showErrorIcon(IGuiFilter gui) {
+	public boolean showErrorIcon(IFilterGui gui) {
 		if(SpawnerUtil.isSpawner(gui)) {
 			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
@@ -150,7 +150,7 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public boolean drawBackground(IGuiFilter gui) {
+	public boolean drawBackground(IFilterGui gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SCROLL);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;

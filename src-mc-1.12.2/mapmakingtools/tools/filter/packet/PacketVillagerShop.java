@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.IFilterContainer;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
@@ -52,9 +52,9 @@ public class PacketVillagerShop extends AbstractServerMessage {
 			return;
 		
 		MapMakingTools.LOGGER.info("dawe " + this.entityId);
-		if(player.openContainer instanceof IContainerFilter) {
+		if(player.openContainer instanceof IFilterContainer) {
 			MapMakingTools.LOGGER.info("filter " + this.entityId);
-			IContainerFilter container = (IContainerFilter)player.openContainer;
+			IFilterContainer container = (IFilterContainer)player.openContainer;
 			if(container.getCurrentFilter() instanceof VillagerShopServerFilter) {
 				MapMakingTools.LOGGER.info("shop " + this.entityId);
 				VillagerShopServerFilter shop = (VillagerShopServerFilter)container.getCurrentFilter();

@@ -2,8 +2,8 @@ package mapmakingtools.tools.attribute;
 
 import com.google.common.base.Strings;
 
-import mapmakingtools.api.interfaces.IGuiItemEditor;
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IGuiItemEditor;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.helper.ArrayUtil;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.item.nbt.NBTUtil;

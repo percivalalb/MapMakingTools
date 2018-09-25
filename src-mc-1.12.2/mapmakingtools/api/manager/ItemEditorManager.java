@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 

@@ -1,4 +1,4 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +71,7 @@ public abstract class FilterServerInventory extends FilterServer {
 		return tag; 
 	}
 	
-	public IInventory getInventory(IContainerFilter container) {
+	public IInventory getInventory(IFilterContainer container) {
 		return getInventory(container.getPlayer());
 	}
 	

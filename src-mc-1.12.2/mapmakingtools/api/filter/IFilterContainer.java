@@ -1,8 +1,8 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public interface IContainerFilter extends IFilterBase {
+public interface IFilterContainer extends IFilterBase {
 
 	public void addSlot(Slot slot);
 	public List<Slot> getInventorySlots();

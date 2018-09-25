@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.IFilterContainer;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.filter.VillagerShopServerFilter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,8 +33,8 @@ public class PacketVillagerRecipeAmounts extends AbstractServerMessage {
 
 	@Override
 	public void process(EntityPlayer player, Side side) {
-		if(player.openContainer instanceof IContainerFilter) {
-			IContainerFilter container = (IContainerFilter)player.openContainer;
+		if(player.openContainer instanceof IFilterContainer) {
+			IFilterContainer container = (IFilterContainer)player.openContainer;
 			if(container.getCurrentFilter() instanceof VillagerShopServerFilter) {
 				VillagerShopServerFilter shop = (VillagerShopServerFilter)container.getCurrentFilter();
 				shop.maxRecipesMap.put(player.getUniqueID(), this.recipeAmount);

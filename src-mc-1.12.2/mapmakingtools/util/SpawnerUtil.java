@@ -3,8 +3,8 @@ package mapmakingtools.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.IFilterBase;
+import mapmakingtools.api.filter.IFilterBase;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.item.nbt.NBTUtil;

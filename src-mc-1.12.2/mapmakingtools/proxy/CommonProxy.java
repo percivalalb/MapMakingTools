@@ -3,7 +3,7 @@ package mapmakingtools.proxy;
 import java.util.List;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.filter.FilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ForceKillManager;
 import mapmakingtools.handler.ConfigChange;

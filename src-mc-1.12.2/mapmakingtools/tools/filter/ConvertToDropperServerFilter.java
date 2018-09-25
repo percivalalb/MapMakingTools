@@ -1,6 +1,6 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.filter.FilterServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDispenser;

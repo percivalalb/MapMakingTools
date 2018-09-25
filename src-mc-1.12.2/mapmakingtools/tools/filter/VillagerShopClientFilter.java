@@ -3,8 +3,8 @@ package mapmakingtools.tools.filter;
 import java.util.Arrays;
 import java.util.List;
 
-import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterClient;
+import mapmakingtools.api.filter.IFilterGui;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.helper.ClientHelper;
@@ -61,7 +61,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 
 	@Override
-	public void initGui(IGuiFilter gui) {
+	public void initGui(IFilterGui gui) {
 		super.initGui(gui);
 		gui.setYSize(190);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
@@ -120,12 +120,12 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) {
+	public List<String> getFilterInfo(IFilterGui gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagershop.info"));
 	}
 
 	@Override
-	public void drawGuiContainerForegroundLayer(IGuiFilter gui, int xMouse, int yMouse) {
+	public void drawGuiContainerForegroundLayer(IFilterGui gui, int xMouse, int yMouse) {
 		GlStateManager.translate((float)-gui.getGuiX(), (float)-gui.getGuiY(), 0.0F);
 		for(int var1 = 0; var1 < gui.getButtonList().size(); ++var1) {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
@@ -140,7 +140,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void updateScreen(IGuiFilter gui) {
+	public void updateScreen(IFilterGui gui) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
 		
@@ -161,7 +161,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
 		if (mouseButton == 1) {
             for (int l = 0; l < gui.getButtonList().size(); ++l) {
                 GuiButton guibutton = (GuiButton)gui.getButtonList().get(l);
@@ -180,7 +180,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
+	public void actionPerformed(IFilterGui gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		
 		if (button.enabled) {
@@ -217,7 +217,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public boolean drawBackground(IGuiFilter gui) {
+	public boolean drawBackground(IFilterGui gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_VILLAGER_SHOP);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;

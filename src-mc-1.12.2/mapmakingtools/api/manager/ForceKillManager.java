@@ -8,7 +8,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.interfaces.IForceKill;
+import mapmakingtools.api.IForceKill;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

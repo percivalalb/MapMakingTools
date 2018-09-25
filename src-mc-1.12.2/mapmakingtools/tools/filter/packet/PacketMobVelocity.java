@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;

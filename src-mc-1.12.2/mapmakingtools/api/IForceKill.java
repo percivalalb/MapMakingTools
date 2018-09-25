@@ -1,4 +1,4 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api;
 
 import net.minecraft.entity.Entity;
 

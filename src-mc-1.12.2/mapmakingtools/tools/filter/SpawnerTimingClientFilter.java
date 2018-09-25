@@ -2,8 +2,8 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterMobSpawnerBase;
+import mapmakingtools.api.filter.IFilterGui;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
@@ -48,7 +48,7 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void initGui(IGuiFilter gui) {
+	public void initGui(IFilterGui gui) {
 		super.initGui(gui);
 		gui.setYSize(160);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
@@ -87,7 +87,7 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
+	public void drawGuiContainerBackgroundLayer(IFilterGui gui, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
 	    int topY = gui.getGuiY();
@@ -100,7 +100,7 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
+	public void actionPerformed(IFilterGui gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
             if(button.id == 0) {
@@ -111,7 +111,7 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void updateScreen(IGuiFilter gui) {
+	public void updateScreen(IFilterGui gui) {
 		minDelayText = this.txt_minDelay.getText();
 		maxDelayText = this.txt_maxDelay.getText();
 		spawnRadiusText = this.txt_spawnRadius.getText();
@@ -122,19 +122,19 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
 		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
 	}
 	
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) {
+	public List<String> getFilterInfo(IFilterGui gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobposition.info"));
 	}
 	
 	@Override
-	public boolean drawBackground(IGuiFilter gui) {
+	public boolean drawBackground(IFilterGui gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_LARGE);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;

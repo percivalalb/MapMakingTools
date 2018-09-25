@@ -1,6 +1,6 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.filter.FilterServer;
 
 /**
  * @author ProPercivalalb

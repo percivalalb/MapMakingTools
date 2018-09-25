@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.inventory.ContainerFilter;

@@ -2,8 +2,8 @@ package mapmakingtools.tools.attribute;
 
 import java.util.ArrayList;
 
-import mapmakingtools.api.interfaces.IGuiItemEditor;
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IGuiItemEditor;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;

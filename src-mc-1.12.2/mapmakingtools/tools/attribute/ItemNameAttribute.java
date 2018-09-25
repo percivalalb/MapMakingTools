@@ -1,7 +1,7 @@
 package mapmakingtools.tools.attribute;
 
-import mapmakingtools.api.interfaces.IGuiItemEditor;
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IGuiItemEditor;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;

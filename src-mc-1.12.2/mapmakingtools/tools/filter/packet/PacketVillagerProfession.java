@@ -2,8 +2,8 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.IFilterContainer;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.network.PacketDispatcher;

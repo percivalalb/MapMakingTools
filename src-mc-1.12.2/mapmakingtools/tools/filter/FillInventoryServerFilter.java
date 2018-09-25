@@ -1,7 +1,7 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.FilterServerInventory;
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.FilterServerInventory;
+import mapmakingtools.api.filter.IFilterContainer;
 import mapmakingtools.inventory.slot.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class FillInventoryServerFilter extends FilterServerInventory {
 	
 	@Override
-	public void addSlots(IContainerFilter container) {
+	public void addSlots(IFilterContainer container) {
         container.addSlot(new SlotFake(getInventory(container), 0, 23, 37));
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 9; ++j) {

@@ -1,7 +1,7 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.FilterServerInventory;
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.FilterServerInventory;
+import mapmakingtools.api.filter.IFilterContainer;
 import mapmakingtools.inventory.slot.SlotArmor;
 import mapmakingtools.inventory.slot.SlotFake;
 import mapmakingtools.inventory.slot.SlotFakeArmor;
@@ -29,7 +29,7 @@ public class MobArmourServerFilter extends FilterServerInventory {
 	}
 	
 	@Override
-	public void addSlots(IContainerFilter container) {
+	public void addSlots(IFilterContainer container) {
         for (int i = 0; i < 4; ++i) {
         	container.addSlot(new SlotArmor(container.getPlayer(), container.getPlayer().inventory, 36 + (3 - i), 130 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
         }
@@ -56,7 +56,7 @@ public class MobArmourServerFilter extends FilterServerInventory {
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer playerIn, int index) {
+	public ItemStack transferStackInSlot(IFilterContainer container, EntityPlayer playerIn, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;
 	    Slot slot = (Slot)container.getInventorySlots().get(index);
 

@@ -2,8 +2,8 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterClient;
+import mapmakingtools.api.filter.IFilterGui;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
@@ -44,7 +44,7 @@ public class ConvertToDispenserClientFilter extends FilterClient {
 	}
 
 	@Override
-	public void initGui(IGuiFilter gui) {
+	public void initGui(IFilterGui gui) {
 		super.initGui(gui);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
@@ -54,7 +54,7 @@ public class ConvertToDispenserClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
+	public void actionPerformed(IFilterGui gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
             switch (button.id) {
@@ -67,7 +67,7 @@ public class ConvertToDispenserClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) {
+	public List<String> getFilterInfo(IFilterGui gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.converttodispenser.info"));
 	}
 }

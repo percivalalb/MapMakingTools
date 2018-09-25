@@ -2,9 +2,9 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterMobSpawnerBase;
+import mapmakingtools.api.filter.IFilterGui;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
@@ -50,7 +50,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void initGui(IGuiFilter gui) {
+	public void initGui(IFilterGui gui) {
 		super.initGui(gui);
 		gui.setYSize(151);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
@@ -64,7 +64,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(IGuiFilter gui, float partialTicks, int xMouse, int yMouse) {
+	public void drawGuiContainerBackgroundLayer(IFilterGui gui, float partialTicks, int xMouse, int yMouse) {
 		super.drawGuiContainerBackgroundLayer(gui, partialTicks, xMouse, yMouse);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
 	    int topY = gui.getGuiY();
@@ -74,7 +74,7 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
+	public void actionPerformed(IFilterGui gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if(button.enabled) {
             if(button.id == 0) {
@@ -85,13 +85,13 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
 		if(SpawnerUtil.isSpawner(gui))
         	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
-	public void onPotentialSpawnChange(IGuiFilter gui) {
+	public void onPotentialSpawnChange(IFilterGui gui) {
 		if(this.showErrorIcon(gui))
 			this.btnOk.enabled = false;
 		else
@@ -99,23 +99,23 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) {
+	public List<String> getFilterInfo(IFilterGui gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobArmor.info"));
 	}
 	
 	@Override
-	public boolean hasUpdateButton(IGuiFilter gui) {
+	public boolean hasUpdateButton(IFilterGui gui) {
 		return true;
 	}
 	
 	@Override
-	public void updateButtonClicked(IGuiFilter gui) {
+	public void updateButtonClicked(IFilterGui gui) {
 		if(!showErrorIcon(gui))
 			PacketDispatcher.sendToServer(new PacketFetchMobArmour(FilterMobSpawnerBase.potentialSpawnIndex));
 	}
 	
 	@Override
-	public boolean showErrorIcon(IGuiFilter gui) { 
+	public boolean showErrorIcon(IFilterGui gui) { 
 		if(SpawnerUtil.isSpawner(gui)) {
 			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
@@ -134,12 +134,12 @@ public class MobArmourClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public String getErrorMessage(IGuiFilter gui) { 
+	public String getErrorMessage(IFilterGui gui) { 
 		return TextFormatting.RED + I18n.translateToLocal("mapmakingtools.filter.mobArmor.error");
 	}
 	
 	@Override
-	public boolean drawBackground(IGuiFilter gui) {
+	public boolean drawBackground(IFilterGui gui) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_MOB_ARMOUR);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;

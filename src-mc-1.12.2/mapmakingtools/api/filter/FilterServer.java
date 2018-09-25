@@ -1,4 +1,4 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -10,8 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public abstract class FilterServer extends FilterBase {
 
-	public void addSlots(IContainerFilter container) {}
-	public ItemStack transferStackInSlot(IContainerFilter container, EntityPlayer playerIn, int index) { 
+	public void addSlots(IFilterContainer container) {}
+	public ItemStack transferStackInSlot(IFilterContainer container, EntityPlayer playerIn, int index) { 
 		ItemStack itemstack = ItemStack.EMPTY;
 	    Slot slot = (Slot)container.getInventorySlots().get(index);
 

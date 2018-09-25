@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterClient;
+import mapmakingtools.api.filter.IFilterContainer;
+import mapmakingtools.api.filter.IFilterGui;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public class GuiFilter extends GuiContainer implements IGuiFilter {
+public class GuiFilter extends GuiContainer implements IFilterGui {
 
 	public static final int FAKE_HEIGHT = 100;
 	public static final int FAKE_WIDTH = 240;
@@ -430,7 +430,7 @@ public class GuiFilter extends GuiContainer implements IGuiFilter {
 	}
 
 	@Override
-	public IContainerFilter getFilterContainer() {
-		return (IContainerFilter)this.inventorySlots;
+	public IFilterContainer getFilterContainer() {
+		return (IFilterContainer)this.inventorySlots;
 	}
 }

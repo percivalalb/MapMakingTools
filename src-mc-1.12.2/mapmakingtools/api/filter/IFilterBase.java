@@ -1,6 +1,6 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;

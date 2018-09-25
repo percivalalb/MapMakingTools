@@ -1,9 +1,9 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonPotentialSpawns;
 import mapmakingtools.helper.ClientHelper;
@@ -31,7 +31,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	public int potentialSpawnsCount = 1;
 	public List<GuiButton> potentialSpawnButtons = new ArrayList<>();
 	
-	public void addPotentialSpawnButtons(IGuiFilter gui, int topX, int topY) {
+	public void addPotentialSpawnButtons(IFilterGui gui, int topX, int topY) {
 		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
 		if(potentialSpawns == null) return;
 
@@ -48,7 +48,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 		}
 	}
 	
-	public void removePotentialSpawnButtons(IGuiFilter gui, int xMouse, int yMouse, int mouseButton, int topX, int topY) {
+	public void removePotentialSpawnButtons(IFilterGui gui, int xMouse, int yMouse, int mouseButton, int topX, int topY) {
 		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
 		if(potentialSpawns == null) return;
 		
@@ -89,7 +89,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	}
 	
 	@Override
-	public void drawToolTips(IGuiFilter gui, int xMouse, int yMouse) {
+	public void drawToolTips(IFilterGui gui, int xMouse, int yMouse) {
 		if(SpawnerUtil.isSpawner(gui)) {
 			List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
 			if(potentialSpawns == null) return;
@@ -111,7 +111,7 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 	}
 	
 	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
+	public void actionPerformed(IFilterGui gui, GuiButton button) {
 		if(button.id >= BUTTON_ID_START && button.id <= BUTTON_ID_START + potentialSpawnsCount) {
 			int newIndex = button.id - BUTTON_ID_START;
 				
@@ -126,5 +126,5 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 		}
 	}
 	
-	public void onPotentialSpawnChange(IGuiFilter gui) {}
+	public void onPotentialSpawnChange(IFilterGui gui) {}
 }

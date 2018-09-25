@@ -8,8 +8,8 @@ import java.util.UUID;
 import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
 
-import mapmakingtools.api.interfaces.IGuiItemEditor;
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IGuiItemEditor;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.client.gui.button.GuiButtonSmallData;

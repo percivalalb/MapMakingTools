@@ -9,7 +9,7 @@ import java.util.UUID;
 import com.google.common.base.Strings;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.filter.FilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;

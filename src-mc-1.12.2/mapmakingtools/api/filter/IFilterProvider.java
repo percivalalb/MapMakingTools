@@ -1,4 +1,4 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import java.util.List;
 

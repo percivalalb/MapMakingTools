@@ -2,9 +2,9 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.FilterMobSpawnerBase;
-import mapmakingtools.api.interfaces.IGuiFilter;
+import mapmakingtools.api.filter.FilterMobSpawnerBase;
+import mapmakingtools.api.filter.IFilterGui;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
@@ -51,7 +51,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	}
 
 	@Override
-	public void initGui(IGuiFilter gui) {
+	public void initGui(IFilterGui gui) {
 		super.initGui(gui);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
@@ -81,7 +81,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void actionPerformed(IGuiFilter gui, GuiButton button) {
+	public void actionPerformed(IFilterGui gui, GuiButton button) {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
             if(button.id == 0) {
@@ -92,18 +92,18 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void mouseClicked(IGuiFilter gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
 		if(SpawnerUtil.isSpawner(gui))
         	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
-	public List<String> getFilterInfo(IGuiFilter gui) {
+	public List<String> getFilterInfo(IFilterGui gui) {
 		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.babymonster.info"));
 	}
 
 	@Override
-	public boolean showErrorIcon(IGuiFilter gui) {
+	public boolean showErrorIcon(IFilterGui gui) {
 		if(SpawnerUtil.isSpawner(gui)) {
 			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(gui);
 			
@@ -120,7 +120,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public String getErrorMessage(IGuiFilter gui) { 
+	public String getErrorMessage(IFilterGui gui) { 
 		return TextFormatting.RED + I18n.translateToLocal("mapmakingtools.filter.babymonster.error");
 	}
 }

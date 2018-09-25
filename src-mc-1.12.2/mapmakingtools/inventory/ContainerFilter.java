@@ -3,9 +3,9 @@ package mapmakingtools.inventory;
 import java.util.List;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.FilterServer;
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.FilterServer;
+import mapmakingtools.api.filter.IFilterContainer;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.helper.SideHelper;
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * @author ProPercivalalb
  */
-public class ContainerFilter extends Container implements IContainerFilter {
+public class ContainerFilter extends Container implements IFilterContainer {
 
 	//Extra data the class holds
 	public EntityPlayer player;

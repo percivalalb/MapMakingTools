@@ -1,6 +1,6 @@
 package mapmakingtools.tools.filter;
 
-import mapmakingtools.api.interfaces.FilterServer;
+import mapmakingtools.api.filter.FilterServer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;

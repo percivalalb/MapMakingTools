@@ -1,8 +1,8 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
@@ -15,14 +15,14 @@ import net.minecraft.world.World;
 /**
  * @author ProPercivalalb
  */
-public interface IGuiFilter extends IFilterBase {
+public interface IFilterGui extends IFilterBase {
 
 	public int xFakeSize();
 	public int getScreenWidth();
 	public int getScreenHeight();
 	public int getGuiY();
 	public int getGuiX();
-	public IContainerFilter getFilterContainer();
+	public IFilterContainer getFilterContainer();
 	public void setYSize(int newYSize);
 	public void drawHoveringTooltip(List<String> text, int mouseX, int mouseY);
 	

@@ -4,8 +4,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 
-import mapmakingtools.api.interfaces.FilterServerInventory;
-import mapmakingtools.api.interfaces.IContainerFilter;
+import mapmakingtools.api.filter.FilterServerInventory;
+import mapmakingtools.api.filter.IFilterContainer;
 import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.helper.SideHelper;
 import mapmakingtools.inventory.slot.SlotFake;
@@ -34,7 +34,7 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 	}
 	
 	@Override
-	public void addSlots(IContainerFilter container) {
+	public void addSlots(IFilterContainer container) {
 		EntityPlayer player = container.getPlayer();
 		
 		Entity entity = container.getEntity();
@@ -50,7 +50,7 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 		this.addOnlySlots(container);
 	}
 	
-	public void addOnlySlots(IContainerFilter container) {
+	public void addOnlySlots(IFilterContainer container) {
 		EntityPlayer player = container.getPlayer();
 		IInventory inventory = this.getInventory(container);
 		
@@ -95,7 +95,7 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 		return new InventoryBasic("Villager Shop", false, 45);
 	}
 	
-	public int getAmountRecipes(IContainerFilter container) {
+	public int getAmountRecipes(IFilterContainer container) {
 		return getAmountRecipes(container.getPlayer());
 	}
 	

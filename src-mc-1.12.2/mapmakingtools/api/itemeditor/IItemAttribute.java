@@ -1,4 +1,4 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.itemeditor;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;

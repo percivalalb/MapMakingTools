@@ -1,4 +1,4 @@
-package mapmakingtools.api.interfaces;
+package mapmakingtools.api.filter;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +13,16 @@ public abstract class FilterBase {
 	 * @return If this filter should
 	 */
 	public boolean isApplicable(EntityPlayer playerIn, Entity entityIn) { 
-		return false; 
+		return false;
 	}
 	
 	public boolean isApplicable(EntityPlayer playerIn, World worldIn, BlockPos posIn) {
-		return false; 
+		return false;
+	}
+	
+	public enum TargetType {
+
+		BLOCK(),
+		ENTITY();
 	}
 }

@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import mapmakingtools.api.interfaces.IGuiItemEditor;
-import mapmakingtools.api.interfaces.IItemAttribute;
+import mapmakingtools.api.itemeditor.IGuiItemEditor;
+import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.inventory.ContainerItemEditor;

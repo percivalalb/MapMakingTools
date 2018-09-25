@@ -2,9 +2,9 @@ package mapmakingtools.tools.filter;
 
 import java.util.List;
 
-import mapmakingtools.api.interfaces.FilterClient;
-import mapmakingtools.api.interfaces.FilterServer;
-import mapmakingtools.api.interfaces.IFilterProvider;
+import mapmakingtools.api.filter.FilterClient;
+import mapmakingtools.api.filter.FilterServer;
+import mapmakingtools.api.filter.IFilterProvider;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
 import net.minecraft.entity.Entity;

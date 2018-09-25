@@ -3,7 +3,7 @@ package mapmakingtools.tools.filter.packet;
 import java.io.IOException;
 import java.util.List;
 
-import mapmakingtools.api.enums.TargetType;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.PacketDispatcher;

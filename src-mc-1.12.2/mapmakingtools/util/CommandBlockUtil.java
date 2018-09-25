@@ -1,7 +1,7 @@
 package mapmakingtools.util;
 
-import mapmakingtools.api.enums.TargetType;
-import mapmakingtools.api.interfaces.IFilterBase;
+import mapmakingtools.api.filter.IFilterBase;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartCommandBlock;

@@ -1,6 +1,6 @@
 package mapmakingtools.client.gui.button;
 
-import mapmakingtools.api.interfaces.FilterClient;
+import mapmakingtools.api.filter.FilterClient;
 import mapmakingtools.client.gui.GuiFilter;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceLib;
