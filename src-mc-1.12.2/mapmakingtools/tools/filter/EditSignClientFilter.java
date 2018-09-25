@@ -64,7 +64,7 @@ public class EditSignClientFilter extends FilterClient {
 	    this.btnInsert = new GuiButton(1, topX + 15, topY + 46, 40, 20, "Insert");
 	    this.btnOk = new GuiButtonSmall(2, topX + (gui.xFakeSize() / 2) - (40 / 2), topY + 80, 40, 16, "Set");
 	    this.txtLine1 = new GuiTextFieldNonInteractable(0, gui.getFont(), topX + 70, topY + 22, 100, 12);
-	    this.txtLine1.setMaxStringLength(150);
+	    this.txtLine1.setMaxStringLength(15);
 	    this.txtLine2 = new GuiTextFieldNonInteractable(1, gui.getFont(), topX + 70, topY + 37, 100, 12);
 	    this.txtLine2.setMaxStringLength(15);
 	    this.txtLine3 = new GuiTextFieldNonInteractable(2, gui.getFont(), topX + 70, topY + 52, 100, 12);

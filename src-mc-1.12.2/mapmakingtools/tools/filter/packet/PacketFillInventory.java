@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.filter.FillInventoryServerFilter;

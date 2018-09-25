@@ -9,10 +9,6 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class ServerHelper {
 	
-	public static boolean isServer() {
-		return FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER;
-	}
-	
 	public static MinecraftServer getServer() {
 		return FMLCommonHandler.instance().getMinecraftServerInstance();
 	}

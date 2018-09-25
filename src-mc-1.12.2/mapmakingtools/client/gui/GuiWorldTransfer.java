@@ -1,7 +1,7 @@
 package mapmakingtools.client.gui;
 
 import mapmakingtools.client.gui.button.GuiButtonSmall;
-import mapmakingtools.container.ContainerWorldTransfer;
+import mapmakingtools.inventory.ContainerWorldTransfer;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.gui.GuiButton;

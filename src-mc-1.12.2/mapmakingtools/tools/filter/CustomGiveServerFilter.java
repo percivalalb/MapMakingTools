@@ -2,7 +2,7 @@ package mapmakingtools.tools.filter;
 
 import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.container.SlotFake;
+import mapmakingtools.inventory.slot.SlotFake;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartCommandBlock;
 import net.minecraft.entity.player.EntityPlayer;

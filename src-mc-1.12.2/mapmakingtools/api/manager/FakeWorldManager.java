@@ -6,6 +6,7 @@ import java.util.List;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ServerHelper;
+import mapmakingtools.helper.SideHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +48,7 @@ public class FakeWorldManager {
 	}
 	
 	public static Entity getEntity(World world, int entityId) {
-		if(ServerHelper.isServer())
+		if(SideHelper.isServer())
 			return world.getEntityByID(entityId);
 		
 		// Sanity check
@@ -58,7 +59,7 @@ public class FakeWorldManager {
 	}
 	
 	public static TileEntity getTileEntity(World world, BlockPos pos) {
-		if(ServerHelper.isServer())
+		if(SideHelper.isServer())
 			return world.getTileEntity(pos);
 		
 		// Sanity check

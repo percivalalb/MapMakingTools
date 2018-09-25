@@ -12,7 +12,7 @@ import mapmakingtools.api.interfaces.IGuiItemEditor;
 import mapmakingtools.api.interfaces.IItemAttribute;
 import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
-import mapmakingtools.container.ContainerItemEditor;
+import mapmakingtools.inventory.ContainerItemEditor;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;

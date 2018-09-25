@@ -6,8 +6,9 @@ import java.util.UUID;
 
 import mapmakingtools.api.interfaces.FilterServerInventory;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.container.SlotFake;
 import mapmakingtools.helper.ServerHelper;
+import mapmakingtools.helper.SideHelper;
+import mapmakingtools.inventory.slot.SlotFake;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -68,7 +69,7 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 	    	container.addSlot(new SlotFake(inventory, i * 3 + 2, 20 + (i * 18) + (i * 5), 64));
 	    }
 		
-	    if(ServerHelper.isServer()) {
+	    if(SideHelper.isServer()) {
 			Entity entity = container.getEntity();
 			
 			if(entity instanceof EntityVillager) {

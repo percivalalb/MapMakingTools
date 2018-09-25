@@ -1,4 +1,4 @@
-package mapmakingtools.container;
+package mapmakingtools.inventory;
 
 /**
  * @author ProPercivalalb

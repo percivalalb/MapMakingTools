@@ -1,4 +1,4 @@
-package mapmakingtools.container;
+package mapmakingtools.inventory;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import mapmakingtools.api.interfaces.FilterServer;
 import mapmakingtools.api.interfaces.IContainerFilter;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ServerHelper;
+import mapmakingtools.helper.SideHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -131,7 +132,7 @@ public class ContainerFilter extends Container implements IContainerFilter {
         				if(size < 1) {
         					slot.putStack(ItemStack.EMPTY);
         				}
-        				else if(ServerHelper.isServer()) {
+        				else if(SideHelper.isServer()) {
         					slotStack.setCount(size);
         					this.detectAndSendChanges();
         				}

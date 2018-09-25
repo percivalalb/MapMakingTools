@@ -25,7 +25,7 @@ public class PlayerData {
 	private Hashtable<Integer, BlockPos> DIMID_POS2 = new Hashtable<Integer, BlockPos>();
 	private ActionStorage actionStorage = new ActionStorage(this);
 	
-	public UUID uuid;
+	private UUID uuid;
 	
 	public PlayerData(NBTTagCompound tag) {
 		this.readFromNBT(tag);

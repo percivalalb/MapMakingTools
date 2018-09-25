@@ -1,9 +1,8 @@
-package mapmakingtools.container;
+package mapmakingtools.inventory.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -12,12 +11,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author ProPercivalalb
  */
-public class SlotArmor extends Slot {
+public class SlotFakeArmor extends SlotFake {
 
 	public EntityPlayer player;
 	public EntityEquipmentSlot armorType;
 	
-    public SlotArmor(EntityPlayer playerIn, IInventory inventoryIn, int index, int xPosition, int yPosition, EntityEquipmentSlot armorType) {
+    public SlotFakeArmor(EntityPlayer playerIn, IInventory inventoryIn, int index, int xPosition, int yPosition, EntityEquipmentSlot armorType) {
         super(inventoryIn, index, xPosition, yPosition);
         this.player = playerIn;
         this.armorType = armorType;

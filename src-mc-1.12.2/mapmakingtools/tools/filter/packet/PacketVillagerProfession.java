@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import mapmakingtools.api.enums.TargetType;
 import mapmakingtools.api.interfaces.IContainerFilter;
-import mapmakingtools.container.ContainerFilter;
 import mapmakingtools.helper.Numbers;
+import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.network.packet.PacketUpdateBlock;

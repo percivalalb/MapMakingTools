@@ -2,7 +2,7 @@ package mapmakingtools.network.packet;
 
 import java.io.IOException;
 
-import mapmakingtools.container.ContainerFilter;
+import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;

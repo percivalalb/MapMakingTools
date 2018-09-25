@@ -5,26 +5,10 @@ package mapmakingtools.helper;
  */
 public class Numbers {
 	
-	public static boolean areIntegers(String... texts) {
-		for(String text : texts) {
-			try {
-				new Integer(text);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	public static boolean areDoubles(String... texts) {
 		for(String text : texts) {
-			try {
-				new Double(text);
-			}
-			catch(Exception e) {
+			if(!isDouble(text))
 				return false;
-			}
 		}
 		return true;
 	}
@@ -44,6 +28,14 @@ public class Numbers {
 		}
 		catch(Exception e) {}
 		return 0.0D;
+	}
+	
+	public static boolean areIntegers(String... texts) {
+		for(String text : texts) {
+			if(!isInteger(text))
+				return false;
+		}
+		return true;
 	}
 	
 	public static int parse(String text) {

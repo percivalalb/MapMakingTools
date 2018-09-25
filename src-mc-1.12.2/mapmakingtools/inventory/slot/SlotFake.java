@@ -1,5 +1,6 @@
-package mapmakingtools.container;
+package mapmakingtools.inventory.slot;
 
+import mapmakingtools.inventory.IPhantomSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;

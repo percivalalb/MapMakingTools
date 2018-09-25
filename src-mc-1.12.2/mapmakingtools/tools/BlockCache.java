@@ -134,7 +134,7 @@ public class BlockCache {
 		
 		BlockCache bse = BlockCache.createCache(dataIn.getPlayer(), dataIn.getPlayerWorld(), diffPos);
 		
-		IBlockState newState = this.getReplacedBlock().getBlock().withRotation(this.getReplacedBlock(), rotationIn);
+		IBlockState newState = this.getReplacedBlock().withRotation(rotationIn);
 		
 		dataIn.getPlayerWorld().setBlockState(diffPos, newState, 2);
 		
@@ -179,7 +179,7 @@ public class BlockCache {
 	
 		BlockCache bse = BlockCache.createCache(data.getPlayer(), data.getPlayerWorld(), newPos);
 		
-		IBlockState newState = this.getReplacedBlock().getBlock().withMirror(this.getReplacedBlock(), mirror);
+		IBlockState newState = this.getReplacedBlock().withMirror(mirror);
 		
 		//TODO if(!RotationLoader.onRotation(data.getPlayerWorld(), newPos, this.blockIdentifier, this.block, this.meta, movementType))
 			data.getPlayerWorld().setBlockState(newPos, newState, 2);
