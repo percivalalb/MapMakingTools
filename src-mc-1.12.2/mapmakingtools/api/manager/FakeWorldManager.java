@@ -26,8 +26,7 @@ public class FakeWorldManager {
 	
 	public static void putTileEntity(TileEntity tileEntity, World world, BlockPos pos, NBTTagCompound dataRecived) {
 		try {
-			TileEntity newTileEntity = tileEntity.getClass().newInstance();
-			newTileEntity.readFromNBT(dataRecived);
+			TileEntity newTileEntity = TileEntity.create(world, dataRecived);
 			FAKE_TILE_ENTITY = newTileEntity;
 			FAKE_TILE_ENTITY_DATA = dataRecived;
 		}
@@ -38,9 +37,7 @@ public class FakeWorldManager {
 	
 	public static void putEntity(Entity entity, NBTTagCompound dataRecived) {
 		try {
-			
 			Entity newEntity = EntityList.createEntityFromNBT(dataRecived, entity.world);
-			MapMakingTools.LOGGER.error("" + newEntity == null);
 			FAKE_ENTITY = newEntity;
 			FAKE_ENTITY_DATA = dataRecived;
 		}
