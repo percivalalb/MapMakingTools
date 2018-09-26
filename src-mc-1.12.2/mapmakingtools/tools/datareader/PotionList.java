@@ -1,7 +1,6 @@
 package mapmakingtools.tools.datareader;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Stream;
 

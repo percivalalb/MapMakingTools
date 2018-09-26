@@ -6,15 +6,11 @@ import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.PlayerAccess;
-import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**

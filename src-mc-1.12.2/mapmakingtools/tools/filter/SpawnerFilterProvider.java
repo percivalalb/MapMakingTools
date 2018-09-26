@@ -8,7 +8,6 @@ import mapmakingtools.api.filter.IFilterProvider;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartMobSpawner;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

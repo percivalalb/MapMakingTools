@@ -1,11 +1,6 @@
 package mapmakingtools.api.manager;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.helper.SideHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;

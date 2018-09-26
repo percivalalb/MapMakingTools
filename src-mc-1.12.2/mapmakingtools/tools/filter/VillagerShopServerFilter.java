@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import mapmakingtools.api.filter.FilterServerInventory;
 import mapmakingtools.api.filter.IFilterContainer;
-import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.helper.SideHelper;
 import mapmakingtools.inventory.slot.SlotFake;
 import net.minecraft.entity.Entity;

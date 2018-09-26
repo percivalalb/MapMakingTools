@@ -4,28 +4,22 @@ import java.util.List;
 
 import mapmakingtools.api.filter.FilterMobSpawnerBase;
 import mapmakingtools.api.filter.IFilterGui;
-import mapmakingtools.api.filter.FilterBase.TargetType;
-import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
 import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.tools.filter.packet.PacketMobArmour;
 import mapmakingtools.tools.filter.packet.PacketFetchMobArmour;
+import mapmakingtools.tools.filter.packet.PacketMobArmour;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb

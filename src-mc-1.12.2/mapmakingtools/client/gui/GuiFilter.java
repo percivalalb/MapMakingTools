@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.filter.FilterClient;
 import mapmakingtools.api.filter.IFilterContainer;
 import mapmakingtools.api.filter.IFilterGui;
-import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import mapmakingtools.api.filter.FilterMobSpawnerBase;
 import mapmakingtools.api.filter.IFilterGui;
-import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
@@ -14,8 +13,6 @@ import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;

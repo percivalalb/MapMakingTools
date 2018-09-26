@@ -3,8 +3,8 @@ package mapmakingtools.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import mapmakingtools.api.filter.IFilterBase;
 import mapmakingtools.api.filter.FilterBase.TargetType;
+import mapmakingtools.api.filter.IFilterBase;
 import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.item.nbt.NBTUtil;
@@ -22,7 +22,6 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.WeightedSpawnerEntity;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb

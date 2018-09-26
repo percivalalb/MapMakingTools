@@ -1,14 +1,10 @@
 package mapmakingtools.tools.attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Strings;
 
 import mapmakingtools.api.ScrollMenu;
 import mapmakingtools.api.itemeditor.IGuiItemEditor;
 import mapmakingtools.api.itemeditor.IItemAttribute;
-import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.client.gui.button.GuiButtonSmallData;
 import mapmakingtools.helper.Numbers;
@@ -20,15 +16,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb

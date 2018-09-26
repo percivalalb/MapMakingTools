@@ -3,11 +3,10 @@ package mapmakingtools.inventory;
 import java.util.List;
 
 import mapmakingtools.MapMakingTools;
+import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.filter.FilterServer;
 import mapmakingtools.api.filter.IFilterContainer;
-import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.manager.FakeWorldManager;
-import mapmakingtools.helper.ServerHelper;
 import mapmakingtools.helper.SideHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author ProPercivalalb

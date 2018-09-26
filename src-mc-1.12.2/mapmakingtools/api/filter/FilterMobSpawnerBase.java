@@ -3,20 +3,12 @@ package mapmakingtools.api.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import mapmakingtools.api.filter.FilterBase.TargetType;
-import mapmakingtools.api.manager.FakeWorldManager;
 import mapmakingtools.client.gui.button.GuiButtonPotentialSpawns;
-import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsAdd;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsRemove;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecartMobSpawner;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
 
 /**
