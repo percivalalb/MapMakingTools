@@ -10,6 +10,7 @@ import mapmakingtools.api.itemeditor.IGuiItemEditor;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.EnchantmentList;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -89,21 +90,15 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 		this.scrollMenuRemove.clearSelected();
 		this.selectedDelete = -1;
 		
-		if(!stack.hasTagCompound()) {
-			this.scrollMenuRemove.elements = new ArrayList<String>();
-			this.scrollMenuRemove.initGui();
-			return;
-		}
-		
 		List<String> list = new ArrayList<String>();
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("StoredEnchantments")) {
+		if(NBTUtil.hasTag(stack, "StoredEnchantments", NBTUtil.ID_LIST)) {
 			NBTTagList enchantmentList = stack.getTagCompound().getTagList("StoredEnchantments", 10);
 			for(int i = 0; i < enchantmentList.tagCount(); ++i) {
 				NBTTagCompound t = enchantmentList.getCompoundTagAt(i);
 				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
 			}
 		}
-		this.scrollMenuRemove.elements = list;
+		this.scrollMenuRemove.setElements(list);
 		this.scrollMenuRemove.initGui();
 	}
 

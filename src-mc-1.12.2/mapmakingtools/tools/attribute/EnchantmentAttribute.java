@@ -76,14 +76,14 @@ public class EnchantmentAttribute extends IItemAttribute {
 		this.selectedDelete = -1;
 		
 		List<String> list = new ArrayList<String>();
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("ench")) {
+		if(NBTUtil.hasTag(stack, "ench", NBTUtil.ID_LIST)) {
 			NBTTagList enchantmentList = stack.getTagCompound().getTagList("ench", 10);
 			for(int i = 0; i < enchantmentList.tagCount(); ++i) {
 				NBTTagCompound t = enchantmentList.getCompoundTagAt(i);
 				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
 			}
 		}
-		this.scrollMenuRemove.elements = list;
+		this.scrollMenuRemove.setElements(list);
 		this.scrollMenuRemove.initGui();
 	}
 

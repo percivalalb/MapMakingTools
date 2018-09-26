@@ -10,6 +10,7 @@ import mapmakingtools.api.itemeditor.IGuiItemEditor;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
+import mapmakingtools.client.gui.button.GuiButtonSmallData;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.tools.datareader.PotionList;
 import mapmakingtools.tools.item.nbt.NBTUtil;
@@ -34,14 +35,14 @@ import net.minecraftforge.fml.common.FMLLog;
  */
 public class PotionAttribute extends IItemAttribute {
 
-	private ScrollMenu<String> scrollMenuAdd;
-	private ScrollMenu<String> scrollMenuRemove;
+	private ScrollMenu<Potion> scrollMenuAdd;
+	private ScrollMenu<PotionEffect> scrollMenuRemove;
 	private GuiButton btn_add;
 	private GuiButton btn_remove;
 	private GuiButton btn_remove_all;
 	private GuiTextField fld_lvl;
 	private GuiTextField fld_duration;
-	private GuiButtonData btn_particles;
+	private GuiButtonSmallData btn_particles;
 	private String level;
 	private String duration;
 	private boolean showParticles = true;
@@ -57,7 +58,7 @@ public class PotionAttribute extends IItemAttribute {
 	public void onItemCreation(ItemStack stack, int data) {
 		if(!Strings.isNullOrEmpty(this.level) && !Strings.isNullOrEmpty(this.duration) && this.scrollMenuAdd.hasSelection() && data == 0) {
 			if(Numbers.isInteger(this.level)) {
-				Potion potion = Potion.getPotionById(PotionList.getPotionId(PotionList.getCustomId(this.selected)));
+				Potion potion = scrollMenuAdd.getRecentSelection();
 				
 				if(potion == null)
 					return;
@@ -95,13 +96,7 @@ public class PotionAttribute extends IItemAttribute {
 		this.scrollMenuRemove.clearSelected();
 		this.selectedDelete = -1;
 		
-		List<String> list = new ArrayList<String>();
-		List<PotionEffect> potionList = PotionUtils.getEffectsFromStack(stack);
-		for(int i = 0; potionList != null && i < potionList.size(); ++i) {
-			PotionEffect effect = potionList.get(i);
-			list.add(String.format("%d ~~~ %d ~~~ %d ~~~ %b", Potion.getIdFromPotion(effect.getPotion()), effect.getAmplifier(), effect.getDuration(), effect.doesShowParticles()));
-		}
-		this.scrollMenuRemove.elements = list;
+		this.scrollMenuRemove.setElements(PotionUtils.getEffectsFromStack(stack));
 		this.scrollMenuRemove.initGui();
 	}
 
@@ -128,7 +123,7 @@ public class PotionAttribute extends IItemAttribute {
 		this.duration = null;
 		this.selectedDelete = -1;
 		
-		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, PotionList.getPotions()) {
+		this.scrollMenuAdd = new ScrollMenu<Potion>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, PotionList.getPotions()) {
 
 			@Override
 			public void onSetButton() {
@@ -136,19 +131,14 @@ public class PotionAttribute extends IItemAttribute {
 			}
 
 			@Override
-			public String getDisplayString(String listStr) {
-				Potion potion = Potion.getPotionById(PotionList.getPotionId(listStr));
-				
-				if(potion == null)
-					return listStr;
-				
+			public String getDisplayString(Potion potion) {
 				String unlocalised = potion.getName();
 				String localised = I18n.translateToLocal(unlocalised);
-				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
+				return unlocalised.equalsIgnoreCase(localised) ? unlocalised : localised;
 			}
 			
 		};
-		this.scrollMenuRemove = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1) {
+		this.scrollMenuRemove = new ScrollMenu<PotionEffect>((GuiScreen)itemEditor, x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, 1) {
 
 			@Override
 			public void onSetButton() {
@@ -156,26 +146,25 @@ public class PotionAttribute extends IItemAttribute {
 			}
 
 			@Override
-			public String getDisplayString(String listStr) {
-				String[] split = listStr.split(" ~~~ ");
+			public String getDisplayString(PotionEffect potionEffect) {
+				Potion potion = potionEffect.getPotion();
 				
-				Potion potion = Potion.getPotionById(Numbers.parse(split[0]));
-				
-				if(potion == null)
-					return listStr;
+				if(potion == null) return potionEffect.toString();
 				
 				String localised = I18n.translateToLocal(potion.getName());
-				int lvl = Numbers.parse(split[1]);
+				int lvl = potionEffect.getAmplifier();
+				int dur = potionEffect.getDuration();
+				boolean vis = potionEffect.doesShowParticles();
 				
 				
-				return localised + " " + (lvl + 1) + " (" + split[2] + " ticks,  Visable: " + split[3] + ")";
+				return localised + " " + (lvl + 1) + " (" + dur + " ticks,  Visable: " + vis + ")";
 			}
 			
 		};
 		
 		this.fld_lvl = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + height / 2 - 20, 50, 14);
 		this.fld_duration = new GuiTextField(1, itemEditor.getFontRenderer(), x + 59, y + height / 2 - 20, 50, 14);
-		this.btn_particles = new GuiButtonData(3, x + 115, y + height / 2 - 23, 80, 20, "Has Particles");
+		this.btn_particles = new GuiButtonSmallData(3, x + 115, y + height / 2 - 21, 80, 17, "Has Particles");
 		if(this.showParticles)
 			this.btn_particles.displayString = "Has Particles";
 		else 

@@ -47,7 +47,7 @@ public abstract class ScrollMenu<T> {
 	public int noRow;
 	
 	// Elements in table, index increases across columns
-	public List<T> elements;
+	private List<T> elements;
 	
 	// The maximum number of selected items, -1 indicates unlimited can be selected 
 	public int maxSelected;
@@ -56,7 +56,7 @@ public abstract class ScrollMenu<T> {
 	
 	public ScrollMenu(GuiScreen screen, int xPosition, int yPosition, int width, int height, int noColumns, List<T> elements) {
 		this(screen, xPosition, yPosition, width, height, noColumns);
-		this.elements = ImmutableList.copyOf(elements);
+		this.setElements(elements);
 	}
 	
 	public ScrollMenu(GuiScreen screen, int xPosition, int yPosition, int width, int height, int noColumns) {
@@ -69,6 +69,10 @@ public abstract class ScrollMenu<T> {
 		this.elements = Collections.emptyList();
 		this.maxSelected = 1;
 		this.canHaveNoneSelected = false;
+	}
+	
+	public void setElements(List<T> elements) {
+		this.elements = ImmutableList.copyOf(elements);
 	}
 	
 	public void initGui() {

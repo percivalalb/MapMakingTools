@@ -75,22 +75,14 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 		this.scrollMenuRemove.clearSelected();
 		this.selectedDelete = -1;
 		
-		//TODO
-		this.scrollMenuAdd.elements = new ArrayList<String>();
-		for(Object key : Block.REGISTRY.getKeys())
-			this.scrollMenuAdd.elements.add(((ResourceLocation)key).toString());
-		Collections.sort(this.scrollMenuAdd.elements);
-		
-		this.scrollMenuAdd.initGui();
-		
 		List<String> list = new ArrayList<String>();
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("CanPlaceOn", NBTUtil.ID_LIST)) {
+		if(NBTUtil.hasTag(stack, "CanPlaceOn", NBTUtil.ID_LIST)) {
 			NBTTagList destoryList = stack.getTagCompound().getTagList("CanPlaceOn", NBTUtil.ID_STRING);
 			for(int i = 0; i < destoryList.tagCount(); ++i) {
 				list.add(destoryList.getStringTagAt(i));
 			}
 		}
-		this.scrollMenuRemove.elements = list;
+		this.scrollMenuRemove.setElements(list);
 		this.scrollMenuRemove.initGui();
 	}
 
@@ -107,7 +99,12 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 	
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
-		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2) {
+		List<String> blocks = new ArrayList<String>();
+		for(Object key : Block.REGISTRY.getKeys())
+			blocks.add(((ResourceLocation)key).toString());
+		Collections.sort(blocks);
+		
+		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, blocks) {
 			@Override
 			public void onSetButton() {
 				CanPlaceOnAttribute.selected = this.getRecentIndex();
