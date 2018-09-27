@@ -28,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 
@@ -53,21 +54,23 @@ public class ModifiersAttribute extends IItemAttribute {
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
 		if(data >= 0 && data < MODIFIERS.length) {
-			if(!Strings.isNullOrEmpty(this.fld_attack.get(data).getText()) && Numbers.isDouble(this.fld_attack.get(data).getText())) {
-				EntityEquipmentSlot equipmentSlot = EntityEquipmentSlot.values()[this.btn_slot.getData()];
+			if(Strings.isNullOrEmpty(this.fld_attack.get(data).getText()) || !Numbers.isDouble(this.fld_attack.get(data).getText())) return;
 				
-				this.onItemCreation(stack, -1);
-				if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
-			        NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
-			        for(int i = 0; i < nbttaglist.tagCount(); i++) {
-			        	NBTTagCompound compound = nbttaglist.getCompoundTagAt(i);
-			        	if(compound.hasKey("AttributeName", NBTUtil.ID_STRING)) {
-			        		String attributeName = compound.getString("AttributeName");
-			        		boolean correctSlot = !compound.hasKey("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
-			        		
-			        		if(attributeName.equals(MODIFIERS[data].attributeName) && correctSlot)
-			        			nbttaglist.removeTag(i);
-			        	}
+			this.onItemCreation(stack, -1);
+			
+			EntityEquipmentSlot equipmentSlot = EntityEquipmentSlot.values()[this.btn_slot.getData()];
+			
+			//Remove other modifier with same name and slot
+			if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
+				NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
+			    for(int i = 0; i < nbttaglist.tagCount(); i++) {
+			    	NBTTagCompound compound = nbttaglist.getCompoundTagAt(i);
+			        if(compound.hasKey("AttributeName", NBTUtil.ID_STRING)) {
+			        	String attributeName = compound.getString("AttributeName");
+			        	boolean correctSlot = !compound.hasKey("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
+			        	
+			        	if(attributeName.equals(MODIFIERS[data].attributeName) && correctSlot)
+			        		nbttaglist.removeTag(i);
 			        }
 		        }
 
@@ -92,7 +95,7 @@ public class ModifiersAttribute extends IItemAttribute {
 				}
 			}
 		}
-		else if(data == -1) {
+		else if(data == -1) { // Converts built in modifiers to NBT
 			
 			if(!NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
 
@@ -130,7 +133,16 @@ public class ModifiersAttribute extends IItemAttribute {
 				 if(key.equals(MODIFIERS[i].attributeName)) {
 					 this.but_add.get(i).displayString = "Set";
 	            	
-					 this.fld_attack.get(i).setText("" + (attributemodifier.getAmount() * (attributemodifier.getOperation() > 0 ? 100 : 1)));
+					 double amount = attributemodifier.getAmount() * (attributemodifier.getOperation() > 0 ? 100 : 1);
+					 
+					 String amountString;
+					 if((int)amount == amount) { //Is int
+						 amountString = "" + (int)amount;
+					 }
+					 else 
+						 amountString = "" + amount;
+					 
+					 this.fld_attack.get(i).setText(amountString);
 					 this.btn_operation.get(i).setData(attributemodifier.getOperation());
 					 this.btn_operation.get(i).displayString = "" + this.btn_operation.get(i).getData();
 					 if(this.btn_remove[i] == null) {
@@ -197,10 +209,10 @@ public class ModifiersAttribute extends IItemAttribute {
 		}
 
 		
-		this.btn_convert = new GuiButton(-1, x + 10, y + height - 23, 130, 20, "Convert default to nbt");
+		this.btn_convert = new GuiButton(-1, x + 10, y + height - 23, 130, 20, "Convert built-in to NBT");
 		itemEditor.getButtonList().add(this.btn_convert);
 		
-		this.btn_removeall = new GuiButton(-2, x + 145, y + height - 23, 130, 20, "Remove all Modifiers");
+		this.btn_removeall = new GuiButton(-2, x + 145, y + height - 23, 130, 20, "Remove modifier NBT");
 		itemEditor.getButtonList().add(this.btn_removeall);
 	}
 
