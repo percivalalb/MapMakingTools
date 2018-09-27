@@ -157,7 +157,7 @@ public class ModifiersAttribute extends IItemAttribute {
 			 
 		}
 		
-		this.btn_convert.enabled = !stack.hasTagCompound() || !stack.getTagCompound().hasKey("AttributeModifiers", 9);
+		this.btn_convert.enabled = !NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST);
 		this.btn_removeall.enabled = !this.btn_convert.enabled;
 	}
 

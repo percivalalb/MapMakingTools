@@ -60,20 +60,19 @@ public class LoreAttribute extends IItemAttribute {
 		if(first) {
 			this.loreFields.clear();
 			this.minusButtons.clear();
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("display", 10)) {
-				if(stack.getTagCompound().getCompoundTag("display").getTagId("Lore") == 9) {
-					NBTTagList list = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-					for(int l = 0; l < list.tagCount(); ++l) {
-						GuiTextField textField = new GuiTextField(l, itemEditor.getFontRenderer(), this.x + 17, this.y + 54 + l * 21, 100, 15);
-						textField.setMaxStringLength(1000);
-						textField.setText(list.getStringTagAt(l));
-						this.loreFields.add(textField);
-						itemEditor.getTextBoxList().add(textField);
+			
+			if(NBTUtil.hasTagInSubCompound(stack, "display", "Lore", NBTUtil.ID_LIST)) {
+				NBTTagList list = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTUtil.ID_STRING);
+				for(int l = 0; l < list.tagCount(); ++l) {
+					GuiTextField textField = new GuiTextField(l, itemEditor.getFontRenderer(), this.x + 17, this.y + 54 + l * 21, 100, 15);
+					textField.setMaxStringLength(1000);
+					textField.setText(list.getStringTagAt(l));
+					this.loreFields.add(textField);
+					itemEditor.getTextBoxList().add(textField);
 						
-						GuiButtonSmall minusButton = new GuiButtonSmall(l, this.x + 2, this.y + 54 + l * 21, 13, 12, "-");
-						this.minusButtons.add(minusButton);
-						itemEditor.getButtonList().add(minusButton);
-                    }
+					GuiButtonSmall minusButton = new GuiButtonSmall(l, this.x + 2, this.y + 54 + l * 21, 13, 12, "-");
+					this.minusButtons.add(minusButton);
+					itemEditor.getButtonList().add(minusButton);
 				}
 			}
 		}

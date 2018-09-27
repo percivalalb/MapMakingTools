@@ -44,7 +44,7 @@ public class BookAttribute extends IItemAttribute {
 			
 			break;
 		case 2:
-			if(this.author == null) break;
+			if(this.generation == null) break;
 			
 			NBTUtil.getOrCreateTagCompound(stack).setInteger("generation", Numbers.parse(this.generation));
 			

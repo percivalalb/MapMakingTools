@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * @author ProPercivalalb
@@ -54,17 +55,18 @@ public class ArmourColourAttribute extends IItemAttribute {
 	
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
-		if(first)
-			if(stack.hasTagCompound())
-				if(stack.getTagCompound().hasKey("display", 10))
-					if(stack.getTagCompound().getCompoundTag("display").hasKey("color", 3)) {
-						int integer = stack.getTagCompound().getCompoundTag("display").getInteger("color");
-						this.fld_colourint.setText(String.valueOf(integer));
-						this.fld_colourhex.setText(Integer.toHexString(integer));
-					}
-		if(!stack.hasTagCompound() || (!stack.getTagCompound().hasKey("display", 10) || !stack.getTagCompound().getCompoundTag("display").hasKey("color", 3))) {
+		if(first) {
+			if(NBTUtil.hasTagInSubCompound(stack, "display", "color", NBTUtil.ID_INTEGER)) {
+				int integer = stack.getTagCompound().getCompoundTag("display").getInteger("color");
+				this.fld_colourint.setText(String.valueOf(integer));
+				this.fld_colourhex.setText(Integer.toHexString(integer));
+				this.btn_remove.enabled = true;
+			}
+		}
+		if(!NBTUtil.hasTagInSubCompound(stack, "display", "color", NBTUtil.ID_INTEGER)) {
 			this.fld_colourint.setText("");
 			this.fld_colourhex.setText("");
+			this.btn_remove.enabled = false;
 	    }
 		
 	}
@@ -111,19 +113,13 @@ public class ArmourColourAttribute extends IItemAttribute {
 			
 			if(!Strings.isNullOrEmpty(this.colourint) && Numbers.isInteger(this.colourint)) {
 				int integer = Numbers.parse(this.colourint);
-				if(integer > 16777215) {
-					integer = 16777215;
-					this.fld_colourint.setText(String.valueOf(integer));
-					this.colourint = this.fld_colourint.getText();
-				}
-				else if(integer < 0) {
-					integer = 0;
-					this.fld_colourint.setText(String.valueOf(integer));
-					this.colourint = this.fld_colourint.getText();
-				}
-				
-				
+				integer = MathHelper.clamp(integer, 0, 16777215);
+
+				this.fld_colourint.setText(String.valueOf(integer));
+				this.colourint = this.fld_colourint.getText();
 				this.fld_colourhex.setText(Integer.toHexString(integer));
+				
+				this.btn_remove.enabled = true;
 			}
 			
 			itemEditor.sendUpdateToServer(0);
@@ -133,6 +129,7 @@ public class ArmourColourAttribute extends IItemAttribute {
 			if(!Strings.isNullOrEmpty(colourhex)) {
 				this.colourint = String.valueOf(Integer.valueOf(colourhex, 16));
 				this.fld_colourint.setText(this.colourint);
+				this.btn_remove.enabled = true;
 			}
 			itemEditor.sendUpdateToServer(0);
 		}
