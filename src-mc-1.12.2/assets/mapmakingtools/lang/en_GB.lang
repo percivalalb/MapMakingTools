@@ -86,7 +86,7 @@ mapmakingtools.filter.mobArmor.update=Updated mob armour from reality
 mapmakingtools.filter.mobArmor.removeIndex=Removed a minecart from the list
 mapmakingtools.filter.mobArmor.addIndex=Added a minecart to the list
 mapmakingtools.filter.mobArmor.error=Error: Invalid entity
-mapmakingtools.filter.mobArmor.info=This filter is only available on Zombie, PigZombie and Skeleton. It sets the armor and held item the mob will spawn with.
+mapmakingtools.filter.mobArmor.info=This filter is only available on Zombie, PigZombie and Skeleton. It sets the armour and held item the mob will spawn with.
 mapmakingtools.filter.mobposition.name=Mob Position
 mapmakingtools.filter.mobposition.notint=That is not a valid number.
 mapmakingtools.filter.mobposition.complete=Set the entity to spawn at the given position.
@@ -142,6 +142,7 @@ mapmakingtools.filter.signedit.name=Sign Edit
 mapmakingtools.filter.signedit.info=Edit signs that have been previously placed, just replaces text and resets all actions the sign does.
 mapmakingtools.filter.signedit.complete=Successfully edited the sign.
 
+
 mapmakingtools.itemattribute.displayname.name=Display Name
 mapmakingtools.itemattribute.lore.name=Lore
 mapmakingtools.itemattribute.stacksize.name=Stack Size
@@ -153,11 +154,12 @@ mapmakingtools.itemattribute.book.name=Written Book
 mapmakingtools.itemattribute.potion.name=Potions
 mapmakingtools.itemattribute.playerhead.name=Player Head
 mapmakingtools.itemattribute.fireworks.name=Fireworks
-mapmakingtools.itemattribute.armorcolour.name=Armor Colour
+mapmakingtools.itemattribute.armorcolour.name=Armour Colour
 mapmakingtools.itemattribute.blockdestroy.name=Block Breaking
 mapmakingtools.itemattribute.tooltipflags.name=Tooltip Flags
 mapmakingtools.itemattribute.canplaceon.name=Can Place On
 mapmakingtools.itemattribute.modifiers.name=Modifiers
+mapmakingtools.itemattribute.recipeknowledge.name=Knowledge Book
 
 mapmakingtools.key.category=Map Making Tools
 mapmakingtools.key.itemeditor=ItemEditor

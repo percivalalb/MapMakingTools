@@ -141,6 +141,7 @@ mapmakingtools.filter.converttodispenser.complete=Converted Dropper to Dispenser
 mapmakingtools.filter.signedit.name=Sign Edit
 mapmakingtools.filter.signedit.info=Edit signs that have been previously placed, just replaces text and resets all actions the sign does.
 mapmakingtools.filter.signedit.complete=Successfully edited the sign.
+mapmakingtools.itemattribute.recipeknowledge.name=Knowledge Book
 
 mapmakingtools.itemattribute.displayname.name=Display Name
 mapmakingtools.itemattribute.lore.name=Lore

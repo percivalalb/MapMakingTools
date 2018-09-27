@@ -19,12 +19,14 @@ import mapmakingtools.tools.attribute.BookAttribute;
 import mapmakingtools.tools.attribute.BookEnchantmentAttribute;
 import mapmakingtools.tools.attribute.CanPlaceOnAttribute;
 import mapmakingtools.tools.attribute.EnchantmentAttribute;
+import mapmakingtools.tools.attribute.FireworksAttribute;
 import mapmakingtools.tools.attribute.ItemMetaAttribute;
 import mapmakingtools.tools.attribute.ItemNameAttribute;
 import mapmakingtools.tools.attribute.LoreAttribute;
 import mapmakingtools.tools.attribute.ModifiersAttribute;
 import mapmakingtools.tools.attribute.PlayerHeadAttribute;
 import mapmakingtools.tools.attribute.PotionAttribute;
+import mapmakingtools.tools.attribute.RecipeKnowledgeAttribute;
 import mapmakingtools.tools.attribute.RepairCostAttribute;
 import mapmakingtools.tools.attribute.StackSizeAttribute;
 import mapmakingtools.tools.attribute.TooltipFlagsAttribute;
@@ -77,8 +79,9 @@ public class ClientProxy extends CommonProxy {
 		ItemEditorManager.registerItemHandler(new PotionAttribute());
 		ItemEditorManager.registerItemHandler(new BookAttribute());
 		ItemEditorManager.registerItemHandler(new PlayerHeadAttribute());
-		//ItemEditorManager.registerItemHandler(new FireworksAttribute());
+		ItemEditorManager.registerItemHandler(new FireworksAttribute());
 		ItemEditorManager.registerItemHandler(new ArmourColourAttribute());
+		ItemEditorManager.registerItemHandler(new RecipeKnowledgeAttribute());
 	}
 	
 	
