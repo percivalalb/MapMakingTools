@@ -6,11 +6,12 @@ import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,6 +31,11 @@ public class ItemEdit extends Item {
     	if(this.isInCreativeTab(tab)) {
     		items.add(new ItemStack(this, 1, 0));
     		items.add(new ItemStack(this, 1, 1));
+    		items.add(new ItemStack(Blocks.COMMAND_BLOCK));
+    		items.add(new ItemStack(Blocks.MOB_SPAWNER));
+    		items.add(new ItemStack(Items.COMMAND_BLOCK_MINECART));
+    		items.add(new ItemStack(Items.KNOWLEDGE_BOOK));
+    		items.add(new ItemStack(Items.FIREWORKS));
     	}
     }
     
@@ -40,11 +46,11 @@ public class ItemEdit extends Item {
     }
     
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getUnlocalizedName(ItemStack stack) {
     	if(stack.getMetadata() == 1) 
-    		return I18n.translateToLocal("item.mapmakingtools.wrench.name");
+    		return "item.mapmakingtools.wrench";
     	else
-    		return I18n.translateToLocal("item.mapmakingtools.edit_item.name");
+    		return "item.mapmakingtools.edit_item";
     }
     
     @Override
