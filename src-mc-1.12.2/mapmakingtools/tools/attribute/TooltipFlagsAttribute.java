@@ -3,6 +3,7 @@ package mapmakingtools.tools.attribute;
 import mapmakingtools.api.itemeditor.IGuiItemEditor;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonTick;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,20 +46,13 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 				flag |= 1 << 5; //Normal Info
 
 			if(flag == 0) {
-				if(stack.hasTagCompound() && stack.getTagCompound().hasKey("HideFlags", 99)) {
-			        stack.getTagCompound().removeTag("HideFlags");
-					this.btn_all.setTicked(true);
-			        
-			        if(stack.getTagCompound().hasNoTags())
-			        	stack.setTagCompound(null);
-				}
+				NBTUtil.removeTag(stack, "HideFlags", NBTUtil.ID_NUMBER);
+			    NBTUtil.hasEmptyTagCompound(stack, true);
+				this.btn_all.setTicked(true);
 				return;
 			}
-			
-			if(!stack.hasTagCompound())
-				stack.setTagCompound(new NBTTagCompound());
 				
-			stack.getTagCompound().setInteger("HideFlags", flag);
+			NBTUtil.getOrCreateTagCompound(stack).setInteger("HideFlags", flag);
 			this.btn_all.setTicked(false);
 			
 		}
@@ -72,7 +66,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		if(first) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("HideFlags", 99)) {
+			if(NBTUtil.hasTag(stack, "HideFlags", NBTUtil.ID_NUMBER)) {
 				int flag = stack.getTagCompound().getInteger("HideFlags");
 				
 				if((flag & (1 << 0)) == (1 << 0))

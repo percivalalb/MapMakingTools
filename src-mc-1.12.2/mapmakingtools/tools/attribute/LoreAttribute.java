@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mapmakingtools.api.itemeditor.IGuiItemEditor;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,31 +35,17 @@ public class LoreAttribute extends IItemAttribute {
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
 		if(data == 0) {
-			if(this.loreFields.size() <= 0) {
-				if(stack.hasTagCompound()) {
-					if(stack.getTagCompound().hasKey("display", 10)) {
-						NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
-						display.removeTag("Lore");
-						if(display.hasNoTags())
-							stack.getTagCompound().removeTag("display");
-						if(stack.getTagCompound().hasNoTags())
-							stack.setTagCompound(null);
-					}
-				}
-			}
-			else {
-				if(!stack.hasTagCompound())
-					stack.setTagCompound(new NBTTagCompound());
-				
-				if(!stack.getTagCompound().hasKey("display", 10))
-					stack.getTagCompound().setTag("display", new NBTTagCompound());
-				
-				NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
+			if(this.loreFields.size() > 0) {
+				NBTTagCompound display = NBTUtil.getOrCreateSubCompound(stack, "display");
 				NBTTagList list = new NBTTagList();
 				for(GuiTextField field : this.loreFields)
 					list.appendTag(new NBTTagString(field.getText()));
 				
 				display.setTag("Lore", list);
+			}
+			else {
+				NBTUtil.removeTagFromSubCompound(stack, "display", NBTUtil.ID_LIST, "Lore");
+				NBTUtil.hasEmptyTagCompound(stack, true);
 			}
 		}
 	}

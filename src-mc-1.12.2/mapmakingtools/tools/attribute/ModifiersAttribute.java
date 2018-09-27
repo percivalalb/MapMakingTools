@@ -16,6 +16,7 @@ import mapmakingtools.client.gui.button.GuiButtonSmallData;
 import mapmakingtools.client.render.RenderUtil;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.ReflectionHelper;
+import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -56,14 +57,17 @@ public class ModifiersAttribute extends IItemAttribute {
 				EntityEquipmentSlot equipmentSlot = EntityEquipmentSlot.values()[this.btn_slot.getData()];
 				
 				this.onItemCreation(stack, -1);
-				if(stack.hasTagCompound() && stack.getTagCompound().hasKey("AttributeModifiers", 9))
-		        {
-			        NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", 10);
+				if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
+			        NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
 			        for(int i = 0; i < nbttaglist.tagCount(); i++) {
 			        	NBTTagCompound compound = nbttaglist.getCompoundTagAt(i);
-			        	if(compound.hasKey("AttributeName", 8))
-			        		if(compound.getString("AttributeName").equals(MODIFIERS[data].attributeName) && (!compound.hasKey("Slot", 8) || compound.getString("Slot").equals(equipmentSlot.getName())))
+			        	if(compound.hasKey("AttributeName", NBTUtil.ID_STRING)) {
+			        		String attributeName = compound.getString("AttributeName");
+			        		boolean correctSlot = !compound.hasKey("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
+			        		
+			        		if(attributeName.equals(MODIFIERS[data].attributeName) && correctSlot)
 			        			nbttaglist.removeTag(i);
+			        	}
 			        }
 		        }
 
@@ -76,19 +80,21 @@ public class ModifiersAttribute extends IItemAttribute {
 		}
 		else if(data >= MODIFIERS.length && data < MODIFIERS.length * 2) {
 			this.onItemCreation(stack, -1);
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("AttributeModifiers", 9)) {
-	            NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", 10);
+			if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
+	            NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
 				
 				for(int k = 0; k < nbttaglist.tagCount(); k++) {					
 					NBTTagCompound nbt = nbttaglist.getCompoundTagAt(k);
-					if(nbt.getString("AttributeName").equals(MODIFIERS[data - MODIFIERS.length].attributeName))
+					String attributeName = nbt.getString("AttributeName");
+					
+					if(attributeName.equals(MODIFIERS[data - MODIFIERS.length].attributeName))
 						nbttaglist.removeTag(k);
 				}
 			}
 		}
 		else if(data == -1) {
 			
-			if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("AttributeModifiers", 9)) {
+			if(!NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
 
 				for(EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values()) {
 					Multimap<String, AttributeModifier> builtIn = stack.getAttributeModifiers(equipmentSlot);
@@ -99,9 +105,9 @@ public class ModifiersAttribute extends IItemAttribute {
 				}
 			}
 		}
-		else if(data == -2) {
-			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("AttributeModifiers", 9))
-				stack.getTagCompound().removeTag("AttributeModifiers");
+		else if(data == -2) { // Remove modifier NBT data
+			NBTUtil.removeTag(stack, "AttributeModifiers", NBTUtil.ID_LIST);
+			NBTUtil.hasEmptyTagCompound(stack, true);
 		}
 	}
 

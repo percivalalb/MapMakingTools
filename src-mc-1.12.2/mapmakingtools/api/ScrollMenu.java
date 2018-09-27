@@ -10,11 +10,13 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ImmutableList;
 
 import mapmakingtools.lib.ResourceLib;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -22,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 public abstract class ScrollMenu<T> {
 
 	private static int ELEMENT_HEIGHT = 14;
+	private static int MIN_SCROLL_HEIGHT = 20;
 	
 	protected ScaledResolution scaling;
 	public int scrollY = 0;
@@ -53,6 +56,10 @@ public abstract class ScrollMenu<T> {
 	public int maxSelected;
 	public boolean canHaveNoneSelected;
 	
+	// Number of columns based on how wide the port is
+	private boolean dynamicNoColumns;
+	private FontRenderer fontRenderer;
+	
 	
 	public ScrollMenu(GuiScreen screen, int xPosition, int yPosition, int width, int height, int noColumns, List<T> elements) {
 		this(screen, xPosition, yPosition, width, height, noColumns);
@@ -69,6 +76,7 @@ public abstract class ScrollMenu<T> {
 		this.elements = Collections.emptyList();
 		this.maxSelected = 1;
 		this.canHaveNoneSelected = false;
+		this.dynamicNoColumns = false;
 	}
 	
 	public void setElements(List<T> elements) {
@@ -78,13 +86,26 @@ public abstract class ScrollMenu<T> {
 	public void initGui() {
 		this.scaling = new ScaledResolution(this.screen.mc);
 		
+		if(this.dynamicNoColumns) {
+			int maxElementWidth = 1;
+			
+			for(T obj : this.elements) {
+				String displayStr = this.getDisplayString(obj);
+				
+				maxElementWidth = Math.max(maxElementWidth, this.fontRenderer.getStringWidth(displayStr) + 35);
+				if(maxElementWidth > this.width / 2) break;
+			}
+			
+			this.noCol = Math.max(1, MathHelper.floor(this.width / (double)maxElementWidth));
+		}
+		
 		if(this.elements.size() > 0) {
 			this.noRow = MathHelper.ceil(this.elements.size() / (double)this.noCol);
 			
         	this.listHeight = this.noRow * ELEMENT_HEIGHT - this.height;
-        	this.scrollHeight = (int)((this.height / (double)(this.listHeight + this.height)) * this.height);
+        	this.scrollHeight = MathHelper.floor(this.height * this.height / (double)(this.noRow * ELEMENT_HEIGHT - 4));
         	
-        	if(this.scrollHeight < 20) this.scrollHeight = 20;
+        	if(this.scrollHeight < MIN_SCROLL_HEIGHT) this.scrollHeight = MIN_SCROLL_HEIGHT;
 		}
 		else {
 			this.noRow = 0;
@@ -293,5 +314,10 @@ public abstract class ScrollMenu<T> {
 	
 	public String getDisplayString(T listStr) {
 		return listStr.toString();
+	}
+	
+	public void setDynamicColumns(FontRenderer fontRenderer) {
+		this.dynamicNoColumns = true;
+		this.fontRenderer = fontRenderer;
 	}
 }

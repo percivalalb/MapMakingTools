@@ -97,7 +97,6 @@ public class GuiTextFieldColour extends GuiTextFieldAdvanced {
 		this.colourTab = false;
 		
 		if(this.isFocused() && mouseButton == 1) {
-			FMLLog.info("click");
 			this.colourTab = true;
 			this.xClick = mouseX - this.x;
 			this.yClick = mouseY - this.y;

@@ -54,4 +54,13 @@ public class Numbers {
 		catch(Exception e) {}
 		return false;
 	}
+	
+	public static boolean isByte(String text) {
+		try {
+			Integer in = new Integer(text);
+			return in >= 0 && in < 256;
+		}
+		catch(Exception e) {}
+		return false;
+	}
 }

@@ -36,7 +36,7 @@ public class ItemMetaAttribute extends IItemAttribute {
 			break;
 		case 1:
 			NBTTagCompound tagCompound = NBTUtil.getOrCreateTagCompound(stack);
-			if(!tagCompound.hasKey("Unbreakable", NBTUtil.ID_BOOLEAN) || !tagCompound.getBoolean("Unbreakable"))
+			if(!tagCompound.hasKey("Unbreakable", NBTUtil.ID_BYTE) || !tagCompound.getBoolean("Unbreakable"))
 				stack.getTagCompound().setBoolean("Unbreakable", true);
 			else {
 				tagCompound.removeTag("Unbreakable");
