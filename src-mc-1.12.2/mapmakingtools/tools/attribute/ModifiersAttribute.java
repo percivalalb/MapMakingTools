@@ -53,47 +53,36 @@ public class ModifiersAttribute extends IItemAttribute {
 
 	@Override
 	public void onItemCreation(ItemStack stack, int data) {
-		if(data >= 0 && data < MODIFIERS.length) {
-			if(Strings.isNullOrEmpty(this.fld_attack.get(data).getText()) || !Numbers.isDouble(this.fld_attack.get(data).getText())) return;
-				
+		if(data >= 0 && data < MODIFIERS.length * 2) {
+			boolean modeAdd = data < MODIFIERS.length;
+			
+			if(modeAdd && (Strings.isNullOrEmpty(this.fld_attack.get(data).getText()) || !Numbers.isDouble(this.fld_attack.get(data).getText()))) return;
+			
 			this.onItemCreation(stack, -1);
 			
+			// Removes modifier with same name and slot
+			Modifier modifier = MODIFIERS[data % MODIFIERS.length];
 			EntityEquipmentSlot equipmentSlot = EntityEquipmentSlot.values()[this.btn_slot.getData()];
 			
-			//Remove other modifier with same name and slot
-			if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
-				NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
-			    for(int i = 0; i < nbttaglist.tagCount(); i++) {
-			    	NBTTagCompound compound = nbttaglist.getCompoundTagAt(i);
-			        if(compound.hasKey("AttributeName", NBTUtil.ID_STRING)) {
-			        	String attributeName = compound.getString("AttributeName");
-			        	boolean correctSlot = !compound.hasKey("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
-			        	
-			        	if(attributeName.equals(MODIFIERS[data].attributeName) && correctSlot)
-			        		nbttaglist.removeTag(i);
-			        }
-		        }
-
-				double amount = Numbers.getDouble(this.fld_attack.get(data).getText());
-				int operation = this.btn_operation.get(data).getData();
-				amount /= (operation > 0 ? 100 : 1);
-				stack.addAttributeModifier(MODIFIERS[data].attributeName, MODIFIERS[data].getEdited(amount, operation), equipmentSlot);
-					
-			}
-		}
-		else if(data >= MODIFIERS.length && data < MODIFIERS.length * 2) {
-			this.onItemCreation(stack, -1);
 			if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
 	            NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
 				
-				for(int k = 0; k < nbttaglist.tagCount(); k++) {					
-					NBTTagCompound nbt = nbttaglist.getCompoundTagAt(k);
-					String attributeName = nbt.getString("AttributeName");
+				for(int k = 0; k < nbttaglist.tagCount(); k++) {
+					NBTTagCompound compound = nbttaglist.getCompoundTagAt(k);
+					String attributeName = compound.getString("AttributeName");
+					boolean correctSlot = !compound.hasKey("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
 					
-					if(attributeName.equals(MODIFIERS[data - MODIFIERS.length].attributeName))
+					if(attributeName.equals(modifier.attributeName) && correctSlot)
 						nbttaglist.removeTag(k);
 				}
 			}
+			
+			if(!modeAdd) return;
+			
+			double amount = Numbers.getDouble(this.fld_attack.get(data).getText());
+			int operation = this.btn_operation.get(data).getData();
+			amount /= (operation > 0 ? 100 : 1);
+			stack.addAttributeModifier(modifier.attributeName, MODIFIERS[data].getEdited(amount, operation), equipmentSlot);
 		}
 		else if(data == -1) { // Converts built in modifiers to NBT
 			
@@ -123,14 +112,15 @@ public class ModifiersAttribute extends IItemAttribute {
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.values()[this.btn_slot.getData()]);
 		for(int i = 0; i < MODIFIERS.length; i++) {
+			Modifier modifier = MODIFIERS[i];
+			
 			boolean foundAtAll = false;
 			
 			 for(Entry<String, AttributeModifier> entry : modifiers.entries()) {
 				 String key = (String)entry.getKey();
 				 AttributeModifier attributemodifier = (AttributeModifier)entry.getValue();
-	            
-	           
-				 if(key.equals(MODIFIERS[i].attributeName)) {
+				 
+				 if(key.equals(modifier.attributeName)) {
 					 this.but_add.get(i).displayString = "Set";
 	            	
 					 double amount = attributemodifier.getAmount() * (attributemodifier.getOperation() > 0 ? 100 : 1);
@@ -146,17 +136,16 @@ public class ModifiersAttribute extends IItemAttribute {
 					 this.btn_operation.get(i).setData(attributemodifier.getOperation());
 					 this.btn_operation.get(i).displayString = "" + this.btn_operation.get(i).getData();
 					 if(this.btn_remove[i] == null) {
-						 this.btn_remove[i] = new GuiButtonSmall(i + MODIFIERS.length, this.x + 310, this.y + 38 + i * 17, 16, 16, "-");
+						 this.btn_remove[i] = new GuiButtonSmall(i + MODIFIERS.length, this.x + 190 + MathHelper.clamp(width - 200, 20, 120), this.y + 38 + i * 17, 16, 16, "-");
 						 itemEditor.getButtonList().add(this.btn_remove[i]);
 					 }
 					 foundAtAll = true;
 				 }
-	    
 			}
 
 			if(!foundAtAll) {
 				this.but_add.get(i).displayString = "Add";
-						
+				
 				this.fld_attack.get(i).setText("");
 				this.btn_operation.get(i).setData(0);
 				this.btn_operation.get(i).displayString = "" + this.btn_operation.get(i).getData();
@@ -164,9 +153,7 @@ public class ModifiersAttribute extends IItemAttribute {
 					itemEditor.getButtonList().remove(this.btn_remove[i]);
 					this.btn_remove[i] = null;
 				}
-				
 			}	
-			 
 		}
 		
 		this.btn_convert.enabled = !NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST);
@@ -175,7 +162,7 @@ public class ModifiersAttribute extends IItemAttribute {
 
 	@Override
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
-		itemEditor.getFontRenderer().drawString("OP", x + 250, y + 25, 16777120);
+		itemEditor.getFontRenderer().drawString("OP", x + 130 + MathHelper.clamp(width - 200, 40, 120), y + 25, 16777120);
 		for(int i = 0; i < MODIFIERS.length; i++)
 			itemEditor.getFontRenderer().drawString(I18n.translateToLocal("attribute.name." + MODIFIERS[i].attributeName), x + 6, y + 42 + i * 17, 16777120);
 	}
@@ -195,16 +182,19 @@ public class ModifiersAttribute extends IItemAttribute {
 		this.btn_operation.clear();
 		this.but_add.clear();
 		this.btn_remove = new GuiButton[MODIFIERS.length];
-		this.btn_slot = new GuiButtonData(-3, x + 2, y + 16, 80, 20, EntityEquipmentSlot.MAINHAND.getName());
+		this.btn_slot = new GuiButtonData(-3, x + 2, y + 16, 80, 20, EntityEquipmentSlot.values()[this.slotSelected].getName());
 		this.btn_slot.setData(this.slotSelected);
 		itemEditor.getButtonList().add(this.btn_slot);
 		
 		for(int i = 0; i < MODIFIERS.length; i++) {
-			this.btn_operation.add(new GuiButtonSmallData(i + 2 * this.MODIFIERS.length, this.x + 247, this.y + 38 + i * 17, 16, 16, "0"));
+			int inputSize = MathHelper.clamp(width - 200, 20, 120);
+			
+			this.btn_operation.add(new GuiButtonSmallData(i + 2 * this.MODIFIERS.length, this.x + 127 + inputSize, this.y + 38 + i * 17, 16, 16, "0"));
+			this.but_add.add(new GuiButtonSmall(i, x + 155 + inputSize, y + 38 + i * 17, 40, 16, "Add"));
+			this.fld_attack.add(new GuiTextField(i, itemEditor.getFontRenderer(), x + 122, y + 39 + i * 17, inputSize, 14));
+			
 			itemEditor.getButtonList().add(this.btn_operation.get(i));
-			this.but_add.add(new GuiButtonSmall(i, x + 275, y + 38 + i * 17, 40, 16, "Add"));
 			itemEditor.getButtonList().add(this.but_add.get(i));
-			this.fld_attack.add(new GuiTextField(i, itemEditor.getFontRenderer(), x + 122, y + 39 + i * 17, 120, 14));
 			itemEditor.getTextBoxList().add(this.fld_attack.get(i));
 		}
 
@@ -222,15 +212,14 @@ public class ModifiersAttribute extends IItemAttribute {
 			itemEditor.sendUpdateToServer(button.id);
 		}
 		else if(button.id >= MODIFIERS.length && button.id < MODIFIERS.length * 2) {
-			this.fld_attack.get(button.id - MODIFIERS.length).setText("");
+			this.fld_attack.get(button.id % MODIFIERS.length).setText("");
 			itemEditor.sendUpdateToServer(button.id);
 		}
 		
 		else if(button.id >= MODIFIERS.length * 2 && button.id < MODIFIERS.length * 3) {
-			GuiButtonSmallData btn = this.btn_operation.get(button.id - MODIFIERS.length * 2);
+			GuiButtonSmallData btn = this.btn_operation.get(button.id % MODIFIERS.length);
 			btn.setData((btn.getData() + 1) % 3);
 			btn.displayString = "" + btn.getData();
-			//itemEditor.sendUpdateToServer(button.id);
 		}
 		else if(button.id == -1) {
 			itemEditor.sendUpdateToServer(-1);
@@ -248,7 +237,9 @@ public class ModifiersAttribute extends IItemAttribute {
 	
 	@Override
 	public void drawToolTips(IGuiItemEditor guiItemEditor, int xMouse, int yMouse) {
-		if(xMouse >= x + 250 && xMouse <= x + 260 && yMouse >= y + 25 && yMouse <= y + 25 + guiItemEditor.getFontRenderer().FONT_HEIGHT) {
+		int inputSize = MathHelper.clamp(width - 200, 20, 120);
+		
+		if(xMouse >= x + 130 + inputSize && xMouse <= x + 140 + inputSize && yMouse >= y + 25 && yMouse <= y + 25 + guiItemEditor.getFontRenderer().FONT_HEIGHT) {
 			List<String> list = new ArrayList<String>();
 			list.add(TextFormatting.GREEN + "Operation");
 			list.add(" 0: Adds the modifiers' amount to the current");
