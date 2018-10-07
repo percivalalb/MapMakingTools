@@ -36,7 +36,8 @@ public class BlockColourList {
 		int rgb[] = new int[] {
 		    (argb >> 16) & 0xff, //red
 		    (argb >>  8) & 0xff, //green
-		    (argb      ) & 0xff  //blue
+		    (argb      ) & 0xff,  //blue,
+		    (argb >> 24) & 0xff
 		};
 
 		return rgb;

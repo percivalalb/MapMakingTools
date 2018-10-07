@@ -1,18 +1,30 @@
 package mapmakingtools.command;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.packet.PacketRequestPNG;
 import mapmakingtools.thread.PlayerStauteThread;
+import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
+import mapmakingtools.tools.datareader.BlockColourList;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -59,15 +71,20 @@ public class CommandPlayerStatue extends CommandBase {
 			String target = args[0];
 			String facing = args[1].toLowerCase();
 			boolean hat = true;
-			if(args.length >= 3)
-				hat = this.parseBoolean(args[2]);
+			//if(args.length >= 3)
+			//	hat = this.parseBoolean(args[2]);
 			int multiplyier = size[0] / 16;
 			
 			if(!(this.getDirections().contains(facing)))
 				throw new CommandException("mapmakingtools.commands.build.playerstatue.invaliddirection");
 			
-			Thread thread = new Thread(new PlayerStauteThread(data, player, target, facing, hat, multiplyier));
-			thread.start();
+			IThreadListener thread = Minecraft.getMinecraft();
+			if(thread.isCallingFromMinecraftThread()) {
+				new PlayerStauteThread(data, player, target, facing, hat, multiplyier).run();
+			}
+			else {
+				thread.addScheduledTask(() -> new PlayerStauteThread(data, player, target, facing, hat, multiplyier).run());
+			}
 			
 		}
 	}

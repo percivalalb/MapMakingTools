@@ -48,6 +48,9 @@ mapmakingtools.commands.build.worldtransfer.modeerror=The mode '%s' is not recog
 mapmakingtools.commands.build.worldtransfer.gui.delete=The area named '%s' has been deleted.
 mapmakingtools.commands.build.worldtransfer.toolarge=The area selected is too large (max 1000 blocks).
 mapmakingtools.commands.copyinventory.playererror=The player is not valid.
+mapmakingtools.commands.build.drawpng.facenot1depth=The depth of the direction it's facing needs to be 1.
+mapmakingtools.commands.build.drawpng.scaling.noargs=The image will be scaled to the selected size using interpolation type 0.
+mapmakingtools.commands.build.drawpng.scaling.args=The image will be scaled to the selected size using interpolation type %d.
 
 mapmakingtools.commands.build.set.complete=%s block(s) have been set to %s.
 mapmakingtools.commands.build.roof.complete=%s block(s) have been set to %s.
@@ -73,6 +76,7 @@ mapmakingtools.commands.build.worldtransfer.copy.complete2=Use the command '//wo
 mapmakingtools.commands.build.worldtransfer.paste.complete=The area '%s' has been pasted to the server from your local machine.
 mapmakingtools.commands.copyinventory.complete=Copied the inventory into yours.
 mapmakingtools.commands.build.maze.complete=Created a maze out of '%s'.
+mapmakingtools.commands.build.drawpng.complete=Drawn image using %s block(s).
 
 mapmakingtools.commands.build.air=Air
 mapmakingtools.commands.build.unknown=Unknown

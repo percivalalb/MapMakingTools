@@ -5,6 +5,7 @@ import mapmakingtools.command.CommandClearPoints;
 import mapmakingtools.command.CommandCopy;
 import mapmakingtools.command.CommandCopyInventory;
 import mapmakingtools.command.CommandDebug;
+import mapmakingtools.command.CommandDrawPNG;
 import mapmakingtools.command.CommandFlip;
 import mapmakingtools.command.CommandFloor;
 import mapmakingtools.command.CommandKillAll;
@@ -54,6 +55,7 @@ public class ModCommands {
         event.registerServerCommand(new CommandSelectionSize());
        // event.registerServerCommand(new CommandExpand());
         //event.registerServerCommand(new CommandShrink());
+        event.registerServerCommand(new CommandDrawPNG());
         event.registerServerCommand(new CommandMove());
         event.registerServerCommand(new CommandMaze());
         

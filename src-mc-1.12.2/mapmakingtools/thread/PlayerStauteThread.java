@@ -2,30 +2,29 @@ package mapmakingtools.thread;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
-import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.properties.Property;
 
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.datareader.BlockColourList;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.spectator.PlayerMenuObject;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -113,6 +112,7 @@ public class PlayerStauteThread implements Runnable {
     
 	private static Field PROFILE_CACHE_FLD = ReflectionHelper.getField(TileEntitySkull.class, 5);
 	private static Field SESSION_SERVICE_FLD = ReflectionHelper.getField(TileEntitySkull.class, 6);
+	private static Field BUFFERED_IMG_FLD = ReflectionHelper.getField(ThreadDownloadImageData.class, 5);
 	
 	@Override
 	public void run() {
@@ -137,13 +137,34 @@ public class PlayerStauteThread implements Runnable {
 		{
 			FMLLog.info(map.get(Type.SKIN).getUrl());
 		
-		
+			
 		}
+		
+		ResourceLocation resourcelocation = DefaultPlayerSkin.getDefaultSkinLegacy();
+
+        if (playerProfile != null)
+        {
+            Minecraft minecraft = Minecraft.getMinecraft();
+            Map<Type, MinecraftProfileTexture> map2 = minecraft.getSkinManager().loadSkinFromCache(playerProfile);
+
+            if (map2.containsKey(Type.SKIN))
+            {
+                resourcelocation = minecraft.getSkinManager().loadSkin(map2.get(Type.SKIN), Type.SKIN);
+            }
+            else
+            {
+                UUID uuid = EntityPlayer.getUUID(playerProfile);
+                resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
+            }
+            FMLLog.info("" + resourcelocation);
+        }
             		   
+        PlayerMenuObject pmo = new PlayerMenuObject(playerProfile);
+        pmo.renderIcon(1.0F, 255);
+        ThreadDownloadImageData tdid = AbstractClientPlayer.getDownloadImageSkin(AbstractClientPlayer.getLocationSkin(this.target), this.target);
 		
-		
-		
-		
+		img = ReflectionHelper.getField(BUFFERED_IMG_FLD, BufferedImage.class, tdid);
+		FMLLog.info("" + (img == null));
 		
 		
 		
@@ -158,7 +179,7 @@ public class PlayerStauteThread implements Runnable {
 		
 		
 		
-		
+		/**
 		try {
 			//TileEntitySkullRenderer
 			//URL url = MapMakingTools.class.getResource("/assets/minecraft/textures/entity/steve.png");
@@ -172,7 +193,7 @@ public class PlayerStauteThread implements Runnable {
 			warningChatComponet.getStyle().setItalic(true);
 			warningChatComponet.getStyle().setColor(TextFormatting.RED);
 			this.player.sendMessage(warningChatComponet);
-		}
+		}**/
 		
 		TextComponentTranslation warningChatComponet = new TextComponentTranslation("mapmakingtools.commands.build.playerstatue.warning");
 		warningChatComponet.getStyle().setItalic(true);

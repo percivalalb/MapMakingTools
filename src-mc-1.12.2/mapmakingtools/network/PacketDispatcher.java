@@ -2,6 +2,8 @@ package mapmakingtools.network;
 
 import mapmakingtools.lib.Reference;
 import mapmakingtools.network.packet.PacketBiomeUpdate;
+import mapmakingtools.network.packet.PacketDrawPNG;
+import mapmakingtools.network.packet.PacketRequestPNG;
 import mapmakingtools.network.packet.PacketEditBlock;
 import mapmakingtools.network.packet.PacketEditEntity;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
@@ -97,6 +99,8 @@ public class PacketDispatcher {
 		registerMessage(PacketVillagerRecipeAmounts.class);
 		registerMessage(PacketVillagerShop.class);
 		registerMessage(PacketSignEdit.class);
+		registerMessage(PacketRequestPNG.class);
+		registerMessage(PacketDrawPNG.class);
 	}
 	
 	private static final <T extends AbstractMessage<T> & IMessageHandler<T, IMessage>> void registerMessage(Class<T> clazz) {
