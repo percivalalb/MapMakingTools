@@ -43,7 +43,7 @@ public class PotionAttribute extends IItemAttribute {
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, ItemStack stack) {
-		return stack.getItem() == Items.POTIONITEM;
+		return stack.getItem() == Items.POTIONITEM || stack.getItem() == Items.SPLASH_POTION;
 	}
 
 	@Override
