@@ -61,9 +61,9 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 			if(stack.hasTagCompound() && stack.getTagCompound().hasKey("StoredEnchantments", 9)) {
 		        NBTTagList nbttaglist = stack.getTagCompound().getTagList("StoredEnchantments", 10);
 		        nbttaglist.removeTag(this.selectedDelete);
-		        if(nbttaglist.hasNoTags()) {
+		        if(nbttaglist.isEmpty()) {
 		        	stack.getTagCompound().removeTag("StoredEnchantments");
-		        	if(stack.getTagCompound().hasNoTags())
+		        	if(stack.getTagCompound().isEmpty())
 						stack.setTagCompound(null);
 		        }
 			}
@@ -73,7 +73,7 @@ public class BookEnchantmentAttribute extends IItemAttribute {
 			if(stack.hasTagCompound()) {
 				if(stack.getTagCompound().hasKey("StoredEnchantments", 9)) {
 					stack.getTagCompound().removeTag("StoredEnchantments");
-					if(stack.getTagCompound().hasNoTags())
+					if(stack.getTagCompound().isEmpty())
 						stack.setTagCompound(null);
 				}
 			}

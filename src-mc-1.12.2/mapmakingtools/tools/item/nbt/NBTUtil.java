@@ -23,7 +23,7 @@ public class NBTUtil {
 	
 	/** Checks if base NBTTagCompound has any tags if not it removes it */
 	public static boolean hasEmptyTagCompound(ItemStack stack, boolean takeAction) {
-		if(!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) {
+		if(!stack.hasTagCompound() || stack.getTagCompound().isEmpty()) {
 			if(takeAction) stack.setTagCompound(null);
 			return true;
 		}
@@ -50,7 +50,7 @@ public class NBTUtil {
 	        NBTTagList tagList = stack.getTagCompound().getTagList(key, tagId);
 	        tagList.removeTag(tagIndex);
 	        
-	        if(tagList.hasNoTags())
+	        if(tagList.isEmpty())
 	        	removeSubList(stack, key);
 		}
     }
@@ -95,7 +95,7 @@ public class NBTUtil {
 			if(subCompound.hasKey(tagKey, tagId))
 				subCompound.removeTag(tagKey);
 	        
-	        if(subCompound.hasNoTags())
+	        if(subCompound.isEmpty())
 	        	removeSubCompound(stack, key);
 		}
     }

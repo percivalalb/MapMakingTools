@@ -129,7 +129,7 @@ public class PlayerStauteThread implements Runnable {
 		
 		
 		GameProfile playerProfile = new GameProfile((UUID)null, this.target);
-		TileEntitySkull.updateGameprofile(playerProfile);
+		TileEntitySkull.updateGameProfile(playerProfile);
 		Map<Type, MinecraftProfileTexture> map = ReflectionHelper.getField(SESSION_SERVICE_FLD, MinecraftSessionService.class, null).getTextures(playerProfile, false);
 		
 		

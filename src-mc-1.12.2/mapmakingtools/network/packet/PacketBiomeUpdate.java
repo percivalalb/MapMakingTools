@@ -47,7 +47,7 @@ public class PacketBiomeUpdate extends AbstractClientMessage {
 		Iterable<BlockPos> positions = BlockPos.getAllInBox(new BlockPos(this.pos1.getX(), 0, this.pos1.getZ()), new BlockPos(this.pos2.getX(), 0, this.pos2.getZ()));
 		
 		for(BlockPos pos : positions) {
-			Chunk chunk = player.world.getChunkFromBlockCoords(pos);
+			Chunk chunk = player.world.getChunk(pos);
 			byte[] biomes = chunk.getBiomeArray();
 			biomes[((pos.getZ() & 0xF) << 4 | pos.getX() & 0xF)] = (byte)Biome.getIdForBiome(this.biome);
 			chunk.setBiomeArray(biomes);

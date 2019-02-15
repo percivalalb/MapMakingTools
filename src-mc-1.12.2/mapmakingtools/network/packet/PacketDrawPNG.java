@@ -98,7 +98,7 @@ public class PacketDrawPNG extends AbstractServerMessage {
 		
 		
 		EnumFacing[] drawDirections = new EnumFacing[2];
-		drawDirections[0] = EnumFacing.getHorizontal(facing.getHorizontalIndex() + 3); 
+		drawDirections[0] = EnumFacing.byHorizontalIndex(facing.getHorizontalIndex() + 3); 
 		drawDirections[1] = EnumFacing.DOWN;
 		
 

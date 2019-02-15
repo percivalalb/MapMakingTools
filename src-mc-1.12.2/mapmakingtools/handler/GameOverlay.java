@@ -115,10 +115,10 @@ public class GameOverlay {
 	            	
 	            	list.add(TextFormatting.YELLOW + "" + id + " | " + meta + " | " + stateId);
 	        	    
-	            	ModContainer container = Loader.instance().getIndexedModList().get(resourceLocation.getResourceDomain());
+	            	ModContainer container = Loader.instance().getIndexedModList().get(resourceLocation.getNamespace());
 	        	    if(container != null)
 	        	    	list.add(TextFormatting.ITALIC + "" + container.getName());
-	        	    else if(resourceLocation.getResourceDomain().equals("minecraft"))
+	        	    else if(resourceLocation.getNamespace().equals("minecraft"))
 	        	    	list.add(TextFormatting.ITALIC + "Minecraft");
 	        	    else
 	        	    	list.add(TextFormatting.ITALIC + "" + TextFormatting.RED + "Unknown");

@@ -21,7 +21,7 @@ public class ModItems {
 	
 	@SubscribeEvent
 	public static void onRegister(RegistryEvent.Register<Item> event) {
-		EDIT_ITEM = new ItemEdit().setUnlocalizedName("mapmakingtools:edititem").setRegistryName(Reference.MOD_ID, "edit_item");
+		EDIT_ITEM = new ItemEdit().setTranslationKey("mapmakingtools:edititem").setRegistryName(Reference.MOD_ID, "edit_item");
 		
 		event.getRegistry().register(EDIT_ITEM);
 	}

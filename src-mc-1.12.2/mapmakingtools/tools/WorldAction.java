@@ -9,7 +9,7 @@ import net.minecraft.world.chunk.Chunk;
 public class WorldAction {
 
 	 public static boolean setBlock(World world, BlockPos pos, IBlockState blockState, boolean notifyAndLight) {
-	    Chunk chunk = world.getChunkFromBlockCoords(pos);
+	    Chunk chunk = world.getChunk(pos);
 
 	    IBlockState lastState = chunk.setBlockState(pos, blockState);
 	    

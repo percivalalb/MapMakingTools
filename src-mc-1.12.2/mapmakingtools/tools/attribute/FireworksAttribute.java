@@ -85,7 +85,7 @@ public class FireworksAttribute extends IItemAttribute {
 				explosionsNBT.removeTag(this.scrollMenuRemove.getRecentIndex());
 				
 				//Remove empty NBT data
-				if(explosionsNBT.hasNoTags())
+				if(explosionsNBT.isEmpty())
 					NBTUtil.removeTagFromSubCompound(stack, "Fireworks", NBTUtil.ID_LIST, "Explosions");
 				NBTUtil.hasEmptyTagCompound(stack, true);
 			}
@@ -125,7 +125,7 @@ public class FireworksAttribute extends IItemAttribute {
 		if(NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", NBTUtil.ID_LIST)) {
 			NBTTagList explosionNBT = NBTUtil.getListInSubCompound(stack, "Fireworks", "Explosions", NBTUtil.ID_COMPOUND);
 			
-			if(!explosionNBT.hasNoTags()) {
+			if(!explosionNBT.isEmpty()) {
                 for(int i = 0; i < explosionNBT.tagCount(); ++i) {
                     explosions.add(explosionNBT.getCompoundTagAt(i));
                 }
@@ -208,7 +208,7 @@ public class FireworksAttribute extends IItemAttribute {
 			public String getDisplayString(Integer colour) {
 				for(int j = 0; j < ItemDye.DYE_COLORS.length; ++j){
                     if(colour == ItemDye.DYE_COLORS[j]) {
-                        return I18n.translateToLocal("item.fireworksCharge." + EnumDyeColor.byDyeDamage(j).getUnlocalizedName());
+                        return I18n.translateToLocal("item.fireworksCharge." + EnumDyeColor.byDyeDamage(j).getTranslationKey());
                     }
                 }
 				
@@ -226,7 +226,7 @@ public class FireworksAttribute extends IItemAttribute {
 			public String getDisplayString(Integer colour) {
 				for(int j = 0; j < ItemDye.DYE_COLORS.length; ++j){
                     if(colour == ItemDye.DYE_COLORS[j]) {
-                        return I18n.translateToLocal("item.fireworksCharge." + EnumDyeColor.byDyeDamage(j).getUnlocalizedName());
+                        return I18n.translateToLocal("item.fireworksCharge." + EnumDyeColor.byDyeDamage(j).getTranslationKey());
                     }
                 }
 				

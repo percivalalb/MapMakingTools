@@ -61,7 +61,7 @@ public abstract class FilterServerInventory extends FilterServer {
 	            }
 	        }
 
-	        if(!itemData.hasNoTags()) {
+	        if(!itemData.isEmpty()) {
 	        	inventoryData.setTag("Items", itemData);
 	        	inventoriesData.appendTag(inventoryData);
 	        }

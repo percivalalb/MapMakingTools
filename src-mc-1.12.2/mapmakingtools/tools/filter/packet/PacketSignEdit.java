@@ -54,7 +54,7 @@ public class PacketSignEdit extends AbstractServerMessage {
 			TileEntitySign sign = (TileEntitySign)tile;
 			for(int i = 0; i < 4; i++)
 				sign.signText[i] = this.signLines[i];
-			Chunk chunk = player.world.getChunkFromBlockCoords(this.pos);
+			Chunk chunk = player.world.getChunk(this.pos);
 			if(chunk != null)
 				chunk.markDirty();
 				

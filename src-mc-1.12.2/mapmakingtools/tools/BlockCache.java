@@ -198,8 +198,8 @@ public class BlockCache {
 
     public void writeToNBT(NBTTagCompound compound) {
     	compound.setLong("playerPos", this.playerPos.toLong());
-        compound.setString("blockMod", this.registryName.getResourceDomain());
-        compound.setString("blockName", this.registryName.getResourcePath());
+        compound.setString("blockMod", this.registryName.getNamespace());
+        compound.setString("blockName", this.registryName.getPath());
         compound.setLong("blockPos", this.pos.toLong());
         compound.setInteger("dimension", this.dimId);
         compound.setByte("metadata", (byte)this.meta);
@@ -215,8 +215,8 @@ public class BlockCache {
 		packetbuffer.writeInt(this.dimId);
 		packetbuffer.writeBlockPos(this.pos);
 		
-	    if(this.registryName.getResourceDomain().equals("minecraft"))
-			packetbuffer.writeString(this.registryName.getResourcePath());
+	    if(this.registryName.getNamespace().equals("minecraft"))
+			packetbuffer.writeString(this.registryName.getPath());
 	    else
 	    	packetbuffer.writeString(this.registryName.toString());
 	    
@@ -239,8 +239,8 @@ public class BlockCache {
     }
     
     public void writeToPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
-	    if(this.registryName.getResourceDomain().equals("minecraft"))
-			packetbuffer.writeString(this.registryName.getResourcePath());
+	    if(this.registryName.getNamespace().equals("minecraft"))
+			packetbuffer.writeString(this.registryName.getPath());
 	    else
 	    	packetbuffer.writeString(this.registryName.toString());
 	    

@@ -48,8 +48,8 @@ public class MobTypeClientFilter extends FilterMobSpawnerBase {
 			@Override
 			public String getDisplayString(String listStr) {
 				ResourceLocation location = new ResourceLocation(listStr);
-				if(location.getResourceDomain().equals("minecraft"))
-					listStr = location.getResourcePath();
+				if(location.getNamespace().equals("minecraft"))
+					listStr = location.getPath();
 				String unlocalised = String.format("entity.%s.name", listStr);
 				String localised = I18n.translateToLocal(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;

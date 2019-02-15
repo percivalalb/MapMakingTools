@@ -62,7 +62,7 @@ public class CommandSetBiome extends CommandBase {
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(new BlockPos(data.getFirstPoint().getX(), 0, data.getFirstPoint().getZ()), new BlockPos(data.getSecondPoint().getX(), 0, data.getSecondPoint().getZ()));
 			
 			for(BlockPos pos : positions) {
-				Chunk chunk = world.getChunkFromBlockCoords(pos);
+				Chunk chunk = world.getChunk(pos);
 				byte[] biomes = chunk.getBiomeArray();
 				biomes[((pos.getZ() & 0xF) << 4 | pos.getX() & 0xF)] = (byte)Biome.getIdForBiome(biome);
 				chunk.setBiomeArray(biomes);
