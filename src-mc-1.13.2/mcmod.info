@@ -1,0 +1,10 @@
+[{
+	"modid": "mapmakingtools",
+	"name": "Map Making Tools",
+	"description": "Very useful for making custom adventure maps.",
+	"version": "${MOD_VERSION}",
+	"mcversion": "${mcversion}",
+	"updateUrl": "http://www.minecraftforum.net/topic/1652014-/",
+	"authors": [ "ProPercivalalb" ],
+	"credits": "Authored By ProPercivalalb"
+}]
