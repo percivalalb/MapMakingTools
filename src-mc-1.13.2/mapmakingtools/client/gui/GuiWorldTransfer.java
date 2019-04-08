@@ -21,43 +21,39 @@ public class GuiWorldTransfer extends GuiContainer {
 	@Override
     public void initGui() {
     	super.initGui();
-    	this.buttonList.clear();
-    	this.labelList.clear();
+    	this.buttons.clear();
+    	this.labels.clear();
     	
     	int topX = (this.width - 183) / 2;
         int topY = (this.height - 215) / 2;
 
         int i = 0;
         for(String name : WorldTransferList.getNameList()) {
-        	this.buttonList.add(new GuiButtonSmall(i, topX + 135, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, 30, this.fontRenderer.FONT_HEIGHT, "----"));
+        	final int id = i;
+        	this.addButton(new GuiButtonSmall(i, topX + 135, topY + 50 + i * this.fontRenderer.FONT_HEIGHT, 30, this.fontRenderer.FONT_HEIGHT, "----")  {
+        		@Override
+    			public void onClick(double mouseX, double mouseY) {
+        			 TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.worldtransfer.gui.delete", WorldTransferList.getName(id));
+    	     		 chatComponent.getStyle().setItalic(true);
+    	     		 mc.player.sendMessage(chatComponent);
+    	        	 WorldTransferList.delete(id);
+    	        	 mc.focusChanged(true);
+        		}
+        	});
         	i += 1;
         }
 	}
-	
+
 	@Override
-	public void actionPerformed(GuiButton button) {
-	    	
-		if (button.enabled) {
-	         if(button.id >= 0 && button.id < WorldTransferList.getSize()) {
-	        	 TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.worldtransfer.gui.delete", WorldTransferList.getName(button.id));
-	     		 chatComponent.getStyle().setItalic(true);
-	     		 this.mc.player.sendMessage(chatComponent);
-	        	 WorldTransferList.delete(button.id);
-	        	 this.mc.setIngameFocus();
-	         }
-		}
-	}
-	
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     	this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(ResourceLib.WORLD_TRANSFER);
         int topX = (this.width - 183) / 2;
         int topY = (this.height - 215) / 2;
@@ -65,13 +61,13 @@ public class GuiWorldTransfer extends GuiContainer {
         
         GlStateManager.pushMatrix();
 		double scale = 1.7D;
-		GlStateManager.scale(scale, scale, scale);
+		GlStateManager.scaled(scale, scale, scale);
 		this.fontRenderer.drawStringWithShadow("World Transfer", (int)((topX + 13) / scale), (int)((topY + 13) / scale), -1);
 		GlStateManager.popMatrix();
 		
 		GlStateManager.pushMatrix();
 		scale = 0.8D;
-		GlStateManager.scale(scale, scale, scale);
+		GlStateManager.scaled(scale, scale, scale);
 		this.fontRenderer.drawString("Cross-world copy and pasting", (int)((topX + 13) / scale), (int)((topY + 28) / scale), 0);
 		GlStateManager.popMatrix();
 		

@@ -11,7 +11,7 @@ public class WorldAction {
 	 public static boolean setBlock(World world, BlockPos pos, IBlockState blockState, boolean notifyAndLight) {
 	    Chunk chunk = world.getChunk(pos);
 
-	    IBlockState lastState = chunk.setBlockState(pos, blockState);
+	    IBlockState lastState = chunk.setBlockState(pos, blockState, notifyAndLight);
 	    
 	    //TODO
 	    if(lastState != null)

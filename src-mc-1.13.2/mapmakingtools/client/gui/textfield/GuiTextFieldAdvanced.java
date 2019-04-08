@@ -57,8 +57,8 @@ public class GuiTextFieldAdvanced extends GuiTextField {
 **/
 
     @Override
-    public void drawTextBox() {
-    	super.drawTextBox();
+    public void drawTextField(int mouseX, int mouseY, float partialTicks) {
+    	super.drawTextField(mouseX, mouseY, partialTicks);
     	/**
         if(this.getVisible()) {
             if(this.getEnableBackgroundDrawing()) {

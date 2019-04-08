@@ -48,7 +48,7 @@ public class StackSizeAttribute extends IItemAttribute {
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		this.fld_size = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 15, 80, 13);
-		itemEditor.getTextBoxList().add(this.fld_size);
+		itemEditor.addTextFieldToGui(this.fld_size);
 	}
 
 	@Override

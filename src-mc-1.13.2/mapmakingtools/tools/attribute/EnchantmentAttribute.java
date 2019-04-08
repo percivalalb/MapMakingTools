@@ -14,12 +14,12 @@ import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb
@@ -56,7 +56,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 		case 1:
 			if(!this.scrollMenuRemove.hasSelection()) break;
 			
-			NBTUtil.removeTagFromSubList(stack, "ench", NBTUtil.ID_COMPOUND, this.selectedDelete);
+			NBTUtil.removeFromSubList(stack, "ench", NBTUtil.ID_COMPOUND, this.selectedDelete);
 			break;
 		case 2:
 			NBTUtil.removeSubList(stack, "ench");
@@ -77,9 +77,9 @@ public class EnchantmentAttribute extends IItemAttribute {
 		
 		List<String> list = new ArrayList<String>();
 		if(NBTUtil.hasTag(stack, "ench", NBTUtil.ID_LIST)) {
-			NBTTagList enchantmentList = stack.getTagCompound().getTagList("ench", 10);
-			for(int i = 0; i < enchantmentList.tagCount(); ++i) {
-				NBTTagCompound t = enchantmentList.getCompoundTagAt(i);
+			NBTTagList enchantmentList = stack.getTag().getList("ench", 10);
+			for(int i = 0; i < enchantmentList.size(); ++i) {
+				NBTTagCompound t = enchantmentList.getCompound(i);
 				list.add(String.format("%d ~~~ %d", t.getShort("id"), t.getShort("lvl")));
 			}
 		}
@@ -117,7 +117,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 					return listStr;
 				
 				String unlocalised = enchantment.getName();
-				String localised = I18n.translateToLocal(unlocalised);
+				String localised = I18n.format(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? listStr : localised;
 			}
 			
@@ -139,7 +139,7 @@ public class EnchantmentAttribute extends IItemAttribute {
 				if(enchantment == null)
 					return listStr;
 				
-				String localised = enchantment.getTranslatedName(Numbers.parse(split[1]));
+				String localised = enchantment.getDisplayName(Numbers.parse(split[1])).getUnformattedComponentText();
 				
 				return localised;
 			}
@@ -148,37 +148,41 @@ public class EnchantmentAttribute extends IItemAttribute {
 		
 		this.fld_lvl = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + height / 2 - 20, 50, 14);
 		this.fld_lvl.setMaxStringLength(5);
-		this.btn_add = new GuiButton(0, x + 60, y + height / 2 - 23, 50, 20, "Add");
-		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
-		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Enchantments");
+		this.btn_add = new GuiButton(0, x + 60, y + height / 2 - 23, 50, 20, "Add") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(0);
+	    	}
+		};
+		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(1);
+	    	}
+		};
+		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Enchantments") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(2);
+	    	}
+		};
 		
 		this.btn_remove.enabled = false;
 		
-		itemEditor.getButtonList().add(this.btn_add);
-		itemEditor.getButtonList().add(this.btn_remove);
-		itemEditor.getButtonList().add(this.btn_remove_all);
-		itemEditor.getTextBoxList().add(this.fld_lvl);
+		itemEditor.addButtonToGui(this.btn_add);
+		itemEditor.addButtonToGui(this.btn_remove);
+		itemEditor.addButtonToGui(this.btn_remove_all);
+		itemEditor.addTextFieldToGui(this.fld_lvl);
+		itemEditor.addListenerToGui(this.scrollMenuAdd);
+		itemEditor.addListenerToGui(this.scrollMenuRemove);
 		this.scrollMenuAdd.initGui();
 		this.scrollMenuRemove.initGui();
 	}
 	
 	@Override
-	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
-		if(button.id == 0) {
-			itemEditor.sendUpdateToServer(0);
-		}
-		if(button.id == 1) {
-			itemEditor.sendUpdateToServer(1);
-		}
-		if(button.id == 2) {
-			itemEditor.sendUpdateToServer(2);
-		}
-	}
-	
-	@Override
-	public void mouseClicked(IGuiItemEditor itemEditor, int xMouse, int yMouse, int mouseButton) {
-		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
-		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
+	public void mouseClicked(IGuiItemEditor itemEditor, double mouseX, double mouseY, int mouseButton) {
+		this.scrollMenuAdd.mouseClicked(mouseX, mouseY, mouseButton);
+		this.scrollMenuRemove.mouseClicked(mouseX, mouseY, mouseButton);
 		
 		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();
 	}

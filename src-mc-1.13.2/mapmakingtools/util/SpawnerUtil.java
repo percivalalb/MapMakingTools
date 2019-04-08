@@ -55,7 +55,7 @@ public class SpawnerUtil {
 		else {
 			confirmHasRandomMinecart(spawnerLogic);
 			NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-			tag.setString("id", mobId);
+			tag.putString("id", mobId);
 		}
 	}
 	
@@ -86,7 +86,7 @@ public class SpawnerUtil {
 	
 	public static void setItemType(MobSpawnerBaseLogic spawnerLogic, ItemStack item, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		tag.setTag("Item", item.writeToNBT(new NBTTagCompound()));
+		tag.put("Item", item.write(new NBTTagCompound()));
 		
 		//spawnerLogic.setNextSpawnData(randomMinecart);
 	}
@@ -99,12 +99,12 @@ public class SpawnerUtil {
             NBTTagCompound nbttagcompound = new NBTTagCompound();
 
             if (!itemstack.isEmpty())
-                itemstack.writeToNBT(nbttagcompound);
+                itemstack.write(nbttagcompound);
 
-            nbttaglist.appendTag(nbttagcompound);
+            nbttaglist.add(nbttagcompound);
         }
 
-        tag.setTag("ArmorItems", nbttaglist);
+        tag.put("ArmorItems", nbttaglist);
 		
         NBTTagList nbttaglist1 = new NBTTagList();
 
@@ -112,11 +112,11 @@ public class SpawnerUtil {
             NBTTagCompound nbttagcompound1 = new NBTTagCompound();
 
             if (!itemstack1.isEmpty())
-                itemstack1.writeToNBT(nbttagcompound1);
+                itemstack1.write(nbttagcompound1);
 
-            nbttaglist1.appendTag(nbttagcompound1);
+            nbttaglist1.add(nbttagcompound1);
         }
-        tag.setTag("HandItems", nbttaglist1);
+        tag.put("HandItems", nbttaglist1);
         
 		//spawnerLogic.setNextSpawnData(randomMinecart);
 	}
@@ -124,11 +124,11 @@ public class SpawnerUtil {
 	public static ItemStack[] getMobArmor(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		ItemStack[] equipment = new ItemStack[4];
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		if (tag.hasKey("ArmorItems")) {
-			NBTTagList nbttaglist = (NBTTagList)tag.getTag("ArmorItems");
+		if (tag.contains("ArmorItems")) {
+			NBTTagList nbttaglist = (NBTTagList)tag.get("ArmorItems");
 
 		    for (int i = 0; i < equipment.length; ++i)
-		    	equipment[i] = new ItemStack(nbttaglist.getCompoundTagAt(i));
+		    	equipment[i] = ItemStack.read(nbttaglist.getCompound(i));
 		}
 		return equipment;
 	}
@@ -136,11 +136,11 @@ public class SpawnerUtil {
 	public static ItemStack[] getMobHeldItems(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		ItemStack[] equipment = new ItemStack[2];
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		if (tag.hasKey("HandItems")) {
-			NBTTagList nbttaglist = (NBTTagList)tag.getTag("HandItems");
+		if (tag.contains("HandItems")) {
+			NBTTagList nbttaglist = (NBTTagList)tag.get("HandItems");
 
 		    for (int i = 0; i < equipment.length; ++i)
-		    	equipment[i] = new ItemStack(nbttaglist.getCompoundTagAt(i));
+		    	equipment[i] = ItemStack.read(nbttaglist.getCompound(i));
 		}
 		return equipment;
 	}
@@ -148,63 +148,63 @@ public class SpawnerUtil {
 	public static void setPosition(MobSpawnerBaseLogic spawnerLogic, double x, double y, double z, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
 		//if((x == 0.0D && y == 0.0D && z == 0.0D)) {
-		//	tag.removeTag("Pos");
+		//	tag.remove("Pos");
 		//}
-		tag.setTag("Pos", newDoubleNBTList(new double[] {x, y, z}));
+		tag.put("Pos", newDoubleNBTList(new double[] {x, y, z}));
 		//spawnerLogic.setNextSpawnData(randomMinecart);
 	}
 	
 	public static double getPositionX(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		NBTTagList posList = tag.getTagList("Pos", NBTUtil.ID_DOUBLE);
-		return posList.getDoubleAt(0);
+		NBTTagList posList = tag.getList("Pos", NBTUtil.ID_DOUBLE);
+		return posList.getDouble(0);
 	}
 	
 	public static double getPositionY(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		NBTTagList posList = tag.getTagList("Pos", NBTUtil.ID_DOUBLE);
-		return posList.getDoubleAt(1);
+		NBTTagList posList = tag.getList("Pos", NBTUtil.ID_DOUBLE);
+		return posList.getDouble(1);
 	}
 	
 	public static double getPositionZ(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		NBTTagList posList = tag.getTagList("Pos", NBTUtil.ID_DOUBLE);
-		return posList.getDoubleAt(2);
+		NBTTagList posList = tag.getList("Pos", NBTUtil.ID_DOUBLE);
+		return posList.getDouble(2);
 	}
 	
 	public static boolean isSpawnPositionRandom(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		WeightedSpawnerEntity randomMinecart = getPotentialSpawn(spawnerLogic, minecartIndex);
 		NBTTagCompound tag = getMinecartProperties(randomMinecart);
-		return tag.hasKey("Pos", 6);
+		return tag.contains("Pos", 6);
 	}
 	
 	public static void setVelocity(MobSpawnerBaseLogic spawnerLogic, double xMotion, double yMotion, double zMotion, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		tag.setTag("Motion", newDoubleNBTList(new double[] {xMotion, yMotion, zMotion}));
+		tag.put("Motion", newDoubleNBTList(new double[] {xMotion, yMotion, zMotion}));
 		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static double getMotionX(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		NBTTagList posList = tag.getTagList("Motion", NBTUtil.ID_DOUBLE);
-		return posList.getDoubleAt(0);
+		NBTTagList posList = tag.getList("Motion", NBTUtil.ID_DOUBLE);
+		return posList.getDouble(0);
 	}
 	
 	public static double getMotionY(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		NBTTagList posList = tag.getTagList("Motion", NBTUtil.ID_DOUBLE);
-		return posList.getDoubleAt(1);
+		NBTTagList posList = tag.getList("Motion", NBTUtil.ID_DOUBLE);
+		return posList.getDouble(1);
 	}
 	
 	public static double getMotionZ(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		NBTTagList posList = tag.getTagList("Motion", NBTUtil.ID_DOUBLE);
-		return posList.getDoubleAt(2);
+		NBTTagList posList = tag.getList("Motion", NBTUtil.ID_DOUBLE);
+		return posList.getDouble(2);
 	}
 	
 	public static void setBabyMonster(MobSpawnerBaseLogic spawnerLogic, boolean baby, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		tag.setBoolean("IsBaby", baby);
+		tag.putBoolean("IsBaby", baby);
 		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
@@ -215,41 +215,41 @@ public class SpawnerUtil {
 	
 	public static void setCreeperFuse(MobSpawnerBaseLogic spawnerLogic, int fuseTime, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		tag.setShort("Fuse", (short)fuseTime);
+		tag.putShort("Fuse", (short)fuseTime);
 		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static int getCreeperFuse(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		if(!tag.hasKey("Fuse", 2))
+		if(!tag.contains("Fuse", 2))
 			return 30;
 		return tag.getShort("Fuse");
 	}
 
 	public static void setCreeperExplosionRadius(MobSpawnerBaseLogic spawnerLogic, int explosionRadius, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		tag.setByte("ExplosionRadius", (byte)explosionRadius);
+		tag.putByte("ExplosionRadius", (byte)explosionRadius);
 		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static int getExplosionRadius(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		if(!tag.hasKey("ExplosionRadius", 1))
+		if(!tag.contains("ExplosionRadius", 1))
 			return 3;
 		return tag.getByte("ExplosionRadius");
 	}
 	
 	public static void setVillagerProfession(MobSpawnerBaseLogic spawnerLogic, int minecartIndex, int professionId) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		tag.setInteger("Profession", professionId);
+		tag.putInt("Profession", professionId);
 		//spawnerLogic.setNextSpawnData(randomMinecart);	
 	}
 	
 	public static int getVillagerProfession(MobSpawnerBaseLogic spawnerLogic, int minecartIndex) {
 		NBTTagCompound tag = getMinecartProperties(spawnerLogic, minecartIndex);
-		if(!tag.hasKey("Profession", NBTUtil.ID_INTEGER))
+		if(!tag.contains("Profession", NBTUtil.ID_INTEGER))
 			return 0;
-		return tag.getInteger("Profession");
+		return tag.getInt("Profession");
 	}
 
 	protected static NBTTagList newDoubleNBTList(double ... par1ArrayOfDouble) {
@@ -259,7 +259,7 @@ public class SpawnerUtil {
 
 	    for (int j = 0; j < i; ++j) {
 	        double d1 = adouble[j];
-	        nbttaglist.appendTag(new NBTTagDouble(d1));
+	        nbttaglist.add(new NBTTagDouble(d1));
 	    }
 
 	    return nbttaglist;
@@ -314,7 +314,7 @@ public class SpawnerUtil {
 	
 	public static Packet getTileEntitySpawnerPacket(TileEntityMobSpawner spawner) {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        spawner.writeToNBT(nbttagcompound);
+        spawner.write(nbttagcompound);
         return new SPacketUpdateTileEntity(spawner.getPos(), 1, nbttagcompound);
 	}
 	
@@ -325,7 +325,7 @@ public class SpawnerUtil {
 	}
 	
 	public static int getMinecartWeight(WeightedSpawnerEntity minecart) {
-		return minecart.getNbt().getInteger("Weight");
+		return minecart.getNbt().getInt("Weight");
 	}
 	
 	public static List<WeightedSpawnerEntity> getPotentialSpawns(IFilterBase gui) {

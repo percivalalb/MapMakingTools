@@ -13,8 +13,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author ProPercivalalb
@@ -31,27 +32,27 @@ public class MobArmourServerFilter extends FilterServerInventory {
 	@Override
 	public void addSlots(IFilterContainer container) {
         for (int i = 0; i < 4; ++i) {
-        	container.addSlot(new SlotArmor(container.getPlayer(), container.getPlayer().inventory, 36 + (3 - i), 130 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
+        	container.addSlotForFilter(new SlotArmor(container.getPlayer(), container.getPlayer().inventory, 36 + (3 - i), 130 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
         }
-        container.addSlot(new SlotFake(getInventory(container), 0, 14, 39));
-        container.addSlot(new SlotFake(getInventory(container), 1, 14, 66) {
-            @SideOnly(Side.CLIENT)
+        container.addSlotForFilter(new SlotFake(getInventory(container), 0, 14, 39));
+        container.addSlotForFilter(new SlotFake(getInventory(container), 1, 14, 66) {
+            @OnlyIn(Dist.CLIENT)
             @Override
             public String getSlotTexture() {
-                return "minecraft:items/empty_armor_slot_shield";
+                return "minecraft:item/empty_armor_slot_shield";
             }
         });
         for (int i = 0; i < 4; ++i) {
-        	container.addSlot(new SlotFakeArmor(container.getPlayer(), getInventory(container), getInventory(container).getSizeInventory() - 1 - i, 40 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
+        	container.addSlotForFilter(new SlotFakeArmor(container.getPlayer(), getInventory(container), getInventory(container).getSizeInventory() - 1 - i, 40 + i * 18, 40, VALID_EQUIPMENT_SLOTS[i]));
         }
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 9; ++j){
-				container.addSlot(new Slot(container.getPlayer().inventory, j + i * 9 + 9, 40 + j * 18, 70 + i * 18));
+				container.addSlotForFilter(new Slot(container.getPlayer().inventory, j + i * 9 + 9, 40 + j * 18, 70 + i * 18));
 	        }
 		}	
 
 	    for (int i = 0; i < 9; ++i) {
-	    	container.addSlot(new Slot(container.getPlayer().inventory, i, 40 + i * 18, 128));
+	    	container.addSlotForFilter(new Slot(container.getPlayer().inventory, i, 40 + i * 18, 128));
 	    }
 	}
 	
@@ -98,6 +99,6 @@ public class MobArmourServerFilter extends FilterServerInventory {
 	
 	@Override
 	public IInventory createInventory() {
-		return new InventoryBasic("Mob Armour", false, 6);
+		return new InventoryBasic(new TextComponentString("Mob Armour"), 6);
 	}
 }

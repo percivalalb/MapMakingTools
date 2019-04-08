@@ -14,13 +14,13 @@ import mapmakingtools.tools.item.nbt.PotionNBT;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb
@@ -43,7 +43,7 @@ public class PotionAttribute extends IItemAttribute {
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, ItemStack stack) {
-		return stack.getItem() == Items.POTIONITEM || stack.getItem() == Items.SPLASH_POTION;
+		return stack.getItem() == Items.POTION || stack.getItem() == Items.SPLASH_POTION || stack.getItem() == Items.LINGERING_POTION;
 	}
 
 	@Override
@@ -64,15 +64,15 @@ public class PotionAttribute extends IItemAttribute {
 		if(this.scrollMenuRemove.hasSelection() && data == 1) {
 			boolean hasDefault = NBTUtil.hasTag(stack, "Potion", NBTUtil.ID_STRING);
 			if(hasDefault && this.scrollMenuRemove.getRecentIndex() == 0)
-				NBTUtil.removeTag(stack, "Potion", NBTUtil.ID_STRING);
+				NBTUtil.remove(stack, "Potion", NBTUtil.ID_STRING);
 			else
-				NBTUtil.removeTagFromSubList(stack, PotionNBT.POTION_TAG, NBTUtil.ID_COMPOUND, this.scrollMenuRemove.getRecentIndex() - (hasDefault ? 1 : 0));
+				NBTUtil.removeFromSubList(stack, PotionNBT.POTION_TAG, NBTUtil.ID_COMPOUND, this.scrollMenuRemove.getRecentIndex() - (hasDefault ? 1 : 0));
 
 		    NBTUtil.hasEmptyTagCompound(stack, true);
 		}
 		
 		if(data == 2) {
-			NBTUtil.removeTag(stack, "Potion", NBTUtil.ID_STRING);
+			NBTUtil.remove(stack, "Potion", NBTUtil.ID_STRING);
 			NBTUtil.removeSubList(stack, PotionNBT.POTION_TAG);
 			NBTUtil.hasEmptyTagCompound(stack, true);
 		}
@@ -125,7 +125,7 @@ public class PotionAttribute extends IItemAttribute {
 			@Override
 			public String getDisplayString(Potion potion) {
 				String unlocalised = potion.getName();
-				String localised = I18n.translateToLocal(unlocalised);
+				String localised = I18n.format(unlocalised);
 				return unlocalised.equalsIgnoreCase(localised) ? unlocalised : localised;
 			}
 			
@@ -143,7 +143,7 @@ public class PotionAttribute extends IItemAttribute {
 				
 				if(potion == null) return potionEffect.toString();
 				
-				String localised = I18n.translateToLocal(potion.getName());
+				String localised = I18n.format(potion.getName());
 				int lvl = potionEffect.getAmplifier();
 				int dur = potionEffect.getDuration();
 				boolean vis = potionEffect.doesShowParticles();
@@ -164,17 +164,29 @@ public class PotionAttribute extends IItemAttribute {
 
 		this.fld_lvl.setMaxStringLength(5);
 		this.btn_add = new GuiButtonSmall(0, x + width - 20, y + height / 2 - 20, 16, 16, "+");
-		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
-		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Effects");
+		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			itemEditor.sendUpdateToServer(1);
+    		}
+    	};
+		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Effects") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			itemEditor.sendUpdateToServer(2);
+    		}
+    	};
 		
 		this.btn_remove.enabled = false;
 		
-		itemEditor.getButtonList().add(this.btn_add);
-		itemEditor.getButtonList().add(this.btn_remove);
-		itemEditor.getButtonList().add(this.btn_remove_all);
-		itemEditor.getTextBoxList().add(this.fld_lvl);
-		itemEditor.getTextBoxList().add(this.fld_duration);
-		itemEditor.getButtonList().add(this.btn_particles);
+		itemEditor.addButtonToGui(this.btn_add);
+		itemEditor.addButtonToGui(this.btn_remove);
+		itemEditor.addButtonToGui(this.btn_remove_all);
+		itemEditor.addTextFieldToGui(this.fld_lvl);
+		itemEditor.addTextFieldToGui(this.fld_duration);
+		itemEditor.addButtonToGui(this.btn_particles);
+		itemEditor.addListenerToGui(this.scrollMenuAdd);
+		itemEditor.addListenerToGui(this.scrollMenuRemove);
 		this.scrollMenuAdd.initGui();
 		this.scrollMenuRemove.initGui();
 	}
@@ -183,12 +195,6 @@ public class PotionAttribute extends IItemAttribute {
 	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
 		if(button.id == 0) {
 			itemEditor.sendUpdateToServer(0);
-		}
-		else if(button.id == 1) {
-			itemEditor.sendUpdateToServer(1);
-		}
-		else if(button.id == 2) {
-			itemEditor.sendUpdateToServer(2);
 		}
 		else if(button.id == 3) {
 			if(this.showParticles) {
@@ -203,9 +209,9 @@ public class PotionAttribute extends IItemAttribute {
 	}
 	
 	@Override
-	public void mouseClicked(IGuiItemEditor itemEditor, int xMouse, int yMouse, int mouseButton) {
-		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
-		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
+	public void mouseClicked(IGuiItemEditor itemEditor, double mouseX, double mouseY, int mouseButton) {
+		this.scrollMenuAdd.mouseClicked(mouseX, mouseY, mouseButton);
+		this.scrollMenuRemove.mouseClicked(mouseX, mouseY, mouseButton);
 		
 		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();
 	}

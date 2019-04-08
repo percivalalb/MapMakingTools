@@ -1,12 +1,9 @@
 package mapmakingtools.client.gui;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import org.lwjgl.input.Keyboard;
 
 import mapmakingtools.api.itemeditor.IGuiItemEditor;
 import mapmakingtools.api.itemeditor.IItemAttribute;
@@ -14,18 +11,20 @@ import mapmakingtools.api.manager.ItemEditorManager;
 import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.inventory.ContainerItemEditor;
 import mapmakingtools.lib.ResourceLib;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.network.packet.PacketItemEditorUpdate;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -36,7 +35,7 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
 	private int slotIndex;
 	private EntityPlayer player;
-	private ArrayList<GuiTextField> textboxList = new ArrayList<GuiTextField>();
+	private ArrayList<GuiTextField> textfields = new ArrayList<GuiTextField>();
 
 	private Hashtable<IItemAttribute, Boolean> itemMap;
 	private List<IItemAttribute> itemList;
@@ -83,17 +82,33 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
         int topY = (this.height - this.ySize) / 2;
         this.guiLeft = topX;
         this.guiTop = topY;
-    	Keyboard.enableRepeatEvents(true);
-    	this.textboxList.clear();
-    	this.buttonList.clear();
-    	this.labelList.clear();
+        this.mc.keyboardListener.enableRepeatEvents(true);
+    	this.textfields.clear();
+    	this.buttons.clear();
+    	this.labels.clear();
     	
     	int size = this.itemList.size();
     	int perPage = Math.max(MathHelper.floor((this.ySize - 25) / 15D), 1);
     	
     	if(perPage < size) {
-    		this.buttonList.add(new GuiButton(98, topX + 32, topY + 7, 20, 20, "<"));
-    	    this.buttonList.add(new GuiButton(99, topX + 55, topY + 7, 20, 20, ">"));
+    		this.addButton(new GuiButton(98, topX + 32, topY + 7, 20, 20, "<") {
+        		@Override
+    			public void onClick(double mouseX, double mouseY) {
+        			if(currentPage > 0) {
+            			--currentPage;
+            			initGui();
+            		}
+        		}
+        	});
+    	    this.addButton(new GuiButton(99, topX + 55, topY + 7, 20, 20, ">") {
+        		@Override
+    			public void onClick(double mouseX, double mouseY) {
+        			if(currentPage < maxPages - 1) {
+            			++currentPage;
+            			initGui();
+            		}
+        		}
+        	});
     	}
     	
 		this.maxPages = MathHelper.ceil(size / (double)perPage);
@@ -105,36 +120,44 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
     		int index = this.currentPage * perPage + i;
     		if(index >= size) continue;
     		IItemAttribute item = this.itemList.get(index);
-    		GuiButtonSmall button = new GuiButtonSmall(BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName());
+    		GuiButtonSmall button = new GuiButtonSmall(BUTTON_ID_START + index, topX + 5, topY + 30 + i * 15, 80, 15, item.getAttributeName()) {
+        		@Override
+    			public void onClick(double mouseX, double mouseY) {
+        			itemCurrent = itemList.get(index);
+    				initGui();
+        		}
+        	};
     		button.enabled = this.itemMap.get(item);
-    		this.buttonList.add(button);
+    		this.addButton(button);
     	}
     	
     	if(itemCurrent != null) {
     		itemCurrent.initGui(this, this.getStack(), 150, this.guiTop, this.guiLeft + this.xSize - 150, this.ySize);
     		itemCurrent.populateFromItem(this, this.getStack(), true);
     	}
+    	
+    	this.children.addAll(this.textfields);
     }
 	
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     	this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         
         this.mc.getTextureManager().bindTexture(ResourceLib.ITEM_EDITOR_SLOT);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 35, 35);
-        GlStateManager.scale(0.5F, 0.5F, 0.5F);
+        GlStateManager.scalef(0.5F, 0.5F, 0.5F);
         this.mc.fontRenderer.drawString("Slot: " + slotIndex, this.guiLeft + 32, this.guiTop + 21, 0);
-        GlStateManager.scale(2.0F, 2.0F, 2.0F);
+        GlStateManager.scalef(2.0F, 2.0F, 2.0F);
 
-        for(GuiTextField field : this.textboxList)
-        	field.drawTextBox();
+        for(GuiTextField field : this.textfields)
+        	field.drawTextField(mouseX, mouseY, partialTicks);
         
         Gui.drawRect(150, this.guiTop, this.guiLeft + this.xSize, this.guiTop + this.ySize, new Color(255, 255, 255, 75).getRGB());
         
@@ -153,16 +176,16 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 		if(itemCurrent != null) {
 			itemCurrent.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
 			
-			GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
+			GlStateManager.translatef((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
 			itemCurrent.drawToolTips(this, xMouse, yMouse);
-			GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
+			GlStateManager.translatef((float)this.guiLeft, (float)this.guiTop, 0.0F);
 		}
 	}
 	
 	@Override
-	public void updateScreen() {
-		for(GuiTextField field : this.textboxList) 
-			field.updateCursorCounter();
+	public void tick() {
+		for(GuiTextField field : this.textfields) 
+			field.tick();
 		
 		if(this.getStack().isEmpty()) {
 			//player.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("itemeditor.closeNoItem"));
@@ -172,56 +195,49 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 		if(itemCurrent != null)
 			itemCurrent.updateScreen(this);
 	}
-	
+    /**
 	@Override
-	public void mouseClicked(int xMouse, int yMouse, int mouseButton) throws IOException {	
+	public void mouseClicked(double mouseX, double mouseY, int mouseButton) throws IOException {	
 
-		//for(GuiTextField field : this.textboxList)
+		//for(GuiTextField field : this.textfields)
 		//	if(field instanceof GuiColourTextField)
-		//		if(((GuiColourTextField)field).preMouseClick(xMouse, yMouse, mouseButton))
+		//		if(((GuiColourTextField)field).preMouseClick(mouseX, mouseY, mouseButton))
 		//			return;
 		
-		super.mouseClicked(xMouse, yMouse, mouseButton);
+		super.mouseClicked(mouseX, mouseY, mouseButton);
 		
-		for(GuiTextField field : this.textboxList)
-			field.mouseClicked(xMouse, yMouse, mouseButton);
+		for(GuiTextField field : this.textfields)
+			field.mouseClicked(mouseX, mouseY, mouseButton);
 		
 		if(itemCurrent != null)
-			itemCurrent.mouseClicked(this, xMouse, yMouse, mouseButton);
+			itemCurrent.mouseClicked(this, mouseX, mouseY, mouseButton);
 	}
+	**/
+	
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if(super.mouseClicked(mouseX, mouseY, mouseButton)) {
+        	return true;
+        }
+        
+        if(itemCurrent != null)
+			itemCurrent.mouseClicked(this, mouseX, mouseY, mouseButton);
+       
+        for(GuiTextField textField : this.textfields) {
+        	if(textField.mouseClicked(mouseX, mouseY, mouseButton)) {
+        		return true;
+        	}
+        }
+        
+        return false;
+    }
 	
 	@Override
     public void onGuiClosed() {
     	super.onGuiClosed();
-        Keyboard.enableRepeatEvents(false);
+        this.mc.keyboardListener.enableRepeatEvents(false);
     }
-	
-	@Override
-	public void actionPerformed(GuiButton button) {
-		if(button.enabled) {
-			if(button.id == 98) {
-        		if(this.currentPage > 0) {
-        			--currentPage;
-        			this.initGui();
-        		}
-			}
-        	else if(button.id == 99) {
-        		if(this.currentPage < this.maxPages - 1) {
-        			++currentPage;
-        			this.initGui();
-        		}
-			}
-			
-        	else if(button.id >= BUTTON_ID_START && button.id < BUTTON_ID_START + this.itemList.size()) {
-				itemCurrent = this.itemList.get(button.id - BUTTON_ID_START);
-				this.initGui();
-			}
-		}
-		
-		if(itemCurrent != null)
-			itemCurrent.actionPerformed(this, button);
-	}
-	
+	/**
 	@Override
 	public void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == Keyboard.KEY_ESCAPE) {
@@ -229,28 +245,28 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
             return;
 		}
 		
-		for(GuiTextField field : this.textboxList)
+		for(GuiTextField field : this.textfields)
 			if(field.textboxKeyTyped(typedChar, keyCode))
 				if(itemCurrent != null)
 					itemCurrent.textboxKeyTyped(this, typedChar, keyCode, field);
 		
 		if(itemCurrent != null)
 			itemCurrent.keyTyped(this, typedChar, keyCode);
-	}
+	}**/
 
 	@Override
 	public List<GuiLabel> getLabelList() {
-		return this.labelList;
+		return this.labels;
 	}
 
 	@Override
 	public List<GuiButton> getButtonList() {
-		return this.buttonList;
+		return this.buttons;
 	}
 
 	@Override
 	public List<GuiTextField> getTextBoxList() {
-		return this.textboxList;
+		return this.textfields;
 	}
 	
 	@Override
@@ -260,6 +276,31 @@ public class GuiItemEditor extends GuiContainer implements IGuiItemEditor {
 	
 	@Override
 	public void sendUpdateToServer(int data) {
-		PacketDispatcher.sendToServer(new PacketItemEditorUpdate(this.createNewStack(data), this.slotIndex));
+		PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketItemEditorUpdate(this.createNewStack(data), this.slotIndex));
+	}
+	
+	@Override
+	public GuiButton addButtonToGui(GuiButton buttonIn) {
+		return this.addButton(buttonIn);
+	}
+	
+	@Override
+	public GuiTextField addTextFieldToGui(GuiTextField fieldIn) {
+		this.textfields.add(fieldIn);
+		this.children.add(fieldIn);
+		return fieldIn;
+	}
+	
+	@Override
+	public GuiLabel addLabelToGui(GuiLabel labelIn) {
+		this.labels.add(labelIn);
+		this.children.add(labelIn);
+		return labelIn;
+	}
+
+	@Override
+	public <T extends IGuiEventListener> T addListenerToGui(T listenerIn) {
+		this.children.add(listenerIn);
+		return listenerIn;
 	}
 }

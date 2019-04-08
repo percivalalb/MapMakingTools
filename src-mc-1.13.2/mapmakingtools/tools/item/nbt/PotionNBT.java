@@ -26,25 +26,25 @@ public class PotionNBT {
 		NBTTagList potionList = new NBTTagList();
 		
 		NBTTagCompound potion = new NBTTagCompound();
-		potion.setByte(POTION_ID, (byte)id);
-		potion.setByte(POTION_AMPLIFIER, (byte)(level - 1));
-		potion.setInteger(POTION_DURATION, duration);
-		potion.setBoolean(POTION_AMBIENT, ambient);
-		potion.setBoolean(POTION_PARTICLES, showParticles);
-		potionList.appendTag(potion);
+		potion.putByte(POTION_ID, (byte)id);
+		potion.putByte(POTION_AMPLIFIER, (byte)(level - 1));
+		potion.putInt(POTION_DURATION, duration);
+		potion.putBoolean(POTION_AMBIENT, ambient);
+		potion.putBoolean(POTION_PARTICLES, showParticles);
+		potionList.add(potion);
 		
-		item.getTagCompound().setTag(POTION_TAG, potionList);
+		item.getTag().put(POTION_TAG, potionList);
 	}
 	
 	public static void addPotionEffects(ItemStack item, int id, int level, int duration, boolean ambient, boolean showParticles) {
 		NBTTagList potionList = getOrCreatePotionList(item);
 		
 		NBTTagCompound potion = new NBTTagCompound();
-		potion.setByte(POTION_ID, (byte)id);
-		potion.setByte(POTION_AMPLIFIER, (byte)(level - 1));
-		potion.setInteger(POTION_DURATION, duration);
-		potion.setBoolean(POTION_AMBIENT, ambient);
-		potion.setBoolean(POTION_PARTICLES, showParticles);
-		potionList.appendTag(potion);
+		potion.putByte(POTION_ID, (byte)id);
+		potion.putByte(POTION_AMPLIFIER, (byte)(level - 1));
+		potion.putInt(POTION_DURATION, duration);
+		potion.putBoolean(POTION_AMBIENT, ambient);
+		potion.putBoolean(POTION_PARTICLES, showParticles);
+		potionList.add(potion);
 	}
 }

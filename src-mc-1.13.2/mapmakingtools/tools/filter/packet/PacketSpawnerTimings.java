@@ -1,13 +1,10 @@
 package mapmakingtools.tools.filter.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
 import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.inventory.ContainerFilter;
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
@@ -17,16 +14,15 @@ import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSpawnerTimings extends AbstractServerMessage {
+public class PacketSpawnerTimings {
 
 	public String minDelay, maxDelay, spawnRadius, spawnCount, entityCap, detectionRange;
 	
-	public PacketSpawnerTimings() {}
 	public PacketSpawnerTimings(String minDelay, String maxDelay, String spawnRadius, String spawnCount, String entityCap, String detectionRange) {
 		this.minDelay = minDelay;
 		this.maxDelay = maxDelay;
@@ -35,69 +31,74 @@ public class PacketSpawnerTimings extends AbstractServerMessage {
 		this.entityCap = entityCap;
 		this.detectionRange = detectionRange;
 	}
-
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.minDelay = packetbuffer.readString(Integer.MAX_VALUE / 4);
-		this.maxDelay = packetbuffer.readString(Integer.MAX_VALUE / 4);
-		this.spawnRadius = packetbuffer.readString(Integer.MAX_VALUE / 4);
-		this.spawnCount = packetbuffer.readString(Integer.MAX_VALUE / 4);
-		this.entityCap = packetbuffer.readString(Integer.MAX_VALUE / 4);
-		this.detectionRange = packetbuffer.readString(Integer.MAX_VALUE / 4);
+	
+	public static void encode(PacketSpawnerTimings msg, PacketBuffer buf) {
+		buf.writeString(msg.minDelay);
+		buf.writeString(msg.maxDelay);
+		buf.writeString(msg.spawnRadius);
+		buf.writeString(msg.spawnCount);
+		buf.writeString(msg.entityCap);
+		buf.writeString(msg.detectionRange);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeString(this.minDelay);
-		packetbuffer.writeString(this.maxDelay);
-		packetbuffer.writeString(this.spawnRadius);
-		packetbuffer.writeString(this.spawnCount);
-		packetbuffer.writeString(this.entityCap);
-		packetbuffer.writeString(this.detectionRange);
+	
+	public static PacketSpawnerTimings decode(PacketBuffer buf) {
+		String minDelay = buf.readString(Integer.MAX_VALUE / 4);
+		String maxDelay = buf.readString(Integer.MAX_VALUE / 4);
+		String spawnRadius = buf.readString(Integer.MAX_VALUE / 4);
+		String spawnCount = buf.readString(Integer.MAX_VALUE / 4);
+		String entityCap = buf.readString(Integer.MAX_VALUE / 4);
+		String detectionRange = buf.readString(Integer.MAX_VALUE / 4);
+		return new PacketSpawnerTimings(minDelay, maxDelay, spawnRadius, spawnCount, entityCap, detectionRange);
 	}
+	
+	public static class Handler {
+        public static void handle(final PacketSpawnerTimings msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		if(player.openContainer instanceof ContainerFilter) {
+        			ContainerFilter container = (ContainerFilter)player.openContainer;
+        			
+        			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
+        			
+        			if(!Numbers.areIntegers(msg.minDelay, msg.maxDelay, msg.spawnRadius, msg.spawnCount, msg.entityCap, msg.detectionRange)) {
+        				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.notint");
+        				chatComponent.getStyle().setItalic(true);
+        				chatComponent.getStyle().setColor(TextFormatting.RED);
+        				player.sendMessage(chatComponent);
+        				return;
+        			}
+        			
+        			int minDelayNo = Numbers.parse(msg.minDelay);
+        			int maxDelayNo = Numbers.parse(msg.maxDelay);
+        			int spawnRadiusNo = Numbers.parse(msg.spawnRadius);
+        			int spawnCountNo = Numbers.parse(msg.spawnCount);
+        			int entityCapNo = Numbers.parse(msg.entityCap);
+        			int detectionRadiusNo = Numbers.parse(msg.detectionRange);
+        			
+        			SpawnerUtil.setMinDelay(spawnerLogic, minDelayNo);
+        			SpawnerUtil.setMaxDelay(spawnerLogic, maxDelayNo);
+        			SpawnerUtil.setSpawnRadius(spawnerLogic, spawnRadiusNo);
+        			SpawnerUtil.setSpawnCount(spawnerLogic, spawnCountNo);
+        			SpawnerUtil.setEntityCap(spawnerLogic, entityCapNo);
+        			SpawnerUtil.setDetectionRadius(spawnerLogic, detectionRadiusNo);
+        			
+        			if(container.getTargetType() == TargetType.BLOCK) {
+        				TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
 
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		if(player.openContainer instanceof ContainerFilter) {
-			ContainerFilter container = (ContainerFilter)player.openContainer;
-			
-			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
-			
-			if(!Numbers.areIntegers(this.minDelay, this.maxDelay, this.spawnRadius, this.spawnCount, this.entityCap, this.detectionRange)) {
-				TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.notint");
-				chatComponent.getStyle().setItalic(true);
-				chatComponent.getStyle().setColor(TextFormatting.RED);
-				player.sendMessage(chatComponent);
-				return;
-			}
-			
-			int minDelayNo = Numbers.parse(this.minDelay);
-			int maxDelayNo = Numbers.parse(this.maxDelay);
-			int spawnRadiusNo = Numbers.parse(this.spawnRadius);
-			int spawnCountNo = Numbers.parse(this.spawnCount);
-			int entityCapNo = Numbers.parse(this.entityCap);
-			int detectionRadiusNo = Numbers.parse(this.detectionRange);
-			
-			SpawnerUtil.setMinDelay(spawnerLogic, minDelayNo);
-			SpawnerUtil.setMaxDelay(spawnerLogic, maxDelayNo);
-			SpawnerUtil.setSpawnRadius(spawnerLogic, spawnRadiusNo);
-			SpawnerUtil.setSpawnCount(spawnerLogic, spawnCountNo);
-			SpawnerUtil.setEntityCap(spawnerLogic, entityCapNo);
-			SpawnerUtil.setDetectionRadius(spawnerLogic, detectionRadiusNo);
-			
-			if(container.getTargetType() == TargetType.BLOCK) {
-				TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
+        				//TODO PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
+        				PacketUtil.sendTileEntityUpdateToWatching(spawner);
+        			}
+        			
+        			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.complete");
+        			chatComponent.getStyle().setItalic(true);
+        			player.sendMessage(new TextComponentTranslation("mapmakingtools.filter.spawnertimings.complete").applyTextStyle(TextFormatting.ITALIC));
+        		}
+            });
 
-				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
-				PacketUtil.sendTileEntityUpdateToWatching(spawner);
-			}
-			
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.spawnertimings.complete");
-			chatComponent.getStyle().setItalic(true);
-			player.sendMessage(chatComponent);
-		}
+            ctx.get().setPacketHandled(true);
+        }
 	}
 }

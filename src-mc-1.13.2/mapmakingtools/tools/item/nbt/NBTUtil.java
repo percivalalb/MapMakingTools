@@ -15,16 +15,16 @@ public class NBTUtil {
 	public static final int ID_NUMBER = 99;
 	
 	public static NBTTagCompound getOrCreateTagCompound(ItemStack stack) {
-		if(!stack.hasTagCompound())
-            stack.setTagCompound(new NBTTagCompound());
+		if(!stack.hasTag())
+            stack.setTag(new NBTTagCompound());
 		
-		return stack.getTagCompound();
+		return stack.getTag();
 	}
 	
 	/** Checks if base NBTTagCompound has any tags if not it removes it */
 	public static boolean hasEmptyTagCompound(ItemStack stack, boolean takeAction) {
-		if(!stack.hasTagCompound() || stack.getTagCompound().isEmpty()) {
-			if(takeAction) stack.setTagCompound(null);
+		if(!stack.hasTag() || stack.getTag().isEmpty()) {
+			if(takeAction) stack.setTag(null);
 			return true;
 		}
 		
@@ -33,7 +33,7 @@ public class NBTUtil {
 	
 	public static NBTTagList getOrCreateSubList(ItemStack stack, String key, int tagId) {
 		if(hasTag(stack, key, ID_LIST))
-            return stack.getTagCompound().getTagList(key, tagId);
+            return stack.getTag().getList(key, tagId);
         else {
         	NBTTagList tagList = new NBTTagList();
             stack.setTagInfo(key, tagList);
@@ -42,13 +42,13 @@ public class NBTUtil {
 	}
 	
 	public static void removeSubList(ItemStack stack, String key) {
-		removeTag(stack, key, ID_LIST);
+		remove(stack, key, ID_LIST);
     }
 	
-	public static void removeTagFromSubList(ItemStack stack, String key, int tagId, int tagIndex) {
+	public static void removeFromSubList(ItemStack stack, String key, int tagId, int tagIndex) {
 		if(hasTag(stack, key, ID_LIST)) {
-	        NBTTagList tagList = stack.getTagCompound().getTagList(key, tagId);
-	        tagList.removeTag(tagIndex);
+	        NBTTagList tagList = stack.getTag().getList(key, tagId);
+	        tagList.remove(tagIndex);
 	        
 	        if(tagList.isEmpty())
 	        	removeSubList(stack, key);
@@ -67,16 +67,16 @@ public class NBTUtil {
 	public static boolean contains(NBTTagList tagList, String value) {
 		if(tagList.getTagType() != ID_STRING) return false;
 		
-		for(int i = 0; i < tagList.tagCount(); i++)
-			if(tagList.getStringTagAt(i).equals(value))
+		for(int i = 0; i < tagList.size(); i++)
+			if(tagList.getString(i).equals(value))
 				return true;
 		
 		return false;
 	}
 	
-	public static NBTTagCompound getOrCreateSubCompound(ItemStack stack, String key) {
+	public static NBTTagCompound getOrCreateChildTag(ItemStack stack, String key) {
 		if(hasTag(stack, key, ID_COMPOUND))
-            return stack.getTagCompound().getCompoundTag(key);
+            return stack.getTag().getCompound(key);
         else {
         	NBTTagCompound tagList = new NBTTagCompound();
             stack.setTagInfo(key, tagList);
@@ -85,15 +85,15 @@ public class NBTUtil {
 	}
 	
 	public static void removeSubCompound(ItemStack stack, String key) {
-		removeTag(stack, key, ID_COMPOUND);
+		remove(stack, key, ID_COMPOUND);
     }
 	
-	public static void removeTagFromSubCompound(ItemStack stack, String key, int tagId, String tagKey) {
+	public static void removeFromSubCompound(ItemStack stack, String key, int tagId, String tagKey) {
 		if(hasTag(stack, key, ID_COMPOUND)) {
-			NBTTagCompound subCompound = stack.getTagCompound().getCompoundTag(key);
+			NBTTagCompound subCompound = stack.getTag().getCompound(key);
 			
-			if(subCompound.hasKey(tagKey, tagId))
-				subCompound.removeTag(tagKey);
+			if(subCompound.contains(tagKey, tagId))
+				subCompound.remove(tagKey);
 	        
 	        if(subCompound.isEmpty())
 	        	removeSubCompound(stack, key);
@@ -101,25 +101,25 @@ public class NBTUtil {
     }
 	
 	public static boolean hasTagInSubCompound(ItemStack stack, String key, String key2, int tagId) {
-		return hasTag(stack, key, ID_COMPOUND) && stack.getTagCompound().getCompoundTag(key).hasKey(key2, tagId);
+		return hasTag(stack, key, ID_COMPOUND) && stack.getTag().getCompound(key).contains(key2, tagId);
     }
 	
 	public static byte getByteInSubCompound(ItemStack stack, String key, String key2) {
-		return stack.getTagCompound().getCompoundTag(key).getByte(key2);
+		return stack.getTag().getCompound(key).getByte(key2);
     }
 	
 	public static NBTTagList getListInSubCompound(ItemStack stack, String key, String key2, int tagId) {
-		return stack.getTagCompound().getCompoundTag(key).getTagList(key2, tagId);
+		return stack.getTag().getCompound(key).getList(key2, tagId);
     }
 	
 	
 	
-	public static void removeTag(ItemStack stack, String key, int tagId) {
+	public static void remove(ItemStack stack, String key, int tagId) {
 		if(hasTag(stack, key, tagId))
-            stack.getTagCompound().removeTag(key);
+            stack.getTag().remove(key);
     }
 	
 	public static boolean hasTag(ItemStack stack, String key, int tagId) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey(key, tagId);
+		return stack.hasTag() && stack.getTag().contains(key, tagId);
     }
 }

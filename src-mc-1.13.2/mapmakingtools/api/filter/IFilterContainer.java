@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
  */
 public interface IFilterContainer extends IFilterBase {
 
-	public void addSlot(Slot slot);
+	public void addSlotForFilter(Slot slot);
 	public List<Slot> getInventorySlots();
 	public boolean mergeItemStacks(ItemStack itemstack1, int j, int i, boolean b);
 

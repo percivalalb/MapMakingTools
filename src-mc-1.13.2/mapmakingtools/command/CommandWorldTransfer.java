@@ -7,13 +7,10 @@ import java.util.List;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.lib.PacketLib;
-import mapmakingtools.network.PacketDispatcher;
 import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
-import mapmakingtools.tools.worldtransfer.PacketAddArea;
-import mapmakingtools.tools.worldtransfer.PacketPasteNotify;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -22,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -76,7 +72,7 @@ public class CommandWorldTransfer extends CommandBase {
 			Iterable<BlockPos> positions = BlockPos.getAllInBox(data.getMinPos(), data.getMaxPos());
 			
 			for(BlockPos pos : positions) {
-				FMLLog.info("" + pos.toString());
+				MapMakingTools.LOGGER.info("" + pos.toString());
 				list.add(BlockCache.createCache(player, world, pos));
 			}
 			
@@ -103,7 +99,7 @@ public class CommandWorldTransfer extends CommandBase {
 
 					
 					if(notFinal || index == list.size() - 1) {
-						PacketDispatcher.sendTo(new PacketAddArea(name, part, first, index == list.size() - 1, data), player);
+						//TODO PacketDispatcher.sendTo(new PacketAddArea(name, part, first, index == list.size() - 1, data), player);
 						packetCount += 1;
 						start = 0;
 						first = false;
@@ -129,7 +125,7 @@ public class CommandWorldTransfer extends CommandBase {
 			
 			String name = args[1];
 			
-			PacketDispatcher.sendTo(new PacketPasteNotify(name), player);
+			//TODO PacketDispatcher.sendTo(new PacketPasteNotify(name), player);
 		}
 		else if("gui".equals(mode)) {
 			player.openGui(MapMakingTools.INSTANCE, CommonProxy.GUI_ID_WORLD_TRANSFER, player.world, 0, 0, 0);

@@ -12,6 +12,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 /**
@@ -21,15 +22,15 @@ public class CustomGiveServerFilter extends FilterServerInventory {
 	
 	@Override
 	public void addSlots(IFilterContainer container) {
-        container.addSlot(new SlotFake(getInventory(container), 0, 23, 37));
+        container.addSlotForFilter(new SlotFake(getInventory(container), 0, 23, 37));
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 9; ++j) {
-				container.addSlot(new Slot(container.getPlayer().inventory, j + i * 9 + 9, 59 + j * 18, 23 + i * 18));
+				container.addSlotForFilter(new Slot(container.getPlayer().inventory, j + i * 9 + 9, 59 + j * 18, 23 + i * 18));
 	        }
 		}	
 
 	    for (int i = 0; i < 9; ++i) {
-	    	container.addSlot(new Slot(container.getPlayer().inventory, i, 59 + i * 18, 81));
+	    	container.addSlotForFilter(new Slot(container.getPlayer().inventory, i, 59 + i * 18, 81));
 	    }
 	}
 	
@@ -53,6 +54,6 @@ public class CustomGiveServerFilter extends FilterServerInventory {
 
 	@Override
 	public IInventory createInventory() {
-		return new InventoryBasic("Custom Give", false, 1);
+		return new InventoryBasic(new TextComponentString("Custom Give"), 1);
 	}
 }

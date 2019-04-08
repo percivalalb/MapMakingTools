@@ -3,8 +3,6 @@ package mapmakingtools.command;
 import java.util.Collections;
 import java.util.List;
 
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.network.packet.PacketRequestPNG;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldData;
 import net.minecraft.command.CommandBase;
@@ -48,7 +46,7 @@ public class CommandDrawPNG extends CommandBase {
 			throw new CommandException("mapmakingtools.commands.build.postionsnotselected", new Object[0]);
 		
 		
-		PacketDispatcher.sendTo(new PacketRequestPNG(args[0]), player);
+		//TODO PacketDispatcher.sendTo(new PacketRequestPNG(args[0]), player);
 	}
 	
 	@Override

@@ -1,14 +1,14 @@
 package mapmakingtools.tools;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import mapmakingtools.MapMakingTools;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author ProPercivalalb
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ClientData {
 
-	public static PlayerData playerData = new PlayerData(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID());
+	public static PlayerData playerData = new PlayerData(MapMakingTools.PROXY.getPlayerEntity().getUniqueID());
 }

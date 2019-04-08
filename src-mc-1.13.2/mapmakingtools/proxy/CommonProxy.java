@@ -1,26 +1,13 @@
 package mapmakingtools.proxy;
 
-import java.util.List;
-
-import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.filter.FilterServer;
 import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ForceKillManager;
-import mapmakingtools.handler.ConfigChange;
 import mapmakingtools.handler.EntityJoinWorld;
 import mapmakingtools.handler.PlayerInteract;
 import mapmakingtools.handler.PlayerTracker;
 import mapmakingtools.handler.WordSave;
-import mapmakingtools.inventory.ContainerFilter;
-import mapmakingtools.inventory.ContainerItemEditor;
-import mapmakingtools.inventory.ContainerWorldTransfer;
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.tools.datareader.BlockColourList;
-import mapmakingtools.tools.datareader.BlockList;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.datareader.ChestSymmetrifyData;
-import mapmakingtools.tools.datareader.EnchantmentList;
-import mapmakingtools.tools.datareader.PotionList;
-import mapmakingtools.tools.datareader.SpawnerEntitiesList;
 import mapmakingtools.tools.filter.BabyMonsterClientFilter;
 import mapmakingtools.tools.filter.BabyMonsterServerFilter;
 import mapmakingtools.tools.filter.ChestSymmetrifyClientFilter;
@@ -87,42 +74,44 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * @author ProPercivalalb
  */
-public class CommonProxy implements IGuiHandler {
+public class CommonProxy {
 
-	public void preInit(FMLPreInitializationEvent event) {
-		BlockList.readDataFromFile();
-		BlockColourList.readDataFromFile();
-		SpawnerEntitiesList.readDataFromFile();
-		ChestSymmetrifyData.readDataFromFile();
-		EnchantmentList.readDataFromFile();
-		PotionList.readDataFromFile();
+	public CommonProxy() {
+        // Add listeners for common events
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
     }
 	
-	public void init(FMLInitializationEvent event) {
-		NetworkRegistry.INSTANCE.registerGuiHandler(MapMakingTools.INSTANCE, MapMakingTools.PROXY);
-		PacketDispatcher.registerPackets();
+	public void preInit(FMLCommonSetupEvent event) {
+		//BlockList.readDataFromFile();
+		//BlockColourList.readDataFromFile();
+		//SpawnerEntitiesList.readDataFromFile();
+		ChestSymmetrifyData.readDataFromFile();
+		//EnchantmentList.readDataFromFile();
+		//PotionList.readDataFromFile();
+		
+		PacketHandler.register();
         this.registerEventHandlers();
+    }
+	
+	public void init(InterModEnqueueEvent event) {
         this.registerFilters();
         this.registerRotation();
         this.registerItemAttribute();
         this.registerForceKill();
     }
 
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(InterModProcessEvent event) {
     	
     }
     
@@ -131,7 +120,6 @@ public class CommonProxy implements IGuiHandler {
     	MinecraftForge.EVENT_BUS.register(new WordSave());
     	MinecraftForge.EVENT_BUS.register(new EntityJoinWorld());
     	MinecraftForge.EVENT_BUS.register(new PlayerTracker());
-    	MinecraftForge.EVENT_BUS.register(new ConfigChange());
     }
 	
 	public void registerFilters() {
@@ -275,44 +263,8 @@ public class CommonProxy implements IGuiHandler {
 	public static final int ID_FILTER_ENTITY = 1;
 	public static final int GUI_ID_ITEM_EDITOR = 2;
 	public static final int GUI_ID_WORLD_TRANSFER = 3;
-	
-	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		BlockPos pos = new BlockPos(x, y, z);
-		
-		if(ID == ID_FILTER_BLOCK) {
-			List<FilterServer> filterList = FilterManager.getServerBlocksFilters(player, world, pos);
-			if(filterList.size() > 0)
-				return new ContainerFilter(filterList, player).setBlockPos(pos);
-		}
-		else if(ID == ID_FILTER_ENTITY) {
-			List<FilterServer> filterList = FilterManager.getServerEntitiesFilters(player, world.getEntityByID(x));
-			if(filterList.size() > 0)
-				return new ContainerFilter(filterList, player).setEntityId(x);
-		}
-		else if(ID == GUI_ID_ITEM_EDITOR) {
-			return new ContainerItemEditor(player, x);
-		}
-		else if(ID == GUI_ID_WORLD_TRANSFER) {
-			return new ContainerWorldTransfer();
-		}
-		return null;
-	}
 
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		return null;
-	}
-	
-	public EntityPlayer getPlayerEntity(MessageContext ctx) {
-		return ctx.getServerHandler().player;
-	}
-	
 	public EntityPlayer getPlayerEntity() {
 		return null;
-	}
-	
-	public IThreadListener getThreadFromContext(MessageContext ctx) {
-		return ctx.getServerHandler().player.getServer();
 	}
 }

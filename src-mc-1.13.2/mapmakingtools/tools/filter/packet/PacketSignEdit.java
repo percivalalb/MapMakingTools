@@ -1,8 +1,7 @@
 package mapmakingtools.tools.filter.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,57 +11,60 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSignEdit extends AbstractServerMessage {
+public class PacketSignEdit {
 
 	public BlockPos pos;
 	public ITextComponent[] signLines;
 	
-	public PacketSignEdit() {}
 	public PacketSignEdit(BlockPos pos, ITextComponent[] par4ArrayOfStr) {
 		this.pos = pos;
 		this.signLines = par4ArrayOfStr;
 	}
-
-	@Override
-	public void read(PacketBuffer buffer) throws IOException {
-		this.signLines = new ITextComponent[4];
-		this.pos = buffer.readBlockPos();
-        for (int i = 0; i < 4; ++i)
-            this.signLines[i] = buffer.readTextComponent();
-	}
-
-	@Override
-	public void write(PacketBuffer buffer) throws IOException {
-		buffer.writeBlockPos(this.pos);
+	
+	public static void encode(PacketSignEdit msg, PacketBuffer buf) {
+		buf.writeBlockPos(msg.pos);
 		for (int i = 0; i < 4; ++i)
-			buffer.writeTextComponent(this.signLines[i]);
+			buf.writeTextComponent(msg.signLines[i]);
 	}
+	
+	public static PacketSignEdit decode(PacketBuffer buf) {
+		ITextComponent[] signLines = new ITextComponent[4];
+		BlockPos pos = buf.readBlockPos();
+        for(int i = 0; i < 4; ++i)
+            signLines[i] = buf.readTextComponent();
+		return new PacketSignEdit(pos, signLines);
+	}
+	
+	public static class Handler {
+        public static void handle(final PacketSignEdit msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		TileEntity tile = player.world.getTileEntity(msg.pos);
+        		if(tile instanceof TileEntitySign) {
+        			TileEntitySign sign = (TileEntitySign)tile;
+        			for(int i = 0; i < 4; i++)
+        				sign.signText[i] = msg.signLines[i];
+        			Chunk chunk = player.world.getChunk(msg.pos);
+        			if(chunk != null)
+        				chunk.markDirty();
+        			
+        			player.sendMessage(new TextComponentTranslation("mapmakingtools.filter.signedit.complete").applyTextStyle(TextFormatting.ITALIC));
+        			
+        			PacketUtil.sendTileEntityUpdateToWatching(sign);
+        		}
+            });
 
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		TileEntity tile = player.world.getTileEntity(this.pos);
-		if(tile instanceof TileEntitySign) {
-			TileEntitySign sign = (TileEntitySign)tile;
-			for(int i = 0; i < 4; i++)
-				sign.signText[i] = this.signLines[i];
-			Chunk chunk = player.world.getChunk(this.pos);
-			if(chunk != null)
-				chunk.markDirty();
-				
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.signedit.complete");
-			chatComponent.getStyle().setItalic(true);
-			player.sendMessage(chatComponent);
-			
-			PacketUtil.sendTileEntityUpdateToWatching(sign);
-		}
+            ctx.get().setPacketHandled(true);
+        }
 	}
 }

@@ -8,13 +8,14 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketSpawnerTimings;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -53,11 +54,22 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 		gui.setYSize(160);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-        this.btn_ok = new GuiButton(0, topX + 140, topY + 133, 60, 20, "OK");
+        this.btn_ok = new GuiButton(0, topX + 140, topY + 133, 60, 20, "OK") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketSpawnerTimings(txt_minDelay.getText(), txt_maxDelay.getText(), txt_spawnRadius.getText(), txt_spawnCount.getText(), txt_entityCap.getText(), txt_detectionRange.getText()));
+            	ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
         this.btn_ok.enabled = false;
-        this.btn_cancel = new GuiButton(1, topX + 40, topY + 133, 60, 20, "Cancel");
-        gui.getButtonList().add(this.btn_ok);
-        gui.getButtonList().add(this.btn_cancel);
+        this.btn_cancel = new GuiButton(1, topX + 40, topY + 133, 60, 20, "Cancel") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+        		ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
+        gui.addButtonToGui(this.btn_ok);
+        gui.addButtonToGui(this.btn_cancel);
         this.txt_minDelay = new GuiTextField(0, gui.getFont(), topX + 20, topY + 37, 90, 20);
         this.txt_minDelay.setMaxStringLength(7);
         this.txt_minDelay.setText(minDelayText);
@@ -76,12 +88,12 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
         this.txt_detectionRange = new GuiTextField(5, gui.getFont(), topX + 120, topY + 107, 90, 20);
         this.txt_detectionRange.setMaxStringLength(7);
         this.txt_detectionRange.setText(detectionRangeText);
-        gui.getTextBoxList().add(this.txt_minDelay);
-        gui.getTextBoxList().add(this.txt_maxDelay);
-        gui.getTextBoxList().add(this.txt_spawnRadius);
-        gui.getTextBoxList().add(this.txt_spawnCount);
-        gui.getTextBoxList().add(this.txt_entityCap);
-        gui.getTextBoxList().add(this.txt_detectionRange);
+        gui.addTextFieldToGui(this.txt_minDelay);
+        gui.addTextFieldToGui(this.txt_maxDelay);
+        gui.addTextFieldToGui(this.txt_spawnRadius);
+        gui.addTextFieldToGui(this.txt_spawnCount);
+        gui.addTextFieldToGui(this.txt_entityCap);
+        gui.addTextFieldToGui(this.txt_detectionRange);
         
         this.addPotentialSpawnButtons(gui, topX, topY);
 	}
@@ -100,17 +112,6 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void actionPerformed(IFilterGui gui, GuiButton button) {
-		super.actionPerformed(gui, button);
-		if (button.enabled) {
-            if(button.id == 0) {
-                PacketDispatcher.sendToServer(new PacketSpawnerTimings(this.txt_minDelay.getText(), this.txt_maxDelay.getText(), this.txt_spawnRadius.getText(), this.txt_spawnCount.getText(), this.txt_entityCap.getText(), this.txt_detectionRange.getText()));
-            	ClientHelper.getClient().player.closeScreen();
-            }
-        }
-	}
-	
-	@Override
 	public void updateScreen(IFilterGui gui) {
 		minDelayText = this.txt_minDelay.getText();
 		maxDelayText = this.txt_maxDelay.getText();
@@ -122,20 +123,20 @@ public class SpawnerTimingClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, mouseX, mouseY, mouseButton, topX, topY);
 	}
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobposition.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobposition.info"));
 	}
 	
 	@Override
 	public boolean drawBackground(IFilterGui gui) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_LARGE);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();

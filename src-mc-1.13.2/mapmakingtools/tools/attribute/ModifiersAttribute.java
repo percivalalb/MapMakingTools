@@ -19,6 +19,7 @@ import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -30,7 +31,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb
@@ -65,15 +65,15 @@ public class ModifiersAttribute extends IItemAttribute {
 			EntityEquipmentSlot equipmentSlot = EntityEquipmentSlot.values()[this.btn_slot.getData()];
 			
 			if(NBTUtil.hasTag(stack, "AttributeModifiers", NBTUtil.ID_LIST)) {
-	            NBTTagList nbttaglist = stack.getTagCompound().getTagList("AttributeModifiers", NBTUtil.ID_COMPOUND);
+	            NBTTagList nbttaglist = stack.getTag().getList("AttributeModifiers", NBTUtil.ID_COMPOUND);
 				
-				for(int k = 0; k < nbttaglist.tagCount(); k++) {
-					NBTTagCompound compound = nbttaglist.getCompoundTagAt(k);
+				for(int k = 0; k < nbttaglist.size(); k++) {
+					NBTTagCompound compound = nbttaglist.getCompound(k);
 					String attributeName = compound.getString("AttributeName");
-					boolean correctSlot = !compound.hasKey("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
+					boolean correctSlot = !compound.contains("Slot", NBTUtil.ID_STRING) || compound.getString("Slot").equals(equipmentSlot.getName());
 					
 					if(attributeName.equals(modifier.attributeName) && correctSlot)
-						nbttaglist.removeTag(k);
+						nbttaglist.remove(k);
 				}
 			}
 			
@@ -98,7 +98,7 @@ public class ModifiersAttribute extends IItemAttribute {
 			}
 		}
 		else if(data == -2) { // Remove modifier NBT data
-			NBTUtil.removeTag(stack, "AttributeModifiers", NBTUtil.ID_LIST);
+			NBTUtil.remove(stack, "AttributeModifiers", NBTUtil.ID_LIST);
 			NBTUtil.hasEmptyTagCompound(stack, true);
 		}
 	}
@@ -137,7 +137,7 @@ public class ModifiersAttribute extends IItemAttribute {
 					 this.btn_operation.get(i).displayString = "" + this.btn_operation.get(i).getData();
 					 if(this.btn_remove[i] == null) {
 						 this.btn_remove[i] = new GuiButtonSmall(i + MODIFIERS.length, this.x + 190 + MathHelper.clamp(width - 200, 20, 120), this.y + 38 + i * 17, 16, 16, "-");
-						 itemEditor.getButtonList().add(this.btn_remove[i]);
+						 itemEditor.addButtonToGui(this.btn_remove[i]);
 					 }
 					 foundAtAll = true;
 				 }
@@ -164,7 +164,7 @@ public class ModifiersAttribute extends IItemAttribute {
 	public void drawInterface(IGuiItemEditor itemEditor, int x, int y, int width, int height) {
 		itemEditor.getFontRenderer().drawString("OP", x + 130 + MathHelper.clamp(width - 200, 40, 120), y + 25, 16777120);
 		for(int i = 0; i < MODIFIERS.length; i++)
-			itemEditor.getFontRenderer().drawString(I18n.translateToLocal("attribute.name." + MODIFIERS[i].attributeName), x + 6, y + 42 + i * 17, 16777120);
+			itemEditor.getFontRenderer().drawString(I18n.format("attribute.name." + MODIFIERS[i].attributeName), x + 6, y + 42 + i * 17, 16777120);
 	}
 
 	int x;
@@ -184,7 +184,7 @@ public class ModifiersAttribute extends IItemAttribute {
 		this.btn_remove = new GuiButton[MODIFIERS.length];
 		this.btn_slot = new GuiButtonData(-3, x + 2, y + 16, 80, 20, EntityEquipmentSlot.values()[this.slotSelected].getName());
 		this.btn_slot.setData(this.slotSelected);
-		itemEditor.getButtonList().add(this.btn_slot);
+		itemEditor.addButtonToGui(this.btn_slot);
 		
 		for(int i = 0; i < MODIFIERS.length; i++) {
 			int inputSize = MathHelper.clamp(width - 200, 20, 120);
@@ -193,17 +193,27 @@ public class ModifiersAttribute extends IItemAttribute {
 			this.but_add.add(new GuiButtonSmall(i, x + 155 + inputSize, y + 38 + i * 17, 40, 16, "Add"));
 			this.fld_attack.add(new GuiTextField(i, itemEditor.getFontRenderer(), x + 122, y + 39 + i * 17, inputSize, 14));
 			
-			itemEditor.getButtonList().add(this.btn_operation.get(i));
-			itemEditor.getButtonList().add(this.but_add.get(i));
-			itemEditor.getTextBoxList().add(this.fld_attack.get(i));
+			itemEditor.addButtonToGui(this.btn_operation.get(i));
+			itemEditor.addButtonToGui(this.but_add.get(i));
+			itemEditor.addTextFieldToGui(this.fld_attack.get(i));
 		}
 
 		
-		this.btn_convert = new GuiButton(-1, x + 10, y + height - 23, 130, 20, "Convert built-in to NBT");
-		itemEditor.getButtonList().add(this.btn_convert);
+		this.btn_convert = new GuiButton(-1, x + 10, y + height - 23, 130, 20, "Convert built-in to NBT") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			itemEditor.sendUpdateToServer(-1);
+    		}
+    	};
+		itemEditor.addButtonToGui(this.btn_convert);
 		
-		this.btn_removeall = new GuiButton(-2, x + 145, y + height - 23, 130, 20, "Remove modifier NBT");
-		itemEditor.getButtonList().add(this.btn_removeall);
+		this.btn_removeall = new GuiButton(-2, x + 145, y + height - 23, 130, 20, "Remove modifier NBT") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			itemEditor.sendUpdateToServer(-2);
+    		}
+    	};
+		itemEditor.addButtonToGui(this.btn_removeall);
 	}
 
 	@Override
@@ -221,12 +231,6 @@ public class ModifiersAttribute extends IItemAttribute {
 			btn.setData((btn.getData() + 1) % 3);
 			btn.displayString = "" + btn.getData();
 		}
-		else if(button.id == -1) {
-			itemEditor.sendUpdateToServer(-1);
-		}
-		else if(button.id == -2) {
-			itemEditor.sendUpdateToServer(-2);
-		}
 		else if(button.id == -3) {
 			this.btn_slot.setData((this.btn_slot.getData() + 1) % EntityEquipmentSlot.values().length);
 			this.slotSelected = this.btn_slot.getData();
@@ -236,10 +240,10 @@ public class ModifiersAttribute extends IItemAttribute {
 	}
 	
 	@Override
-	public void drawToolTips(IGuiItemEditor guiItemEditor, int xMouse, int yMouse) {
+	public void drawToolTips(IGuiItemEditor guiItemEditor, int mouseX, int mouseY) {
 		int inputSize = MathHelper.clamp(width - 200, 20, 120);
 		
-		if(xMouse >= x + 130 + inputSize && xMouse <= x + 140 + inputSize && yMouse >= y + 25 && yMouse <= y + 25 + guiItemEditor.getFontRenderer().FONT_HEIGHT) {
+		if(mouseX >= x + 130 + inputSize && mouseX <= x + 140 + inputSize && mouseY >= y + 25 && mouseY <= y + 25 + guiItemEditor.getFontRenderer().FONT_HEIGHT) {
 			List<String> list = new ArrayList<String>();
 			list.add(TextFormatting.GREEN + "Operation");
 			list.add(" 0: Adds the modifiers' amount to the current");
@@ -248,7 +252,7 @@ public class ModifiersAttribute extends IItemAttribute {
 			list.add("    by the sum of all the modifiers' amount");
 			list.add(" 2: Multiplies the current value of the attribute");
 			list.add("    by the product of all the modifiers' amount");
-			RenderUtil.drawHoveringText(list, xMouse, yMouse, this.width, this.height, guiItemEditor.getFontRenderer(), true);
+			RenderUtil.drawHoveringText(list, mouseX, mouseY, this.width, this.height, guiItemEditor.getFontRenderer(), true);
 		}
 	}
 	
@@ -261,8 +265,8 @@ public class ModifiersAttribute extends IItemAttribute {
 	public static int MULT_PERCENTAGE_OPERATION = 1;
 	public static int ADD_PERCENTAGE_OPERATION = 2;
 	
-    protected static final UUID ATTACK_DAMAGE_MODIFIER = ReflectionHelper.getField(Item.class, UUID.class, null, 7);
-    protected static final UUID ATTACK_SPEED_MODIFIER = ReflectionHelper.getField(Item.class, UUID.class, null, 8);
+    protected static final UUID ATTACK_DAMAGE_MODIFIER = ReflectionHelper.getField(Item.class, UUID.class, null, 5);
+    protected static final UUID ATTACK_SPEED_MODIFIER = ReflectionHelper.getField(Item.class, UUID.class, null, 6);
 	private Modifier ATTACK_DAMAGE = new Modifier(SharedMonsterAttributes.ATTACK_DAMAGE, new AttributeModifier("Weapon modifier", 0.0D, ADD_OPERATION));
 	private Modifier ATTACK_SPEED = new Modifier(SharedMonsterAttributes.ATTACK_SPEED, new AttributeModifier("Weapon modifier", 0.0D, ADD_OPERATION));
 	private Modifier KNOCKBACK_RESISTANCE = new Modifier(SharedMonsterAttributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Weapon modifier", 0.0D, ADD_OPERATION));

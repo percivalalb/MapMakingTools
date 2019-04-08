@@ -1,41 +1,44 @@
 package mapmakingtools.network.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
 import mapmakingtools.inventory.ContainerFilter;
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSelectedFilter extends AbstractServerMessage {
+public class PacketSelectedFilter {
 
 	public int selected;
 	
-	public PacketSelectedFilter() {}
 	public PacketSelectedFilter(int selected) {
 		this.selected = selected;
 	}
 
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.selected = packetbuffer.readInt();
+	public static void encode(PacketSelectedFilter msg, PacketBuffer buf) {
+		buf.writeInt(msg.selected);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeInt(selected);
+	
+	public static PacketSelectedFilter decode(PacketBuffer buf) {
+		int selected = buf.readInt();
+		return new PacketSelectedFilter(selected);
 	}
+	
+	public static class Handler {
+        public static void handle(final PacketSelectedFilter msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	
+            	if(player.openContainer instanceof ContainerFilter) {
+        			ContainerFilter container = (ContainerFilter)player.openContainer;
+        			container.setSelected(msg.selected);
+        		}
+            });
 
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(player.openContainer instanceof ContainerFilter) {
-			ContainerFilter container = (ContainerFilter)player.openContainer;
-			container.setSelected(this.selected);
-		}
+            ctx.get().setPacketHandled(true);
+        }
 	}
-
 }

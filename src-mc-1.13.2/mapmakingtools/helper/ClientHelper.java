@@ -8,6 +8,6 @@ import net.minecraft.client.Minecraft;
 public class ClientHelper {
 
 	public static Minecraft getClient() {
-		return Minecraft.getMinecraft();
+		return Minecraft.getInstance();
 	}
 }

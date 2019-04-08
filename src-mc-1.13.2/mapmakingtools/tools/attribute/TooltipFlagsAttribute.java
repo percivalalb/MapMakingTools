@@ -7,7 +7,6 @@ import mapmakingtools.tools.item.nbt.NBTUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @author ProPercivalalb
@@ -46,13 +45,13 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 				flag |= 1 << 5; //Normal Info
 
 			if(flag == 0) {
-				NBTUtil.removeTag(stack, "HideFlags", NBTUtil.ID_NUMBER);
+				NBTUtil.remove(stack, "HideFlags", NBTUtil.ID_NUMBER);
 			    NBTUtil.hasEmptyTagCompound(stack, true);
 				this.btn_all.setTicked(true);
 				return;
 			}
 				
-			NBTUtil.getOrCreateTagCompound(stack).setInteger("HideFlags", flag);
+			NBTUtil.getOrCreateTagCompound(stack).putInt("HideFlags", flag);
 			this.btn_all.setTicked(false);
 			
 		}
@@ -67,7 +66,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		if(first) {
 			if(NBTUtil.hasTag(stack, "HideFlags", NBTUtil.ID_NUMBER)) {
-				int flag = stack.getTagCompound().getInteger("HideFlags");
+				int flag = stack.getTag().getInt("HideFlags");
 				
 				if((flag & (1 << 0)) == (1 << 0))
 					this.btn_ench.setTicked(false);
@@ -110,13 +109,13 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 	    this.btn_normal = new GuiButtonTick(5, x + 102, y + 126, true);
 	    this.btn_all = new GuiButtonTick(6, x + 112, y + height - 29, true);
 	    
-		itemEditor.getButtonList().add(this.btn_ench);
-		itemEditor.getButtonList().add(this.btn_modif);
-		itemEditor.getButtonList().add(this.btn_unbreak);
-		itemEditor.getButtonList().add(this.btn_destroy);
-		itemEditor.getButtonList().add(this.btn_place);
-		itemEditor.getButtonList().add(this.btn_normal);
-		itemEditor.getButtonList().add(this.btn_all);
+		itemEditor.addButtonToGui(this.btn_ench);
+		itemEditor.addButtonToGui(this.btn_modif);
+		itemEditor.addButtonToGui(this.btn_unbreak);
+		itemEditor.addButtonToGui(this.btn_destroy);
+		itemEditor.addButtonToGui(this.btn_place);
+		itemEditor.addButtonToGui(this.btn_normal);
+		itemEditor.addButtonToGui(this.btn_all);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package mapmakingtools.tools.attribute;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import mapmakingtools.api.ScrollMenu;
@@ -16,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 /**
  * @author ProPercivalalb
@@ -47,13 +48,13 @@ public class BlockDestroyAttribute extends IItemAttribute {
 			String possibleBlock = this.scrollMenuAdd.getRecentSelection();
 			
 			if(!NBTUtil.contains(tagList, possibleBlock))
-				tagList.appendTag(new NBTTagString(possibleBlock));
+				tagList.add(new NBTTagString(possibleBlock));
 			
 			break;
 		case 1: //Remove selected value to NBTTagList
 			if(!this.scrollMenuRemove.hasSelection()) break;
 			
-			NBTUtil.removeTagFromSubList(stack, "CanDestroy", NBTUtil.ID_STRING, this.selectedDelete);
+			NBTUtil.removeFromSubList(stack, "CanDestroy", NBTUtil.ID_STRING, this.selectedDelete);
 			NBTUtil.hasEmptyTagCompound(stack, true);
 			
 			break;
@@ -77,9 +78,9 @@ public class BlockDestroyAttribute extends IItemAttribute {
 		
 		List<String> list = new ArrayList<String>();
 		if(NBTUtil.hasTag(stack, "CanDestroy", NBTUtil.ID_LIST)) {
-			NBTTagList destoryList = stack.getTagCompound().getTagList("CanDestroy", NBTUtil.ID_STRING);
-			for(int i = 0; i < destoryList.tagCount(); ++i) {
-				list.add(destoryList.getStringTagAt(i));
+			NBTTagList destoryList = stack.getTag().getList("CanDestroy", NBTUtil.ID_STRING);
+			for(int i = 0; i < destoryList.size(); ++i) {
+				list.add(destoryList.getString(i));
 			}
 		}
 		this.scrollMenuRemove.setElements(list);
@@ -100,8 +101,11 @@ public class BlockDestroyAttribute extends IItemAttribute {
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		List<String> blocks = new ArrayList<String>();
-		for(Object key : Block.REGISTRY.getKeys())
-			blocks.add(((ResourceLocation)key).toString());
+		Iterator<Block> iterator = IRegistry.BLOCK.iterator();
+		
+		while(iterator.hasNext())
+			blocks.add(iterator.next().getRegistryName().toString());
+		
 		Collections.sort(blocks);
 		
 		this.scrollMenuAdd = new ScrollMenu<String>((GuiScreen)itemEditor, x + 2, y + 15, width - 4, height / 2 - 40, 2, blocks) {
@@ -118,37 +122,41 @@ public class BlockDestroyAttribute extends IItemAttribute {
 			}
 		};
 		
-		this.btn_add = new GuiButton(0, x + 2, y + height / 2 - 23, 50, 20, "Add");
-		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove");
-		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Blocks");
+		this.btn_add = new GuiButton(0, x + 2, y + height / 2 - 23, 50, 20, "Add") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(0);
+	    	}
+		};
+		this.btn_remove = new GuiButton(1, x + 60, y + height - 23, 60, 20, "Remove") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(1);
+	    	}
+		};
+		this.btn_remove_all = new GuiButton(2, x + 130, y + height - 23, 130, 20, "Remove all Blocks") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(2);
+	    	}
+		};
 		
 		this.btn_add.enabled = false;
 		this.btn_remove.enabled = false;
 		
-		itemEditor.getButtonList().add(this.btn_add);
-		itemEditor.getButtonList().add(this.btn_remove);
-		itemEditor.getButtonList().add(this.btn_remove_all);
+		itemEditor.addButtonToGui(this.btn_add);
+		itemEditor.addButtonToGui(this.btn_remove);
+		itemEditor.addButtonToGui(this.btn_remove_all);
+		itemEditor.addListenerToGui(this.scrollMenuAdd);
+		itemEditor.addListenerToGui(this.scrollMenuRemove);
 		this.scrollMenuAdd.initGui();
 		this.scrollMenuRemove.initGui();
 	}
 	
 	@Override
-	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
-		if(button.id == 0) {
-			itemEditor.sendUpdateToServer(0);
-		}
-		if(button.id == 1) {
-			itemEditor.sendUpdateToServer(1);
-		}
-		if(button.id == 2) {
-			itemEditor.sendUpdateToServer(2);
-		}
-	}
-	
-	@Override
-	public void mouseClicked(IGuiItemEditor itemEditor, int xMouse, int yMouse, int mouseButton) {
-		this.scrollMenuAdd.mouseClicked(xMouse, yMouse, mouseButton);
-		this.scrollMenuRemove.mouseClicked(xMouse, yMouse, mouseButton);
+	public void mouseClicked(IGuiItemEditor itemEditor, double mouseX, double mouseY, int mouseButton) {
+		this.scrollMenuAdd.mouseClicked(mouseX, mouseY, mouseButton);
+		this.scrollMenuRemove.mouseClicked(mouseX, mouseY, mouseButton);
 		
 		this.btn_add.enabled = this.scrollMenuAdd.hasSelection();
 		this.btn_remove.enabled = this.scrollMenuRemove.hasSelection();

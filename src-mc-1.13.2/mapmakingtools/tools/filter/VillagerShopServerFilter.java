@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 
@@ -57,15 +58,15 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 		
 		for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 9; ++j)
-				container.addSlot(new Slot(player.inventory, j + i * 9 + 9, 40 + j * 18, 109 + i * 18));
+				container.addSlotForFilter(new Slot(player.inventory, j + i * 9 + 9, 40 + j * 18, 109 + i * 18));
 		
 		for (int i = 0; i < 9; ++i)
-	    	container.addSlot(new Slot(player.inventory, i, 40 + i * 18, 167));
+	    	container.addSlotForFilter(new Slot(player.inventory, i, 40 + i * 18, 167));
 
 	    for (int i = 0; i < this.getAmountRecipes(player) && i < 9; ++i) {
-	    	container.addSlot(new SlotFake(inventory, i * 3, 	20 + (i * 18) + (i * 5), 24));
-	    	container.addSlot(new SlotFake(inventory, i * 3 + 1, 20 + (i * 18) + (i * 5), 42));
-	    	container.addSlot(new SlotFake(inventory, i * 3 + 2, 20 + (i * 18) + (i * 5), 64));
+	    	container.addSlotForFilter(new SlotFake(inventory, i * 3, 	20 + (i * 18) + (i * 5), 24));
+	    	container.addSlotForFilter(new SlotFake(inventory, i * 3 + 1, 20 + (i * 18) + (i * 5), 42));
+	    	container.addSlotForFilter(new SlotFake(inventory, i * 3 + 2, 20 + (i * 18) + (i * 5), 64));
 	    }
 		
 	    if(SideHelper.isServer()) {
@@ -91,7 +92,7 @@ public class VillagerShopServerFilter extends FilterServerInventory {
 	
 	@Override
 	public IInventory createInventory() {
-		return new InventoryBasic("Villager Shop", false, 45);
+		return new InventoryBasic(new TextComponentString("Villager Shop"), 45);
 	}
 	
 	public int getAmountRecipes(IFilterContainer container) {

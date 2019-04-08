@@ -3,7 +3,7 @@ package mapmakingtools.api.manager;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.SideHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,7 @@ public class FakeWorldManager {
 	
 	public static void putTileEntity(TileEntity tileEntity, World world, BlockPos pos, NBTTagCompound dataRecived) {
 		try {
-			TileEntity newTileEntity = TileEntity.create(world, dataRecived);
+			TileEntity newTileEntity = TileEntity.create(dataRecived);
 			FAKE_TILE_ENTITY = newTileEntity;
 			FAKE_TILE_ENTITY_DATA = dataRecived;
 		}
@@ -33,7 +33,7 @@ public class FakeWorldManager {
 	
 	public static void putEntity(Entity entity, NBTTagCompound dataRecived) {
 		try {
-			Entity newEntity = EntityList.createEntityFromNBT(dataRecived, entity.world);
+			Entity newEntity = EntityType.create(dataRecived, entity.world);
 			FAKE_ENTITY = newEntity;
 			FAKE_ENTITY_DATA = dataRecived;
 		}

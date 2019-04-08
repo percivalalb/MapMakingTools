@@ -10,10 +10,11 @@ import mapmakingtools.client.gui.button.GuiButtonColourBlock;
 import mapmakingtools.client.gui.textfield.GuiTextFieldNonInteractable;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketCommandBlockAlias;
 import mapmakingtools.util.CommandBlockUtil;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartCommandBlock;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +22,10 @@ import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -66,23 +68,43 @@ public class CommandBlockAliasClientFilter extends FilterClient {
         int topY = gui.getGuiY();
         this.fld_alias = new GuiTextFieldNonInteractable(0, gui.getFont(), topX + 20, topY +  45, 200, 20);
         this.fld_alias.setMaxStringLength(32);
-        this.btn_ok = new GuiButton(0, topX + 140, topY + 70, 60, 20, "OK");
-        this.btn_cancel = new GuiButton(1, topX + 40, topY + 70, 60, 20, "Cancel");
+        this.btn_ok = new GuiButton(0, topX + 140, topY + 70, 60, 20, "OK") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketCommandBlockAlias(fld_alias.getText() + "\u00a7r"));
+            	ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
+        this.btn_cancel = new GuiButton(1, topX + 40, topY + 70, 60, 20, "Cancel") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
         this.btnColourLine1 = new GuiButtonColourBlock(2, topX + 25, topY + 22, 20, 20);
-        this.btnInsert = new GuiButton(4, topX + 50, topY + 22, 40, 20, "Insert");
-        gui.getTextBoxList().add(this.fld_alias);
-        gui.getButtonList().add(this.btn_ok);
-        gui.getButtonList().add(this.btn_cancel);
-        gui.getButtonList().add(this.btnColourLine1);
-        gui.getButtonList().add(this.btnInsert);
+        this.btnInsert = new GuiButton(4, topX + 50, topY + 22, 40, 20, "Insert") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			if(fld_alias.isFocused()) {
+            		String text = fld_alias.getText();
+            		fld_alias.setText(text + btnColourLine1.getCurrentColour(btnColourLine1.textColourIndex).getColour());
+            		fld_alias.missMouseClick = true;
+            	}
+    		}
+    	};
+        gui.addTextFieldToGui(this.fld_alias);
+        gui.addButtonToGui(this.btn_ok);
+        gui.addButtonToGui(this.btn_cancel);
+        gui.addButtonToGui(this.btnColourLine1);
+        gui.addButtonToGui(this.btnInsert);
 
         if(CommandBlockUtil.isCommand(gui)) {
         	CommandBlockBaseLogic logic = CommandBlockUtil.getCommandLogic(gui);
         	
-			String name = CommandBlockUtil.getName(logic);
-			if(name.endsWith("\u00a7r") && name.length() >= 2)
-				name = name.substring(0, name.length() - 2);
-			this.fld_alias.setText(name);
+			ITextComponent name = CommandBlockUtil.getName(logic);
+			//TODO if(name.endsWith("\u00a7r") && name.length() >= 2)
+			//TODO 	name = name.substring(0, name.length() - 2);
+			this.fld_alias.setText(name.getUnformattedComponentText());
 		}
 	}
 	
@@ -94,32 +116,16 @@ public class CommandBlockAliasClientFilter extends FilterClient {
 					fld_alias.missMouseClick = true;
                	((GuiButtonColourBlock)button).leftClick();
             }
-            switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketCommandBlockAlias(fld_alias.getText() + "\u00a7r"));
-                	ClientHelper.getClient().player.closeScreen();
-                	break;
-                case 1:
-                	ClientHelper.getClient().player.closeScreen();
-                	break;
-                case 4:
-                	if(this.fld_alias.isFocused()) {
-                		String text = fld_alias.getText();
-                		this.fld_alias.setText(text + this.btnColourLine1.getCurrentColour(this.btnColourLine1.textColourIndex).getColour());
-                		this.fld_alias.missMouseClick = true;
-                	}
-                	break;
-            }
         }
 	}
 	
 	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 1) {
             for (int l = 0; l < gui.getButtonList().size(); ++l) {
                 GuiButton guibutton = (GuiButton)gui.getButtonList().get(l);
 
-                if (guibutton.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
+                if (guibutton.isMouseOver()) {
                 	//gui.selectedButton = guibutton;
                     // TODO this.mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
                     if(guibutton instanceof GuiButtonColourBlock) {
@@ -134,7 +140,7 @@ public class CommandBlockAliasClientFilter extends FilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.commandblockalias.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.commandblockalias.info"));
 	}
 	
 	@Override
@@ -143,7 +149,7 @@ public class CommandBlockAliasClientFilter extends FilterClient {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
     		if(listBt instanceof GuiButtonColourBlock) {
     			GuiButtonColourBlock tab = (GuiButtonColourBlock)listBt;
-        		if(tab.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
+        		if(tab.isMouseOver()) {
         			List<String> list = new ArrayList<String>();
         			list.add(tab.getCurrentColour(tab.textColourIndex).getName());
         			list.add((tab.textColourIndex + 1) + "/" + GuiButtonColourBlock.TextColour.values().length);

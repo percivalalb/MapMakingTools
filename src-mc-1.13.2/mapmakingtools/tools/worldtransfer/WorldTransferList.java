@@ -75,14 +75,14 @@ public class WorldTransferList {
 			NBTTagList list = new NBTTagList();
 			for(String name : map.keySet()) {
 				NBTTagCompound tag = new NBTTagCompound();
-				tag.setString("name", name);
+				tag.putString("name", name);
 				
 				
 				NBTTagList blockPosList = new NBTTagList();
 				List<BlockPos> posList = mapPos.get(name);
 				for(int j = 0; j < posList.size(); ++j)
-					blockPosList.appendTag(new NBTTagLong(posList.get(j).toLong()));
-				tag.setTag("blockpos", blockPosList);
+					blockPosList.add(new NBTTagLong(posList.get(j).toLong()));
+				tag.put("blockpos", blockPosList);
 				
 				
 				NBTTagList areaList = new NBTTagList();
@@ -90,14 +90,14 @@ public class WorldTransferList {
 				for(int j = 0; j < blockList.size(); ++j) {
 					NBTTagCompound compound = new NBTTagCompound();
 					blockList.get(j).writeToNBT(compound);
-					areaList.appendTag(compound);
+					areaList.add(compound);
 				}
-				tag.setTag("area", areaList);
+				tag.put("area", areaList);
 				
-				list.appendTag(tag);
+				list.add(tag);
 			}
 			
-			data.setTag("selection", list);
+			data.put("selection", list);
 			
 	        CompressedStreamTools.writeCompressed(data, outputStream);
 			outputStream.close();
@@ -118,20 +118,20 @@ public class WorldTransferList {
 			FileInputStream inputStream = new FileInputStream(saveFile);
 			NBTTagCompound data = CompressedStreamTools.readCompressed(inputStream);
 			
-			NBTTagList list = (NBTTagList)data.getTagList("selection", 10);
-			for(int i = 0; i < list.tagCount(); ++i) {
-				NBTTagCompound tag = list.getCompoundTagAt(i);
-				NBTTagList blockPosList = (NBTTagList)tag.getTagList("blockpos", 4);
+			NBTTagList list = (NBTTagList)data.getList("selection", 10);
+			for(int i = 0; i < list.size(); ++i) {
+				NBTTagCompound tag = list.getCompound(i);
+				NBTTagList blockPosList = (NBTTagList)tag.getList("blockpos", 4);
 				
 				ArrayList<BlockPos> posList = new ArrayList<BlockPos>();
-				for(int j = 0; j < blockPosList.tagCount(); ++j)
+				for(int j = 0; j < blockPosList.size(); ++j)
 					posList.add(BlockPos.fromLong(((NBTTagLong)blockPosList.get(j)).getLong()));
 				
-				NBTTagList areaList = (NBTTagList)tag.getTagList("area", 10);
+				NBTTagList areaList = (NBTTagList)tag.getList("area", 10);
 				
 				ArrayList<BlockCache> blockList = new ArrayList<BlockCache>();
-				for(int j = 0; j < areaList.tagCount(); ++j)
-					blockList.add(BlockCache.readFromNBT(areaList.getCompoundTagAt(j)));
+				for(int j = 0; j < areaList.size(); ++j)
+					blockList.add(BlockCache.readFromNBT(areaList.getCompound(j)));
 
 				if(posList.size() >= 2) {
 					String name = tag.getString("name");

@@ -34,24 +34,24 @@ public class BookAttribute extends IItemAttribute {
 		case 0:
 			if(this.name == null) break;
 			
-			NBTUtil.getOrCreateTagCompound(stack).setString("title", this.name);
+			NBTUtil.getOrCreateTagCompound(stack).putString("title", this.name);
 			
 			break;
 		case 1:
 			if(this.author == null) break;
 			
-			NBTUtil.getOrCreateTagCompound(stack).setString("author", this.author);
+			NBTUtil.getOrCreateTagCompound(stack).putString("author", this.author);
 			
 			break;
 		case 2:
 			if(this.generation == null) break;
 			
-			NBTUtil.getOrCreateTagCompound(stack).setInteger("generation", Numbers.parse(this.generation));
+			NBTUtil.getOrCreateTagCompound(stack).putInt("generation", Numbers.parse(this.generation));
 			
 			break;
 		case 3:
-			ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount(), stack.getItemDamage());
-			
+			ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount());
+			//TODO
 			NBTUtil.hasEmptyTagCompound(stack, true);
 			
 			break;
@@ -66,15 +66,15 @@ public class BookAttribute extends IItemAttribute {
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		if(first) {
-			if(stack.hasTagCompound()) {
-				if(stack.getTagCompound().hasKey("title", NBTUtil.ID_STRING)) {
-					this.fld_name.setText(stack.getTagCompound().getString("title"));
+			if(stack.hasTag()) {
+				if(stack.getTag().contains("title", NBTUtil.ID_STRING)) {
+					this.fld_name.setText(stack.getTag().getString("title"));
 				}
-				if(stack.getTagCompound().hasKey("author", NBTUtil.ID_STRING)) {
-					this.fld_author.setText(stack.getTagCompound().getString("author"));
+				if(stack.getTag().contains("author", NBTUtil.ID_STRING)) {
+					this.fld_author.setText(stack.getTag().getString("author"));
 				}
-				if(stack.getTagCompound().hasKey("generation", NBTUtil.ID_NUMBER)) {
-					this.fld_generation.setText("" + stack.getTagCompound().getInteger("generation"));
+				if(stack.getTag().contains("generation", NBTUtil.ID_NUMBER)) {
+					this.fld_generation.setText("" + stack.getTag().getInt("generation"));
 				}
 			}
 		}
@@ -92,20 +92,18 @@ public class BookAttribute extends IItemAttribute {
 		this.fld_name = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 28, 80, 13);
 		this.fld_author = new GuiTextField(1, itemEditor.getFontRenderer(), x + 86, y + 28, 80, 13);
 		this.fld_generation = new GuiTextField(1, itemEditor.getFontRenderer(), x + 170, y + 28, 80, 13);
-		this.btn_convertback = new GuiButton(0, x + 2, y + 48, 200, 20, "Convert back to writable book");
-		itemEditor.getTextBoxList().add(this.fld_name);
-		itemEditor.getTextBoxList().add(this.fld_author);
-		itemEditor.getTextBoxList().add(this.fld_generation);
-		//itemEditor.getButtonList().add(this.btn_convertback);
+		this.btn_convertback = new GuiButton(0, x + 2, y + 48, 200, 20, "Convert back to writable book") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(3);
+	    	}
+		};
+		itemEditor.addTextFieldToGui(this.fld_name);
+		itemEditor.addTextFieldToGui(this.fld_author);
+		itemEditor.addTextFieldToGui(this.fld_generation);
+		//itemEditor.addButtonToGui(this.btn_convertback);
 	}
 
-	@Override
-	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
-		if(button.id == 0) {
-			itemEditor.sendUpdateToServer(3);
-		}
-	}
-	
 	@Override
 	public void textboxKeyTyped(IGuiItemEditor itemEditor, char character, int keyId, GuiTextField textbox) {
 		if(textbox == this.fld_name) {

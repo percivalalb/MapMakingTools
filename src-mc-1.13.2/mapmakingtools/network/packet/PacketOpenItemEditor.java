@@ -1,43 +1,43 @@
 package mapmakingtools.network.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-import mapmakingtools.MapMakingTools;
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
-import mapmakingtools.proxy.CommonProxy;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketOpenItemEditor extends AbstractServerMessage {
+public class PacketOpenItemEditor {
 	
 	private int slotIndex;
 	
-	public PacketOpenItemEditor() {}
 	public PacketOpenItemEditor(int slotIndex) {
 		this.slotIndex = slotIndex;
 	}
 
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.slotIndex = packetbuffer.readInt();
+	public static void encode(PacketOpenItemEditor msg, PacketBuffer buf) {
+		buf.writeInt(msg.slotIndex);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeInt(this.slotIndex);
+	
+	public static PacketOpenItemEditor decode(PacketBuffer buf) {
+		int slotIndex = buf.readInt();
+		return new PacketOpenItemEditor(slotIndex);
 	}
-
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		player.openGui(MapMakingTools.INSTANCE, CommonProxy.GUI_ID_ITEM_EDITOR, player.world, this.slotIndex, 0, 0);
+	
+	public static class Handler {
+        public static void handle(final PacketOpenItemEditor msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		//TODO player.openGui(MapMakingTools.INSTANCE, CommonProxy.GUI_ID_ITEM_EDITOR, player.world, this.slotIndex, 0, 0);
+            });
+            
+            ctx.get().setPacketHandled(true);
+        }
 	}
-
 }

@@ -18,21 +18,21 @@ public abstract class FilterServerInventory extends FilterServer {
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		
-		if(tag.hasKey("inventories", NBTUtil.ID_LIST)) {
+		if(tag.contains("inventories", NBTUtil.ID_LIST)) {
 		
-			NBTTagList inventoriesData = (NBTTagList)tag.getTagList("inventories", NBTUtil.ID_COMPOUND);
-			for(int i = 0; i < inventoriesData.tagCount(); ++i) {
-				NBTTagCompound inventoryData = inventoriesData.getCompoundTagAt(i);
+			NBTTagList inventoriesData = (NBTTagList)tag.getList("inventories", NBTUtil.ID_COMPOUND);
+			for(int i = 0; i < inventoriesData.size(); ++i) {
+				NBTTagCompound inventoryData = inventoriesData.getCompound(i);
 				IInventory inventory = this.getInventory(inventoryData.getUniqueId("uuid"));
 				
-				NBTTagList itemData = inventoryData.getTagList("Items", NBTUtil.ID_COMPOUND);
+				NBTTagList itemData = inventoryData.getList("Items", NBTUtil.ID_COMPOUND);
 
-		        for(int j = 0; j < itemData.tagCount(); ++j) {
-		            NBTTagCompound nbttagcompound = itemData.getCompoundTagAt(j);
+		        for(int j = 0; j < itemData.size(); ++j) {
+		            NBTTagCompound nbttagcompound = itemData.getCompound(j);
 		            int k = nbttagcompound.getByte("Slot") & 255;
 
 		            if(k >= 0 && k < inventory.getSizeInventory()) {
-		            	inventory.setInventorySlotContents(k, new ItemStack(nbttagcompound));
+		            	inventory.setInventorySlotContents(k, ItemStack.read(nbttagcompound));
 		            }
 		        }
 			}
@@ -47,7 +47,7 @@ public abstract class FilterServerInventory extends FilterServer {
 			IInventory inventory = this.getInventory(key);
 			
 			NBTTagCompound inventoryData = new NBTTagCompound();
-			inventoryData.setUniqueId("uuid", key);
+			inventoryData.putUniqueId("uuid", key);
 			
 			NBTTagList itemData = new NBTTagList();
 	        for (int i = 0; i < inventory.getSizeInventory(); ++i) {
@@ -55,18 +55,18 @@ public abstract class FilterServerInventory extends FilterServer {
 
 	            if(!itemstack.isEmpty()) {
 	                NBTTagCompound nbttagcompound = new NBTTagCompound();
-	                nbttagcompound.setByte("Slot", (byte)i);
-	                itemstack.writeToNBT(nbttagcompound);
-	                itemData.appendTag(nbttagcompound);
+	                nbttagcompound.putByte("Slot", (byte)i);
+	                itemstack.write(nbttagcompound);
+	                itemData.add(nbttagcompound);
 	            }
 	        }
 
 	        if(!itemData.isEmpty()) {
-	        	inventoryData.setTag("Items", itemData);
-	        	inventoriesData.appendTag(inventoryData);
+	        	inventoryData.put("Items", itemData);
+	        	inventoriesData.add(inventoryData);
 	        }
 		}
-		tag.setTag("inventories", inventoriesData);
+		tag.put("inventories", inventoriesData);
 		
 		return tag; 
 	}

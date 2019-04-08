@@ -7,18 +7,19 @@ import mapmakingtools.api.filter.IFilterGui;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketCreeperProperties;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -53,19 +54,30 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 		super.initGui(gui);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-        this.btn_ok = new GuiButton(0, topX + 140, topY + 66, 60, 20, "OK");
+        this.btn_ok = new GuiButton(0, topX + 140, topY + 66, 60, 20, "OK") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketCreeperProperties(txt_fuse.getText(), txt_radius.getText(), potentialSpawnIndex));
+            	ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
         this.btn_ok.enabled = false;
-        this.btn_cancel = new GuiButton(1, topX + 40, topY + 66, 60, 20, "Cancel");
+        this.btn_cancel = new GuiButton(1, topX + 40, topY + 66, 60, 20, "Cancel") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			
+    		}
+    	};
         this.txt_radius = new GuiTextField(0, gui.getFont(), topX + 120, topY + 37, 90, 20);
         this.txt_radius.setMaxStringLength(7);
         this.txt_radius.setText(radiusText);
         this.txt_fuse = new GuiTextField(1, gui.getFont(), topX + 20, topY + 37, 90, 20);
         this.txt_fuse.setMaxStringLength(7);
         this.txt_fuse.setText(fuseText);
-        gui.getButtonList().add(this.btn_ok);
-        gui.getButtonList().add(this.btn_cancel);
-        gui.getTextBoxList().add(this.txt_radius);
-        gui.getTextBoxList().add(this.txt_fuse);
+        gui.addButtonToGui(this.btn_ok);
+        gui.addButtonToGui(this.btn_cancel);
+        gui.addTextFieldToGui(this.txt_radius);
+        gui.addTextFieldToGui(this.txt_fuse);
         
         if(SpawnerUtil.isSpawner(gui)) {
         	this.addPotentialSpawnButtons(gui, topX, topY);
@@ -85,25 +97,14 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void actionPerformed(IFilterGui gui, GuiButton button) {
-		super.actionPerformed(gui, button);
-		if (button.enabled) {
-            if(button.id == 0) {
-                PacketDispatcher.sendToServer(new PacketCreeperProperties(this.txt_fuse.getText(), this.txt_radius.getText(), potentialSpawnIndex));
-            	ClientHelper.getClient().player.closeScreen();
-            }
-        }
-	}
-	
-	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
 		if(SpawnerUtil.isSpawner(gui))
-        	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
+        	this.removePotentialSpawnButtons(gui, mouseX, mouseY, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.creeperproperties.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.creeperproperties.info"));
 	}
 	
 	@Override
@@ -142,6 +143,6 @@ public class CreeperPropertiesClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public String getErrorMessage(IFilterGui gui) { 
-		return TextFormatting.RED + I18n.translateToLocal("mapmakingtools.filter.creeperproperties.error");
+		return TextFormatting.RED + I18n.format("mapmakingtools.filter.creeperproperties.error");
 	}
 }

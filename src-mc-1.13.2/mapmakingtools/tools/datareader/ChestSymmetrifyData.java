@@ -77,8 +77,32 @@ public class ChestSymmetrifyData {
 	}
 	
 	public static void readDataFromFile() {
-		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/chestpatterns.txt");
-		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length == 4 && Numbers.isInteger(arr[0]));
-		parts.forEach(arr -> addChestPattern(Numbers.parse(arr[0]), arr[1], arr[2], arr[3]));
+		addChestPattern(1, "ooooooooo", "ooooXoooo", "ooooooooo");
+		addChestPattern(2, "ooooooooo", "oooXoXooo", "ooooooooo");
+		addChestPattern(3, "ooooooooo", "ooXoXoXoo", "ooooooooo");
+		addChestPattern(4, "ooooooooo", "oXoXoXoXo", "ooooooooo");
+		addChestPattern(5, "ooooooooo", "XoXoXoXoX", "ooooooooo");
+		addChestPattern(6, "ooXoXoXoo", "ooooooooo", "ooXoXoXoo");
+		addChestPattern(7, "oooXoXooo", "ooXoXoXoo", "oooXoXooo");
+		addChestPattern(8, "oXoXoXoXo", "ooooooooo", "oXoXoXoXo");
+		addChestPattern(9, "oXoXoXoXo", "ooooXoooo", "oXoXoXoXo");
+		addChestPattern(10, "oXoXoXoXo", "ooXoooXoo", "oXoXoXoXo");
+		addChestPattern(11, "oXoXoXoXo", "ooXoXoXoo", "oXoXoXoXo");
+		addChestPattern(12, "oXoXoXoXo", "XoXoooXoX", "oXoXoXoXo");
+		addChestPattern(13, "oXoXoXoXo", "XoXoXoXoX", "oXoXoXoXo");
+		addChestPattern(14, "XoXoXoXoX", "oXoXoXoXo", "XoXoXoXoX");
+		addChestPattern(15, "ooXXXXXoo", "ooXXXXXoo", "ooXXXXXoo");
+		addChestPattern(16, "ooXXXXXoo", "oXXXoXXXo", "ooXXXXXoo");
+		addChestPattern(17, "oXXXXXXXo", "oooXXXooo", "oXXXXXXXo");
+		addChestPattern(18, "oXXXoXXXo", "oXXXoXXXo", "oXXXoXXXo");
+		addChestPattern(19, "oXXXoXXXo", "oXXXXXXXo", "oXXXoXXXo");
+		addChestPattern(20, "oXXXXXXXo", "oXXXoXXXo", "oXXXXXXXo");
+		addChestPattern(21, "oXXXXXXXo", "oXXXXXXXo", "oXXXXXXXo");
+		addChestPattern(22, "oXXXXXXXo", "XXXXoXXXX", "oXXXXXXXo");
+		addChestPattern(23, "oXXXXXXXo", "XXXXXXXXX", "oXXXXXXXo");
+		addChestPattern(24, "XXXXXXXXX", "oXXXoXXXo", "XXXXXXXXX");
+		addChestPattern(25, "XXXXXXXXX", "oXXXXXXXo", "XXXXXXXXX");
+		addChestPattern(26, "XXXXXXXXX", "XXXXoXXXX", "XXXXXXXXX");
+		addChestPattern(27, "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX");
 	}
 }

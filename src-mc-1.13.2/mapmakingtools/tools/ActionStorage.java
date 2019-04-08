@@ -142,51 +142,51 @@ public class ActionStorage {
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		//tag.setString("rotationValue", this.rotationValue.getMarker());
-		//tag.setString("flippingValue", this.flippingValue.getMarker());
+		//tag.putString("rotationValue", this.rotationValue.getMarker());
+		//tag.putString("flippingValue", this.flippingValue.getMarker());
 		
 		//Cached Undo list
 		NBTTagList undoList = new NBTTagList();
 		for(ArrayList<BlockCache> undos : this.cachedUndo) {
 			NBTTagCompound undoData = new NBTTagCompound();
 			
-			undoData.setInteger("count", undos.size());
+			undoData.putInt("count", undos.size());
 			for(int i = 0; i < undos.size(); ++i) {
 				NBTTagCompound compound = new NBTTagCompound();
 				undos.get(i).writeToNBT(compound);
-				undoData.setTag("" + i, compound);
+				undoData.put("" + i, compound);
 			}
-			undoList.appendTag(undoData);
+			undoList.add(undoData);
 		}
-		tag.setTag("cachedUndo", undoList);
+		tag.put("cachedUndo", undoList);
 		
 		//Cached Redo list
 		NBTTagList redoList = new NBTTagList();
 		for(ArrayList<BlockCache> redos : this.cachedRedo) {
 			NBTTagCompound redoData = new NBTTagCompound();
 			
-			redoData.setInteger("count", redos.size());
+			redoData.putInt("count", redos.size());
 			for(int i = 0; i < redos.size(); ++i) {
 				NBTTagCompound compound = new NBTTagCompound();
 				redos.get(i).writeToNBT(compound);
-				redoData.setTag("" + i, compound);
+				redoData.put("" + i, compound);
 			}
 			
-			redoList.appendTag(redoData);
+			redoList.add(redoData);
 		}
-		tag.setTag("cachedRedo", redoList);
+		tag.put("cachedRedo", redoList);
 		
 		//Cached Copy
 		NBTTagCompound copyData = new NBTTagCompound();
 		
-		copyData.setInteger("count", this.cachedCopy.size());
+		copyData.putInt("count", this.cachedCopy.size());
 		for(int i = 0; i < this.cachedCopy.size(); ++i) {
 			NBTTagCompound compound = new NBTTagCompound();
 			this.cachedCopy.get(i).writeToNBT(compound);
-			copyData.setTag("" + i, compound);
+			copyData.put("" + i, compound);
 		}
 		
-		tag.setTag("cachedCopy", copyData);
+		tag.put("cachedCopy", copyData);
 		
 		return tag;
 	}
@@ -195,34 +195,34 @@ public class ActionStorage {
 		//this.rotationValue = MovementType.getRotation(tag.getString("rotationValue"));
 		//this.flippingValue = MovementType.getRotation(tag.getString("flippingValue"));
 		
-		if(tag.hasKey("cachedUndo")) {
-			NBTTagList list1 = (NBTTagList)tag.getTag("cachedUndo");
-			for(int i = 0; i < list1.tagCount(); ++i) {
+		if(tag.contains("cachedUndo")) {
+			NBTTagList list1 = (NBTTagList)tag.get("cachedUndo");
+			for(int i = 0; i < list1.size(); ++i) {
 				ArrayList<BlockCache> list = new ArrayList<BlockCache>();
-				NBTTagCompound tag1 = list1.getCompoundTagAt(i);
-				for(int j = 0; j < tag1.getInteger("count"); ++j)
-					list.add(BlockCache.readFromNBT(tag1.getCompoundTag("" + j)));
+				NBTTagCompound tag1 = list1.getCompound(i);
+				for(int j = 0; j < tag1.getInt("count"); ++j)
+					list.add(BlockCache.readFromNBT(tag1.getCompound("" + j)));
 				this.cachedUndo.add(list);
 			}
 		}
 		
-		if(tag.hasKey("cachedRedo")) {
-			NBTTagList list1 = (NBTTagList)tag.getTag("cachedRedo");
-			for(int i = 0; i < list1.tagCount(); ++i) {
+		if(tag.contains("cachedRedo")) {
+			NBTTagList list1 = (NBTTagList)tag.get("cachedRedo");
+			for(int i = 0; i < list1.size(); ++i) {
 				ArrayList<BlockCache> list = new ArrayList<BlockCache>();
-				NBTTagCompound tag1 = list1.getCompoundTagAt(i);
-				for(int j = 0; j < tag1.getInteger("count"); ++j)
-					list.add(BlockCache.readFromNBT(tag1.getCompoundTag("" + j)));
+				NBTTagCompound tag1 = list1.getCompound(i);
+				for(int j = 0; j < tag1.getInt("count"); ++j)
+					list.add(BlockCache.readFromNBT(tag1.getCompound("" + j)));
 				this.cachedRedo.add(list);
 			}
 		}
 		
-		if(tag.hasKey("cachedCopy")) {
+		if(tag.contains("cachedCopy")) {
 			ArrayList<BlockCache> list = new ArrayList<BlockCache>();
-			NBTTagCompound copyData = tag.getCompoundTag("cachedCopy");
+			NBTTagCompound copyData = tag.getCompound("cachedCopy");
 			
-			for(int i = 0; i < copyData.getInteger("count"); ++i)
-				list.add(BlockCache.readFromNBT(copyData.getCompoundTag("" + i)));
+			for(int i = 0; i < copyData.getInt("count"); ++i)
+				list.add(BlockCache.readFromNBT(copyData.getCompound("" + i)));
 		}
 		
 		return this;

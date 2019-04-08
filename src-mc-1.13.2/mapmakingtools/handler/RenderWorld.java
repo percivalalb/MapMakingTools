@@ -7,23 +7,23 @@ import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.PlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * @author ProPercivalalb
  */
 public class RenderWorld {
 	
-	private static Minecraft mc = Minecraft.getMinecraft();
+	private static Minecraft mc = Minecraft.getInstance();
 	private static boolean hasCheckedVersion = false;
 	
 	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) {
-		if(!PlayerAccess.canEdit(mc.player) || !ClientData.playerData.hasSelectedPoints() || !(mc.player.getHeldItemMainhand().getItem() == ModItems.EDIT_ITEM && mc.player.getHeldItemMainhand().getMetadata() == 0))
+		if(!PlayerAccess.canEdit(mc.player) || !ClientData.playerData.hasSelectedPoints() || !(mc.player.getHeldItemMainhand().getItem() == ModItems.EDIT_ITEM))// && TODO mc.player.getHeldItemMainhand().getMetadata() == 0))
 			return;
 		GlStateManager.pushMatrix();
 		PlayerData data = ClientData.playerData;
@@ -41,15 +41,15 @@ public class RenderWorld {
 	}
 
 	public void drawSelectionBox(EntityPlayer player, float particleTicks, AxisAlignedBB boundingBox) {
-		GlStateManager.disableAlpha();
+		GlStateManager.disableAlphaTest();
 		GlStateManager.disableLighting(); //Make the line see thought blocks
 		GlStateManager.depthMask(false);
-		GlStateManager.disableDepth(); //Make the line see thought blocks
+		GlStateManager.disableDepthTest(); //Make the line see thought blocks
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(0.0F, 0.0F, 0.0F, 0.7F);
+        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 0.7F);
         //TODO Used when drawing outline of bounding box 
-        GlStateManager.glLineWidth(2.0F);
+        GlStateManager.lineWidth(2.0F);
         
         
         GlStateManager.disableTexture2D();
@@ -68,26 +68,26 @@ public class RenderWorld {
    		 		for(int y = minY; y < maxY; ++y) {
    		 			for(int z = minZ; z < maxZ; ++z) {
    		 				AxisAlignedBB smallBox = new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1);
-   		 				RenderGlobal.drawSelectionBoundingBox(smallBox.offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
+   		 				WorldRenderer.drawSelectionBoundingBox(smallBox.offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
    		 			} 
    		 		}
    		 	}
         } 
         else {
-        	RenderGlobal.drawSelectionBoundingBox(boundingBox.offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
+        	WorldRenderer.drawSelectionBoundingBox(boundingBox.offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
         	if(Constants.RENDER_SELECTED_POSITION) {
 	        	PlayerData data = ClientData.playerData;
-	        	RenderGlobal.drawSelectionBoundingBox(new AxisAlignedBB(data.getFirstPoint(), data.getFirstPoint().add(1, 1, 1)).offset(-d0, -d1, -d2), 1F, 1F, 0F, 0.8F);
-	        	RenderGlobal.drawSelectionBoundingBox(new AxisAlignedBB(data.getSecondPoint(), data.getSecondPoint().add(1, 1, 1)).offset(-d0, -d1, -d2), 0F, 1F, 1F, 0.8F);
+	        	WorldRenderer.drawSelectionBoundingBox(new AxisAlignedBB(data.getFirstPoint(), data.getFirstPoint().add(1, 1, 1)).offset(-d0, -d1, -d2), 1F, 1F, 0F, 0.8F);
+	        	WorldRenderer.drawSelectionBoundingBox(new AxisAlignedBB(data.getSecondPoint(), data.getSecondPoint().add(1, 1, 1)).offset(-d0, -d1, -d2), 0F, 1F, 1F, 0.8F);
         	}
         }
-        GlStateManager.color(0.0F, 0.0F, 0.0F, 0.3F);
-    	GlStateManager.enableDepth(); //Make the line see thought blocks
+        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 0.3F);
+    	GlStateManager.enableDepthTest(); //Make the line see thought blocks
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
         GlStateManager.enableLighting(); //Make the line see thought blocks
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
     }
 	
 	/**

@@ -9,16 +9,17 @@ import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.Numbers;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketMobPosition;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -53,15 +54,26 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 		gui.setYSize(135);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-        this.btn_ok = new GuiButton(0, topX + 140, topY + 101, 60, 20, "OK");
+        this.btn_ok = new GuiButton(0, topX + 140, topY + 101, 60, 20, "OK") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketMobPosition(txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), btn_type.getData() == 0, potentialSpawnIndex));
+        		ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
         this.btn_ok.enabled = false;
-        this.btn_cancel = new GuiButton(1, topX + 40, topY + 101, 60, 20, "Cancel");
+        this.btn_cancel = new GuiButton(1, topX + 40, topY + 101, 60, 20, "Cancel") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+            	ClientHelper.getClient().player.closeScreen();
+    		}
+    	};
         this.btn_type = new GuiButtonData(2, topX + 130, topY + 72, 70, 20, isRelative ? "Relative" : "Exact");
         if(!isRelative)
         	this.btn_type.setData(1);
-        gui.getButtonList().add(this.btn_ok);
-        gui.getButtonList().add(this.btn_cancel);
-        gui.getButtonList().add(this.btn_type);
+        gui.addButtonToGui(this.btn_ok);
+        gui.addButtonToGui(this.btn_cancel);
+        gui.addButtonToGui(this.btn_type);
         this.txt_xPosition = new GuiTextField(0, gui.getFont(), topX + 20, topY + 37, 90, 20);
         this.txt_xPosition.setMaxStringLength(7);
         this.txt_xPosition.setText(xText);
@@ -71,9 +83,9 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
         this.txt_zPosition = new GuiTextField(2, gui.getFont(), topX + 20, topY + 72, 90, 20);
         this.txt_zPosition.setMaxStringLength(7);
         this.txt_zPosition.setText(zText);
-        gui.getTextBoxList().add(this.txt_xPosition);
-        gui.getTextBoxList().add(this.txt_yPosition);
-        gui.getTextBoxList().add(this.txt_zPosition);
+        gui.addTextFieldToGui(this.txt_xPosition);
+        gui.addTextFieldToGui(this.txt_yPosition);
+        gui.addTextFieldToGui(this.txt_zPosition);
         
         this.addPotentialSpawnButtons(gui, topX, topY);
 	}
@@ -93,10 +105,6 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
             switch (button.id) {
-                case 0:
-                	PacketDispatcher.sendToServer(new PacketMobPosition(txt_xPosition.getText(), txt_yPosition.getText(), txt_zPosition.getText(), this.btn_type.getData() == 0, this.potentialSpawnIndex));
-            		ClientHelper.getClient().player.closeScreen();
-                    break;
                 case 2:
                 	if(isRelative) {
                 		this.btn_type.displayString = "Exact";
@@ -148,20 +156,20 @@ public class MobPositionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
-		this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, topX, topY);
+		this.removePotentialSpawnButtons(gui, mouseX, mouseY, mouseButton, topX, topY);
 	}
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.mobposition.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.mobposition.info"));
 	}
 	
 	@Override
 	public boolean drawBackground(IFilterGui gui) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_MEDIUM);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();

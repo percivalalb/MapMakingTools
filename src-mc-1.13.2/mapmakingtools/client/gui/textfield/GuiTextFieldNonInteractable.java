@@ -20,7 +20,7 @@ public class GuiTextFieldNonInteractable extends GuiTextField {
 	}
 	
 	@Override
-	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		if(!this.missMouseClick)
 			return super.mouseClicked(mouseX, mouseY, mouseButton);
 		else {

@@ -6,9 +6,9 @@ import java.util.HashMap;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.WorldAction;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
@@ -99,7 +99,7 @@ public class MazeThread extends Thread {
 			
 			this.data.getActionStorage().addUndo(list);
 
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.maze.complete", Block.REGISTRY.getNameForObject(this.state.getBlock()));
+			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.commands.build.maze.complete", IRegistry.BLOCK.getKey(this.state.getBlock()));
 			chatComponent.getStyle().setItalic(true);
 			this.data.getPlayer().sendMessage(chatComponent);
 		//}

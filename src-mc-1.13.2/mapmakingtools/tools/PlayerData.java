@@ -3,18 +3,21 @@ package mapmakingtools.tools;
 import java.util.Hashtable;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ServerHelper;
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.network.packet.PacketSetPoint1;
+import mapmakingtools.helper.SideHelper;
+import mapmakingtools.network.PacketHandler;
+import mapmakingtools.network.packet.PacketSetPoint;
 import mapmakingtools.network.packet.PacketSetPoint2;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -36,9 +39,12 @@ public class PlayerData {
 	}
 	
 	public EntityPlayer getPlayer() {
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+		if(SideHelper.isClient()) {
+			//MapMakingTools.LOGGER.info("CLIENT");
+			//MapMakingTools.LOGGER.info("NULL" + MapMakingTools.PROXY.getPlayerEntity() == null);
 			return MapMakingTools.PROXY.getPlayerEntity();
-
+		}
+		//MapMakingTools.LOGGER.info("SERVER");
 		return ServerHelper.getServer().getPlayerList().getPlayerByUUID(this.uuid);
 	}
 	
@@ -46,20 +52,28 @@ public class PlayerData {
 		return this.getPlayer().world;
 	}
 	
+	@Nullable
 	public BlockPos getFirstPoint(int dimId) {	
 		return this.DIMID_POS1.get(dimId);
 	}
 	
+	@Nullable
 	public BlockPos getFirstPoint() {	
-		return this.getFirstPoint(this.getPlayer().world.provider.getDimension());
+		return this.getFirstPoint(this.getPlayer()
+				.world
+				.dimension
+				.getType()
+				.getId());
 	}
 	
+	@Nullable
 	public BlockPos getSecondPoint(int dimId) {
 		return this.DIMID_POS2.get(dimId);
 	}
 	
+	@Nullable
 	public BlockPos getSecondPoint() {
-		return this.getSecondPoint(this.getPlayer().world.provider.getDimension());
+		return this.getSecondPoint(this.getPlayer().world.dimension.getType().getId());
 	}
 	
 	
@@ -76,7 +90,7 @@ public class PlayerData {
 	}
 	
 	public boolean setFirstPoint(BlockPos pos) {
-		int dimId = this.getPlayer().world.provider.getDimension();
+		int dimId = this.getPlayer().world.dimension.getType().getId();
 		if(pos != null)
 			this.DIMID_POS1.put(dimId, pos.toImmutable());
 		else
@@ -91,7 +105,7 @@ public class PlayerData {
 	}
 	
 	public boolean setSecondPoint(BlockPos pos) {
-		int dimId = this.getPlayer().world.provider.getDimension();
+		int dimId = this.getPlayer().world.dimension.getType().getId();
 		if(pos != null)
 			this.DIMID_POS2.put(dimId, pos.toImmutable());
 		else
@@ -99,9 +113,13 @@ public class PlayerData {
 		return true;
 	}
 	
-	public void sendUpdateToClient() {
-		PacketDispatcher.sendTo(new PacketSetPoint1(this.getFirstPoint()), this.getPlayer());
-		PacketDispatcher.sendTo(new PacketSetPoint2(this.getSecondPoint()), this.getPlayer());
+	public void sendUpdateToClient(EntityPlayer player) {
+		if(player instanceof EntityPlayerMP) {
+			PacketHandler.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP)player), new PacketSetPoint(this.getFirstPoint(player.world.dimension.getType().getId())));
+			PacketHandler.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP)player), new PacketSetPoint2(this.getSecondPoint(player.world.dimension.getType().getId())));
+		}
+		else
+			MapMakingTools.LOGGER.warn("Tried to update client but player was not instanceof EntityPlayerMP");
 	}
 	
 	public ActionStorage getActionStorage() {
@@ -114,38 +132,38 @@ public class PlayerData {
 		
 		for(int key : this.DIMID_POS1.keySet()) {
 			NBTTagCompound tag1 = new NBTTagCompound();
-			tag1.setInteger("dim", key);
-			tag1.setLong("pos", DIMID_POS1.get(key).toLong());
-			list1.appendTag(tag1);
+			tag1.putInt("dim", key);
+			tag1.putLong("pos", DIMID_POS1.get(key).toLong());
+			list1.add(tag1);
 		}
 		
 		for(int key : this.DIMID_POS2.keySet()) {
 			NBTTagCompound tag2 = new NBTTagCompound();
-			tag2.setInteger("dim", key);
-			tag2.setLong("pos", DIMID_POS2.get(key).toLong());
-			list2.appendTag(tag2);
+			tag2.putInt("dim", key);
+			tag2.putLong("pos", DIMID_POS2.get(key).toLong());
+			list2.add(tag2);
 		}
 		
-		tag.setUniqueId("uuid", this.uuid);
-		tag.setTag("firstPoint", list1);
-		tag.setTag("secondPoint", list2);
+		tag.putUniqueId("uuid", this.uuid);
+		tag.put("firstPoint", list1);
+		tag.put("secondPoint", list2);
 		
 		return tag;
 	}
 	
 	public PlayerData readFromNBT(NBTTagCompound tag) {
-		NBTTagList list1 = (NBTTagList)tag.getTag("firstPoint");
-		NBTTagList list2 = (NBTTagList)tag.getTag("secondPoint");
+		NBTTagList list1 = (NBTTagList)tag.get("firstPoint");
+		NBTTagList list2 = (NBTTagList)tag.get("secondPoint");
 		
-		for(int i = 0; i < list1.tagCount(); ++i) {
-			NBTTagCompound tag1 = list1.getCompoundTagAt(i);
-			int dim = tag1.getInteger("dim");
+		for(int i = 0; i < list1.size(); ++i) {
+			NBTTagCompound tag1 = list1.getCompound(i);
+			int dim = tag1.getInt("dim");
 			DIMID_POS1.put(dim, BlockPos.fromLong(tag1.getLong("pos")));
 		}
 		
-		for(int i = 0; i < list2.tagCount(); ++i) {
-			NBTTagCompound tag2 = list2.getCompoundTagAt(i);
-			int dim = tag2.getInteger("dim");
+		for(int i = 0; i < list2.size(); ++i) {
+			NBTTagCompound tag2 = list2.getCompound(i);
+			int dim = tag2.getInt("dim");
 			DIMID_POS2.put(dim, BlockPos.fromLong(tag2.getLong("pos")));
 		}
 		

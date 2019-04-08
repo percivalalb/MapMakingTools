@@ -36,12 +36,12 @@ public class ArmourColourAttribute extends IItemAttribute {
 		case 0:
 			if(!Numbers.isInteger(this.colourint)) break;
 			
-			NBTTagCompound nbttagcompound = stack.getOrCreateSubCompound("display");
-			nbttagcompound.setInteger("color", Numbers.parse(this.colourint));
+			NBTTagCompound nbttagcompound = stack.getOrCreateChildTag("display");
+			nbttagcompound.putInt("color", Numbers.parse(this.colourint));
 			
 			break;
 		case 1:
-			NBTUtil.removeTagFromSubCompound(stack, "display", NBTUtil.ID_INTEGER, "color");
+			NBTUtil.removeFromSubCompound(stack, "display", NBTUtil.ID_INTEGER, "color");
 			NBTUtil.hasEmptyTagCompound(stack, true);
 			
 			break;
@@ -57,7 +57,7 @@ public class ArmourColourAttribute extends IItemAttribute {
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		if(first) {
 			if(NBTUtil.hasTagInSubCompound(stack, "display", "color", NBTUtil.ID_INTEGER)) {
-				int integer = stack.getTagCompound().getCompoundTag("display").getInteger("color");
+				int integer = stack.getTag().getCompound("display").getInt("color");
 				this.fld_colourint.setText(String.valueOf(integer));
 				this.fld_colourhex.setText(Integer.toHexString(integer));
 				this.btn_remove.enabled = true;
@@ -84,26 +84,24 @@ public class ArmourColourAttribute extends IItemAttribute {
 		this.fld_colourint = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 28, 80, 13);
 		this.fld_colourhex = new GuiTextField(1, itemEditor.getFontRenderer(), x + 86, y + 28, 80, 13) {
 		    @Override
-			public boolean textboxKeyTyped(char typedChar, int keyCode) {
+			public boolean charTyped(char typedChar, int keyCode) {
 		    	
 		    	if(ArrayUtil.contains(HEX_CHARACTERS, typedChar) || 14 == keyCode || 203 == keyCode || 205 == keyCode)
-		    		return super.textboxKeyTyped(typedChar, keyCode);
+		    		return super.charTyped(typedChar, keyCode);
 		    	return false;
 		    }
 		};
-		this.btn_remove = new GuiButton(0, x + 2, y + 45, 80, 20, "Remove Colour");
+		this.btn_remove = new GuiButton(0, x + 2, y + 45, 80, 20, "Remove Colour") {
+			@Override
+	    	public void onClick(double mouseX, double mouseY) {
+				itemEditor.sendUpdateToServer(1);
+			}
+		};
 		this.fld_colourhex.setMaxStringLength(6);
 		this.fld_colourint.setMaxStringLength(8);
-		itemEditor.getTextBoxList().add(this.fld_colourint);
-		itemEditor.getTextBoxList().add(this.fld_colourhex);
-		itemEditor.getButtonList().add(this.btn_remove);
-	}
-	
-	@Override
-	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
-		if(button.id == 0) {
-			itemEditor.sendUpdateToServer(1);
-		}
+		itemEditor.addTextFieldToGui(this.fld_colourint);
+		itemEditor.addTextFieldToGui(this.fld_colourhex);
+		itemEditor.addButtonToGui(this.btn_remove);
 	}
 
 	@Override

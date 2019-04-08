@@ -22,7 +22,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
 	
 	@Override
 	public boolean isApplicable(EntityPlayer player, ItemStack stack) {
-		return stack.getItem() == Items.SKULL && stack.getItemDamage() == 3;
+		return stack.getItem() == Items.SKELETON_SKULL;//TODO && stack.getItemDamage() == 3;
 	}
 
 	@Override
@@ -51,17 +51,15 @@ public class PlayerHeadAttribute extends IItemAttribute {
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		this.fld_name = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 15, 80, 13);
-		this.btn_remove = new GuiButton(0, x + 2, y + 32, 80, 20, "Set Skin");
+		this.btn_remove = new GuiButton(0, x + 2, y + 32, 80, 20, "Set Skin") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			itemEditor.sendUpdateToServer(-1);
+    		}
+    	};
 		this.btn_remove.enabled = !Strings.isNullOrEmpty(this.name);
-		itemEditor.getTextBoxList().add(this.fld_name);
-		itemEditor.getButtonList().add(this.btn_remove);
-	}
-
-	@Override
-	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
-		if(button.id == 0) {
-			itemEditor.sendUpdateToServer(-1);
-		}
+		itemEditor.addTextFieldToGui(this.fld_name);
+		itemEditor.addButtonToGui(this.btn_remove);
 	}
 	
 	@Override

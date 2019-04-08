@@ -12,8 +12,8 @@ public class PlayerAccess {
 		if(player == null)
 			return false;
 
-		boolean isCreativeMode = !Constants.HAS_TO_BE_CREATIVE || player.capabilities.isCreativeMode;
-		boolean isOpped = !Constants.HAS_TO_BE_OPPED || player.canUseCommand(3, "mmt");
+		boolean isCreativeMode = !Constants.HAS_TO_BE_CREATIVE || player.abilities.isCreativeMode;
+		boolean isOpped = !Constants.HAS_TO_BE_OPPED || true;// TODO || player.canUseCommand(3, "mmt");
 
 		return isCreativeMode && isOpped;
 	}

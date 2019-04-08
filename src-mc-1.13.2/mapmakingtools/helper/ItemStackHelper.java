@@ -3,7 +3,7 @@ package mapmakingtools.helper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -34,175 +34,171 @@ public class ItemStackHelper {
 	  * @param item The item needed to be checked for a #NBTTagCompound
 	  * @return Returns whether it has created a new #NBTTagCompound
 	  */
-	 public static boolean makeSureItemHasTagCompound(ItemStack item) {
-		 if(!item.hasTagCompound()) {
-			 item.setTagCompound(new NBTTagCompound());
+	 public static boolean makeSureItemhasTag(ItemStack item) {
+		 if(!item.hasTag()) {
+			 item.setTag(new NBTTagCompound());
 			 return true;
 		 }
 		 return false;
 	 }
 	 
 	 public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
-			if (stack1 == null || stack2 == null)
-				return false;
-			if (!stack1.isItemEqual(stack2))
-				return false;
-			if (!ItemStack.areItemStackTagsEqual(stack1, stack2))
-				return false;
-			return true;
+		 if (stack1 == null || stack2 == null)
+			 return false;
+		 if (!stack1.isItemEqual(stack2))
+			 return false;
+		 if (!ItemStack.areItemStackTagsEqual(stack1, stack2))
+			 return false;
+		 return true;
 
+	}
+
+	public static boolean hasTag(ItemStack itemStack, String keyName) {
+		if (itemStack.getTag() != null)
+			return itemStack.getTag().contains(keyName);
+		return false;
+	}
+
+	public static void remove(ItemStack itemStack, String keyName) {
+		if (itemStack.getTag() != null) {
+			itemStack.getTag().remove(keyName);
 		}
-	 
-	 public static void setDamage(ItemStack item, int damage) {
-		 item.setItemDamage(damage);
-	 }
-	 
-	 public static boolean hasTag(ItemStack itemStack, String keyName) {
-	        if (itemStack.getTagCompound() != null)
-	            return itemStack.getTagCompound().hasKey(keyName);
-	        return false;
-	 }
-
-	 public static void removeTag(ItemStack itemStack, String keyName) {
-		 if (itemStack.getTagCompound() != null) {
-			 itemStack.getTagCompound().removeTag(keyName);
-	     }
-	 }
+	}
 
 	 //String
 	 public static String getString(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setString(itemStack, keyName, "");
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putString(itemStack, keyName, "");
 	     }
-	     return itemStack.getTagCompound().getString(keyName);
+	     return itemStack.getTag().getString(keyName);
 	 }
 
-	 public static void setString(ItemStack itemStack, String keyName, String keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setString(keyName, keyValue);
+	 public static void putString(ItemStack itemStack, String keyName, String keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putString(keyName, keyValue);
 	 }
 
 	 //Boolean
 	 public static boolean getBoolean(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setBoolean(itemStack, keyName, false);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putBoolean(itemStack, keyName, false);
 	     }
-	     return itemStack.getTagCompound().getBoolean(keyName);
+	     return itemStack.getTag().getBoolean(keyName);
 	 }
 
-	 public static void setBoolean(ItemStack itemStack, String keyName, boolean keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setBoolean(keyName, keyValue);
+	 public static void putBoolean(ItemStack itemStack, String keyName, boolean keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putBoolean(keyName, keyValue);
 	 }
 
 	 //Byte
 	 public static byte getByte(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setByte(itemStack, keyName, (byte) 0);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putByte(itemStack, keyName, (byte) 0);
 	     }
-	     return itemStack.getTagCompound().getByte(keyName);
+	     return itemStack.getTag().getByte(keyName);
 	 }
 
-	 public static void setByte(ItemStack itemStack, String keyName, byte keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setByte(keyName, keyValue);
+	 public static void putByte(ItemStack itemStack, String keyName, byte keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putByte(keyName, keyValue);
 	 }
 
 	 //Short
 	 public static short getShort(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setShort(itemStack, keyName, (short) 0);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putShort(itemStack, keyName, (short) 0);
 	     }
-	     return itemStack.getTagCompound().getShort(keyName);
+	     return itemStack.getTag().getShort(keyName);
 	 }
 
-	 public static void setShort(ItemStack itemStack, String keyName, short keyValue) {
-	    makeSureItemHasTagCompound(itemStack);
-	    itemStack.getTagCompound().setShort(keyName, keyValue);
+	 public static void putShort(ItemStack itemStack, String keyName, short keyValue) {
+	    makeSureItemhasTag(itemStack);
+	    itemStack.getTag().putShort(keyName, keyValue);
 	 }
 
 	 //Integer
 	 public static int getInt(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setInteger(itemStack, keyName, 0);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putInt(itemStack, keyName, 0);
 	     }
-	     return itemStack.getTagCompound().getInteger(keyName);
+	     return itemStack.getTag().getInt(keyName);
 	 }
 
-	 public static void setInteger(ItemStack itemStack, String keyName, int keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setInteger(keyName, keyValue);
+	 public static void putInt(ItemStack itemStack, String keyName, int keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putInt(keyName, keyValue);
 	 }
 
 	 //Long
 	 public static long getLong(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setLong(itemStack, keyName, 0);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putLong(itemStack, keyName, 0);
 	     }
-	     return itemStack.getTagCompound().getLong(keyName);
+	     return itemStack.getTag().getLong(keyName);
 	 }
 
-	 public static void setLong(ItemStack itemStack, String keyName, long keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setLong(keyName, keyValue);
+	 public static void putLong(ItemStack itemStack, String keyName, long keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putLong(keyName, keyValue);
 	 }
 
 	 //Float
 	 public static float getFloat(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setFloat(itemStack, keyName, 0);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putFloat(itemStack, keyName, 0);
 	     }
-	     return itemStack.getTagCompound().getFloat(keyName);
+	     return itemStack.getTag().getFloat(keyName);
 	 }
 
-	 public static void setFloat(ItemStack itemStack, String keyName, float keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setFloat(keyName, keyValue);
+	 public static void putFloat(ItemStack itemStack, String keyName, float keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putFloat(keyName, keyValue);
 	 }
 
 	 //Double
 	 public static double getDouble(ItemStack itemStack, String keyName) {
-		 makeSureItemHasTagCompound(itemStack);
-	     if (!itemStack.getTagCompound().hasKey(keyName)) {
-	    	 setDouble(itemStack, keyName, 0);
+		 makeSureItemhasTag(itemStack);
+	     if (!itemStack.getTag().contains(keyName)) {
+	    	 putDouble(itemStack, keyName, 0);
 	     }
-	     return itemStack.getTagCompound().getDouble(keyName);
+	     return itemStack.getTag().getDouble(keyName);
 	 }
 
-	 public static void setDouble(ItemStack itemStack, String keyName, double keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setDouble(keyName, keyValue);
+	 public static void putDouble(ItemStack itemStack, String keyName, double keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().putDouble(keyName, keyValue);
 	 }
 	 
 	 //Tag
-	 public static NBTBase getTag(ItemStack itemStack, String keyName) {
-		 if (!itemStack.getTagCompound().hasKey(keyName)) {
+	 public static INBTBase getTag(ItemStack itemStack, String keyName) {
+		 if (!itemStack.getTag().contains(keyName)) {
 			 return null;
 		 }
-		 return itemStack.getTagCompound().getTag(keyName);
+		 return itemStack.getTag().get(keyName);
 	 }
 	 
-	 public static void setTag(ItemStack itemStack, String keyName, NBTBase keyValue) {
-		 makeSureItemHasTagCompound(itemStack);
-	     itemStack.getTagCompound().setTag(keyName, keyValue);
+	 public static void setTag(ItemStack itemStack, String keyName, INBTBase keyValue) {
+		 makeSureItemhasTag(itemStack);
+	     itemStack.getTag().put(keyName, keyValue);
 	 }
 
 	 //Other more specific NBT data
 	 public static void setPotionEffects(ItemStack itemStack, int id, int level, int duration, boolean ambient) {
-		 makeSureItemHasTagCompound(itemStack);
-		 /**NBTTagList var4 = (NBTTagList)itemStack.getTagCompound().getTag(NBTData.POTION_TAG);
+		 makeSureItemhasTag(itemStack);
+		 /**NBTTagList var4 = (NBTTagList)itemStack.getTag().getTag(NBTData.POTION_TAG);
 		 NBTTagCompound var5 = new NBTTagCompound();
-		 var5.setByte(NBTData.POTION_ID, (byte)id);
-		 var5.setByte(NBTData.POTION_AMPLIFIER, (byte)(level - 1));
-		 var5.setInteger(NBTData.POTION_DURATION, duration * 20);
-		 var5.setBoolean(NBTData.POTION_AMBIENT, ambient);
-		 var4.appendTag(var5);**/
+		 var5.putByte(NBTData.POTION_ID, (byte)id);
+		 var5.putByte(NBTData.POTION_AMPLIFIER, (byte)(level - 1));
+		 var5.putInt(NBTData.POTION_DURATION, duration * 20);
+		 var5.putBoolean(NBTData.POTION_AMBIENT, ambient);
+		 var4.add(var5);**/
 	 }
 }

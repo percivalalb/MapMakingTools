@@ -1,6 +1,7 @@
 package mapmakingtools.tools.filter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mapmakingtools.api.ScrollMenu;
@@ -9,11 +10,12 @@ import mapmakingtools.api.filter.IFilterGui;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketVillagerProfession;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,9 +24,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.GameData;
 
 /**
@@ -33,7 +35,7 @@ import net.minecraftforge.registries.GameData;
 public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 
 	public ScrollMenu<ResourceLocation> menu;
-	public RegistryNamespaced<ResourceLocation, VillagerProfession> REGISTRY = GameData.getWrapper(VillagerProfession.class);
+	public RegistryNamespaced<VillagerProfession> REGISTRY = GameData.getWrapper(VillagerProfession.class);
 	
 	@Override
 	public String getUnlocalizedName() {
@@ -62,11 +64,12 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 
 			@Override
 			public void onSetButton() {
-				PacketDispatcher.sendToServer(new PacketVillagerProfession(REGISTRY.getObject(this.getRecentSelection()), FilterMobSpawnerBase.potentialSpawnIndex));
+				PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketVillagerProfession(REGISTRY.get(this.getRecentSelection()), FilterMobSpawnerBase.potentialSpawnIndex));
         		ClientHelper.getClient().player.closeScreen();
 			}
         	
         };
+    	gui.addListenerToGui(this.menu);
         this.menu.initGui();
         
         if(SpawnerUtil.isSpawner(gui)) {
@@ -99,14 +102,16 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	
 	private List<ResourceLocation> getProfesionList() {
 		List<ResourceLocation> list = new ArrayList<ResourceLocation>();
-		for(ResourceLocation location : REGISTRY.getKeys())
-			list.add(location);
+		Iterator<VillagerProfession> iterator = REGISTRY.iterator();
+		
+		while(iterator.hasNext())
+			list.add(iterator.next().getRegistryName());
 		return list;
 	}
 
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagerprofession.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.villagerprofession.info"));
 	}
 
 	@Override
@@ -116,11 +121,11 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	}
 	
 	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
-		super.mouseClicked(gui, xMouse, yMouse, mouseButton);
-		this.menu.mouseClicked(xMouse, yMouse, mouseButton);
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
+		super.mouseClicked(gui, mouseX, mouseY, mouseButton);
+		this.menu.mouseClicked(mouseX, mouseY, mouseButton);
 		if(SpawnerUtil.isSpawner(gui))
-        	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
+        	this.removePotentialSpawnButtons(gui, mouseX, mouseY, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
@@ -143,7 +148,7 @@ public class VillagerProfessionClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public boolean drawBackground(IFilterGui gui) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SCROLL);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();

@@ -1,15 +1,15 @@
 package mapmakingtools.helper;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class SideHelper {
 
 	public static boolean isClient() {
-		return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+		return FMLEnvironment.dist == Dist.CLIENT;
 	}
 	
 	public static boolean isServer() {
-		return FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER;
+		return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
 	}
 }

@@ -3,7 +3,7 @@ package mapmakingtools.api.filter;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 
 /**
  * @author ProPercivalalb
@@ -11,7 +11,7 @@ import net.minecraft.util.text.translation.I18n;
 public abstract class FilterClient extends FilterBase {
 	
 	public abstract String getUnlocalizedName();
-	public String getFilterName() { return I18n.translateToLocal(this.getUnlocalizedName()); }
+	public String getFilterName() { return I18n.format(this.getUnlocalizedName()); }
 	public abstract String getIconPath();
 	
 	public void initGui(IFilterGui gui) {}
@@ -19,7 +19,7 @@ public abstract class FilterClient extends FilterBase {
 	public void drawGuiContainerForegroundLayer(IFilterGui gui, int xMouse, int yMouse) {}
 	public void drawToolTips(IFilterGui gui, int xMouse, int yMouse) {}
 	public void updateScreen(IFilterGui gui) {}
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {}
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {}
 	public void keyTyped(IFilterGui gui, char cha, int charIndex) {}
 	public boolean doClosingKeysWork(IFilterGui gui, char cha, int charIndex) { return true; }
 	public void actionPerformed(IFilterGui gui, GuiButton button) {}

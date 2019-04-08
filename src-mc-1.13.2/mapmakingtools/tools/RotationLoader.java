@@ -39,8 +39,8 @@ public class RotationLoader {
 					
 					Hashtable<Integer, Integer> mapping = modeData.get(movement);
 					
-					int start = NumberParse.getInteger(split[2]);
-					int end = NumberParse.getInteger(split[3]);
+					int start = NumberParse.getInt(split[2]);
+					int end = NumberParse.getInt(split[3]);
 					mapping.put(start, end);
 				}
 		    }

@@ -30,7 +30,7 @@ public class RepairCostAttribute extends IItemAttribute {
 			int costInt = Numbers.parse(this.cost);
 			
 			if(costInt == 0) {
-				NBTUtil.removeTag(stack, "RepairCost", NBTUtil.ID_INTEGER);
+				NBTUtil.remove(stack, "RepairCost", NBTUtil.ID_INTEGER);
 				NBTUtil.hasEmptyTagCompound(stack, true);
 			}
 			else
@@ -57,7 +57,7 @@ public class RepairCostAttribute extends IItemAttribute {
 	@Override
 	public void initGui(IGuiItemEditor itemEditor, ItemStack stack, int x, int y, int width, int height) {
 		this.fld_cost = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 15, 80, 13);
-		itemEditor.getTextBoxList().add(this.fld_cost);
+		itemEditor.addTextFieldToGui(this.fld_cost);
 	}
 
 	@Override

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.common.collect.Maps;
 
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.IForceKill;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,15 +18,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
  */
 public class ForceKillManager {
 	
-	private static final Map<String, IForceKill> map = Maps.newHashMap();
+	private static final Map<String, Function<Entity, Boolean>> map = Maps.newHashMap();
 	private static final List<String> nameList = new ArrayList<String>();
 	
 	public static void killGiven(String name, Entity entity, EntityPlayerMP player) {
 		if(!isRealName(name) || (entity instanceof EntityPlayer))
 			return;
-		IForceKill kill = map.get(name);
-		if(kill.onCommand(entity)) {
-			entity.setDead();
+		Function<Entity, Boolean> kill = map.get(name);
+		if(kill.apply(entity)) {
+			entity.remove();
 			entity.world.removeEntity(entity);
 		}
 	}
@@ -44,7 +44,7 @@ public class ForceKillManager {
 	 * Checks to make sure no other has the same name and adds to list.
 	 * @param forceKill The instance you want to register
 	 */
-	public static void registerHandler(String name, IForceKill forceKill) {
+	public static void registerHandler(String name, Function<Entity, Boolean> forceKill) {
 		if(nameList.contains(name))
 			MapMakingTools.LOGGER.warn("You can't register and Force Kill class with the same name as another!");
 		else {

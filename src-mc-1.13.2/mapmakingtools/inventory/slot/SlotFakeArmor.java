@@ -3,10 +3,9 @@ package mapmakingtools.inventory.slot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author ProPercivalalb
@@ -29,12 +28,12 @@ public class SlotFakeArmor extends SlotFake {
     
     @Override
     public boolean isItemValid(ItemStack stack) {
-    	return stack.getItem().isValidArmor(stack, this.armorType, this.player);
+    	return stack.canEquip(armorType, player);
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getSlotTexture() {
-        return ItemArmor.EMPTY_SLOT_NAMES[this.armorType.getIndex()];
+        return SlotArmor.ARMOR_SLOT_TEXTURES[armorType.getIndex()];
     }
 }

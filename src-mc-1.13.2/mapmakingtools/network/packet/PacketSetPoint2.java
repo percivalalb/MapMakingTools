@@ -1,42 +1,41 @@
 package mapmakingtools.network.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
 import mapmakingtools.tools.ClientData;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSetPoint2 extends AbstractClientMessage {
+public class PacketSetPoint2 {
 	
 	public BlockPos pos;
 	
-	public PacketSetPoint2() {}
 	public PacketSetPoint2(BlockPos pos) {
 		this.pos = pos;
 	}
 
-	@Override
-	protected void read(PacketBuffer buffer) throws IOException {
-		if(buffer.readBoolean())
-			this.pos = buffer.readBlockPos();
+	public static void encode(PacketSetPoint2 msg, PacketBuffer buf) {
+		buf.writeBoolean(msg.pos != null);
+		if(msg.pos != null)
+			buf.writeBlockPos(msg.pos);
 	}
 	
-	@Override
-	protected void write(PacketBuffer buffer) throws IOException {
-		buffer.writeBoolean(this.pos != null);
-		if(this.pos != null)
-			buffer.writeBlockPos(this.pos);
+	public static PacketSetPoint2 decode(PacketBuffer buf) {
+		boolean isNull = !buf.readBoolean();
+		return new PacketSetPoint2(isNull ? null : buf.readBlockPos());
 	}
 	
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		ClientData.playerData.setSecondPoint(this.pos);
+	public static class Handler {
+        public static void handle(final PacketSetPoint2 msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	ClientData.playerData.setSecondPoint(msg.pos);
+            });
+            ClientData.playerData.setSecondPoint(msg.pos);
+            ctx.get().setPacketHandled(true);
+        }
 	}
-
 }

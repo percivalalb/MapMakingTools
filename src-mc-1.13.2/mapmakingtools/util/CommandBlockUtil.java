@@ -8,14 +8,20 @@ import net.minecraft.entity.item.EntityMinecartCommandBlock;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 public class CommandBlockUtil {
 
 	public static void setName(CommandBlockBaseLogic logic, String name) {
+		setName(logic, new TextComponentString(name));
+	}
+	
+	public static void setName(CommandBlockBaseLogic logic, ITextComponent name) {
 		logic.setName(name);
 	}
 	
-	public static String getName(CommandBlockBaseLogic logic) {
+	public static ITextComponent getName(CommandBlockBaseLogic logic) {
 		return logic.getName();
 	}
 	

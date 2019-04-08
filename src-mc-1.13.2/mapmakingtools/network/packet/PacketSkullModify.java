@@ -1,8 +1,7 @@
 package mapmakingtools.network.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.tools.item.nbt.SkullNBT;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,43 +9,46 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketSkullModify extends AbstractServerMessage {
+public class PacketSkullModify {
 
 	public String name;
 	
-	public PacketSkullModify() {}
 	public PacketSkullModify(String name) {
 		this.name = name;
 	}
 	
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.name = packetbuffer.readString(32);
+	public static void encode(PacketSkullModify msg, PacketBuffer buf) {
+		buf.writeString(msg.name, 32);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeString(this.name);
+	
+	public static PacketSkullModify decode(PacketBuffer buf) {
+		String name = buf.readString(32);
+		return new PacketSkullModify(name);
 	}
+	
+	public static class Handler {
+        public static void handle(final PacketSkullModify msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		ItemStack item = player.getHeldItemMainhand();
+        		if(item == null)
+        			return;
+        		
+        		if(item != null && Item.getIdFromItem(item.getItem()) == Item.getIdFromItem(Items.SKELETON_SKULL)) { // TODO && item.getItemDamage() == 3) {
+        			SkullNBT.setSkullName(item, msg.name);
+        		}
+            });
 
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		ItemStack item = player.getHeldItemMainhand();
-		if(item == null)
-			return;
-		
-		if(item != null && Item.getIdFromItem(item.getItem()) == Item.getIdFromItem(Items.SKULL) && item.getItemDamage() == 3) {
-			SkullNBT.setSkullName(item, this.name);
-		}
-		
+            ctx.get().setPacketHandled(true);
+        }
 	}
-
 }

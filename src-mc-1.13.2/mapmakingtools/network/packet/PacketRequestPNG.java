@@ -1,66 +1,61 @@
 package mapmakingtools.network.packet;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.function.Supplier;
 
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.network.AbstractMessage.AbstractClientMessage;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.PlayerAccess;
-import mapmakingtools.tools.PlayerData;
-import mapmakingtools.tools.WorldData;
-import mapmakingtools.tools.datareader.BlockColourList;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.relauncher.Side;
-import scala.actors.threadpool.Arrays;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketRequestPNG extends AbstractClientMessage {
+public class PacketRequestPNG {
 
 	public String location;
 	
-	public PacketRequestPNG() {}
 	public PacketRequestPNG(String location) {
 		this.location = location;
 	}
 
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.location = packetbuffer.readString(Short.MAX_VALUE);
+	public static void encode(PacketRequestPNG msg, PacketBuffer buf) {
+		buf.writeString(msg.location);
 	}
 	
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeString(this.location);
+	public static PacketRequestPNG decode(PacketBuffer buf) {
+		String location = buf.readString(Short.MAX_VALUE);
+		return new PacketRequestPNG(location);
 	}
 	
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		ResourceLocation resourceLoc = new ResourceLocation("textures/items/"+this.location+".png");
-		
-		IResource iresource;
-		try {
-			iresource = Minecraft.getMinecraft().getResourceManager().getResource(resourceLoc);
-            BufferedImage bufferedimage = TextureUtil.readBufferedImage(iresource.getInputStream());
-    		
-    		PacketDispatcher.sendToServer(new PacketDrawPNG(bufferedimage));
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+	public static class Handler {
+        public static void handle(final PacketRequestPNG msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		ResourceLocation resourceLoc = new ResourceLocation("textures/items/"+msg.location+".png");
+        		
+        		IResource iresource;
+        		try {
+        			iresource = Minecraft.getInstance().getResourceManager().getResource(resourceLoc);
+                    ByteBuffer bufferedimage = TextureUtil.readToNativeBuffer(iresource.getInputStream());
+            		
+            		//TODO PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketDrawPNG(bufferedimage));
+        		}
+        		catch(Exception e) {
+        			e.printStackTrace();
+        		}
+            });
 
+            ctx.get().setPacketHandled(true);
+        }
+	}
 }

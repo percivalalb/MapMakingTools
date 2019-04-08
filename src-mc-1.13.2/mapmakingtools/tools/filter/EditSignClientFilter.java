@@ -10,9 +10,10 @@ import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.client.gui.textfield.GuiTextFieldNonInteractable;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketSignEdit;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -20,8 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -61,7 +62,31 @@ public class EditSignClientFilter extends FilterClient {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
 	    this.btnColourLine1 = new GuiButtonColourBlock(0, topX + 25, topY + 22, 20, 20);
-	    this.btnInsert = new GuiButton(1, topX + 15, topY + 46, 40, 20, "Insert");
+	    this.btnInsert = new GuiButton(1, topX + 15, topY + 46, 40, 20, "Insert") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			if(txtLine1.isFocused()) {
+            		String text = txtLine1.getText();
+            		txtLine1.setText(text + btnColourLine1.getCurrentColour(btnColourLine1.textColourIndex).getColour());
+            		txtLine1.missMouseClick = true;
+            	}
+            	else if(txtLine2.isFocused()) {
+            		String text = txtLine2.getText();
+            		txtLine2.setText(text + btnColourLine1.getCurrentColour(btnColourLine1.textColourIndex).getColour());
+            		txtLine2.missMouseClick = true;
+            	}
+            	else if(txtLine3.isFocused()) {
+            		String text = txtLine3.getText();
+            		txtLine3.setText(text + btnColourLine1.getCurrentColour(btnColourLine1.textColourIndex).getColour());
+            		txtLine3.missMouseClick = true;
+            	}
+            	else if(txtLine4.isFocused()) {
+            		String text = txtLine4.getText();
+            		txtLine4.setText(text + btnColourLine1.getCurrentColour(btnColourLine1.textColourIndex).getColour());
+            		txtLine4.missMouseClick = true;
+            	}
+    		}
+    	};
 	    this.btnOk = new GuiButtonSmall(2, topX + (gui.xFakeSize() / 2) - (40 / 2), topY + 80, 40, 16, "Set");
 	    this.txtLine1 = new GuiTextFieldNonInteractable(0, gui.getFont(), topX + 70, topY + 22, 100, 12);
 	    this.txtLine1.setMaxStringLength(15);
@@ -71,20 +96,20 @@ public class EditSignClientFilter extends FilterClient {
 	    this.txtLine3.setMaxStringLength(15);
 	    this.txtLine4 = new GuiTextFieldNonInteractable(3,gui.getFont(), topX + 70, topY + 67, 100, 12);
 	    this.txtLine4.setMaxStringLength(15);
-	    gui.getButtonList().add(this.btnColourLine1);
-	    gui.getButtonList().add(this.btnInsert);
-	    gui.getButtonList().add(this.btnOk);
-	    gui.getTextBoxList().add(this.txtLine1);
-	    gui.getTextBoxList().add(this.txtLine2);
-	    gui.getTextBoxList().add(this.txtLine3);
-	    gui.getTextBoxList().add(this.txtLine4);
+	    gui.addButtonToGui(this.btnColourLine1);
+	    gui.addButtonToGui(this.btnInsert);
+	    gui.addButtonToGui(this.btnOk);
+	    gui.addTextFieldToGui(this.txtLine1);
+	    gui.addTextFieldToGui(this.txtLine2);
+	    gui.addTextFieldToGui(this.txtLine3);
+	    gui.addTextFieldToGui(this.txtLine4);
 	    TileEntity tileEntity = FakeWorldManager.getTileEntity(gui.getWorld(), gui.getBlockPos());
 		if(tileEntity != null && tileEntity instanceof TileEntitySign) {
 			TileEntitySign sign = (TileEntitySign)tileEntity;
-			this.txtLine1.setText(sign.signText[0].getUnformattedText());
-			this.txtLine2.setText(sign.signText[1].getUnformattedText());
-			this.txtLine3.setText(sign.signText[2].getUnformattedText());
-			this.txtLine4.setText(sign.signText[3].getUnformattedText());
+			this.txtLine1.setText(sign.signText[0].getUnformattedComponentText());
+			this.txtLine2.setText(sign.signText[1].getUnformattedComponentText());
+			this.txtLine3.setText(sign.signText[2].getUnformattedComponentText());
+			this.txtLine4.setText(sign.signText[3].getUnformattedComponentText());
 		}
 	}
 	
@@ -113,30 +138,8 @@ public class EditSignClientFilter extends FilterClient {
                 	//PacketTypeHandler.populatePacketAndSendToServer(new PacketConvertToDispenser(gui.x, gui.y, gui.z));
                 	//ClientHelper.getClient().displayGuiScreen(null);
                    // ClientHelper.getClient().setIngameFocus();
-                case 1:
-                	if(this.txtLine1.isFocused()) {
-                		String text = txtLine1.getText();
-                		txtLine1.setText(text + this.btnColourLine1.getCurrentColour(this.btnColourLine1.textColourIndex).getColour());
-                		txtLine1.missMouseClick = true;
-                	}
-                	else if(this.txtLine2.isFocused()) {
-                		String text = txtLine2.getText();
-                		txtLine2.setText(text + this.btnColourLine1.getCurrentColour(this.btnColourLine1.textColourIndex).getColour());
-                		txtLine2.missMouseClick = true;
-                	}
-                	else if(this.txtLine3.isFocused()) {
-                		String text = txtLine3.getText();
-                		txtLine3.setText(text + this.btnColourLine1.getCurrentColour(this.btnColourLine1.textColourIndex).getColour());
-                		txtLine3.missMouseClick = true;
-                	}
-                	else if(this.txtLine4.isFocused()) {
-                		String text = txtLine4.getText();
-                		txtLine4.setText(text + this.btnColourLine1.getCurrentColour(this.btnColourLine1.textColourIndex).getColour());
-                		txtLine4.missMouseClick = true;
-                	}
-                	break;
                 case 2:
-                	PacketDispatcher.sendToServer(new PacketSignEdit(gui.getBlockPos(), new ITextComponent[] {new TextComponentString(this.txtLine1.getText()), new TextComponentString(this.txtLine2.getText()), new TextComponentString(this.txtLine3.getText()), new TextComponentString(this.txtLine4.getText())}));
+                	PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketSignEdit(gui.getBlockPos(), new ITextComponent[] {new TextComponentString(this.txtLine1.getText()), new TextComponentString(this.txtLine2.getText()), new TextComponentString(this.txtLine3.getText()), new TextComponentString(this.txtLine4.getText())}));
                 	ClientHelper.getClient().player.closeScreen();
                 	break;
             }
@@ -150,6 +153,6 @@ public class EditSignClientFilter extends FilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.signedit.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.signedit.info"));
 	}
 }

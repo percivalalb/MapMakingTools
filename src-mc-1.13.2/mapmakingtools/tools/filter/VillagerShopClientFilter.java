@@ -10,18 +10,19 @@ import mapmakingtools.client.gui.button.GuiButtonSmall;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
 import mapmakingtools.lib.ResourceLib;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketVillagerRecipeAmounts;
 import mapmakingtools.tools.filter.packet.PacketVillagerShop;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -66,7 +67,12 @@ public class VillagerShopClientFilter extends FilterClient {
 		gui.setYSize(190);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
 	    int topY = gui.getGuiY();
-	    this.btn_ok = new GuiButton(0, topX + 12, topY + 108, 20, 20, "OK");
+	    this.btn_ok = new GuiButton(0, topX + 12, topY + 108, 20, 20, "OK") {
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			
+    		}
+    	};
 	    this.btn_add = new GuiButtonSmall(2, topX + 224, topY + 68, 13, 12, "+");
 	    this.btn_remove = new GuiButtonSmall(3, topX + 224, topY + 54, 13, 12, "-");
 	    this.btn_trade_1 = new GuiButtonSmall(4, topX - 1 + 1 * 23, topY + 88, 13, 12, "?");
@@ -78,23 +84,23 @@ public class VillagerShopClientFilter extends FilterClient {
 	    this.btn_trade_7 = new GuiButtonSmall(10, topX - 1 + 7 * 23, topY + 88, 13, 12, "?");
 	    this.btn_trade_8 = new GuiButtonSmall(11, topX - 1 + 8 * 23, topY + 88, 13, 12, "?");
 	    this.btn_trade_9 = new GuiButtonSmall(12, topX - 1 + 9 * 23, topY + 88, 13, 12, "?");
-	    gui.getButtonList().add(this.btn_ok);
-	    gui.getButtonList().add(this.btn_add);
-	    gui.getButtonList().add(this.btn_remove);
-	    gui.getButtonList().add(this.btn_trade_1);
-	    gui.getButtonList().add(this.btn_trade_2);
-	    gui.getButtonList().add(this.btn_trade_3);
-	    gui.getButtonList().add(this.btn_trade_4);
-	    gui.getButtonList().add(this.btn_trade_5);
-	    gui.getButtonList().add(this.btn_trade_6);
-	    gui.getButtonList().add(this.btn_trade_7);
-	    gui.getButtonList().add(this.btn_trade_8);
-	    gui.getButtonList().add(this.btn_trade_9);
+	    gui.addButtonToGui(this.btn_ok);
+	    gui.addButtonToGui(this.btn_add);
+	    gui.addButtonToGui(this.btn_remove);
+	    gui.addButtonToGui(this.btn_trade_1);
+	    gui.addButtonToGui(this.btn_trade_2);
+	    gui.addButtonToGui(this.btn_trade_3);
+	    gui.addButtonToGui(this.btn_trade_4);
+	    gui.addButtonToGui(this.btn_trade_5);
+	    gui.addButtonToGui(this.btn_trade_6);
+	    gui.addButtonToGui(this.btn_trade_7);
+	    gui.addButtonToGui(this.btn_trade_8);
+	    gui.addButtonToGui(this.btn_trade_9);
 	    
 	    Arrays.fill(recipeUses, 7);
 	    
 	    int recipeAmounts = ((VillagerShopServerFilter)FilterManager.getServerFilterFromClass(VillagerShopServerFilter.class)).getAmountRecipes(gui.getPlayer());
-	    PacketDispatcher.sendToServer(new PacketVillagerRecipeAmounts(recipeAmounts));
+	    PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketVillagerRecipeAmounts(recipeAmounts));
 	    
 	    this.btn_add.enabled = recipeAmounts < 9;
 	    this.btn_remove.enabled = recipeAmounts > 1;
@@ -121,22 +127,22 @@ public class VillagerShopClientFilter extends FilterClient {
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.villagershop.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.villagershop.info"));
 	}
 
 	@Override
 	public void drawGuiContainerForegroundLayer(IFilterGui gui, int xMouse, int yMouse) {
-		GlStateManager.translate((float)-gui.getGuiX(), (float)-gui.getGuiY(), 0.0F);
+		GlStateManager.translatef((float)-gui.getGuiX(), (float)-gui.getGuiY(), 0.0F);
 		for(int var1 = 0; var1 < gui.getButtonList().size(); ++var1) {
     		GuiButton listBt = (GuiButton)gui.getButtonList().get(var1);
     		if(listBt.id >= 4 && listBt.id <= 12) {
-        		if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
+        		if(listBt.isMouseOver()) {
         			List<String> list = Arrays.asList(TextFormatting.BLUE + "Trade " + (listBt.id - 3), "Uses: " + this.recipeUses[listBt.id - 4], "Left Click = " + TextFormatting.RED+ "-1", "Right Click = " + TextFormatting.GREEN + "+1");
         			gui.drawHoveringTooltip(list, xMouse, yMouse);
         		}
     		}
     	}
-		GlStateManager.translate((float)gui.getGuiX(), (float)gui.getGuiY(), 0.0F);
+		GlStateManager.translatef((float)gui.getGuiX(), (float)gui.getGuiY(), 0.0F);
 	}
 	
 	@Override
@@ -161,12 +167,12 @@ public class VillagerShopClientFilter extends FilterClient {
 	}
 	
 	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 1) {
             for (int l = 0; l < gui.getButtonList().size(); ++l) {
                 GuiButton guibutton = (GuiButton)gui.getButtonList().get(l);
 
-                if (guibutton.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
+                if (guibutton.isMouseOver()) {
                 	//gui.selectedButton = guibutton;
                     if(guibutton.id >= 4 && guibutton.id <= 12) {
                     	this.recipeUses[guibutton.id - 4] = this.recipeUses[guibutton.id - 4] + 1;
@@ -195,7 +201,7 @@ public class VillagerShopClientFilter extends FilterClient {
         	int recipeAmounts = 0;
             switch (button.id) {
                 case 0:
-                	PacketDispatcher.sendToServer(new PacketVillagerShop(gui.getEntityId(), this.recipeUses));
+                	PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketVillagerShop(gui.getEntityId(), this.recipeUses));
                     
                 case 1:
                     ClientHelper.getClient().player.closeScreen();
@@ -204,13 +210,13 @@ public class VillagerShopClientFilter extends FilterClient {
                 	recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).maxRecipesMap.put(gui.getPlayer().getUniqueID(), recipeAmounts + 1);
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).addOnlySlots(gui.getFilterContainer());
-                	PacketDispatcher.sendToServer(new PacketVillagerRecipeAmounts(recipeAmounts + 1));
+                	PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketVillagerRecipeAmounts(recipeAmounts + 1));
                     break;
                 case 3:
                 	recipeAmounts = ((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).getAmountRecipes(gui.getPlayer());
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).maxRecipesMap.put(gui.getPlayer().getUniqueID(), recipeAmounts - 1);
                 	((VillagerShopServerFilter)gui.getFilterContainer().getCurrentFilter()).addOnlySlots(gui.getFilterContainer());
-                	PacketDispatcher.sendToServer(new PacketVillagerRecipeAmounts(recipeAmounts - 1));
+                	PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketVillagerRecipeAmounts(recipeAmounts - 1));
                     break;
             }
         }
@@ -218,7 +224,7 @@ public class VillagerShopClientFilter extends FilterClient {
 	
 	@Override
 	public boolean drawBackground(IFilterGui gui) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_VILLAGER_SHOP);
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = (gui.getScreenHeight() - 190) / 2;

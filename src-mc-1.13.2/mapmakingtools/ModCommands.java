@@ -1,41 +1,77 @@
 package mapmakingtools;
 
-import mapmakingtools.command.CommandBox;
-import mapmakingtools.command.CommandClearPoints;
-import mapmakingtools.command.CommandCopy;
-import mapmakingtools.command.CommandCopyInventory;
-import mapmakingtools.command.CommandDebug;
-import mapmakingtools.command.CommandDrawPNG;
-import mapmakingtools.command.CommandFlip;
-import mapmakingtools.command.CommandFloor;
-import mapmakingtools.command.CommandKillAll;
-import mapmakingtools.command.CommandMaze;
-import mapmakingtools.command.CommandMove;
-import mapmakingtools.command.CommandOutline;
-import mapmakingtools.command.CommandPaste;
-import mapmakingtools.command.CommandPlayerStatue;
-import mapmakingtools.command.CommandPos1;
-import mapmakingtools.command.CommandPos2;
-import mapmakingtools.command.CommandRedo;
-import mapmakingtools.command.CommandReplace;
-import mapmakingtools.command.CommandRoof;
-import mapmakingtools.command.CommandRotate;
-import mapmakingtools.command.CommandSelectionSize;
-import mapmakingtools.command.CommandSet;
-import mapmakingtools.command.CommandSetBiome;
-import mapmakingtools.command.CommandUndo;
-import mapmakingtools.command.CommandWall;
-import mapmakingtools.command.CommandWorldTransfer;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import com.mojang.brigadier.CommandDispatcher;
+
+import mapmakingtools.command.BoxCommand;
+import mapmakingtools.command.ClearPointsCommand;
+import mapmakingtools.command.CopyCommand;
+import mapmakingtools.command.CopyInventoryCommand;
+import mapmakingtools.command.ExpandCommand;
+import mapmakingtools.command.FlipCommand;
+import mapmakingtools.command.FloorCommand;
+import mapmakingtools.command.KillAllCommand;
+import mapmakingtools.command.MazeCommand;
+import mapmakingtools.command.PasteCommand;
+import mapmakingtools.command.Pos1Command;
+import mapmakingtools.command.Pos2Command;
+import mapmakingtools.command.RedoCommand;
+import mapmakingtools.command.ReplaceCommand;
+import mapmakingtools.command.RoofCommand;
+import mapmakingtools.command.RotateCommand;
+import mapmakingtools.command.SelectionSizeCommand;
+import mapmakingtools.command.SetBiomeCommand;
+import mapmakingtools.command.SetCommand;
+import mapmakingtools.command.ShrinkCommand;
+import mapmakingtools.command.UndoCommand;
+import mapmakingtools.command.WallCommand;
+import mapmakingtools.lib.Reference;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 /**
  * @author ProPercivalalb
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModCommands {
 
-    public static void initCommands(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandClearPoints());
-        event.registerServerCommand(new CommandSet());
+	@SubscribeEvent
+    public static void initCommands(final FMLServerStartingEvent event) {
+    	CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
+    	
+    	Pos1Command.register(dispatcher);
+    	Pos2Command.register(dispatcher);
+    	ClearPointsCommand.register(dispatcher);
+    	SelectionSizeCommand.register(dispatcher);
+    	ExpandCommand.register(dispatcher);
+    	ShrinkCommand.register(dispatcher);
+    	
+    	
+    	SetCommand.register(dispatcher);
+    	
+    	WallCommand.register(dispatcher);
+    	FloorCommand.register(dispatcher);
+    	RoofCommand.register(dispatcher);
+    	BoxCommand.register(dispatcher);
+    	
+    	ReplaceCommand.register(dispatcher);
+    	
+    	CopyCommand.register(dispatcher);
+    	PasteCommand.register(dispatcher);
+    	RotateCommand.register(dispatcher);
+    	FlipCommand.register(dispatcher);
+    	
+    	UndoCommand.register(dispatcher);
+    	RedoCommand.register(dispatcher);
+    	
+    	SetBiomeCommand.register(dispatcher);
+    	MazeCommand.register(dispatcher);
+    	
+    	CopyInventoryCommand.register(dispatcher);
+    	KillAllCommand.register(dispatcher);
+    	
+        /**event.registerServerCommand(new CommandSet());
         event.registerServerCommand(new CommandRoof());
         event.registerServerCommand(new CommandFloor());
         event.registerServerCommand(new CommandWall());
@@ -63,7 +99,7 @@ public class ModCommands {
         event.registerServerCommand(new CommandKillAll());
         
         event.registerServerCommand(new CommandDebug());
-        event.registerServerCommand(new CommandCopyInventory());
+        event.registerServerCommand(new CommandCopyInventory());**/
         
     }
 }

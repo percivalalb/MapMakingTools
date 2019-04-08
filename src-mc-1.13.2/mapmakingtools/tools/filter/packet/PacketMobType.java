@@ -1,12 +1,9 @@
 package mapmakingtools.tools.filter.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
 import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.inventory.ContainerFilter;
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.network.packet.PacketUpdateBlock;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.PacketUtil;
 import mapmakingtools.util.SpawnerUtil;
@@ -15,57 +12,60 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketMobType extends AbstractServerMessage {
+public class PacketMobType {
 
 	public String mobId;
 	public int minecartIndex;
 	
-	public PacketMobType() {}
 	public PacketMobType(String mobId, int minecartIndex) {
 		this.mobId = mobId;
 		this.minecartIndex = minecartIndex;
 	}
-
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.mobId = packetbuffer.readString(Integer.MAX_VALUE / 4);
-		this.minecartIndex = packetbuffer.readInt();
+	
+	public static void encode(PacketMobType msg, PacketBuffer buf) {
+		buf.writeString(msg.mobId);
+		buf.writeInt(msg.minecartIndex);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeString(this.mobId);
-		packetbuffer.writeInt(minecartIndex);
+	
+	public static PacketMobType decode(PacketBuffer buf) {
+		String mobId = buf.readString(Integer.MAX_VALUE / 4);
+		int minecartIndex = buf.readInt();
+		return new PacketMobType(mobId, minecartIndex);
 	}
+	
+	public static class Handler {
+        public static void handle(final PacketMobType msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		if(player.openContainer instanceof ContainerFilter) {
+        			ContainerFilter container = (ContainerFilter)player.openContainer;
+        			
+        			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
+        			
+        			SpawnerUtil.setMobId(spawnerLogic, msg.mobId, msg.minecartIndex);
+        			
+        			if(container.getTargetType() == TargetType.BLOCK) {
+        				TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
 
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		if(player.openContainer instanceof ContainerFilter) {
-			ContainerFilter container = (ContainerFilter)player.openContainer;
-			
-			MobSpawnerBaseLogic spawnerLogic = SpawnerUtil.getSpawnerLogic(container);
-			
-			SpawnerUtil.setMobId(spawnerLogic, this.mobId, this.minecartIndex);
-			
-			if(container.getTargetType() == TargetType.BLOCK) {
-				TileEntityMobSpawner spawner = (TileEntityMobSpawner)player.world.getTileEntity(container.getBlockPos());
+        				//TODO PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
+        				PacketUtil.sendTileEntityUpdateToWatching(spawner);
+        			}
+        			
+        			
+        			player.sendMessage(new TextComponentTranslation("mapmakingtools.filter.mobType.complete", msg.mobId).applyTextStyle(TextFormatting.ITALIC));
+        		}
+            });
 
-				PacketDispatcher.sendTo(new PacketUpdateBlock(spawner, container.getBlockPos(), true), player);
-				PacketUtil.sendTileEntityUpdateToWatching(spawner);
-			}
-			
-			TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.mobType.complete", this.mobId);
-			chatComponent.getStyle().setItalic(true);
-			player.sendMessage(chatComponent);
-		}
+            ctx.get().setPacketHandled(true);
+        }
 	}
-
 }

@@ -55,16 +55,16 @@ public class WorldData {
 			//Write Data
 			NBTTagList list = new NBTTagList();
 			for(UUID uuid : PLAYER_POINTS.keySet())
-				list.appendTag(PLAYER_POINTS.get(uuid).writeToNBT(new NBTTagCompound()));
+				list.add(PLAYER_POINTS.get(uuid).writeToNBT(new NBTTagCompound()));
 
 			
-			data.setTag("playerPoints", list);
+			data.put("playerPoints", list);
 			
 			for(FilterServer filter : FilterManager.getServerMap()) {
 				if(Strings.isNullOrEmpty(filter.getSaveId()))
 					continue;                                                                                                                                                                                                                                                                                              
 				String key = "filter:" + filter.getSaveId();
-				data.setTag(key, filter.writeToNBT(new NBTTagCompound()));
+				data.put(key, filter.writeToNBT(new NBTTagCompound()));
 			}
 			
 	        CompressedStreamTools.writeCompressed(data, outputStream);
@@ -88,9 +88,9 @@ public class WorldData {
 			NBTTagCompound data = CompressedStreamTools.readCompressed(inputStream);
 			    
 			//Read Data
-			NBTTagList list = (NBTTagList)data.getTagList("playerPoints", 10);
-			for(int i = 0; i < list.tagCount(); ++i) {
-				NBTTagCompound tag = list.getCompoundTagAt(i);
+			NBTTagList list = (NBTTagList)data.getList("playerPoints", 10);
+			for(int i = 0; i < list.size(); ++i) {
+				NBTTagCompound tag = list.getCompound(i);
 				PLAYER_POINTS.put(tag.getUniqueId("uuid"), new PlayerData(tag));
 			}
 			
@@ -98,8 +98,8 @@ public class WorldData {
 				if(Strings.isNullOrEmpty(filter.getSaveId()))
 					continue;
 				String key = "filter:" + filter.getSaveId();
-				if(data.hasKey(key))
-					filter.readFromNBT(data.getCompoundTag(key));
+				if(data.contains(key))
+					filter.readFromNBT(data.getCompound(key));
 			}
 			
 			inputStream.close();

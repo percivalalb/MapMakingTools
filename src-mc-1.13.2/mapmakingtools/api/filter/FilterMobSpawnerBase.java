@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mapmakingtools.client.gui.button.GuiButtonPotentialSpawns;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsAdd;
 import mapmakingtools.tools.filter.packet.PacketPotentialSpawnsRemove;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.WeightedSpawnerEntity;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -36,11 +37,11 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 			GuiButtonPotentialSpawns button = new GuiButtonPotentialSpawns(BUTTON_ID_START + i, topX + 14 * i + 2, topY - 13, 13, 12, "" + i);
 			button.enabled = i == potentialSpawnIndex;
 			this.potentialSpawnButtons.add(button);
-			gui.getButtonList().add(button);
+			gui.addButtonToGui(button);
 		}
 	}
 	
-	public void removePotentialSpawnButtons(IFilterGui gui, int xMouse, int yMouse, int mouseButton, int topX, int topY) {
+	public void removePotentialSpawnButtons(IFilterGui gui, double mouseX, double mouseY, int mouseButton, int topX, int topY) {
 		List<WeightedSpawnerEntity> potentialSpawns = SpawnerUtil.getPotentialSpawns(gui);
 		if(potentialSpawns == null) return;
 		
@@ -64,13 +65,13 @@ public abstract class FilterMobSpawnerBase extends FilterClient {
 			if(mouseButton == 2) {
 				potentialSpawns.remove(button.id - BUTTON_ID_START);
 				
-				PacketDispatcher.sendToServer(new PacketPotentialSpawnsRemove(button.id - BUTTON_ID_START));
+				PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketPotentialSpawnsRemove(button.id - BUTTON_ID_START));
 				if(button.id - BUTTON_ID_START < FilterMobSpawnerBase.potentialSpawnIndex)
 					FilterMobSpawnerBase.potentialSpawnIndex--;
 			}
 			else if(mouseButton == 1) {
 				potentialSpawns.add(new WeightedSpawnerEntity());
-				PacketDispatcher.sendToServer(new PacketPotentialSpawnsAdd(button.id - BUTTON_ID_START + 1));
+				PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketPotentialSpawnsAdd(button.id - BUTTON_ID_START + 1));
 				FilterMobSpawnerBase.potentialSpawnIndex = button.id - BUTTON_ID_START + 1;
 			}
 		

@@ -10,8 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 /**
  * @author ProPercivalalb
@@ -26,13 +26,11 @@ public class FilterManager {
 	
 	public static void registerFilter(Class<? extends FilterClient> filterClient, Class<? extends FilterServer> filterServer) {
 		try {
-			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			
 			FilterServer server = filterServer.newInstance();
 			
 			SERVER_FILTERS.add(server);
 			
-			if(side == Side.CLIENT) {
+			if(FMLEnvironment.dist == Dist.CLIENT) {
 				CLIENT_FILTERS.add(filterClient.newInstance().setServerFilter(server));
 			}
 		} 

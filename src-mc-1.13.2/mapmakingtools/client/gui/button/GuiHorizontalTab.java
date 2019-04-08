@@ -2,7 +2,6 @@ package mapmakingtools.client.gui.button;
 
 import mapmakingtools.api.filter.FilterClient;
 import mapmakingtools.client.gui.GuiFilter;
-import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -28,11 +27,12 @@ public class GuiHorizontalTab extends GuiButton {
     }
     
     @Override
-    public void drawButton(Minecraft mc, int i, int j, float partialTicks) {
-        if(this.visible) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
+    	if(this.visible) {
         	GlStateManager.pushMatrix();
-        	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        	mc.getTextureManager().bindTexture(ResourceLib.TABS);
+        	GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        	Minecraft minecraft = Minecraft.getInstance();
+        	minecraft.getTextureManager().bindTexture(ResourceLib.TABS);
         	
         	boolean error = this.filter.showErrorIcon(this.gui);
             boolean left = this.side == Side.LEFT;
@@ -41,17 +41,13 @@ public class GuiHorizontalTab extends GuiButton {
             this.drawTexturedModalRect(this.x + (selected ? -2 : 0), this.y, error ? (selected ? 94 : 64) : (selected ? 30 : 0), (left ? 28 : 0), selected ? 34 : 30, 28);
             
             if(error)
-            	GlStateManager.color(0.7F, 0.25F, 0.25F, 1.0F);
-            mc.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
+            	GlStateManager.color4f(0.7F, 0.25F, 0.25F, 1.0F);
+            minecraft.getTextureManager().bindTexture(ResourceLib.getCachedGeneric(this.filter.getIconPath()));
             Gui.drawModalRectWithCustomSizedTexture(this.x + 5 + (left ? 4 : 0), this.y + 6, 0, 0, 16, 16, 16, 16);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
     	}
 	}
-    
-    public boolean isMouseAbove(int mouseX, int mouseY) {
-    	return this.mousePressed(ClientHelper.getClient(), mouseX, mouseY);
-    }
     
     public enum Side {
 

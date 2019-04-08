@@ -1,55 +1,59 @@
 package mapmakingtools.tools.filter.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
 import mapmakingtools.inventory.ContainerFilter;
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import mapmakingtools.util.CommandBlockUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketCommandBlockAlias extends AbstractServerMessage {
+public class PacketCommandBlockAlias {
 
 	public String name;
 	
-	public PacketCommandBlockAlias() {}
 	public PacketCommandBlockAlias(String name) {
 		this.name = name;
 	}
 
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.name = packetbuffer.readString(Integer.MAX_VALUE / 4);
+	public static void encode(PacketCommandBlockAlias msg, PacketBuffer buf) {
+		buf.writeString(msg.name);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeString(this.name);
+	
+	public static PacketCommandBlockAlias decode(PacketBuffer buf) {
+		String name = buf.readString(32767);
+		return new PacketCommandBlockAlias(name);
 	}
+	
+	public static class Handler {
+        public static void handle(final PacketCommandBlockAlias msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
 
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
+        		if(player.openContainer instanceof ContainerFilter) {
+        			ContainerFilter container = (ContainerFilter)player.openContainer;
+        			
+        			CommandBlockBaseLogic logic = CommandBlockUtil.getCommandLogic(container);
 
-		if(player.openContainer instanceof ContainerFilter) {
-			ContainerFilter container = (ContainerFilter)player.openContainer;
-			
-			CommandBlockBaseLogic logic = CommandBlockUtil.getCommandLogic(container);
+        			CommandBlockUtil.setName(logic, msg.name);
+        			
+            		TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.commandblockalias.complete", msg.name);
+        			chatComponent.getStyle().setItalic(true);
+        			player.sendMessage(new TextComponentTranslation("mapmakingtools.filter.commandblockalias.complete", msg.name).applyTextStyle(TextFormatting.ITALIC));
+        			
+        		}
+            });
 
-			CommandBlockUtil.setName(logic, this.name);
-			
-    		TextComponentTranslation chatComponent = new TextComponentTranslation("mapmakingtools.filter.commandblockalias.complete", this.name);
-			chatComponent.getStyle().setItalic(true);
-			player.sendMessage(chatComponent);
-			
-		}
+            ctx.get().setPacketHandled(true);
+        }
 	}
 }

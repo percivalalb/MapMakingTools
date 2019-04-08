@@ -12,15 +12,15 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.helper.ReflectionHelper;
 import mapmakingtools.tools.BlockCache;
 import mapmakingtools.tools.PlayerData;
 import mapmakingtools.tools.datareader.BlockColourList;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.spectator.PlayerMenuObject;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.texture.ThreadDownloadImageData;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * @author ProPercivalalb
@@ -135,7 +135,7 @@ public class PlayerStauteThread implements Runnable {
 		
 		if(map.containsKey(Type.SKIN))
 		{
-			FMLLog.info(map.get(Type.SKIN).getUrl());
+			MapMakingTools.LOGGER.info(map.get(Type.SKIN).getUrl());
 		
 			
 		}
@@ -144,7 +144,7 @@ public class PlayerStauteThread implements Runnable {
 
         if (playerProfile != null)
         {
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Minecraft minecraft = Minecraft.getInstance();
             Map<Type, MinecraftProfileTexture> map2 = minecraft.getSkinManager().loadSkinFromCache(playerProfile);
 
             if (map2.containsKey(Type.SKIN))
@@ -156,7 +156,7 @@ public class PlayerStauteThread implements Runnable {
                 UUID uuid = EntityPlayer.getUUID(playerProfile);
                 resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
             }
-            FMLLog.info("" + resourcelocation);
+            MapMakingTools.LOGGER.info("" + resourcelocation);
         }
             		   
         PlayerMenuObject pmo = new PlayerMenuObject(playerProfile);
@@ -164,7 +164,7 @@ public class PlayerStauteThread implements Runnable {
         ThreadDownloadImageData tdid = AbstractClientPlayer.getDownloadImageSkin(AbstractClientPlayer.getLocationSkin(this.target), this.target);
 		
 		img = ReflectionHelper.getField(BUFFERED_IMG_FLD, BufferedImage.class, tdid);
-		FMLLog.info("" + (img == null));
+		MapMakingTools.LOGGER.info("" + (img == null));
 		
 		
 		
@@ -261,7 +261,7 @@ public class PlayerStauteThread implements Runnable {
 	    	                	if(!alreadySet.contains(newPos)) {
 	    	                		list.add(BlockCache.createCache(this.player, this.player.world, newPos));
 	    		     	            alreadySet.add(newPos);
-	    		     	            this.player.world.setBlockState(newPos, Block.getBlockFromName(((String)closest[0])).getStateFromMeta((Integer)closest[1]));
+	    		     	            this.player.world.setBlockState(newPos, ForgeRegistries.BLOCKS.getValue(new ResourceLocation((String)closest[0])).getStateById((Integer)closest[1]));
 	    	    				}
 	    	     	            
 	    	                	++blocks;

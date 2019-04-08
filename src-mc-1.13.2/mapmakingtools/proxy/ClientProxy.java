@@ -1,15 +1,9 @@
 package mapmakingtools.proxy;
 
-import java.util.List;
-
 import mapmakingtools.MapMakingTools;
-import mapmakingtools.api.filter.FilterClient;
-import mapmakingtools.api.manager.FilterManager;
 import mapmakingtools.api.manager.ItemEditorManager;
-import mapmakingtools.client.gui.GuiFilter;
-import mapmakingtools.client.gui.GuiItemEditor;
-import mapmakingtools.client.gui.GuiWorldTransfer;
 import mapmakingtools.handler.GameOverlay;
+import mapmakingtools.handler.GuiHandler;
 import mapmakingtools.handler.GuiOpen;
 import mapmakingtools.handler.KeyboardInput;
 import mapmakingtools.handler.RenderWorld;
@@ -33,21 +27,31 @@ import mapmakingtools.tools.attribute.TooltipFlagsAttribute;
 import mapmakingtools.tools.worldtransfer.WorldTransferList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * @author ProPercivalalb
  */
 public class ClientProxy extends CommonProxy {
 
+	public ClientProxy() {
+    	super();
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+    }
+
+    private void clientSetup(FMLClientSetupEvent event) {
+
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::openGui);
+    }
+	
 	@Override
-	public void postInit(FMLPostInitializationEvent event) {
+	public void postInit(InterModProcessEvent event) {
 		super.postInit(event);
 		MapMakingTools.LOGGER.info("Loading World Transfer file");
 		WorldTransferList.readFromFile();
@@ -84,42 +88,9 @@ public class ClientProxy extends CommonProxy {
 		ItemEditorManager.registerItemHandler(new RecipeKnowledgeAttribute());
 	}
 	
-	
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		BlockPos pos = new BlockPos(x, y, z);
-		
-		if(ID == ID_FILTER_BLOCK) {
-			List<FilterClient> filterList = FilterManager.getClientBlocksFilters(player, world, pos);
-			if(filterList.size() > 0)
-				return new GuiFilter(filterList, player, pos.toImmutable());
-		}
-		else if(ID == ID_FILTER_ENTITY) {
-			List<FilterClient> filterList = FilterManager.getClientEntitiesFilters(player, world.getEntityByID(x));
-			if(filterList.size() > 0)
-				return new GuiFilter(filterList, player, x);
-		}
-		else if(ID == GUI_ID_ITEM_EDITOR) {
-			return new GuiItemEditor(player, x);
-		}
-		else if(ID == GUI_ID_WORLD_TRANSFER) {
-			return new GuiWorldTransfer();
-		}
-		return null;
-	}
-	
-	@Override
-	public EntityPlayer getPlayerEntity(MessageContext ctx) {
-		return (ctx.side.isClient() ? Minecraft.getMinecraft().player : super.getPlayerEntity(ctx));
-	}
-	
 	@Override
 	public EntityPlayer getPlayerEntity() {
-		return Minecraft.getMinecraft().player;
-	}
-	
-	@Override
-	public IThreadListener getThreadFromContext(MessageContext ctx) {
-		return (ctx.side.isClient() ? Minecraft.getMinecraft() : super.getThreadFromContext(ctx));
+		//MapMakingTools.LOGGER.info("GET PLAYER");
+		return Minecraft.getInstance().player;
 	}
 }

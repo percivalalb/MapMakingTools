@@ -7,17 +7,15 @@ import mapmakingtools.api.filter.IFilterGui;
 import mapmakingtools.client.gui.button.GuiButtonData;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.helper.TextHelper;
-import mapmakingtools.network.PacketDispatcher;
-import mapmakingtools.tools.filter.packet.PacketBabyMonster;
 import mapmakingtools.util.SpawnerUtil;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author ProPercivalalb
@@ -47,7 +45,7 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 		int topX = (gui.getScreenWidth() - gui.xFakeSize()) / 2;
         int topY = gui.getGuiY();
         this.btn_covert = new GuiButtonData(0, topX + 20, topY + 37, 200, 20, "Turn into Baby");
-        gui.getButtonList().add(this.btn_covert);
+        gui.addButtonToGui(this.btn_covert);
         
         if(SpawnerUtil.isSpawner(gui)) {
         	this.addPotentialSpawnButtons(gui, topX, topY);
@@ -76,21 +74,21 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 		super.actionPerformed(gui, button);
 		if (button.enabled) {
             if(button.id == 0) {
-                PacketDispatcher.sendToServer(new PacketBabyMonster(this.btn_covert.getData() == 0, potentialSpawnIndex));
+                //TODO PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketBabyMonster(this.btn_covert.getData() == 0, potentialSpawnIndex));
             	ClientHelper.getClient().player.closeScreen();
             }
         }
 	}
 	
 	@Override
-	public void mouseClicked(IFilterGui gui, int xMouse, int yMouse, int mouseButton) {
+	public void mouseClicked(IFilterGui gui, double mouseX, double mouseY, int mouseButton) {
 		if(SpawnerUtil.isSpawner(gui))
-        	this.removePotentialSpawnButtons(gui, xMouse, yMouse, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
+        	this.removePotentialSpawnButtons(gui, mouseX, mouseY, mouseButton, (gui.getScreenWidth() - gui.xFakeSize()) / 2, gui.getGuiY());
 	}
 	
 	@Override
 	public List<String> getFilterInfo(IFilterGui gui) {
-		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.translateToLocal("mapmakingtools.filter.babymonster.info"));
+		return TextHelper.splitInto(140, gui.getFont(), TextFormatting.GREEN + this.getFilterName(), I18n.format("mapmakingtools.filter.babymonster.info"));
 	}
 
 	@Override
@@ -112,6 +110,6 @@ public class BabyMonsterClientFilter extends FilterMobSpawnerBase {
 	
 	@Override
 	public String getErrorMessage(IFilterGui gui) { 
-		return TextFormatting.RED + I18n.translateToLocal("mapmakingtools.filter.babymonster.error");
+		return TextFormatting.RED + I18n.format("mapmakingtools.filter.babymonster.error");
 	}
 }

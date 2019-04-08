@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import mapmakingtools.helper.Numbers;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 /**
  * @author ProPercivalalb
@@ -28,14 +29,14 @@ public class BlockList {
 		return stacksDisplay.size();
 	}
 	
-	public static void addStack(String block, int blockMeta) {
-		ItemStack res = new ItemStack(Block.getBlockFromName(block), 1, blockMeta);
+	public static void addStack(String block) {
+		ItemStack res = new ItemStack(IRegistry.BLOCK.get(new ResourceLocation(block)), 1);
 		stacksDisplay.add(res);
 	}
 	
 	public static void readDataFromFile() {
 		Stream<String> lines = DataReader.loadResource("/assets/mapmakingtools/data/blocks.txt");
 		Stream<String[]> parts = lines.map(line -> line.split(" ~~~ ")).filter(arr -> arr.length == 2 && Numbers.isInteger(arr[1]));
-		parts.forEach(arr -> addStack(arr[0], Numbers.parse(arr[1])));
+		//TODO parts.forEach(arr -> addStack(arr[0]));
 	}
 }

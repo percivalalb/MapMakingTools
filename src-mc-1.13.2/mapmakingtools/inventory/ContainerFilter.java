@@ -2,7 +2,6 @@ package mapmakingtools.inventory;
 
 import java.util.List;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.filter.FilterServer;
 import mapmakingtools.api.filter.IFilterContainer;
@@ -16,7 +15,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
  * @author ProPercivalalb
@@ -55,20 +53,21 @@ public class ContainerFilter extends Container implements IFilterContainer {
 		this.selected = selected;
 	    this.inventorySlots.clear();
 	    this.inventoryItemStacks.clear();
-	    this.filterCurrent = this.filterList.get(selected);
-	    MapMakingTools.LOGGER.info(this.filterCurrent + " " + FMLCommonHandler.instance().getEffectiveSide());
+	    this.filterCurrent = this.filterList.get(selected);	
 	    if(this.filterCurrent != null)
 	    	this.filterCurrent.addSlots(this);
 	}
 	
 	@Override
-	public void addSlot(Slot slot) {
-		this.addSlotToContainer(slot);
-	}
+	public void addSlotForFilter(Slot slotIn) {
+		//TODO 
+		slotIn = super.addSlot(slotIn);
+		slotIn.xPos += 62 / 2;
+    }
 	
 	@Override
-	public Slot addSlotToContainer(Slot slotIn) {
-		slotIn = super.addSlotToContainer(slotIn);
+	public Slot addSlot(Slot slotIn) {
+		slotIn = super.addSlot(slotIn);
 		slotIn.xPos += 62 / 2;
         return slotIn;
     }

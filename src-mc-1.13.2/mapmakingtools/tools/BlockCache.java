@@ -13,8 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * @author ProPercivalalb
@@ -38,15 +37,15 @@ public class BlockCache {
     private BlockCache(BlockPos playerPos, World world, BlockPos pos, IBlockState state) {
         this.playerPos = playerPos;
     	this.world = world;
-        this.dimId = world.provider.getDimension();
+    	this.dimId = world.dimension.getType().getId();
         this.pos = pos.toImmutable();
         this.replacedBlock = state;
         this.registryName = state.getBlock().getRegistryName();
-        this.meta = state.getBlock().getMetaFromState(state);
+        this.meta = state.getBlock().getStateId(state); //TODO
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity != null) {
             this.nbt = new NBTTagCompound();
-            tileEntity.writeToNBT(this.nbt);
+            tileEntity.write(this.nbt);
         }
         else 
         	this.nbt = null;
@@ -74,11 +73,11 @@ public class BlockCache {
     }
 
     public static BlockCache readFromNBT(NBTTagCompound tag) {
-        NBTTagCompound nbt = tag.getBoolean("hasTE") ? null : tag.getCompoundTag("tileEntity");
+        NBTTagCompound nbt = tag.getBoolean("hasTE") ? null : tag.getCompound("tileEntity");
 
         return new BlockCache(
         		BlockPos.fromLong(tag.getLong("playerPos")),
-        		tag.getInteger("dimension"),
+        		tag.getInt("dimension"),
                 BlockPos.fromLong(tag.getLong("blockPos")),
                 tag.getString("blockMod"),
                 tag.getString("blockName"),
@@ -96,7 +95,7 @@ public class BlockCache {
                 packetbuffer.readCompoundTag());
     }
     
-    public static BlockCache readFromPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
+    public static BlockCache readFromPacketBufferCompact(PacketBuffer packetbuffer) {
         BlockCache cache = new BlockCache();
         cache.registryName = new ResourceLocation(packetbuffer.readString(Integer.MAX_VALUE / 4));
         cache.meta = packetbuffer.readByte();
@@ -115,7 +114,7 @@ public class BlockCache {
         if(this.nbt != null) {
 	    	TileEntity tileEntity = world.getTileEntity(pos);
 	        if(tileEntity != null) {
-	            tileEntity.readFromNBT(this.nbt);
+	            tileEntity.read(this.nbt);
 	            tileEntity.setPos(pos);
 	            tileEntity.markDirty();
 	        }
@@ -134,7 +133,7 @@ public class BlockCache {
 		
 		BlockCache bse = BlockCache.createCache(dataIn.getPlayer(), dataIn.getPlayerWorld(), diffPos);
 		
-		IBlockState newState = this.getReplacedBlock().withRotation(rotationIn);
+		IBlockState newState = this.getReplacedBlock().rotate(rotationIn);
 		
 		dataIn.getPlayerWorld().setBlockState(diffPos, newState, 2);
 		
@@ -142,7 +141,7 @@ public class BlockCache {
 	    if(this.nbt != null) {
 	    	TileEntity tileEntity = dataIn.getPlayerWorld().getTileEntity(diffPos);
 	        if(tileEntity != null) {
-	            tileEntity.readFromNBT(this.nbt);
+	            tileEntity.read(this.nbt);
 	            tileEntity.setPos(diffPos);
 	            tileEntity.markDirty();
 	        }
@@ -179,7 +178,7 @@ public class BlockCache {
 	
 		BlockCache bse = BlockCache.createCache(data.getPlayer(), data.getPlayerWorld(), newPos);
 		
-		IBlockState newState = this.getReplacedBlock().withMirror(mirror);
+		IBlockState newState = this.getReplacedBlock().mirror(mirror);
 		
 		//TODO if(!RotationLoader.onRotation(data.getPlayerWorld(), newPos, this.blockIdentifier, this.block, this.meta, movementType))
 			data.getPlayerWorld().setBlockState(newPos, newState, 2);
@@ -188,7 +187,7 @@ public class BlockCache {
 	    if (this.nbt != null) {
 	    	TileEntity tileEntity = data.getPlayerWorld().getTileEntity(newPos);
 	        if (tileEntity != null) {
-	            tileEntity.readFromNBT(this.nbt);
+	            tileEntity.read(this.nbt);
 	            tileEntity.setPos(newPos);
 	        }
 	    }
@@ -197,17 +196,17 @@ public class BlockCache {
 	}
 
     public void writeToNBT(NBTTagCompound compound) {
-    	compound.setLong("playerPos", this.playerPos.toLong());
-        compound.setString("blockMod", this.registryName.getNamespace());
-        compound.setString("blockName", this.registryName.getPath());
-        compound.setLong("blockPos", this.pos.toLong());
-        compound.setInteger("dimension", this.dimId);
-        compound.setByte("metadata", (byte)this.meta);
+    	compound.putLong("playerPos", this.playerPos.toLong());
+        compound.putString("blockMod", this.registryName.getNamespace());
+        compound.putString("blockName", this.registryName.getPath());
+        compound.putLong("blockPos", this.pos.toLong());
+        compound.putInt("dimension", this.dimId);
+        compound.putByte("metadata", (byte)this.meta);
 
-        compound.setBoolean("hasTE", this.nbt != null);
+        compound.putBoolean("hasTE", this.nbt != null);
 
         if(this.nbt != null)
-            compound.setTag("tileEntity", this.nbt);
+            compound.put("tileEntity", this.nbt);
     }
     
     public void writeToPacketBuffer(PacketBuffer packetbuffer) throws IOException {
@@ -238,7 +237,7 @@ public class BlockCache {
     	return SIZE_BUFFER.writerIndex();
     }
     
-    public void writeToPacketBufferCompact(PacketBuffer packetbuffer) throws IOException {
+    public void writeToPacketBufferCompact(PacketBuffer packetbuffer) {
 	    if(this.registryName.getNamespace().equals("minecraft"))
 			packetbuffer.writeString(this.registryName.getPath());
 	    else
@@ -249,15 +248,15 @@ public class BlockCache {
 	}
 
     public World getWorld() {
-        return this.world == null ? DimensionManager.getWorld(this.dimId) : this.world;
+        return this.world == null ? this.world : this.world;
     }
 
     public IBlockState getReplacedBlock() {
-        return this.replacedBlock == null ? ForgeRegistries.BLOCKS.getValue(this.registryName).getStateFromMeta(this.meta) : this.replacedBlock;
+        return this.replacedBlock == null ? ForgeRegistries.BLOCKS.getValue(this.registryName).getStateById(this.meta) : this.replacedBlock;
     }
 
     public TileEntity getTileEntity() {
-        return this.nbt != null ? TileEntity.create(this.getWorld(), this.nbt) : null;
+        return this.nbt != null ? TileEntity.create(this.nbt) : null;
     }
     
     @Override
@@ -275,8 +274,8 @@ public class BlockCache {
             return false;
         if(this.nbt != other.nbt && (this.nbt == null || !this.nbt.equals(other.nbt)))
             return false;
-        if(this.getWorld() != other.getWorld() && (this.getWorld() == null || !this.getWorld().equals(other.getWorld())))
-            return false;
+       //TODO if(this.getWorld() != other.getWorld() && (this.getWorld() == null || !this.getWorld().equals(other.getWorld())))
+        //    return false;
         if(this.registryName != other.registryName && (this.registryName == null || !this.registryName.equals(other.registryName)))
             return false;
         
@@ -292,7 +291,7 @@ public class BlockCache {
         hash = 73 * hash + this.meta;
         hash = 73 * hash + this.dimId;
         hash = 73 * hash + (this.nbt != null ? this.nbt.hashCode() : 0);
-        hash = 73 * hash + (this.getWorld() != null ? this.getWorld().hashCode() : 0);
+        //TODO hash = 73 * hash + (this.getWorld() != null ? this.getWorld().hashCode() : 0);
         hash = 73 * hash + (this.registryName != null ? this.registryName.hashCode() : 0);
         return hash;
     }

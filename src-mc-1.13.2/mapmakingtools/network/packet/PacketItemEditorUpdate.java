@@ -1,45 +1,49 @@
 package mapmakingtools.network.packet;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-import mapmakingtools.network.AbstractMessage.AbstractServerMessage;
 import mapmakingtools.tools.PlayerAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author ProPercivalalb
  */
-public class PacketItemEditorUpdate extends AbstractServerMessage {
+public class PacketItemEditorUpdate {
 	
 	public int slotIndex;
 	public ItemStack stack;
 	
-	public PacketItemEditorUpdate() {}
 	public PacketItemEditorUpdate(ItemStack stack, int slotIndex) {
 		this.stack = stack;
 		this.slotIndex = slotIndex;
 	}
-
-	@Override
-	public void read(PacketBuffer packetbuffer) throws IOException {
-		this.slotIndex = packetbuffer.readInt();
-		this.stack = packetbuffer.readItemStack();
+	
+	public static void encode(PacketItemEditorUpdate msg, PacketBuffer buf) {
+		buf.writeInt(msg.slotIndex);
+		buf.writeItemStack(msg.stack);
 	}
-
-	@Override
-	public void write(PacketBuffer packetbuffer) throws IOException {
-		packetbuffer.writeInt(this.slotIndex);
-		packetbuffer.writeItemStack(this.stack);
+	
+	public static PacketItemEditorUpdate decode(PacketBuffer buf) {
+		int slotIndex = buf.readInt();
+		ItemStack stack = buf.readItemStack();
+		return new PacketItemEditorUpdate(stack, slotIndex);
 	}
-	@Override
-	public void process(EntityPlayer player, Side side) {
-		if(!PlayerAccess.canEdit(player))
-			return;
-		
-		player.inventory.setInventorySlotContents(this.slotIndex, this.stack);
-		player.inventory.markDirty();
+	
+	public static class Handler {
+        public static void handle(final PacketItemEditorUpdate msg, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+            	EntityPlayer player = ctx.get().getSender();
+            	if(!PlayerAccess.canEdit(player))
+        			return;
+        		
+        		player.inventory.setInventorySlotContents(msg.slotIndex, msg.stack);
+        		player.inventory.markDirty();
+            });
+
+            ctx.get().setPacketHandled(true);
+        }
 	}
 }

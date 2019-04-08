@@ -5,7 +5,6 @@ import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
@@ -31,8 +30,8 @@ public class GuiTextFieldColour extends GuiTextFieldAdvanced {
 	}
 
 	@Override
-	public void drawTextBox() {
-		super.drawTextBox();
+    public void drawTextField(int mouseX, int mouseY, float partialTicks) {
+    	super.drawTextField(mouseX, mouseY, partialTicks);
 	}
 	
 	public void drawToolTip(int xMouse, int yMouse) {
@@ -42,7 +41,7 @@ public class GuiTextFieldColour extends GuiTextFieldAdvanced {
 			drawRect(this.x + this.xClick, this.y + this.yClick, this.x + this.xClick + 60, this.y + this.yClick + 26, -6908265);
 		  	TextColour colour = getCurrentColour(textColourIndex);
 			ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.BUTTON_TEXT_COLOUR);
-	        GlStateManager.color(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
+	        GlStateManager.color4f(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
 	        boolean field_146123_n = xMouse >= this.x + this.xClick + 3 && yMouse >= this.y + this.yClick + 3 && xMouse < this.x + this.xClick + 3 + 20 && yMouse < this.y + this.yClick + 3 + 20;
 	        int hoverState = field_146123_n ? 2 : 1;
 	        this.drawTexturedModalRect(this.x + this.xClick + 3, y + this.yClick + 3, 0, 46 + hoverState * 20, 20 / 2, 20 / 2);//top left
@@ -66,14 +65,14 @@ public class GuiTextFieldColour extends GuiTextFieldAdvanced {
 	}
 	
 	@Override
-	public boolean textboxKeyTyped(char par1, int par2) {
-		boolean bool = super.textboxKeyTyped(par1, par2);
+	public boolean charTyped(char par1, int par2) {
+		boolean bool = super.charTyped(par1, par2);
 		this.textChange();
     	return bool;
     }
 	
-	public boolean preMouseClick(int xMouse, int yMouse, int buttonIndex) {
-		if(this.colourTab && xMouse >= this.x + this.xClick && yMouse >= this.y + this.yClick && xMouse < this.x + this.xClick + 60 && yMouse < this.y + this.yClick + 30) {
+	public boolean preMouseClick(double mouseX, double mouseY, int buttonIndex) {
+		if(this.colourTab && mouseX >= this.x + this.xClick && mouseY >= this.y + this.yClick && mouseX < this.x + this.xClick + 60 && mouseY < this.y + this.yClick + 30) {
 			
 			if(this.isFocused()) {
 			  	TextColour colour = getCurrentColour(textColourIndex);
@@ -92,14 +91,14 @@ public class GuiTextFieldColour extends GuiTextFieldAdvanced {
 	}
 	
 	@Override
-	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 
 		this.colourTab = false;
 		
 		if(this.isFocused() && mouseButton == 1) {
 			this.colourTab = true;
-			this.xClick = mouseX - this.x;
-			this.yClick = mouseY - this.y;
+			this.xClick = (int) (mouseX - this.x);
+			this.yClick = (int) (mouseY - this.y);
 			
 			return super.mouseClicked(mouseX, mouseY, 0);
 			//this.setText(this.getText().substring(0, this.getCursorPosition()) + TextColour.RED.getColour() + this.getText().substring(this.getCursorPosition(), this.getText().length()));

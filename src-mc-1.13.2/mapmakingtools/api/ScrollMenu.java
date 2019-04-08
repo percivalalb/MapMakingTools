@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
@@ -12,21 +11,19 @@ import com.google.common.collect.ImmutableList;
 import mapmakingtools.lib.ResourceLib;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * @author ProPercivalalb
  */
-public abstract class ScrollMenu<T> {
+public abstract class ScrollMenu<T> implements IGuiEventListener {
 
 	private static int ELEMENT_HEIGHT = 14;
 	private static int MIN_SCROLL_HEIGHT = 20;
 	
-	protected ScaledResolution scaling;
 	public int scrollY = 0;
     private int scrollHeight = 0;
     private int listHeight = 0;
@@ -84,7 +81,6 @@ public abstract class ScrollMenu<T> {
 	}
 	
 	public void initGui() {
-		this.scaling = new ScaledResolution(this.screen.mc);
 		
 		if(this.dynamicNoColumns) {
 			int maxElementWidth = 1;
@@ -117,7 +113,7 @@ public abstract class ScrollMenu<T> {
 	
 	public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.pushMatrix();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         
 		this.clipToSize();
 		this.screen.mc.getTextureManager().bindTexture(ResourceLib.SCREEN_SCROLL);
@@ -138,7 +134,7 @@ public abstract class ScrollMenu<T> {
         
         RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
+        GlStateManager.disableDepthTest();
         
         if(this.scrollHeight <= this.height && this.elements.size() > 0)
             this.drawScrollBar();
@@ -146,7 +142,7 @@ public abstract class ScrollMenu<T> {
         this.drawScrollList();
         
         GlStateManager.enableLighting();
-        GlStateManager.enableDepth();
+        GlStateManager.enableDepthTest();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.popMatrix();
         
@@ -154,7 +150,7 @@ public abstract class ScrollMenu<T> {
             mouseX -= this.x;
             mouseY -= this.y;
 
-            if(Mouse.isButtonDown(0)) {
+            if(this.screen.mc.mouseHelper.isLeftDown()) {
                 if(mouseX >= this.width - 19 && mouseX < this.width - 2 && mouseY >= 6 && mouseY < this.height - 6) {
                     this.isScrolling = true;
                 }
@@ -168,19 +164,6 @@ public abstract class ScrollMenu<T> {
 
                 if(this.scrollY < 0) this.scrollY = 0;
                 if(this.scrollY > this.listHeight) this.scrollY = this.listHeight;
-            }
-
-            int mouseWheel = Mouse.getDWheel();
-
-            if(mouseWheel < 0) {
-                this.scrollY += ELEMENT_HEIGHT;
-
-                if(this.scrollY > this.listHeight) this.scrollY = this.listHeight;
-            }
-            else if(mouseWheel > 0) {
-                this.scrollY -= ELEMENT_HEIGHT;
-
-                if(this.scrollY < 0) this.scrollY = 0;
             }
         }
 	}
@@ -215,7 +198,7 @@ public abstract class ScrollMenu<T> {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
-	private boolean mouseInRadioButton(int mouseX, int mouseY, int buttonIndex) {
+	private boolean mouseInRadioButton(double mouseX, double mouseY, int buttonIndex) {
 		int row = MathHelper.floor(buttonIndex / (double)this.noCol);
 		int column = buttonIndex % this.noCol;
     	int columnSize = this.width / this.noCol;
@@ -225,22 +208,39 @@ public abstract class ScrollMenu<T> {
 	    return mouseX >= var4 - 1 && mouseX < var4 + 9 && mouseY >= var5 - 1 && mouseY < var5 + 10;
 	}
 	
-	public void mouseClicked(int xMouse, int yMouse, int mouseButton) {
-	     xMouse -= this.x;
-         yMouse -= this.y;
+	@Override
+	public boolean mouseScrolled(double mouseWheel) {
+		 if(mouseWheel < 0) {
+             this.scrollY += ELEMENT_HEIGHT;
 
-	     if(mouseButton == 0 && xMouse >= 0 && xMouse < this.width && yMouse >= 0 && yMouse < this.height + 6) {
-	         for(int buttonIndex = 0; buttonIndex < this.elements.size(); ++buttonIndex) {
-	             if(this.mouseInRadioButton(xMouse, yMouse, buttonIndex)) {
-	                 if(this.setSelected(buttonIndex))
-	                	 this.onSetButton();
-	                 //else
-	                 //	 this.onRemoveButton();
-	                	 
-	                 break;
-	             }
-	         }
-	     }
+             if(this.scrollY > this.listHeight) this.scrollY = this.listHeight;
+         }
+         else if(mouseWheel > 0) {
+             this.scrollY -= ELEMENT_HEIGHT;
+
+             if(this.scrollY < 0) this.scrollY = 0;
+         }
+		 
+		 return true;
+	}
+	
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		mouseX -= this.x;
+		mouseY -= this.y;
+
+		if(mouseButton == 0 && mouseX >= 0 && mouseX < this.width && mouseY >= 0 && mouseY < this.height + 6) {
+			for(int buttonIndex = 0; buttonIndex < this.elements.size(); ++buttonIndex) {
+				if(this.mouseInRadioButton(mouseX, mouseY, buttonIndex)) {
+					if(this.setSelected(buttonIndex))
+						this.onSetButton();
+					//else
+					//	 this.onRemoveButton();
+	                return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	protected boolean func_146978_c(int topX, int topY, int width, int height, int xMouse, int yMouse) {
@@ -250,9 +250,9 @@ public abstract class ScrollMenu<T> {
 	}
 	
 	public void clipToSize() {
-		int scaleFactor = this.scaling.getScaleFactor();
+		double scaleFactor = this.screen.mc.mainWindow.getGuiScaleFactor();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor(this.x * scaleFactor, (this.scaling.getScaledHeight() - (this.y + this.height)) * scaleFactor, this.width * scaleFactor, this.height * scaleFactor);
+		GL11.glScissor((int)(this.x * scaleFactor), (int)((this.screen.mc.mainWindow.getScaledHeight() - (this.y + this.height)) * scaleFactor), (int)(this.width * scaleFactor), (int)(this.height * scaleFactor));
 	}
 	
 	public boolean setSelected(int index) {

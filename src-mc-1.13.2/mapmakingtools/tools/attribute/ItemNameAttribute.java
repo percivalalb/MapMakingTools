@@ -6,7 +6,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * @author ProPercivalalb
@@ -30,12 +32,12 @@ public class ItemNameAttribute extends IItemAttribute {
 		case 0:
 			if(this.name == null) break;
 			
-			stack.setStackDisplayName(TextFormatting.RESET + this.name);
+			stack.setDisplayName(new TextComponentString(this.name));
 			break;
 		case 1:
 			if(this.translatable == null) break;
 			
-			stack.setTranslatableName(this.translatable);
+			stack.setDisplayName(new TextComponentTranslation(this.translatable));
 			break;
 		case 2:
 			stack.clearCustomName();
@@ -52,10 +54,10 @@ public class ItemNameAttribute extends IItemAttribute {
 	@Override
 	public void populateFromItem(IGuiItemEditor itemEditor, ItemStack stack, boolean first) {
 		
-		String displayname = stack.getDisplayName();
-		if(displayname.startsWith(TextFormatting.RESET.toString())) 
-			displayname = displayname.substring(2, displayname.length());
-		this.fld_name.setText(displayname);
+		ITextComponent displayname = stack.getDisplayName();
+		//TODO if(displayname.startsWith(TextFormatting.RESET.toString())) 
+		//	displayname = displayname.substring(2, displayname.length());
+		this.fld_name.setText(displayname.getUnformattedComponentText());
 		
 		this.btn_remove.enabled = stack.hasDisplayName();// || ;
 	}
@@ -72,18 +74,16 @@ public class ItemNameAttribute extends IItemAttribute {
 		this.fld_translatable = new GuiTextField(0, itemEditor.getFontRenderer(), x + 2, y + 30, width - 4, 13);
 		this.fld_translatable.setMaxStringLength(64);
 		this.fld_translatable.setEnabled(false);
-		this.btn_remove = new GuiButton(0, x + width / 2 - 100, y + 65, 200, 20, "Remove custom display name tag");
+		this.btn_remove = new GuiButton(0, x + width / 2 - 100, y + 65, 200, 20, "Remove custom display name tag"){
+    		@Override
+			public void onClick(double mouseX, double mouseY) {
+    			itemEditor.sendUpdateToServer(2);
+    		}
+    	};
 		
-		itemEditor.getTextBoxList().add(this.fld_name);
-		itemEditor.getTextBoxList().add(this.fld_translatable);
-		itemEditor.getButtonList().add(this.btn_remove);
-	}
-	
-	@Override
-	public void actionPerformed(IGuiItemEditor itemEditor, GuiButton button) {
-		if(button.id == 0) {
-			itemEditor.sendUpdateToServer(2);
-		}
+		itemEditor.addTextFieldToGui(this.fld_name);
+		itemEditor.addTextFieldToGui(this.fld_translatable);
+		itemEditor.addButtonToGui(this.btn_remove);
 	}
 	
 	@Override

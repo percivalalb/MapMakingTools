@@ -1,10 +1,7 @@
 package mapmakingtools.client.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.lwjgl.input.Keyboard;
 
 import mapmakingtools.api.filter.FilterBase.TargetType;
 import mapmakingtools.api.filter.FilterClient;
@@ -17,12 +14,13 @@ import mapmakingtools.client.gui.button.GuiHorizontalTab;
 import mapmakingtools.helper.ClientHelper;
 import mapmakingtools.inventory.ContainerFilter;
 import mapmakingtools.lib.ResourceLib;
-import mapmakingtools.network.PacketDispatcher;
+import mapmakingtools.network.PacketHandler;
 import mapmakingtools.network.packet.PacketSelectedFilter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -30,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author ProPercivalalb
@@ -51,7 +50,7 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
 	private static int currentPage = 0;
 	private int maxPages = 1;
 	
-	private List<GuiTextField> textboxList = new ArrayList<>();
+	private List<GuiTextField> textfields = new ArrayList<>();
 	
 	private GuiFilter(List<FilterClient> filters, EntityPlayer player) {
 		super(new ContainerFilter(FilterManager.getServerFiltersFromList(filters), player));
@@ -68,7 +67,7 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
         }
         else {
         	int index = this.filterList.indexOf(filter);
-        	PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
+        	PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketSelectedFilter(index));
         	this.getContainerFilter().setSelected(index);
         }
 	}
@@ -88,38 +87,38 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
 	}
 	
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     	this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int xMouse, int yMouse) {
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		int topXF = (this.width - FAKE_WIDTH) / 2;
         int topY = (this.height - this.ySize) / 2;
         
 		if(filter == null || !filter.drawBackground(this)) {
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			ClientHelper.getClient().getTextureManager().bindTexture(ResourceLib.SCREEN_SMALL);
 			this.drawTexturedModalRect(topXF, topY, 0, 0, FAKE_WIDTH, FAKE_HEIGHT);
 		}
 		
 		if(filter != null) {
-			filter.drawGuiContainerBackgroundLayer(this, partialTicks, xMouse, yMouse);
+			filter.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
 			this.fontRenderer.drawString(filter.getFilterName(), topXF - this.fontRenderer.getStringWidth(filter.getFilterName()) / 2 + FAKE_WIDTH / 2, topY + 6, 1);
 		}
 		else {
 			GlStateManager.pushMatrix();
 			double scale = 1.7D;
-			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.scaled(scale, scale, scale);
 			this.fontRenderer.drawString("Minecraft Filters", (int)((topXF + 10) / scale), (int)((topY + 15) / scale), 0);
-			GlStateManager.scale(0.588D, 0.588D, 0.588D);
+			GlStateManager.scaled(0.588D, 0.588D, 0.588D);
 			GlStateManager.popMatrix();
 		}
 		
-		for(GuiTextField textField : this.textboxList) 
-			textField.drawTextBox();
+		for(GuiTextField field : this.textfields) 
+			field.drawTextField(mouseX, mouseY, partialTicks);
 	}
 	
 	@Override
@@ -130,12 +129,12 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
 		if(filter != null)
 			filter.drawGuiContainerForegroundLayer(this, xMouse, yMouse);
 		
-		GlStateManager.translate((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
-		for(GuiButton button : this.buttonList) {
+		GlStateManager.translatef((float)-this.guiLeft, (float)-this.guiTop, 0.0F);
+		for(GuiButton button : this.buttons) {
 			
     		if(button instanceof GuiHorizontalTab) {
         		GuiHorizontalTab tabButton = (GuiHorizontalTab)button;
-        		if(tabButton.isMouseAbove(xMouse, yMouse)) {
+        		if(tabButton.isMouseOver()) {
         			
         			List<String> list = new ArrayList<String>();
         			list.add(tabButton.filter.getFilterName());
@@ -157,36 +156,37 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
     		//if(listBt instanceof GuiButtonCancel) {
     		//	GuiButtonCancel tab = (GuiButtonCancel)listBt;
         	//	if(tab.isMouseAbove(xMouse, yMouse)) {
-        	//		List<String> list = Arrays.asList(I18n.translateToLocal("gui.cancel"));
-        	//		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
+        	//		List<String> list = Arrays.asList(I18n.format("gui.cancel"));
+        	//		this.drawHoveringText(list, mouseX, mouseY, this.mc.fontRenderer);
         	//	}
     		//}
     		//if(listBt.id == 148) {
     		//	if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         	//		List<String> list = Arrays.asList("Prev. Page");
-        	//		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
+        	//		this.drawHoveringText(list, mouseX, mouseY, this.mc.fontRenderer);
         	//	}
     		//}
     		//if(listBt.id == 149) {
     		//	if(listBt.mousePressed(ClientHelper.getClient(), xMouse, yMouse)) {
         	//		List<String> list = Arrays.asList("Next. Page");
-        	//		this.drawHoveringText(list, xMouse, yMouse, this.mc.fontRenderer);
+        	//		this.drawHoveringText(list, mouseX, mouseY, this.mc.fontRenderer);
         	//	}
     		//}
     	}
 		if(filter != null)
 			filter.drawToolTips(this, xMouse, yMouse);
 		
-		GlStateManager.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
+		GlStateManager.translatef((float)this.guiLeft, (float)this.guiTop, 0.0F);
     }
 
 	@Override
     public void initGui() {
     	super.initGui();
-    	Keyboard.enableRepeatEvents(true);
-    	this.textboxList.clear();
-    	this.buttonList.clear();
-    	this.labelList.clear();
+    	
+    	this.mc.keyboardListener.enableRepeatEvents(true);
+    	this.textfields.clear();
+    	this.buttons.clear();
+    	this.labels.clear();
     	
     	this.setYSize(FAKE_HEIGHT);
     	
@@ -198,17 +198,43 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
         	int y = topYF + 7 + i * 29;
         	
         	if(this.filterList.size() > tabIndex + i) {
-        		this.buttonList.add(new GuiHorizontalTab(150 + i, topXF - (30 - 1), y, GuiHorizontalTab.Side.LEFT, filterList.get(tabIndex + i), this));
+        		this.addButton(new GuiHorizontalTab(150 + i, topXF - (30 - 1), y, GuiHorizontalTab.Side.LEFT, filterList.get(tabIndex + i), this) {
+            		@Override
+        			public void onClick(double mouseX, double mouseY) {
+                    	unSelectBut(this);
+            		}
+            	});
         	}
         	
         	if(this.filterList.size() > tabIndex + i + 3) {
-             	this.buttonList.add(new GuiHorizontalTab(153 + i, topXF + FAKE_WIDTH - 1, y, GuiHorizontalTab.Side.RIGHT, filterList.get(tabIndex + i + 3), this));
+             	this.addButton(new GuiHorizontalTab(153 + i, topXF + FAKE_WIDTH - 1, y, GuiHorizontalTab.Side.RIGHT, filterList.get(tabIndex + i + 3), this) {
+            		@Override
+        			public void onClick(double mouseX, double mouseY) {
+                    	unSelectBut(this);
+            		}
+            	});
             }
         }
 
         if(this.filterList.size() > 6) {
-        	this.buttonList.add(new GuiButton(148, topXF + FAKE_WIDTH + 3,  topYF - 15, 20, 20, "<"));
-        	this.buttonList.add(new GuiButton(149, topXF + FAKE_WIDTH + 26, topYF - 15, 20, 20, ">"));
+        	this.addButton(new GuiButton(148, topXF + FAKE_WIDTH + 3,  topYF - 15, 20, 20, "<") {
+        		@Override
+    			public void onClick(double mouseX, double mouseY) {
+        			if(currentPage > 0) {
+            			--currentPage;
+            			initGui();
+            		}
+        		}
+        	});
+        	this.addButton(new GuiButton(149, topXF + FAKE_WIDTH + 26, topYF - 15, 20, 20, ">") {
+        		@Override
+    			public void onClick(double mouseX, double mouseY) {
+        			if(currentPage < maxPages - 1) {
+            			++currentPage;
+            			initGui();
+            		}
+        		}
+        	});
         }
 
         if(filter != null)
@@ -220,42 +246,56 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
         
         if(filter != null) {
         	if(filter.getFilterInfo(this) != null)
-        		this.buttonList.add(new GuiButtonSmall(156, topXF + 5, topY + 4, 13, 12, "?"));
+        		this.addButton(new GuiButtonSmall(156, topXF + 5, topY + 4, 13, 12, "?") {
+            		@Override
+        			public void onClick(double mouseX, double mouseY) {
+            			
+            		}
+            	});
         
         	if(filter.hasUpdateButton(this))
-        		this.buttonList.add(new GuiButtonSmall(157, topXF + 20, topY + 4, 13, 12, "v"));
+        		this.addButton(new GuiButtonSmall(157, topXF + 20, topY + 4, 13, 12, "v") {
+            		@Override
+        			public void onClick(double mouseX, double mouseY) {
+            			filter.updateButtonClicked(GuiFilter.this);
+            		}
+            	});
         }
 	
-        for(int i = 0; i < this.buttonList.size(); ++i) {
-    		if(this.buttonList.get(i) instanceof GuiHorizontalTab) {
-        		GuiHorizontalTab tab = (GuiHorizontalTab)(GuiButton)this.buttonList.get(i);
+        for(int i = 0; i < this.buttons.size(); ++i) {
+    		if(this.buttons.get(i) instanceof GuiHorizontalTab) {
+        		GuiHorizontalTab tab = (GuiHorizontalTab)(GuiButton)this.buttons.get(i);
         		if(tab.filter == filter) {
         			int index = this.filterList.indexOf(filter);
         			this.getContainerFilter().setSelected(index);
-        			PacketDispatcher.sendToServer(new PacketSelectedFilter(index));
+        			PacketHandler.send(PacketDistributor.SERVER.noArg(), new PacketSelectedFilter(index));
 
         			tab.isSelected = true;
         		}
     		}
-        }	
+        }
+        
+    	this.children.addAll(this.textfields);
 	}
 
 	@Override
-    public void updateScreen() {
+    public void tick() {
     	if(filter != null)
     		filter.updateScreen(this);
     	
-    	for(GuiTextField textField : this.textboxList)
-    		textField.updateCursorCounter();
+    	for(GuiTextField textField : this.textfields)
+    		textField.tick();
     }
 	
     @Override
     public void onGuiClosed() {
     	super.onGuiClosed();
-        Keyboard.enableRepeatEvents(false);
+    	this.mc.keyboardListener.enableRepeatEvents(false);
     }
     
-    @Override
+    /**
+    @return 
+     * @Override
 	public void actionPerformed(GuiButton button) {
         if(filter != null)
         	filter.actionPerformed(this, button);
@@ -303,19 +343,26 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
         	if (charIndex == Keyboard.KEY_ESCAPE)
         		ClientHelper.getClient().player.closeScreen();
         
-        for(GuiTextField textField : this.textboxList)
+        for(GuiTextField textField : this.textfields)
         	textField.textboxKeyTyped(cha, charIndex);
-    }
+    }**/
     
     @Override
-    protected void mouseClicked(int xMouse, int yMouse, int mouseButton) throws IOException {
-        super.mouseClicked(xMouse, yMouse, mouseButton);
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if(super.mouseClicked(mouseX, mouseY, mouseButton)) {
+        	return true;
+        }
         
         if(filter != null)
-        	filter.mouseClicked(this, xMouse, yMouse, mouseButton);
+        	filter.mouseClicked(this, mouseX, mouseY, mouseButton);
        
-        for(GuiTextField textField : this.textboxList)
-        	textField.mouseClicked(xMouse, yMouse, mouseButton);
+        for(GuiTextField textField : this.textfields) {
+        	if(textField.mouseClicked(mouseX, mouseY, mouseButton)) {
+        		return true;
+        	}
+        }
+        
+        return false;
     }
     
     public ContainerFilter getContainerFilter() {
@@ -325,8 +372,8 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
     public void unSelectBut(GuiHorizontalTab button) {
     	filter = button.filter;
     	this.initGui();
-    	for(int i = 0; i < this.buttonList.size(); ++i) {
-    		GuiButton listBt = (GuiButton)this.buttonList.get(i);
+    	for(int i = 0; i < this.buttons.size(); ++i) {
+    		GuiButton listBt = (GuiButton)this.buttons.get(i);
     		if(listBt.id == button.id) {
     			if(listBt instanceof GuiHorizontalTab)
     				((GuiHorizontalTab)listBt).isSelected = true;
@@ -406,17 +453,17 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
 
 	@Override
 	public List<GuiLabel> getLabelList() {
-		return this.labelList;
+		return this.labels;
 	}
 
 	@Override
 	public List<GuiButton> getButtonList() {
-		return this.buttonList;
+		return this.buttons;
 	}
 
 	@Override
 	public List<GuiTextField> getTextBoxList() {
-		return this.textboxList;
+		return this.textfields;
 	}
 	
 	@Override
@@ -432,5 +479,30 @@ public class GuiFilter extends GuiContainer implements IFilterGui {
 	@Override
 	public IFilterContainer getFilterContainer() {
 		return (IFilterContainer)this.inventorySlots;
+	}
+
+	@Override
+	public GuiButton addButtonToGui(GuiButton buttonIn) {
+		return this.addButton(buttonIn);
+	}
+	
+	@Override
+	public GuiTextField addTextFieldToGui(GuiTextField fieldIn) {
+		this.textfields.add(fieldIn);
+		this.children.add(fieldIn);
+		return fieldIn;
+	}
+	
+	@Override
+	public GuiLabel addLabelToGui(GuiLabel labelIn) {
+		this.labels.add(labelIn);
+		this.children.add(labelIn);
+		return labelIn;
+	}
+	
+	@Override
+	public <T extends IGuiEventListener> T addListenerToGui(T listenerIn) {
+		this.children.add(listenerIn);
+		return listenerIn;
 	}
 }

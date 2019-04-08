@@ -12,19 +12,19 @@ import net.minecraft.client.renderer.GlStateManager;
 public class GuiButtonColourBlock extends GuiButton {
 
 	public int textColourIndex = TextColour.GOLD.ordinal();
-	private Minecraft mc = Minecraft.getMinecraft();
+	private Minecraft mc = Minecraft.getInstance();
 	
 	public GuiButtonColourBlock(int id, int xPosition, int yPosition, int width, int height) {
 		super(id, xPosition, yPosition, width, height, "");
 	}
 
-	@Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    @Override
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
         	TextColour colour = getCurrentColour(textColourIndex);
         	FontRenderer fontrenderer = mc.fontRenderer;
         	mc.getTextureManager().bindTexture(ResourceLib.BUTTON_TEXT_COLOUR);
-            GlStateManager.color(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
+            GlStateManager.color4f(colour.red / 255F, colour.green / 255F, colour.blue / 255F, 1.0F);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
             if(this.width < 20 && this.height < 20) {
@@ -37,7 +37,7 @@ public class GuiButtonColourBlock extends GuiButton {
 	            this.drawTexturedModalRect(this.x, this.y, 0, 46 + hoverState * 20, this.width / 2, this.height);
 	            this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + hoverState * 20, this.width / 2, this.height);
             }
-	        this.mouseDragged(mc, mouseX, mouseY);
+	        this.renderBg(mc, mouseX, mouseY);
             int l = 14737632;
 
             if (!this.enabled) {
@@ -48,7 +48,7 @@ public class GuiButtonColourBlock extends GuiButton {
             }
 
             this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, l);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
 	}
 	

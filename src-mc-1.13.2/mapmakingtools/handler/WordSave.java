@@ -1,9 +1,7 @@
 package mapmakingtools.handler;
 
-import mapmakingtools.tools.WorldData;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * @author ProPercivalalb
@@ -12,14 +10,14 @@ public class WordSave {
 	
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load event) {
-		if(event.getWorld().provider.getDimension() == 0 && !event.getWorld().isRemote)
-			WorldData.read(DimensionManager.getCurrentSaveRootDirectory());
+		//TODO if(event.getWorld().provider.getDimension() == 0 && !event.getWorld().isRemote)
+		//	WorldData.read(DimensionManager.getCurrentSaveRootDirectory());
 	}
 	
 	@SubscribeEvent
 	public void worldSave(WorldEvent.Save event) {
-		if(event.getWorld().provider.getDimension() == 0 && !event.getWorld().isRemote)
-			WorldData.save(DimensionManager.getCurrentSaveRootDirectory());
+		//TODO if(event.getWorld().provider.getDimension() == 0 && !event.getWorld().isRemote)
+		//	WorldData.save(DimensionManager.getCurrentSaveRootDirectory());
 	}
 	
 	@SubscribeEvent

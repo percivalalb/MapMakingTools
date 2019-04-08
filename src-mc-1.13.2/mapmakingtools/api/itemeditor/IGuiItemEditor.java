@@ -1,20 +1,13 @@
 package mapmakingtools.api.itemeditor;
 
-import java.util.List;
-
+import mapmakingtools.client.gui.IGuiElementHandler;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
-import net.minecraft.client.gui.GuiTextField;
 
 /**
  * @author ProPercivalalb
  */
-public interface IGuiItemEditor {
+public interface IGuiItemEditor extends IGuiElementHandler {
 
 	public FontRenderer getFontRenderer();
-	public List<GuiLabel> getLabelList();
-	public List<GuiButton> getButtonList();
-	public List<GuiTextField> getTextBoxList();
 	public void sendUpdateToServer(int data);
 }

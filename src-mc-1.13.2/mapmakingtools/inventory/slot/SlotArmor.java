@@ -4,16 +4,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author ProPercivalalb
  */
 public class SlotArmor extends Slot {
 
+	static final String[] ARMOR_SLOT_TEXTURES = new String[]{"item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet"};
 	public EntityPlayer player;
 	public EntityEquipmentSlot armorType;
 	
@@ -30,12 +30,12 @@ public class SlotArmor extends Slot {
     
     @Override
     public boolean isItemValid(ItemStack stack) {
-    	return stack.getItem().isValidArmor(stack, this.armorType, this.player);
+    	return stack.canEquip(armorType, player);
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getSlotTexture() {
-        return ItemArmor.EMPTY_SLOT_NAMES[this.armorType.getIndex()];
+        return SlotArmor.ARMOR_SLOT_TEXTURES[armorType.getIndex()];
     }
 }

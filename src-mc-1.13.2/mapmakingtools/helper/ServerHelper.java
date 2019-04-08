@@ -1,14 +1,12 @@
 package mapmakingtools.helper;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-/**
- * @author ProPercivalalb
- */
 public class ServerHelper {
-	
+
 	public static MinecraftServer getServer() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance();
+		return ServerLifecycleHooks.getCurrentServer();
 	}
+
 }
