@@ -29,6 +29,7 @@ sourceSets {
 	main {
 		compileClasspath += sourceSets.api.output
 		runtimeClasspath += sourceSets.api.output
+		resources.srcDirs += 'src/generated/resources'
 	}
 	test {
 		compileClasspath += sourceSets.api.output
@@ -45,6 +46,7 @@ minecraft {
 	
     runs {
         client {
+            taskName 'mapmakingtools_client'
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -56,6 +58,7 @@ minecraft {
         }
 
         server {
+            taskName 'mapmakingtools_server'
             workingDirectory project.file('run-server')
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -67,9 +70,10 @@ minecraft {
         }
 
         data {
+            taskName 'mapmakingtools_data'
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'mapmakingtools', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'mapmakingtools', '--all', '--output', '"' + file('src/generated/resources/') + '"', '--existing', '"' + sourceSets.main.resources.srcDirs[0] + '"'
             mods {
                 mapmakingtools {
                     source sourceSets.main
@@ -113,7 +117,7 @@ jar {
 
     manifest {
         attributes([
-            "Specification-Title": "mapmakingtools",
+            "Specification-Title": "Map Making Tools",
             "Specification-Vendor": "percivalalb",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
