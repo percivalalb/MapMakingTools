@@ -1,0 +1,28 @@
+{
+   "screen.mapmakingtools.item_editor": "Item Editor",
+
+   "item_editor.mapmakingtools.name": "Item Name",
+   "item_editor.mapmakingtools.repair_cost": "Repair Cost",
+   "item_editor.mapmakingtools.stacksize": "Stacksize",
+   "item_editor.mapmakingtools.tooltip_flags": "Tooltip Flags",
+   "item_editor.mapmakingtools.player_head": "Player Head",
+   "item_editor.mapmakingtools.nbt": "NBT",
+   "item_editor.mapmakingtools.enchantment": "Enchantments",
+   "item_editor.mapmakingtools.damage": "Damage",
+   "item_editor.mapmakingtools.potion": "Potion",
+   "item_editor.mapmakingtools.can_place_on": "Can Place On",
+   "item_editor.mapmakingtools.can_place_on.button.tag": "Tag",
+   "item_editor.mapmakingtools.can_place_on.button.block": "Block",
+   "item_editor.mapmakingtools.can_destroy": "Can Destroy",
+   "item_editor.mapmakingtools.can_destroy.button.tag": "Tag",
+   "item_editor.mapmakingtools.can_destroy.button.block": "Block",
+   "item_editor.mapmakingtools.book_details": "Book Details",
+   "item_editor.mapmakingtools.fireworks": "Fireworks",
+   "item_editor.mapmakingtools.lore": "Lore",
+   "item_editor.mapmakingtools.modifiers": "Modifiers",
+   "item_editor.mapmakingtools.armor_color": "Armour Colour",
+   "item_editor.mapmakingtools.book_enchantment": "Book Enchantments",
+   "item_editor.mapmakingtools.spawn_egg": "Spawn Egg",
+
+   "item_editor.mapmakingtools.spawn_egg.entity_type": "Current Entity Type: %s"
+}
