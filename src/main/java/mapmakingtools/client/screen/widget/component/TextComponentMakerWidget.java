@@ -1,12 +1,26 @@
 package mapmakingtools.client.screen.widget.component;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.Sets;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import mapmakingtools.client.screen.widget.NestedWidget;
 import mapmakingtools.client.screen.widget.SmallButton;
-import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart;
 import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.ComponentPart;
-import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.NewLinePart;
 import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.StylePart;
+import mapmakingtools.util.TextUtil;
 import mapmakingtools.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -14,14 +28,8 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 public class TextComponentMakerWidget extends NestedWidget {
 
@@ -35,21 +43,21 @@ public class TextComponentMakerWidget extends NestedWidget {
     public ITextComponent textComponent;
 
     public TextComponentMakerWidget(int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, "");
-        this.children.add(new SmallButton(this.x + 3, this.y + 15, 63, 12, "Text", (btn) -> {
-            this.addPart(new ComponentPart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 80, 20, "Comp Piece", this));
+        super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY);
+        this.children.add(new SmallButton(this.x + 3, this.y + 15, 63, 12, new StringTextComponent("Text"), (btn) -> {
+            this.addPart(new ComponentPart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 80, 20, new StringTextComponent("Comp Piece"), this));
         }));
 
 //        this.children.add(new SmallButton(this.x + 18, this.y + 15, 13, 12, "N", (btn) -> {
 //            this.addPart(new NewLinePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, "\\n", this));
 //        }));
 
-        this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, "Color", (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, TextFormatting.BLUE.getFriendlyName(), this, TextFormatting.BLUE));
+        this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, new StringTextComponent("Color"), (btn) -> {
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.BLUE.getFriendlyName()), this, TextFormatting.BLUE));
         }));
 
-        this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, "Format", (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, TextFormatting.ITALIC.getFriendlyName(), this, TextFormatting.ITALIC));
+        this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, new StringTextComponent("Format"), (btn) -> {
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.ITALIC.getFriendlyName()), this, TextFormatting.ITALIC));
         }));
     }
 
@@ -144,7 +152,7 @@ public class TextComponentMakerWidget extends NestedWidget {
     }
 
     public Optional<DraggableTextComponentPart> getPartAbove(double mouseX, double mouseY) {
-        for (IGuiEventListener iguieventlistener : this.children()) {
+        for (IGuiEventListener iguieventlistener : this.getEventListeners()) {
             if (iguieventlistener instanceof DraggableTextComponentPart && iguieventlistener.isMouseOver(mouseX, mouseY)) {
                return Optional.of((DraggableTextComponentPart) iguieventlistener);
             }
@@ -189,19 +197,19 @@ public class TextComponentMakerWidget extends NestedWidget {
         switch(dir) {
         case NORTH:
             part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
-            part.y = otherPart.y - part.getHeight() - PADDING;
+            part.y = otherPart.y - part.getHeightRealms() - PADDING;
             break;
         case EAST:
             part.x = otherPart.x + otherPart.getWidth() + PADDING;
-            part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
+            part.y = otherPart.y + otherPart.getHeightRealms() / 2 - part.getHeightRealms() / 2;
             break;
         case SOUTH:
             part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
-            part.y = otherPart.y + otherPart.getHeight() + PADDING;
+            part.y = otherPart.y + otherPart.getHeightRealms() + PADDING;
             break;
         case WEST:
             part.x = otherPart.x - part.getWidth() - PADDING;
-            part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
+            part.y = otherPart.y + otherPart.getHeightRealms() / 2 - part.getHeightRealms() / 2;
             break;
         default:
             break;
@@ -238,35 +246,35 @@ public class TextComponentMakerWidget extends NestedWidget {
         switch(direction) {
         case SOUTH:
             return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
-                    + Math.pow(part.y - otherPair.y - otherPair.getHeight(), 2);
+                    + Math.pow(part.y - otherPair.y - otherPair.getHeightRealms(), 2);
         case WEST:
             return Math.pow(part.x + part.getWidth() - otherPair.x, 2)
-                    + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2) ;
+                    + Math.pow(part.y + part.getHeightRealms() / 2 - otherPair.y - otherPair.getHeightRealms() / 2, 2) ;
         case NORTH:
             return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
-                    + Math.pow(part.y + part.getHeight() - otherPair.y, 2);
+                    + Math.pow(part.y + part.getHeightRealms() - otherPair.y, 2);
         case EAST:
             return Math.pow(part.x - otherPair.x - otherPair.getWidth(), 2)
-                    + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2) ;
+                    + Math.pow(part.y + part.getHeightRealms() / 2 - otherPair.y - otherPair.getHeightRealms() / 2, 2) ;
         default:
             return Double.MAX_VALUE;
         }
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         //super.render(mouseX, mouseY, partialTicks);
         for (Widget part : this.children) {
-            part.render(mouseX, mouseY, partialTicks);
+            part.render(stackIn, mouseX, mouseY, partialTicks);
         }
         this.createChild();
         if (this.hasTextComponent()) {
             Minecraft mc = Minecraft.getInstance();
             FontRenderer font = mc.fontRenderer;
 
-            String[] text = this.textComponent.getFormattedText().split("\n");
+            String[] text = this.textComponent.getString().split("\n");
             for (int i = 0; i < text.length; i++) {
-                font.drawString(text[i], this.x + 10, this.y + 30 + i * 10, 0);
+                font.drawString(stackIn, text[i], this.x + 10, this.y + 30 + i * 10, 0);
             }
         }
     }

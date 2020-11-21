@@ -1,5 +1,13 @@
 package mapmakingtools.itemeditor;
 
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
@@ -22,12 +30,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IRegistryDelegate;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class SpawnEggAttribute extends IItemAttribute {
 
@@ -72,7 +74,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                 this.entityTypeList.setSelectionGroupManager(new ToggleBoxGroup.Builder<IRegistryDelegate<EntityType<?>>>().min(1).max(1).build());
                 this.entityTypeList.setValues(ForgeRegistries.ENTITIES.getValues().stream().map((entityType) -> entityType.delegate).collect(Collectors.toList()), IRegistryDelegate::name, this.entityTypeList);
 
-                this.addBtn = new Button(x + 2, y + height / 2 - 3, 50, 20, "Set", (btn) -> {
+                this.addBtn = new Button(x + 2, y + height / 2 - 3, 50, 20, new TranslationTextComponent(getTranslationKey("button.set")), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
                     List<IRegistryDelegate<EntityType<?>>> entityTypes = this.entityTypeList.getGroupManager().getSelected();
@@ -88,9 +90,9 @@ public class SpawnEggAttribute extends IItemAttribute {
             }
 
             @Override
-            public void render(Screen screen, int x, int y, int width, int height) {
+            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
                 FontRenderer font = screen.getMinecraft().fontRenderer;
-                screen.drawString(font, new TranslationTextComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned).getFormattedText(), x + 2, y + 17, -1);
+                font.func_243248_b(stackIn, new TranslationTextComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
             }
 
             @Override

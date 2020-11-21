@@ -1,12 +1,15 @@
 package mapmakingtools.client.screen.widget;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
+
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.INestedGuiEventHandler;
 import net.minecraft.client.gui.widget.Widget;
-
-import javax.annotation.Nullable;
-import java.util.List;
+import net.minecraft.util.text.ITextComponent;
 
 public class NestedWidget extends Widget implements INestedGuiEventHandler {
 
@@ -16,12 +19,12 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
     // Was the current focused element clicked on
     private boolean isDragging;
 
-    public NestedWidget(int xIn, int yIn, int widthIn, int heightIn, String msg) {
-        super(xIn, yIn, widthIn, heightIn, msg);
+    public NestedWidget(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title) {
+        super(xIn, yIn, widthIn, heightIn, title);
     }
 
     @Override
-    public List<? extends IGuiEventListener> children() {
+    public List<? extends IGuiEventListener> getEventListeners() {
         return this.children;
     }
 
@@ -37,13 +40,13 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
 
     @Override
     @Nullable
-    public IGuiEventListener getFocused() {
+    public IGuiEventListener getListener() {
        return this.focused;
     }
 
     @Override
-    public void setFocused(@Nullable IGuiEventListener focused) {
-       this.focused = focused;
+    public void setListener(@Nullable IGuiEventListener eventListener) {
+       this.focused = eventListener;
     }
 
  // Methods for a Widget that is also a INestedGuiEventHandler

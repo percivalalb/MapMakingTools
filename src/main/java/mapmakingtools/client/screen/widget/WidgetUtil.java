@@ -3,7 +3,7 @@ package mapmakingtools.client.screen.widget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.Vector2f;
 
 public class WidgetUtil {
 
@@ -32,7 +32,7 @@ public class WidgetUtil {
     }
 
 
-    public static Vec2f getCentreOfSide(Widget widget, Direction dir) {
+    public static Vector2f getCentreOfSide(Widget widget, Direction dir) {
         float x = widget.x;
         float y = widget.y;
 
@@ -42,21 +42,21 @@ public class WidgetUtil {
             break;
         case EAST:
             x += widget.getWidth();
-            y += widget.getHeight() / 2F;
+            y += widget.getHeightRealms() / 2F;
             break;
         case SOUTH:
             x += widget.getWidth() / 2F;
-            y += widget.getHeight();
+            y += widget.getHeightRealms();
             break;
         case WEST:
-            y += widget.getHeight() / 2F;
+            y += widget.getHeightRealms() / 2F;
             break;
         default:
             x += widget.getWidth() / 2F;
-            y += widget.getHeight() / 2F;
+            y += widget.getHeightRealms() / 2F;
             break;
         }
 
-        return new Vec2f(x, y);
+        return new Vector2f(x, y);
     }
 }

@@ -1,11 +1,15 @@
 package mapmakingtools.itemeditor;
 
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.SmallButton;
-import mapmakingtools.client.screen.widget.component.TextComponentMakerWidget;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.client.screen.widget.WidgetUtil;
+import mapmakingtools.client.screen.widget.component.TextComponentMakerWidget;
 import mapmakingtools.util.Util;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -17,10 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ItemNameAttribute extends IItemAttribute {
 
@@ -60,7 +60,7 @@ public class ItemNameAttribute extends IItemAttribute {
                 this.widgetMaker = new TextComponentMakerWidget(x + 3, y + 16, width - 6, height - 36);
                 add.accept(this.widgetMaker);
 
-                Button setBtn = new SmallButton(x + width / 2 - 100, y + height - 23, 200, 20, "Set", (btn) -> {
+                Button setBtn = new SmallButton(x + width / 2 - 100, y + height - 23, 200, 20, new TranslationTextComponent(getTranslationKey("button.set")), (btn) -> {
                     System.out.println("Send");
                     if (this.widgetMaker.hasTextComponent()) {
                         PacketBuffer buf = Util.createBuf();
@@ -92,7 +92,7 @@ public class ItemNameAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, "Remove custom display name tag", (btn) -> {
+                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslationTextComponent(getTranslationKey("button.remove.tag")), (btn) -> {
                     btn.active = false;
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(2);

@@ -1,8 +1,15 @@
 package mapmakingtools.itemeditor;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
@@ -14,24 +21,18 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.arguments.BlockStateParser;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class CanPlaceOnAttribute extends IItemAttribute {
 
@@ -141,12 +142,12 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
     @SuppressWarnings("unchecked")
     public <T extends Comparable<T>> void applyPropertyValue(BlockState blockState, String propertyStr, String valueStr) {
-        IProperty<T> property = (IProperty<T>) blockState.getBlock().getStateContainer().getProperty(propertyStr);
+        Property<T> property = (Property<T>) blockState.getBlock().getStateContainer().getProperty(propertyStr);
         property.parseValue(valueStr).ifPresent(value -> { blockState.with(property, value); });
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Comparable<T>> String getPropertyValueName(IProperty<T> property, Object value) {
+    public <T extends Comparable<T>> String getPropertyValueName(Property<T> property, Object value) {
         return property.getName((T) value);
     }
 
@@ -175,7 +176,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
             private ToggleBoxList<Block> blockList;
             private ToggleBoxList<ResourceLocation> tagList;
-//            private ScrollWidget<IProperty<?>> blockPropertiesList;
+//            private ScrollWidget<Property<?>> blockPropertiesList;
 //            private ScrollWidget<String> blockPropertyValuesList;
             private ToggleBoxList<String> currentPlacableList;
             private Button blockTagBtn, addBtn, removeBtn, removeAllBtn;
@@ -185,9 +186,9 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.blockList = new ToggleBoxList<>(x + 2, y + 12, 200, (height - 80) / 2, this.blockList);
                 this.blockList.setSelectionGroupManager(ToggleBoxGroup.builder(Block.class).min(1).max(1).listen((selection) -> {
                     if (!selection.isEmpty()) {
-                        List<IProperty<?>> p = Lists.newArrayList();
+                        List<Property<?>> p = Lists.newArrayList();
                         selection.get(0).getStateContainer().getProperties().forEach(p::add);
-//                        this.blockPropertiesList.setValues(p, IProperty::getName, this.blockPropertiesList);
+//                        this.blockPropertiesList.setValues(p, Property::getName, this.blockPropertiesList);
 //                        this.blockPropertyValuesList.clear();
                     }
                     updateAddButton();
@@ -215,15 +216,15 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.currentPlacableList.setSelectionGroupManager(ToggleBoxGroup.builder(String.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> { this.removeBtn.active = !selection.isEmpty(); }).build());
                 this.currentPlacableList.setValues(getBlocks(stack), Objects::toString, this.currentPlacableList);
 
-                this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, I18n.format(getTranslationKey("button.tag")), (btn) -> {
+                this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, new TranslationTextComponent(getTranslationKey("button.tag")), (btn) -> {
                     this.blockList.visible = this.tagList.visible;
 //                    this.blockPropertiesList.visible = this.blockList.visible;
                     this.tagList.visible = !this.tagList.visible;
                     this.updateAddButton();
-                    btn.setMessage(I18n.format(getTranslationKey(this.blockList.visible ? "button.tag" : "button.block")));
+                    btn.setMessage(new TranslationTextComponent(getTranslationKey(this.blockList.visible ? "button.tag" : "button.block")));
                 });
 
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, "Add", (btn) -> {
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslationTextComponent(getTranslationKey("button.add")), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
 
 
@@ -231,7 +232,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                         buf.writeByte(0);
 
                         List<Block> blocksSelected = this.blockList.getGroupManager().getSelected();
-//                        List<IProperty<?>> blockProperties = this.blockPropertiesList.getGroupManager().getSelected();
+//                        List<Property<?>> blockProperties = this.blockPropertiesList.getGroupManager().getSelected();
                         List<? extends Comparable<?>> blockPropertyValues = Lists.newArrayList();// this.blockPropertyValuesList.getGroupManager().getSelected();
                         buf.writeInt(blocksSelected.size());
                         blocksSelected.forEach(ench -> {
@@ -240,7 +241,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 //                            if (!blockProperties.isEmpty() && !blockPropertyValues.isEmpty()) {
 //                                buf.writeBoolean(true);
 //                                buf.writeInt(blockProperties.size());
-//                                for (IProperty<?> property : blockProperties) {
+//                                for (Property<?> property : blockProperties) {
 //                                    buf.writeString(property.getName(), 256);
 //                                    buf.writeInt(blockPropertyValues.size());
 //                                    for (Comparable<?> value : blockPropertyValues) {
@@ -264,7 +265,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 });
                 this.addBtn.active = false;
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, "Remove", (btn) -> {
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(2);
                     List<String> blockStates = this.currentPlacableList.getGroupManager().getSelected();
@@ -275,7 +276,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, "Remove all", BufferFactory.ping(3, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
 
                 add.accept(this.blockList);
                 add.accept(this.tagList);

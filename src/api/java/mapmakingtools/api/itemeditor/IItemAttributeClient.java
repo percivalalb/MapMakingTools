@@ -1,12 +1,14 @@
 package mapmakingtools.api.itemeditor;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public interface IItemAttributeClient {
 
@@ -23,7 +25,7 @@ public interface IItemAttributeClient {
 
     default boolean shouldRenderTitle(Screen screen, final ItemStack stack) { return true; }
 
-    default void render(Screen screen, int x, int y, int width, int height) {}
+    default void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {}
 
     default boolean writeAll(ItemStack stack, PacketBuffer buffer) { return false; }
 

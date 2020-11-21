@@ -1,25 +1,18 @@
 package mapmakingtools.client.screen.widget;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mapmakingtools.lib.Resources;
+
+import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.state.IProperty;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.GL11;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class ScrollPane extends Widget {
 
@@ -28,7 +21,7 @@ public class ScrollPane extends Widget {
     protected int hiddenHeight;
 
     public ScrollPane(int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, "");
+        super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY);
         this.widgets = new ArrayList<>();
     }
 
@@ -56,7 +49,7 @@ public class ScrollPane extends Widget {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         double scale = minecraft.getMainWindow().getGuiScaleFactor();
@@ -67,16 +60,16 @@ public class ScrollPane extends Widget {
 
         RenderSystem.translated(0, this.scrollOffset, 0);
 
-        this.renderOffset(mouseX, mouseY, partialTicks);
+        this.renderOffset(stackIn, mouseX, mouseY, partialTicks);
 
         RenderSystem.translated(0, -this.scrollOffset, 0);
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
-    public void renderOffset(int mouseX, int mouseY, float partialTicks) {
+    public void renderOffset(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         for (Widget w : this.widgets) {
-            w.render(mouseX, mouseY, partialTicks);
+            w.render(stackIn, mouseX, mouseY, partialTicks);
         }
     }
 

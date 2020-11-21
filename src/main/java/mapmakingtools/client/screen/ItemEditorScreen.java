@@ -1,7 +1,19 @@
 package mapmakingtools.client.screen;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import mapmakingtools.MMTRegistries;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.itemeditor.IItemAttribute;
@@ -14,20 +26,12 @@ import mapmakingtools.util.Util;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 public class ItemEditorScreen extends Screen {
 
@@ -71,7 +75,7 @@ public class ItemEditorScreen extends Screen {
         int perPage = Math.max(MathHelper.floor((this.height - 42 - 3) / (double) TAB_HEIGHT), 1);
 
         if (perPage < size) {
-            this.leftBtn = new Button(49, 18, 20, 20, "<", (btn) -> {
+            this.leftBtn = new Button(49, 18, 20, 20, new StringTextComponent("<"), (btn) -> {
                 this.currentPage = Math.max(0, this.currentPage - 1);
                 btn.active = this.currentPage > 0;
                 this.rightBtn.active = true;
@@ -79,7 +83,7 @@ public class ItemEditorScreen extends Screen {
             });
             this.leftBtn.active = false;
 
-            this.rightBtn = new Button(72, 18, 20, 20, ">", (btn) -> {
+            this.rightBtn = new Button(72, 18, 20, 20, new StringTextComponent(">"), (btn) -> {
                 this.currentPage = Math.min(this.maxPages - 1, this.currentPage + 1);
                 btn.active = this.currentPage < this.maxPages - 1;
                 this.leftBtn.active = true;
@@ -217,7 +221,7 @@ public class ItemEditorScreen extends Screen {
 
             IItemAttribute attribute = this.itemList.get(index);
             IItemAttributeClient client = MMTRegistries.getClientMapping().get(attribute.getRegistryName());
-            Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, I18n.format(attribute.getTranslationKey()), (btn) -> {
+            Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, new TranslationTextComponent(attribute.getTranslationKey()), (btn) -> {
                 Pair<IItemAttribute, IItemAttributeClient> p = Pair.of(attribute, client);
                 ItemEditorScreen.this.selectAttribute(p);
                 ItemEditorScreen.current = Optional.of(p);
@@ -230,26 +234,26 @@ public class ItemEditorScreen extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
+    public void render(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(stackIn);
         this.minecraft.getTextureManager().bindTexture(Resources.ITEM_EDITOR_SLOT);
-        this.blit(13, 13, 0, 0, 35, 35);
+        this.blit(stackIn, 13, 13, 0, 0, 35, 35);
         RenderSystem.pushMatrix();
         RenderSystem.translatef(23, 16, 0);
         RenderSystem.scalef(0.48F, 0.48F, 0.48F);
-        this.minecraft.fontRenderer.drawString("Slot: " + this.slotIndex, 0, 0, 0);
+        this.minecraft.fontRenderer.drawString(stackIn, "Slot: " + this.slotIndex, 0, 0, 0);
         RenderSystem.popMatrix();
 
-        Screen.fill(this.guiX, this.guiY, this.guiX + this.guiWidth, this.guiY + this.guiHeight, ItemEditorScreen.attributeBackgroundColour);
+        Screen.fill(stackIn, this.guiX, this.guiY, this.guiX + this.guiWidth, this.guiY + this.guiHeight, ItemEditorScreen.attributeBackgroundColour);
 
         ItemEditorScreen.current.ifPresent(p -> {
             if (p.getRight().shouldRenderTitle(this, this.stack)) {
-                this.minecraft.fontRenderer.drawString(I18n.format(p.getLeft().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
+                this.minecraft.fontRenderer.func_243248_b(stackIn, new TranslationTextComponent(p.getLeft().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
             }
-            p.getRight().render(this, this.guiX, this.guiY, this.guiWidth, this.guiHeight);
+            p.getRight().render(stackIn, this, this.guiX, this.guiY, this.guiWidth, this.guiHeight);
         });
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.render(stackIn, mouseX, mouseY, partialTicks);
 
         RenderSystem.pushMatrix();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -273,10 +277,10 @@ public class ItemEditorScreen extends Screen {
             RenderSystem.disableDepthTest();
             RenderSystem.colorMask(true, true, true, false);
             int slotColor = -2130706433; // From ContainerScreen
-            this.fillGradient(23, 23, 23 + 16, 23 + 16, slotColor, slotColor);
+            this.fillGradient(stackIn, 23, 23, 23 + 16, 23 + 16, slotColor, slotColor);
             RenderSystem.colorMask(true, true, true, true);
             RenderSystem.enableDepthTest();
-            this.renderTooltip(this.stack, mouseX, mouseY);
+            this.renderTooltip(stackIn, this.stack, mouseX, mouseY);
         }
 
         RenderSystem.popMatrix();
@@ -293,10 +297,11 @@ public class ItemEditorScreen extends Screen {
         });
     }
 
-    @Override
-    public void removed() {
-        //TODO Maybe use this over onClose
-    }
+    // TODO Check if it was removed in 1.16
+//    @Override
+//    public void removed() {
+//        //TODO Maybe use this over onClose
+//    }
 
     protected <T extends Widget> T addAttributeWidget(T widgetIn) {
         this.addButton(widgetIn);

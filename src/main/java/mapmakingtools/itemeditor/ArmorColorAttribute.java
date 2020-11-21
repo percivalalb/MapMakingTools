@@ -1,5 +1,9 @@
 package mapmakingtools.itemeditor;
 
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ColorPickerWidget;
@@ -13,10 +17,7 @@ import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import net.minecraft.util.text.StringTextComponent;
 
 public class ArmorColorAttribute extends IItemAttribute {
 
@@ -61,14 +62,14 @@ public class ArmorColorAttribute extends IItemAttribute {
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.colorPicker = new ColorPickerWidget(x + 3, y + 15, width - 106, height - 20, this.colorPicker);
 
-                this.setBtn = new Button(x + width - 100, y + 70, 40, 20, "Set", (btn) -> {
+                this.setBtn = new Button(x + width - 100, y + 70, 40, 20, new StringTextComponent("Set"), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
                     buf.writeInt(this.colorPicker.getColorPickedRGB());
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + width - 100, y + 93, 50, 20, "Remove", BufferFactory.ping(1, update));
+                this.removeBtn = new Button(x + width - 100, y + 93, 50, 20, new StringTextComponent("Remove"), BufferFactory.ping(1, update));
 
                 add.accept(this.colorPicker);
                 add.accept(this.setBtn);

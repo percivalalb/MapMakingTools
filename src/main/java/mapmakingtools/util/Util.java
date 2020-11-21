@@ -1,15 +1,16 @@
 package mapmakingtools.util;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.function.Predicate;
+
 import com.google.common.base.Strings;
+
 import io.netty.buffer.Unpooled;
 import mapmakingtools.lib.Constants;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.function.Predicate;
 
 public class Util {
 

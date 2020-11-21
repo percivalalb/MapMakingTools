@@ -1,5 +1,7 @@
 package mapmakingtools.handler;
 
+import java.util.Optional;
+
 import mapmakingtools.client.screen.ItemEditorScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.settings.KeyBinding;
@@ -9,8 +11,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.client.event.GuiScreenEvent.KeyboardKeyPressedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-
-import java.util.Optional;
 
 public class KeyboardInput {
 

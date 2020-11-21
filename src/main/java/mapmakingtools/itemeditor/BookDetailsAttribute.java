@@ -1,6 +1,12 @@
 package mapmakingtools.itemeditor;
 
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.google.common.base.Strings;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.WidgetFactory;
@@ -20,11 +26,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class BookDetailsAttribute extends IItemAttribute {
 
@@ -54,6 +57,10 @@ public class BookDetailsAttribute extends IItemAttribute {
             }
             return stack;
         case 3:
+            if (!stack.getItem().delegate.equals(Items.WRITTEN_BOOK.delegate)) {
+                throw new IllegalStateException("Book is not a written book");
+            }
+
             ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount());
             book.setTag(stack.getTag());
             if (NBTUtil.hasTag(stack, "pages", Constants.NBT.TAG_LIST)) {
@@ -62,8 +69,8 @@ public class BookDetailsAttribute extends IItemAttribute {
                 for (int i = 0; i < listNBT.size(); ++i) {
                     String s = listNBT.getString(i);
 
-                    ITextComponent textComponent = ITextComponent.Serializer.fromJson(s);
-                    listNBT.set(i, StringNBT.valueOf(textComponent.getFormattedText()));
+                    ITextComponent textComponent = ITextComponent.Serializer.getComponentFromJson(s);
+                    listNBT.set(i, StringNBT.valueOf(textComponent.getString()));
                 }
 
             }
@@ -99,7 +106,7 @@ public class BookDetailsAttribute extends IItemAttribute {
                 this.generationInput.setResponder(BufferFactory.createInteger(2, Strings::isNullOrEmpty, update));
                 this.generationInput.setValidator(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
 
-                this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, "Convert back to writable book", BufferFactory.ping(3, update));
+                this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, new StringTextComponent("Convert back to writable book"), BufferFactory.ping(3, update));
 
                 add.accept(this.bookNameInput);
                 add.accept(this.authorInput);
@@ -108,11 +115,11 @@ public class BookDetailsAttribute extends IItemAttribute {
             }
 
             @Override
-            public void render(Screen screen, int x, int y, int width, int height) {
+            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
                 FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.drawString("Title", x + 2, y + 17, -1);
-                font.drawString("Author", x + 86, y + 17, -1);
-                font.drawString("Generation", x + 170, y + 17, -1);
+                font.drawString(stackIn, "Title", x + 2, y + 17, -1);
+                font.drawString(stackIn, "Author", x + 86, y + 17, -1);
+                font.drawString(stackIn, "Generation", x + 170, y + 17, -1);
             }
 
             @Override

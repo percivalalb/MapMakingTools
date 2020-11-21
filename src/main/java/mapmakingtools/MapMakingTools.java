@@ -1,17 +1,39 @@
 package mapmakingtools;
 
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.Registries;
 import mapmakingtools.handler.KeyboardInput;
-import mapmakingtools.itemeditor.*;
+import mapmakingtools.itemeditor.ArmorColorAttribute;
+import mapmakingtools.itemeditor.BookDetailsAttribute;
+import mapmakingtools.itemeditor.BookEnchantmentAttribute;
+import mapmakingtools.itemeditor.CanDestroyAttribute;
+import mapmakingtools.itemeditor.CanPlaceOnAttribute;
+import mapmakingtools.itemeditor.EnchantmentAttribute;
+import mapmakingtools.itemeditor.FireworksAttribute;
+import mapmakingtools.itemeditor.ItemDamageAttribute;
+import mapmakingtools.itemeditor.ItemNameAttribute;
+import mapmakingtools.itemeditor.LoreAttribute;
+import mapmakingtools.itemeditor.ModifiersAttribute;
+import mapmakingtools.itemeditor.NBTViewer;
+import mapmakingtools.itemeditor.PlayerHeadAttribute;
+import mapmakingtools.itemeditor.PotionAttribute;
+import mapmakingtools.itemeditor.RepairCostAttribute;
+import mapmakingtools.itemeditor.SpawnEggAttribute;
+import mapmakingtools.itemeditor.StackSizeAttribute;
+import mapmakingtools.itemeditor.TooltipFlagsAttribute;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.network.PacketItemEditorUpdate;
 import mapmakingtools.util.Util;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -26,10 +48,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.function.Supplier;
 
 @Mod(value = Constants.MOD_ID)
 public class MapMakingTools {

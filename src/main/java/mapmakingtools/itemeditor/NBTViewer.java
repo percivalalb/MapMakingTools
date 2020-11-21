@@ -1,5 +1,11 @@
 package mapmakingtools.itemeditor;
 
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.scroll.TextScrollPane;
@@ -11,11 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
-
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class NBTViewer extends IItemAttribute {
 
@@ -45,7 +47,7 @@ public class NBTViewer extends IItemAttribute {
 
             @Override
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, "Remove NBT tag", (btn) -> {
+                this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
                     btn.active = false;
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
@@ -59,7 +61,7 @@ public class NBTViewer extends IItemAttribute {
             }
 
             @Override
-            public void render(Screen screen, int x, int y, int width, int height) {
+            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
 
             }
 

@@ -1,7 +1,14 @@
 package mapmakingtools.itemeditor;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
@@ -21,14 +28,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class EnchantmentAttribute extends IItemAttribute {
 
@@ -139,7 +141,7 @@ public class EnchantmentAttribute extends IItemAttribute {
         }
 
         public String getDisplayString() {
-            return this.enchantment.getDisplayName(this.level).getFormattedText();
+            return this.enchantment.getDisplayName(this.level).getString();
         }
     }
 
@@ -163,7 +165,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                 this.currentEnchantmentList.setValues(getEnchaments(stack), EnchantmentDetails::getDisplayString, this.currentEnchantmentList);
 
                 //this.currentEnchantmentList.set
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, "Add", (btn) -> {
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslationTextComponent(getTranslationKey("button.add")), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
                     List<Enchantment> enchamtments = this.enchantmentList.getGroupManager().getSelected();
@@ -175,7 +177,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, "Remove", (btn) -> {
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(1);
                     List<EnchantmentDetails> enchamtments = this.currentEnchantmentList.getGroupManager().getSelected();
@@ -189,7 +191,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, "Remove all Enchantments", BufferFactory.ping(2, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(2, update));
 
                 this.lvlInput = WidgetFactory.getTextField(screen, x + 2, y + height / 2 - 20, 50, 14, this.lvlInput, "1"::toString);
                 this.lvlInput.setMaxStringLength(3);

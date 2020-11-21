@@ -1,12 +1,13 @@
 package mapmakingtools.itemeditor;
 
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
 import mapmakingtools.util.Util;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.network.PacketBuffer;
-
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class BufferFactory {
 

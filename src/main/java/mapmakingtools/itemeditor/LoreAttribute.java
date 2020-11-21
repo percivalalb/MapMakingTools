@@ -1,6 +1,12 @@
 package mapmakingtools.itemeditor;
 
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.google.common.collect.Lists;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.SmallButton;
@@ -22,11 +28,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class LoreAttribute extends IItemAttribute {
 
@@ -91,7 +92,7 @@ public class LoreAttribute extends IItemAttribute {
                     textWidget.visible = false;
 
 
-                    Button btnRemove = new SmallButton(x + width - 13, y + 30 + i * 14, 13, 12, "-", (btn) -> {
+                    Button btnRemove = new SmallButton(x + width - 13, y + 30 + i * 14, 13, 12, new StringTextComponent("-"), (btn) -> {
                         PacketBuffer buf = Util.createBuf();
                         buf.writeByte(1);
                         buf.writeInt(index);
@@ -103,7 +104,7 @@ public class LoreAttribute extends IItemAttribute {
                     this.removeInput.add(btnRemove);
                 }
 
-                this.addBtn = new SmallButton(x + 18, y + 16, 13, 12, "+", (btn) -> {
+                this.addBtn = new SmallButton(x + 18, y + 16, 13, 12, new StringTextComponent("+"), (btn) -> {
                     if (this.lines < MAX_LINES) {
                         this.lineInput.get(this.lines).visible = true;
                         this.removeInput.get(this.lines++).visible = true;
@@ -112,7 +113,7 @@ public class LoreAttribute extends IItemAttribute {
                         this.triggerUpdate(update);
                     }
                 });
-                this.btnRemove = new SmallButton(x + 2, y + 16, 13, 12, "-", (btn) -> {
+                this.btnRemove = new SmallButton(x + 2, y + 16, 13, 12, new StringTextComponent("-"), (btn) -> {
                     if (this.lines > 0) {
                         this.lineInput.get(--this.lines).visible = false;
                         this.removeInput.get(this.lines).visible = false;
@@ -156,7 +157,7 @@ public class LoreAttribute extends IItemAttribute {
                         Button removeBtn = this.removeInput.get(i);
 
                         if (i < list.size()) {
-                            ITextComponent text = ITextComponent.Serializer.fromJson(list.getString(i));
+                            ITextComponent text = ITextComponent.Serializer.getComponentFromJson(list.getString(i));
                             WidgetUtil.setTextQuietly(textWidget,  text == null ? "" : text.getUnformattedComponentText());
                             textWidget.visible = true;
                             removeBtn.visible = true;

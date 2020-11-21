@@ -1,5 +1,12 @@
 package mapmakingtools.itemeditor;
 
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.TickButton;
@@ -14,12 +21,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class TooltipFlagsAttribute extends IItemAttribute {
 
@@ -126,15 +129,15 @@ public class TooltipFlagsAttribute extends IItemAttribute {
             }
 
             @Override
-            public void render(Screen screen, int x, int y, int width, int height) {
+            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
                 FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.drawString("Enchantment", x + 6, y + 25, 10526880);
-                font.drawString("Attribute Modifiers", x + 6, y + 47, 10526880);
-                font.drawString("Unbreakable", x + 6, y + 69, 10526880);
-                font.drawString("Block Destroy", x + 6, y + 91, 10526880);
-                font.drawString("Can Place On", x + 6, y + 113, 10526880);
-                font.drawString("Normal Info", x + 6, y + 135, 10526880);
-                font.drawString("Show all Information", x + 6, y + height - 22, 16777120);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
+                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
             }
 
             @Override

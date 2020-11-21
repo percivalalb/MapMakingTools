@@ -1,18 +1,19 @@
 package mapmakingtools.client.screen.widget;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
 
 public class AbstractTickButton extends AbstractButton {
 
     protected final AbstractTickButton.IPressable onPress;
     protected boolean ticked;
 
-    public AbstractTickButton(int xIn, int yIn, int widthIn, int heightIn, String msg, @Nullable TickButton previous, IPressable onPress) {
-        super(xIn, yIn, widthIn, heightIn, msg);
+    public AbstractTickButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, @Nullable TickButton previous, IPressable onPress) {
+        super(xIn, yIn, widthIn, heightIn, title);
         this.onPress = onPress;
         if (previous != null) {
             this.ticked = previous.isTicked();

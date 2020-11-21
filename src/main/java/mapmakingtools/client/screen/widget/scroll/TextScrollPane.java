@@ -1,12 +1,13 @@
 package mapmakingtools.client.screen.widget.scroll;
 
+import javax.annotation.Nullable;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import mapmakingtools.client.screen.widget.ScrollPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.text.ITextComponent;
-
-import javax.annotation.Nullable;
 
 public class TextScrollPane extends ScrollPane {
 
@@ -20,22 +21,23 @@ public class TextScrollPane extends ScrollPane {
     public void setText(@Nullable ITextComponent textIn) {
         this.text = textIn;
         if (textIn != null) {
-            int textHeight = textIn.getFormattedText().split("\n").length * 10 + 2;
+            int textHeight = textIn.getString().split("\n").length * 10 + 2;
             this.hiddenHeight = Math.max(0, textHeight - this.height);
         } else {
             this.hiddenHeight = 0;
         }
     }
 
-    public void renderOffset(int mouseX, int mouseY, float partialTicks) {
-        super.renderOffset(mouseX, mouseY, partialTicks);
+    @Override
+    public void renderOffset(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        super.renderOffset(stackIn, mouseX, mouseY, partialTicks);
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer font = minecraft.fontRenderer;
 
         if (this.text != null) {
-            String[] text = this.text.getFormattedText().split("\n");
+            String[] text = this.text.getString().split("\n");
             for (int i = 0; i < text.length; i++) {
-                font.drawString(text[i], this.x + 2, this.y + 2 + i * 10, 0);
+                font.drawString(stackIn, text[i], this.x + 2, this.y + 2 + i * 10, 0);
             }
         }
     }
