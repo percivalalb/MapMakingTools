@@ -166,10 +166,11 @@ public class FireworksAttribute extends IItemAttribute {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(2);
                     List<Byte> fireworkEffects = this.currentEffectsList.getGroupManager().getSelected();
+                    Collections.sort(fireworkEffects);
                     buf.writeInt(fireworkEffects.size());
-                    fireworkEffects.stream().sorted(Comparator.comparingInt((value) -> (int) value).reversed()).forEach(index -> {
+                    for (int index = fireworkEffects.size() - 1; index >= 0; index--) {
                         buf.writeInt(index);
-                    });
+                    };
                     update.accept(buf);
                 });
                 this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, "Remove all Explosions", BufferFactory.ping(3, update));
