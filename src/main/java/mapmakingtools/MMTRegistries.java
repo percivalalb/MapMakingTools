@@ -28,7 +28,7 @@ public class MMTRegistries {
         @SuppressWarnings("unchecked")
         @Override
         public void onAdd(IForgeRegistryInternal<IItemAttribute> owner, RegistryManager stage, int id, IItemAttribute newAttribute, @Nullable IItemAttribute oldAttribute) {
-            owner.getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class).put(newAttribute.getRegistryName(), DistExecutor.callWhenOn(Dist.CLIENT, newAttribute.client()));
+            owner.getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class).put(newAttribute.delegate, DistExecutor.callWhenOn(Dist.CLIENT, newAttribute.client()));
         }
 
         @Override

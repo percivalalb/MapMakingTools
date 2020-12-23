@@ -1,7 +1,6 @@
 package mapmakingtools.util;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.function.Predicate;
 
 import com.google.common.base.Strings;
@@ -11,6 +10,9 @@ import mapmakingtools.lib.Constants;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IRegistryDelegate;
 
 public class Util {
 
@@ -123,5 +125,19 @@ public class Util {
         else {
             return String.valueOf(value);
         }
+    }
+
+    public static <T extends ForgeRegistryEntry<T>> List<IRegistryDelegate<T>> getDelegates(IForgeRegistry<T> registry) {
+        Collection<T> values = registry.getValues();
+
+        // Create an empty list for the delegates, initialise to
+        // it's final size to avoid resizes down the road (improves efficiency)
+        List<IRegistryDelegate<T>> list = new ArrayList<>(values.size());
+
+        for (T value : values) {
+            list.add(value.delegate);
+        }
+
+        return list;
     }
 }
