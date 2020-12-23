@@ -12,11 +12,11 @@ import net.minecraft.network.PacketBuffer;
 
 public interface IItemAttributeClient {
 
+    @Deprecated
     default void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
 
     }
 
-    // Turn into item stack supplier
     default void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
         this.init(screen, add, update, pauseUpdates, stack.get(), x, y, width, height);
     }
