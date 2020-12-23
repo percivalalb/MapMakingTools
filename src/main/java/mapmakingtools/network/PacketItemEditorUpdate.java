@@ -2,6 +2,7 @@ package mapmakingtools.network;
 
 import java.util.function.Supplier;
 
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.Registries;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,9 +38,15 @@ public class PacketItemEditorUpdate {
         ctx.get().enqueueWork(() -> {
             PlayerEntity player = ctx.get().getSender();
             ItemStack stack = player.inventory.getStackInSlot(msg.slotIndex).copy();
-            stack = msg.attributeManager.read(stack, msg.data);
-            msg.data.clear(); // clears data to free memory
-            player.inventory.setInventorySlotContents(msg.slotIndex, stack);
+
+            try {
+                stack = msg.attributeManager.read(stack, msg.data);
+                player.inventory.setInventorySlotContents(msg.slotIndex, stack);
+            } catch (Exception e) {
+                MapMakingTools.LOGGER.warn("Failed to edit item: {}", e.getMessage());
+            } finally {
+                msg.data.clear(); // clears data to free memory
+            }
         });
 
         ctx.get().setPacketHandled(true);
