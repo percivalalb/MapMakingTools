@@ -73,7 +73,7 @@ public class FireworksAttribute extends IItemAttribute {
                 ListNBT explosionsNBT = fireworkNBT3.getList("Explosions", Constants.NBT.TAG_COMPOUND);
                 int amount = buffer.readInt();
                 for (int i = 0; i < amount; i++) {
-                    explosionsNBT.remove(buffer.readInt());
+                    explosionsNBT.remove(buffer.readByte());
                 }
 
                 //Remove empty NBT data
@@ -176,7 +176,7 @@ public class FireworksAttribute extends IItemAttribute {
                     Collections.sort(fireworkEffects);
                     buf.writeInt(fireworkEffects.size());
                     for (int index = fireworkEffects.size() - 1; index >= 0; index--) {
-                        buf.writeInt(index);
+                        buf.writeByte(index);
                     };
                     update.accept(buf);
                 });
