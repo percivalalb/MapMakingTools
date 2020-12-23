@@ -119,10 +119,10 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
     }
 
     @Override
-    public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_) {
-        if (INestedGuiEventHandler.super.charTyped(p_charTyped_1_, p_charTyped_2_)) {
+    public boolean charTyped(char codePoint, int modifiers) {
+        if (INestedGuiEventHandler.super.charTyped(codePoint, modifiers)) {
             return true;
-        } else if (super.charTyped(p_charTyped_1_, p_charTyped_2_)) {
+        } else if (super.charTyped(codePoint, modifiers)) {
             return true;
         }
 
