@@ -17,7 +17,7 @@ cache:
 build:
   stage: build
   script:
-    - ./gradlew mapmakingtools_data build
+    - ./gradlew build
   artifacts:
     paths:
       - 'build/libs/*.jar'
