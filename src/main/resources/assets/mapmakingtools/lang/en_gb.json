@@ -58,7 +58,7 @@
    "item_editor.mapmakingtools.modifiers.button.convert_to_tag": "Convert built-in to NBT",
    "item_editor.mapmakingtools.modifiers.button.remove.tag": "Remove modifier NBT",
    "item_editor.mapmakingtools.modifiers.button.remove.all": "Remove all modifiers",
-
+   "item_editor.mapmakingtools.recipe_knowledge": "Knowledge Book",
 
    "item_editor.mapmakingtools.armor_color": "Armour Colour",
    "item_editor.mapmakingtools.book_enchantment": "Book Enchantments",

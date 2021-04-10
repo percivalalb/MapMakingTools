@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import com.google.common.base.Strings;
 
 import io.netty.buffer.Unpooled;
+import mapmakingtools.api.util.IFeatureState;
 import mapmakingtools.lib.Constants;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -13,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IRegistryDelegate;
+
+import javax.annotation.Nullable;
 
 public class Util {
 
@@ -127,15 +130,19 @@ public class Util {
         }
     }
 
-    public static <T extends ForgeRegistryEntry<T>> List<IRegistryDelegate<T>> getDelegates(IForgeRegistry<T> registry) {
-        Collection<T> values = registry.getValues();
+    public static <T extends ForgeRegistryEntry<T>> List<IRegistryDelegate<T>> getDelegates(IForgeRegistry<T> registry, Predicate<T> filter) {
+        return getDelegates(registry.getValues(), filter);
+    }
 
+    public static <T extends ForgeRegistryEntry<T>> List<IRegistryDelegate<T>> getDelegates(Collection<T> values, @Nullable Predicate<T> filter) {
         // Create an empty list for the delegates, initialise to
         // it's final size to avoid resizes down the road (improves efficiency)
         List<IRegistryDelegate<T>> list = new ArrayList<>(values.size());
 
         for (T value : values) {
-            list.add(value.delegate);
+            if (filter == null || filter.test(value)) {
+                list.add(value.delegate);
+            }
         }
 
         return list;

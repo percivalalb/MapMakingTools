@@ -40,6 +40,12 @@ public class PacketItemEditorUpdate {
             ItemStack stack = player.inventory.getStackInSlot(msg.slotIndex).copy();
 
             try {
+                // Protected servers against people by-passing the GUI and
+                // sending illegal packets directly
+                if (!msg.attributeManager.canUse()) {
+                    throw new IllegalAccessException("The feature is not enabled.");
+                }
+
                 stack = msg.attributeManager.read(stack, msg.data);
                 player.inventory.setInventorySlotContents(msg.slotIndex, stack);
             } catch (Exception e) {

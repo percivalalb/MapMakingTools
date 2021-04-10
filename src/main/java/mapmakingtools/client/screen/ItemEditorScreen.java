@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import mapmakingtools.api.util.IFeatureState;
+import mapmakingtools.api.util.State;
+import net.minecraft.util.text.*;
 import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -35,8 +38,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class ItemEditorScreen extends Screen {
 
@@ -64,7 +65,7 @@ public class ItemEditorScreen extends Screen {
         this.player = player;
         this.stack = stack;
         this.slotIndex = slotIndex;
-        this.itemList = Util.getDelegates(Registries.ITEM_ATTRIBUTES);
+        this.itemList = Util.getDelegates(Registries.ITEM_ATTRIBUTES, IFeatureState::isVisible);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class ItemEditorScreen extends Screen {
 
         ItemEditorScreen.current.ifPresent(p -> {
             // If old selected attribute is no longer applicable delete
-            if (!p.getLeft().get().isApplicable(this.player, this.stack)) {
+            if (!p.getLeft().get().canUse() || !p.getLeft().get().isApplicable(this.player, this.stack)) {
                 ItemEditorScreen.current = Optional.empty();
                 return;
             }
@@ -125,7 +126,8 @@ public class ItemEditorScreen extends Screen {
             this.requiresUpdate = ItemEditorScreen.current.isPresent() ? this.current.get().getRight().requiresUpdate(playersStack, this.stack) : false;
             this.stack = playersStack.copy();
             for (Entry<IRegistryDelegate<IItemAttribute>, Widget> attributeBtns : this.attributeTabWidgets.entrySet()) {
-                attributeBtns.getValue().active = attributeBtns.getKey().get().isApplicable(this.player, this.stack);
+                IItemAttribute iAttr = attributeBtns.getKey().get();
+                attributeBtns.getValue().active = iAttr.canUse() && iAttr.isApplicable(this.player, this.stack);
             }
         }
 
@@ -226,12 +228,18 @@ public class ItemEditorScreen extends Screen {
 
             IRegistryDelegate<IItemAttribute> attribute = this.itemList.get(index);
             IItemAttributeClient client = MMTRegistries.getClientMapping().get(attribute);
-            Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, new TranslationTextComponent(attribute.get().getTranslationKey()), (btn) -> {
+
+            IFormattableTextComponent label = new TranslationTextComponent(attribute.get().getTranslationKey());
+            if (attribute.get().getFeatureState() != State.RELEASE) {
+                label = label.appendSibling(new StringTextComponent(" ("+attribute.get().getFeatureState().letter+")").mergeStyle(TextFormatting.RED));
+            }
+
+            Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, label, (btn) -> {
                 Pair<IRegistryDelegate<IItemAttribute>, IItemAttributeClient> p = Pair.of(attribute, client);
                 ItemEditorScreen.this.selectAttribute(p);
                 ItemEditorScreen.current = Optional.of(p);
             });
-            button.active = attribute.get().isApplicable(this.player, this.stack);
+            button.active = attribute.get().canUse() && attribute.get().isApplicable(this.player, this.stack);
 
             this.attributeTabWidgets.put(attribute, button);
             this.addButton(button);

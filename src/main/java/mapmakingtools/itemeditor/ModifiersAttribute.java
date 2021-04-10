@@ -17,6 +17,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
+import mapmakingtools.api.util.State;
 import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.client.screen.widget.SmallToggleButton;
 import mapmakingtools.client.screen.widget.ToggleButton;
@@ -343,5 +344,10 @@ public class ModifiersAttribute extends IItemAttribute {
                 return new AttributeModifier(this.uuid, this.attributeName, amountIn, operationIn);
             }
         }
+    }
+
+    @Override
+    public State getFeatureState() {
+        return State.BETA;
     }
 }

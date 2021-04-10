@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
+import mapmakingtools.api.util.State;
 import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.client.screen.widget.WidgetUtil;
@@ -201,4 +202,8 @@ public class LoreAttribute extends IItemAttribute {
         };
     }
 
+    @Override
+    public State getFeatureState() {
+        return State.ALPHA;
+    }
 }

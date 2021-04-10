@@ -2,30 +2,13 @@ package mapmakingtools;
 
 import java.util.function.Supplier;
 
+import mapmakingtools.itemeditor.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.Registries;
 import mapmakingtools.handler.KeyboardInput;
-import mapmakingtools.itemeditor.ArmorColorAttribute;
-import mapmakingtools.itemeditor.BookDetailsAttribute;
-import mapmakingtools.itemeditor.BookEnchantmentAttribute;
-import mapmakingtools.itemeditor.CanDestroyAttribute;
-import mapmakingtools.itemeditor.CanPlaceOnAttribute;
-import mapmakingtools.itemeditor.EnchantmentAttribute;
-import mapmakingtools.itemeditor.FireworksAttribute;
-import mapmakingtools.itemeditor.ItemDamageAttribute;
-import mapmakingtools.itemeditor.ItemNameAttribute;
-import mapmakingtools.itemeditor.LoreAttribute;
-import mapmakingtools.itemeditor.ModifiersAttribute;
-import mapmakingtools.itemeditor.NBTViewer;
-import mapmakingtools.itemeditor.PlayerHeadAttribute;
-import mapmakingtools.itemeditor.PotionAttribute;
-import mapmakingtools.itemeditor.RepairCostAttribute;
-import mapmakingtools.itemeditor.SpawnEggAttribute;
-import mapmakingtools.itemeditor.StackSizeAttribute;
-import mapmakingtools.itemeditor.TooltipFlagsAttribute;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.network.PacketItemEditorUpdate;
 import mapmakingtools.util.Util;
@@ -125,6 +108,7 @@ public class MapMakingTools {
         register(registry, "armor_color", ArmorColorAttribute::new);
         register(registry, "book_enchantment", BookEnchantmentAttribute::new);
         register(registry, "spawn_egg", SpawnEggAttribute::new);
+        register(registry, "recipe_knowledge", RecipeKnowledgeAttribute::new);
     }
 
     public <T extends IForgeRegistryEntry<T>> void register(final IForgeRegistry<T> registry, final String name, final Supplier<? extends T> supplier) {

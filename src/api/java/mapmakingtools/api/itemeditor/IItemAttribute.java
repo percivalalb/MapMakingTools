@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import mapmakingtools.api.util.IFeatureState;
+import mapmakingtools.api.util.State;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,7 +14,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Util;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> {
+public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> implements IFeatureState {
 
     @Nullable
     private String translationKey;
