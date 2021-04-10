@@ -70,8 +70,8 @@ public class ItemDamageAttribute extends IItemAttribute {
             private Button unbreakableBtn;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.damageInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.damageInput, stack::getDamage);
+            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
+                this.damageInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.damageInput, () -> stack.get().getDamage());
 
                 this.damageInput.setMaxStringLength(3);
                 this.damageInput.setResponder(BufferFactory.createInteger(0, Util.IS_NULL_OR_EMPTY.or(""::equals), update));
