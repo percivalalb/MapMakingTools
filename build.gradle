@@ -156,7 +156,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 tasks.register('generateGBLangFile') {
     def inputFile = file('src/main/resources/assets/mapmakingtools/lang/en_us.json');
-    def outputFile = file('src/generated/resources/assets/mapmakingtools/lang/en_gb.json')
+    def outputFile = file('src/main/resources/assets/mapmakingtools/lang/en_gb.json')
     inputs.files inputFile
     outputs.files outputFile
 
@@ -175,5 +175,3 @@ tasks.register('generateGBLangFile') {
         outputFile.write(dataGB + System.getProperty("line.separator"));
     }
 }
-
-processResources.finalizedBy generateGBLangFile
