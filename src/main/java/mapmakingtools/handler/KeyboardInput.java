@@ -9,6 +9,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.client.event.GuiScreenEvent.KeyboardKeyPressedEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -16,9 +17,13 @@ public class KeyboardInput {
 
     public static KeyBinding KEY_ITEM_EDITOR;
 
-    public static void init(IEventBus eventBus) {
+    public static void initBinding() {
         KEY_ITEM_EDITOR = KeyboardInput.create("item_editor", "m");
-        eventBus.addListener(KeyboardInput::onKeyPressed);
+    }
+
+    public static void initListeners() {
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+        forgeEventBus.addListener(KeyboardInput::onKeyPressed);
     }
 
     public static KeyBinding create(String name, String key) {

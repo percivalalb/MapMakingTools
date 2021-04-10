@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.Registries;
-import mapmakingtools.handler.KeyboardInput;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.network.PacketItemEditorUpdate;
 import mapmakingtools.util.Util;
@@ -62,15 +61,10 @@ public class MapMakingTools {
 
         modEventBus.addGenericListener(IItemAttribute.class, this::registerItemAttributes);
 
-        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         //forgeEventBus.register(new NewEvent());
 
         // Client Events
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            //modEventBus.addListener(KeyboardInput::registerBlockColours);
-            KeyboardInput.init(forgeEventBus);
-            //forgeEventBus.addListener(GameOverlay::onPreRenderGameOverlay);
-        });
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> mapmakingtools.handler.KeyboardInput::initListeners);
     }
 
     public void commonSetup(final FMLCommonSetupEvent event) {
@@ -79,6 +73,7 @@ public class MapMakingTools {
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> mapmakingtools.handler.KeyboardInput::initBinding);
 
         //ScreenManager.registerFactory(ModContainerTypes.FOOD_BOWL, GuiFoodBowl::new);
     }

@@ -151,3 +151,29 @@ curseforge {
         addArtifact apiJar
     }
 }
+
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+tasks.register('generateGBLangFile') {
+    def inputFile = file('src/main/resources/assets/mapmakingtools/lang/en_us.json');
+    def outputFile = file('src/generated/resources/assets/mapmakingtools/lang/en_gb.json')
+    inputs.files inputFile
+    outputs.files outputFile
+
+    doLast {
+        String
+        def json = new JsonSlurper().parseText(inputFile.text)
+        json.replaceAll { key, value ->
+
+            value = value.replaceAll("(?i)(c)olor", "\$1olour");
+            value = value.replaceAll("(?i)(a)rmor", "\$1rmour");
+            return value;
+        }
+
+        def dataGB = JsonOutput.toJson(json)
+        dataGB = JsonOutput.prettyPrint(dataGB)
+        outputFile.write(dataGB + System.getProperty("line.separator"));
+    }
+}
+
+processResources.finalizedBy generateGBLangFile
