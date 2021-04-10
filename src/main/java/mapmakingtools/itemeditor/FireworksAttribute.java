@@ -154,7 +154,7 @@ public class FireworksAttribute extends IItemAttribute {
                 this.trailBtn = new CheckboxButton(x + 34, y + 14 * 5 + 43, 20, 20, TextUtil.EMPTY, false);
                 this.flickerBtn = new CheckboxButton(x + 101, y + 14 * 5 + 43, 20, 20, TextUtil.EMPTY, false);
 
-                this.addBtn = new SmallButton(x + width - 90, y + 14 * 5 + 43, 80, 16, new TranslationTextComponent(getTranslationKey("button.add")), (btn) -> {
+                this.addBtn = new SmallButton(x + width - 90, y + 14 * 5 + 45, 80, 16, new TranslationTextComponent(getTranslationKey("button.add")), (btn) -> {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(1);
 
