@@ -253,7 +253,7 @@ public class ItemEditorScreen extends Screen {
 
         ItemEditorScreen.current.ifPresent(p -> {
             if (p.getRight().shouldRenderTitle(this, this.stack)) {
-                this.minecraft.fontRenderer.func_243248_b(stackIn, new TranslationTextComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
+                this.minecraft.fontRenderer.drawText(stackIn, new TranslationTextComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
             }
             p.getRight().render(stackIn, this, this.guiX, this.guiY, this.guiWidth, this.guiHeight);
         });

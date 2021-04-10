@@ -110,7 +110,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
                 this.nameExists.ifPresent(b -> {
                     String text = b ? "text.player.exists" : "text.player.exists.not";
                     int colour = b ? 65025 : 16581375;
-                    screen.getMinecraft().fontRenderer.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey(text)), x + 2, y + 30, colour);
+                    screen.getMinecraft().fontRenderer.drawText(stackIn, new TranslationTextComponent(getTranslationKey(text)), x + 2, y + 30, colour);
                 });
             }
 

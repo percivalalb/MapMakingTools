@@ -61,7 +61,7 @@ public abstract class DraggableTextComponentPart extends Widget {
     public abstract List<? extends Widget> createEditWidget();
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         // Check disconnections
         Collection<Entry<Direction, DraggableTextComponentPart>> connections = this.getConnectionEntries();
 
@@ -98,7 +98,7 @@ public abstract class DraggableTextComponentPart extends Widget {
     @Override
     protected void onDrag(double mouseX, double mouseY, double changeX, double changeY) {
         int changeX1 = (int) mouseX - this.getWidth() / 2 - this.x;
-        int changeY1 = (int) mouseY - this.getHeightRealms() / 2 - this.y;
+        int changeY1 = (int) mouseY - this.getHeight() / 2 - this.y;
 
         BiConsumer<DraggableTextComponentPart, DraggableTextComponentPart> action = (parent, widget) -> {
             if (parent != null) {
@@ -109,7 +109,7 @@ public abstract class DraggableTextComponentPart extends Widget {
             }
 
             widget.x = MathHelper.clamp(widget.x, widget.parent.x, widget.parent.x + widget.parent.getWidth() - widget.getWidth());
-            widget.y = MathHelper.clamp(widget.y, widget.parent.y, widget.parent.y + widget.parent.getHeightRealms() - widget.getHeightRealms() - 29);
+            widget.y = MathHelper.clamp(widget.y, widget.parent.y, widget.parent.y + widget.parent.getHeight() - widget.getHeight() - 29);
         };
 
         if (Screen.hasShiftDown()) {
@@ -174,8 +174,8 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-            super.renderButton(stackIn, mouseX, mouseY, partialTicks);
+        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+            super.renderWidget(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
             FontRenderer fontrenderer = minecraft.fontRenderer;
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
@@ -270,7 +270,7 @@ public abstract class DraggableTextComponentPart extends Widget {
         @Override
         public List<? extends Widget> createEditWidget() {
             if (this.color.isColor()) {
-                ColorFormattingSelector widget = new ColorFormattingSelector(this.parent.x + (this.parent.getWidth() - 320) / 2, this.parent.y + this.parent.getHeightRealms() - 25, (formatting) -> {
+                ColorFormattingSelector widget = new ColorFormattingSelector(this.parent.x + (this.parent.getWidth() - 320) / 2, this.parent.y + this.parent.getHeight() - 25, (formatting) -> {
                     this.color = formatting;
                 });
 
@@ -283,7 +283,7 @@ public abstract class DraggableTextComponentPart extends Widget {
                         continue;
                     }
 
-                    options.add(new SmallButton(this.parent.x + (this.parent.getWidth() - 200) / 2 + 22 * options.size(), this.parent.y + this.parent.getHeightRealms() - 25, 20, 20, this.getLabel(formatting), (btn) -> {
+                    options.add(new SmallButton(this.parent.x + (this.parent.getWidth() - 200) / 2 + 22 * options.size(), this.parent.y + this.parent.getHeight() - 25, 20, 20, this.getLabel(formatting), (btn) -> {
                         this.color = formatting;
                     }));
                     i++;
@@ -304,8 +304,8 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-            super.renderButton(stackIn, mouseX, mouseY, partialTicks);
+        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+            super.renderWidget(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
             FontRenderer fontrenderer = minecraft.fontRenderer;
             minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
@@ -348,17 +348,17 @@ public abstract class DraggableTextComponentPart extends Widget {
         @Override
         public ITextComponent apply(ITextComponent textComponent) {
             ITextComponent comp = this.create();
-            textComponent.copyRaw().append(comp);
+            textComponent.copyRaw().appendSibling(comp);
             return comp;
         }
 
         @Override
         public List<? extends Widget> createEditWidget() {
-            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeightRealms() - 25, 200, 20, TextUtil.EMPTY);
+            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
             widget.setResponder((str) -> {
                 this.text = str;
             });
-            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeightRealms() - 25, 30, 20, new StringTextComponent("Exact"), new Boolean[] {true, false}, null, (btn) -> {
+            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, new StringTextComponent("Exact"), new Boolean[] {true, false}, null, (btn) -> {
                 this.translation = ((ToggleButton<Boolean>) btn).getValue();
                 if (this.translation) {
                     btn.setMessage(new StringTextComponent("Trans"));
@@ -377,8 +377,8 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-            super.renderButton(stackIn, mouseX, mouseY, partialTicks);
+        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+            super.renderWidget(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
             FontRenderer fontrenderer = minecraft.fontRenderer;
             minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
@@ -416,13 +416,13 @@ public abstract class DraggableTextComponentPart extends Widget {
         @Override
         public ITextComponent apply(ITextComponent textComponent) {
             ITextComponent comp = this.create();
-            textComponent.copyRaw().append(comp);
+            textComponent.copyRaw().appendSibling(comp);
             return comp;
         }
 
         @Override
         public List<? extends Widget> createEditWidget() {
-            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeightRealms() - 25, 200, 20, TextUtil.EMPTY);
+            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
             widget.setResponder((str) -> {});
             return Collections.unmodifiableList(Lists.newArrayList(widget));
         }

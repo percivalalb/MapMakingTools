@@ -25,7 +25,7 @@ public class ToggleBoxWidget<T> extends AbstractTickButton {
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer font = minecraft.fontRenderer;
         minecraft.getTextureManager().bindTexture(Resources.SCREEN_SCROLL);
@@ -34,7 +34,7 @@ public class ToggleBoxWidget<T> extends AbstractTickButton {
         Object obj = this.getDisplayObject();
 
         if (obj instanceof ITextComponent) {
-            font.func_243248_b(stackIn, (ITextComponent) obj, this.x + 10, this.y, 0);
+            font.drawText(stackIn, (ITextComponent) obj, this.x + 10, this.y, 0);
         } else {
             font.drawString(stackIn, obj.toString(), this.x + 10, this.y, 0);
         }

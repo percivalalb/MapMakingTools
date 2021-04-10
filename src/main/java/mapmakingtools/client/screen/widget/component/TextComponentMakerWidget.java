@@ -197,19 +197,19 @@ public class TextComponentMakerWidget extends NestedWidget {
         switch(dir) {
         case NORTH:
             part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
-            part.y = otherPart.y - part.getHeightRealms() - PADDING;
+            part.y = otherPart.y - part.getHeight() - PADDING;
             break;
         case EAST:
             part.x = otherPart.x + otherPart.getWidth() + PADDING;
-            part.y = otherPart.y + otherPart.getHeightRealms() / 2 - part.getHeightRealms() / 2;
+            part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
             break;
         case SOUTH:
             part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
-            part.y = otherPart.y + otherPart.getHeightRealms() + PADDING;
+            part.y = otherPart.y + otherPart.getHeight() + PADDING;
             break;
         case WEST:
             part.x = otherPart.x - part.getWidth() - PADDING;
-            part.y = otherPart.y + otherPart.getHeightRealms() / 2 - part.getHeightRealms() / 2;
+            part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
             break;
         default:
             break;
@@ -246,16 +246,16 @@ public class TextComponentMakerWidget extends NestedWidget {
         switch(direction) {
         case SOUTH:
             return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
-                    + Math.pow(part.y - otherPair.y - otherPair.getHeightRealms(), 2);
+                    + Math.pow(part.y - otherPair.y - otherPair.getHeight(), 2);
         case WEST:
             return Math.pow(part.x + part.getWidth() - otherPair.x, 2)
-                    + Math.pow(part.y + part.getHeightRealms() / 2 - otherPair.y - otherPair.getHeightRealms() / 2, 2) ;
+                    + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2) ;
         case NORTH:
             return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
-                    + Math.pow(part.y + part.getHeightRealms() - otherPair.y, 2);
+                    + Math.pow(part.y + part.getHeight() - otherPair.y, 2);
         case EAST:
             return Math.pow(part.x - otherPair.x - otherPair.getWidth(), 2)
-                    + Math.pow(part.y + part.getHeightRealms() / 2 - otherPair.y - otherPair.getHeightRealms() / 2, 2) ;
+                    + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2) ;
         default:
             return Double.MAX_VALUE;
         }

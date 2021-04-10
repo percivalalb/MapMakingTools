@@ -25,7 +25,7 @@ public class SmallToggleButton<T> extends ToggleButton<T> {
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);

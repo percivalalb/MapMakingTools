@@ -42,18 +42,18 @@ public class WidgetUtil {
             break;
         case EAST:
             x += widget.getWidth();
-            y += widget.getHeightRealms() / 2F;
+            y += widget.getHeight() / 2F;
             break;
         case SOUTH:
             x += widget.getWidth() / 2F;
-            y += widget.getHeightRealms();
+            y += widget.getHeight();
             break;
         case WEST:
-            y += widget.getHeightRealms() / 2F;
+            y += widget.getHeight() / 2F;
             break;
         default:
             x += widget.getWidth() / 2F;
-            y += widget.getHeightRealms() / 2F;
+            y += widget.getHeight() / 2F;
             break;
         }
 

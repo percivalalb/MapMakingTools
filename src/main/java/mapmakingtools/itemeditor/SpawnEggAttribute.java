@@ -92,7 +92,7 @@ public class SpawnEggAttribute extends IItemAttribute {
             @Override
             public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
                 FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.func_243248_b(stackIn, new TranslationTextComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
+                font.drawText(stackIn, new TranslationTextComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
             }
 
             @Override

@@ -197,12 +197,12 @@ public class FireworksAttribute extends IItemAttribute {
             @Override
             public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
                 FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.func_243248_b(stackIn, new TranslationTextComponent("item.minecraft.firework_rocket.flight"), x + 6, y + 17, 16777120);
-                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("shape")), x + 4, y + 32, 16777120);
-                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("color")), x + 108, y + 32, 16777120);
-                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("fade_color")), x + 109 + Math.max((width - 105) / 2, 82), y + 32, 16777120);
-                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("trail")), x + 6, y + 14 * 5 + 47, 16777120);
-                font.func_243248_b(stackIn, new TranslationTextComponent(getTranslationKey("flicker")), x + 63, y + 14 * 5 + 47, 16777120);
+                font.drawText(stackIn, new TranslationTextComponent("item.minecraft.firework_rocket.flight"), x + 6, y + 17, 16777120);
+                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("shape")), x + 4, y + 32, 16777120);
+                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("color")), x + 108, y + 32, 16777120);
+                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("fade_color")), x + 109 + Math.max((width - 105) / 2, 82), y + 32, 16777120);
+                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("trail")), x + 6, y + 14 * 5 + 47, 16777120);
+                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flicker")), x + 63, y + 14 * 5 + 47, 16777120);
             }
 
             @Override

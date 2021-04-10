@@ -214,7 +214,7 @@ public class ModifiersAttribute extends IItemAttribute {
                 font.drawString(stackIn, "OP", x + 130 + MathHelper.clamp(width - 200, 40, 100), y + 25, 16777120);
                 for (int i = 0; i < MODIFIERS.length; i++) {
                     String translationKey = "attribute.name." + MODIFIERS[i].attribute.get().getAttributeName();
-                    font.func_243248_b(stackIn, I18n.hasKey(translationKey) ? new TranslationTextComponent(translationKey) : new StringTextComponent(MODIFIERS[i].attribute.get().getAttributeName()), x + 6, y + 42 + i * 17, 16777120);
+                    font.drawText(stackIn, I18n.hasKey(translationKey) ? new TranslationTextComponent(translationKey) : new StringTextComponent(MODIFIERS[i].attribute.get().getAttributeName()), x + 6, y + 42 + i * 17, 16777120);
                 }
             }
 

@@ -41,7 +41,7 @@ public class ColorPickerWidget extends NestedWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         for (Widget widget : this.children) {
             widget.render(stackIn, mouseX, mouseY, partialTicks);
         }
@@ -209,7 +209,7 @@ public class ColorPickerWidget extends NestedWidget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.disableTexture();
             ColorPickerWidget.this.testFillGradient(stackIn, this.x, this.y, this.width, this.height, ColorPickerWidget.this.getBaseColor());
 
@@ -275,7 +275,7 @@ public class ColorPickerWidget extends NestedWidget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.disableTexture();
 
             int w = this.width / (PRIMARY_COLORS.length - 1);
