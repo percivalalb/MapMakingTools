@@ -47,6 +47,7 @@ public class PacketItemEditorUpdate {
                 }
 
                 stack = msg.attributeManager.read(stack, msg.data);
+                stack = msg.attributeManager.read(stack, msg.data, player);
                 player.inventory.setInventorySlotContents(msg.slotIndex, stack);
             } catch (Exception e) {
                 MapMakingTools.LOGGER.warn("Failed to edit item: {}", e.getMessage());

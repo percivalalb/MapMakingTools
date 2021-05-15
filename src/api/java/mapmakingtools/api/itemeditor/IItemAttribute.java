@@ -51,7 +51,14 @@ public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> 
      * @param stack A copy of the stack to edit
      * @param buffer Data sent from the client
      */
-    public abstract ItemStack read(ItemStack stack, PacketBuffer buffer);
+    @Deprecated // Call player sensitive version
+    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ItemStack read(ItemStack stack, PacketBuffer buffer, @Nullable PlayerEntity player) {
+        return this.read(stack, buffer);
+    }
 
     /**
      * Contains the client side only methods, this includes GUI parts
