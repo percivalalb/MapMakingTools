@@ -1,7 +1,10 @@
 package mapmakingtools.util;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
 
@@ -19,18 +22,20 @@ import javax.annotation.Nullable;
 
 public class Util {
 
-    public static Predicate<String> NUMBER_INPUT_PREDICATE = (str) -> {
-        if (Strings.isNullOrEmpty(str) || "-".equals(str)) {
-            return true;
-        }
+    private static Pattern number = Pattern.compile("^-?\\d*\\.?\\d*$");
 
-        try {
-            Integer.valueOf(str);
-            return true;
-        } catch (IllegalArgumentException var3) {
-            return false;
-        }
+    private static DecimalFormat FORMAT_NUMBER_3DP = net.minecraft.util.Util.make(() -> {
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return df;
+    });
+
+    public static Predicate<String> NUMBER_INPUT_PREDICATE = (str) -> {
+        return number.matcher(str).matches();
     };
+
+
+
 
     // Numbers greater or equal to 0
     public static Predicate<String> NON_NEGATIVE_NUMBER_INPUT_PREDICATE = (str) -> {
@@ -126,7 +131,7 @@ public class Util {
             return String.valueOf((int) value);
         }
         else {
-            return String.valueOf(value);
+            return FORMAT_NUMBER_3DP.format(value);
         }
     }
 

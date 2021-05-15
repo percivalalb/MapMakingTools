@@ -57,6 +57,13 @@
    "item_editor.mapmakingtools.modifiers.button.convert_to_tag": "Convert built-in to NBT",
    "item_editor.mapmakingtools.modifiers.button.remove.tag": "Remove modifier NBT",
    "item_editor.mapmakingtools.modifiers.button.remove.all": "Remove all modifiers",
+   "item_editor.mapmakingtools.modifiers.button.op.addition": "Addition",
+   "item_editor.mapmakingtools.modifiers.button.op.multiply_base": "Multiply Base",
+   "item_editor.mapmakingtools.modifiers.button.op.multiply_total": "Multiply Total",
+   "item_editor.mapmakingtools.modifiers.button.add": "Add",
+   "item_editor.mapmakingtools.modifiers.button.modify": "Modify",
+   "item_editor.mapmakingtools.modifiers.button.remove": "Remove",
+
    "item_editor.mapmakingtools.recipe_knowledge": "Knowledge Book",
 
    "item_editor.mapmakingtools.armor_color": "Armour Color",
@@ -66,5 +73,27 @@
    "item_editor.mapmakingtools.book_enchantment.button.remove.all": "Remove all Enchantments",
    "item_editor.mapmakingtools.spawn_egg": "Spawn Egg",
    "item_editor.mapmakingtools.spawn_egg.entity_type": "Current Entity Type: %s",
-   "item_editor.mapmakingtools.spawn_egg.button.set": "Set"
+   "item_editor.mapmakingtools.spawn_egg.button.set": "Set",
+
+   "attribute.name.minecraft.generic.attack_damage.weapon": "Attack Damage",
+   "attribute.name.minecraft.generic.attack_speed.weapon": "Attack Speed",
+   "attribute.name.minecraft.generic.attack_knockback": "Attack Knockback",
+   "attribute.name.minecraft.generic.knockback_resistance": "Knockback Resistance",
+   "attribute.name.minecraft.generic.max_health": "Max Health",
+   "attribute.name.minecraft.generic.movement_speed": "Movement Speed",
+   "attribute.name.minecraft.generic.movement_speed.sprinting": "Sprinting Bonus",
+   "attribute.name.minecraft.generic.flying_speed": "Flying Speed",
+   "attribute.name.minecraft.generic.follow_range": "Follow Range",
+   "attribute.name.minecraft.generic.armor": "Armor",
+   "attribute.name.minecraft.generic.armor_toughness": "Armor Toughness",
+   "attribute.name.minecraft.generic.luck": "Luck",
+   "attribute.name.minecraft.generic.luck.un": "Unluck",
+   "attribute.name.forge.entity_gravity.slow.falling": "Slow Falling Acceleration Reduction",
+   "attribute.name.forge.entity_gravity": "Gravity",
+   "attribute.name.forge.nametag_distance": "Nametag Distance",
+   "attribute.name.forge.swim_speed": "Swim speed",
+   "attribute.name.minecraft.generic.armor.horse.bonus": "Horse Bonus Armor",
+   "attribute.name.minecraft.horse.jump_strength": "Horse Jump Strength",
+   "attribute.name.minecraft.zombie.spawn_reinforcements": "Zombie Spawn Reinforcements",
+   "attribute.name.minecraft.generic.movement_speed.zombie.baby": "Zombie Baby Speed Bonus"
 }
