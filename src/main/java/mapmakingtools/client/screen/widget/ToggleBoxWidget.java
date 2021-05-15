@@ -43,7 +43,6 @@ public class ToggleBoxWidget<T> extends AbstractTickButton {
     @Override
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
-        System.out.println("" + this.getValue());
     }
 
     public ToggleBoxWidget<T> setDisplayString(Function<T, Object> toStringFunc) {
