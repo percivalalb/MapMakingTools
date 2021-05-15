@@ -46,7 +46,7 @@ public class NBTViewer extends IItemAttribute {
             private TextScrollPane nbtTextPane;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
                     btn.active = false;
                     PacketBuffer buf = Util.createBuf();
@@ -69,7 +69,8 @@ public class NBTViewer extends IItemAttribute {
             public void populateFrom(Screen screen, final ItemStack stack) {
                 this.nbtRemoval.active = stack.hasTag();
                 if (stack.hasTag()) {
-                    this.nbtTextPane.setText(stack.getTag().toFormattedComponent("    ", 0));
+                    assert stack.getTag() != null;
+                    this.nbtTextPane.setText(stack.getTag().toFormattedComponent("   ", 0));
                 } else {
                     this.nbtTextPane.setText(null);
                 }
