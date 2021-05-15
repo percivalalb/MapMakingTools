@@ -153,7 +153,7 @@ public class ItemEditorScreen extends Screen {
         // If
 
         if (Util.isPointInRegion(23, 23, 16, 16, mouseX, mouseY)) {
-            int orignal = this.slotIndex;
+            int original = this.slotIndex;
 
             do {
                 int direction = MathHelper.signum(amount);
@@ -165,7 +165,7 @@ public class ItemEditorScreen extends Screen {
                     break;
                 }
             }
-            while (orignal != this.slotIndex);
+            while (original != this.slotIndex);
 
             return true;
         }

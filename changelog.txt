@@ -22,15 +22,15 @@ Updated to MC 1.12
 + Added two new quick build commands //outline and //box
 + Added 6 more modifiers for item editor
 + You can now add modifiers that for all equipment slots (e.g add speed to a helment that only gives you speed when you wear it in the helment slot)
-+ Added the lastest enchantments and potions to the Item Editor
-+ Added the lastest blocks to the block id helper which can be assesed while click your sneak key in the chat menu
++ Added the latest enchantments and potions to the Item Editor
++ Added the latest blocks to the block id helper which can be assesed while click your sneak key in the chat menu
 + Many more buttons will be grayed out/disable if they are not applicable at the current moment
 + Added option to to edit the generation of a written book in the item editor
 + Added a yellow coloured outline around the first selection point and a light blue around the second
-# Changed the rotations and flip data to use build in system from 1.10, mod blocks should beable to rotated properly	
+# Changed the rotations and flip data to use build in system from 1.10, mod blocks should beable to rotated properly
 # You can now right click or left to insert the block id using the block id helper
 # Mod version now indicates which git commit it was built from (the last number)
-* Fixed the block id helper and chat overlaping
+* Fixed the block id helper and chat overlapping
 
 v2.4.0a - 16th April 2016
 Updated to MC 1.8.9
@@ -68,7 +68,7 @@ v2.3.2a
 # Changed the packet name to 'MMT' from 'MAP|MAKING|TOOLS'
 
 * Fixed packets being sent to unnecessary players
-* Fixed crash when connecting to a server 
+* Fixed crash when connecting to a server
 
 
 
@@ -140,7 +140,7 @@ v2.2.2a - 2nd August 2014
 
 - Removed the old player skull gui accessed when you shift right clicked with a head
 
-* Fixed item editor gui being very buggy which mean that all the buttons etc vanished. 
+* Fixed item editor gui being very buggy which mean that all the buttons etc vanished.
 * Fixed not being to use item editor button armor slots
 
 
@@ -166,7 +166,7 @@ v2.2.1a - 24th July 2014
 
 # The block helper will now only show when 'SHIFT' key is pressed, is configurable in controls menu - this was to avoid issue with tab completion with commands
 
-* Fixed crash in head gui by temporally removing the player image to the left of the gui  
+* Fixed crash in head gui by temporally removing the player image to the left of the gui
 * Fixed the outline of the selected area showing even when the axe is not being held
 * Fixed the wrench making you crash on servers
 
@@ -183,7 +183,7 @@ v2.1.3a - 26th April 2014
 + Added warning message when creating using //playerstatue because of it can take a while when using big areas e.g. 48x48x99
 
 # The //playerstatue now can be any size if it is a multiply of a 16x16x32 creating some huge statues.
-# Only 10 saves of Undo, redo and copy cache will be saved after the 10th it will override the oldest cache 
+# Only 10 saves of Undo, redo and copy cache will be saved after the 10th it will override the oldest cache
 
 * Fixed custom give filter allowing some slots to go infinite when not needed.
 * Fixed quick build sometimes not updating the client
@@ -207,7 +207,7 @@ v2.1.1a - 11th April 2014
 + Added the new blocks from 1.7 to the block helper
 + Readded version checker
 
-# Changed the //replace command to work better with the block helper: //replace <block> <meta> <block> <meta> 
+# Changed the //replace command to work better with the block helper: //replace <block> <meta> <block> <meta>
 
 * Fixed the //playerstatue not working on servers
 
@@ -237,7 +237,7 @@ v2.1.0a - 9th April 2014
 
 
 v2.0.4a (Never released, content pushed to the 1.7 version)
-+ Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping! 
++ Added a //flip <mode> command which can flip the selected area in the x, y or z axis. Block rotation of flip coming e.g. stairs changing direction, top and bottom slabs fliping!
 + Started work on a new filter to edit the chance of the item dropping from an Item Frame.
 
 * Fixed a equals method derp
@@ -255,11 +255,11 @@ Please note Forge #850 or higher is now needed to run map making tools
 
 # Removed some debug messages
 
-* Fixed Quick Build Item opening some GUI's when right clicking, which was annoying 
+* Fixed Quick Build Item opening some GUI's when right clicking, which was annoying
 * Fixed weird TileEntity behaver after being pasted
 * Fixed the items in the villager shop editor flashing from one item to another on opening the GUI (For real!)
 * Fixed some spelling mistakes
-* Fixed the wrench saying you are editing a block/entity when you are not editing it, meaning you would have to relog to fix. 
+* Fixed the wrench saying you are editing a block/entity when you are not editing it, meaning you would have to relog to fix.
 
 
 
@@ -293,5 +293,5 @@ v2.0.1a - 1st September 2013
 
 v2.0.0a - 14th August 2013
 
-+ Added the Wrench 
++ Added the Wrench
 + Completely changed the mod
