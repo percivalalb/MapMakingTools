@@ -15,7 +15,11 @@ public class ToggleButton<T> extends Button {
     private T[] values;
 
     public ToggleButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, T[] values, @Nullable ToggleButton<T> previous, IPressable onPress) {
-        super(xIn, yIn, widthIn, heightIn, title, onPress);
+        this(xIn, yIn, widthIn, heightIn, title, values, previous, onPress, Button.EMPTY_TOOLTIP);
+    }
+
+    public ToggleButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, T[] values, @Nullable ToggleButton<T> previous, IPressable onPress, Button.ITooltip onTooltip) {
+        super(xIn, yIn, widthIn, heightIn, title, onPress, onTooltip);
         this.values = values;
         if (previous != null) {
             this.index = previous.index;

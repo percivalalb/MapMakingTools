@@ -296,6 +296,12 @@ public class ItemEditorScreen extends Screen {
             this.renderTooltip(stackIn, this.stack, mouseX, mouseY);
         }
 
+        for (Widget widget : this.buttons) {
+            if (widget.visible && widget.isHovered()) {
+                widget.renderToolTip(stackIn, mouseX, mouseY);
+            }
+        }
+
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
     }

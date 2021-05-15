@@ -12,6 +12,7 @@ import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
@@ -20,7 +21,11 @@ public class SmallToggleButton<T> extends ToggleButton<T> {
     private Function<T, ITextComponent> displayFunc;
 
     public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, ITextComponent> displayFunc, @Nullable ToggleButton<T> previous, IPressable onPress) {
-        super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY, values, previous, onPress);
+        this(xIn, yIn, widthIn, heightIn, values, displayFunc, previous, onPress, Button.EMPTY_TOOLTIP);
+    }
+
+    public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, ITextComponent> displayFunc, @Nullable ToggleButton<T> previous, IPressable onPress, Button.ITooltip onTooltip) {
+        super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY, values, previous, onPress, onTooltip);
         this.displayFunc = displayFunc;
     }
 
@@ -43,6 +48,7 @@ public class SmallToggleButton<T> extends ToggleButton<T> {
         this.renderBg(stackIn, minecraft, mouseX, mouseY);
         int j = getFGColor();
         AbstractGui.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+        RenderSystem.enableDepthTest();
     }
 
     @Override
