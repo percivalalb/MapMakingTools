@@ -59,7 +59,7 @@ public class ArmorColorAttribute extends IItemAttribute {
             private Button removeBtn;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.colorPicker = new ColorPickerWidget(x + 3, y + 15, width - 106, height - 20, this.colorPicker);
 
                 this.setBtn = new Button(x + width - 100, y + 70, 40, 20, new StringTextComponent("Set"), (btn) -> {
@@ -95,7 +95,13 @@ public class ArmorColorAttribute extends IItemAttribute {
 
             @Override
             public boolean requiresUpdate(ItemStack newStack, ItemStack oldStack) {
-                return true; // TODO
+                Item newItem = newStack.getItem();
+                Item oldItem = oldStack.getItem();
+                if (newItem instanceof IDyeableArmorItem && oldItem instanceof IDyeableArmorItem) {
+                    return ((IDyeableArmorItem) newItem).getColor(newStack) != ((IDyeableArmorItem) oldItem).getColor(oldStack);
+                }
+
+                return false;
             }
         };
     }
