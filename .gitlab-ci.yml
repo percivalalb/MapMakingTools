@@ -16,6 +16,7 @@ build:
     when: 'always'
     paths:
       - .gradle/
+      - build/fg_cache/
   script:
     - ./gradlew build
   artifacts:
@@ -31,6 +32,7 @@ publish:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
       - .gradle/
+      - build/fg_cache/
     policy: pull
   script:
     - './gradlew curseforge'
