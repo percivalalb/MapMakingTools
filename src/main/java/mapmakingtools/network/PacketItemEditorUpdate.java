@@ -46,11 +46,10 @@ public class PacketItemEditorUpdate {
                     throw new IllegalAccessException("The feature is not enabled.");
                 }
 
-                stack = msg.attributeManager.read(stack, msg.data);
                 stack = msg.attributeManager.read(stack, msg.data, player);
                 player.inventory.setInventorySlotContents(msg.slotIndex, stack);
             } catch (Exception e) {
-                MapMakingTools.LOGGER.warn("Failed to edit item: {}", e.getMessage());
+                MapMakingTools.LOGGER.warn("Failed to edit item", e);
             } finally {
                 msg.data.clear(); // clears data to free memory
             }
