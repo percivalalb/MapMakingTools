@@ -8,6 +8,7 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath 'org.ajoberstar.grgit:grgit-gradle:4.1.0'
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
+        classpath "gradle.plugin.se.bjurr.gitchangelog:git-changelog-gradle-plugin:1.66"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -15,6 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'org.ajoberstar.grgit'
+apply plugin: 'se.bjurr.gitchangelog.git-changelog-gradle-plugin'
 apply plugin: 'com.matthewprenger.cursegradle'
 
 def branch = grgit.branch.current()
@@ -173,11 +175,22 @@ jar {
     }
 }
 
+task makeChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+    file = file("$buildDir/changelog.html")
+    untaggedName = "Current release ${project.version}"
+    fromCommit = 'd43c7a6c50572d1f8088158a70b45a2ee9dde0a2'
+    toRef = 'HEAD'
+
+    templateContent = file('changelog.mustache').getText('UTF-8')
+}
+
+
 curseforge {
     apiKey = findProperty('curseforge_api_key') ?: 0
     project {
         id = project.curseforge_project_id
-        changelog = 'Changelog inprogress...'
+        changelog = file("build/changelog.html")
+        changelogType = 'html'
         releaseType = 'beta'
         for (String v : project.additional_mc_versions.split(',')) {
             addGameVersion v
@@ -187,6 +200,12 @@ curseforge {
     options {
         debug = !(System.getenv('CI') && !version.endsWith('SNAPSHOT'))
     }
+}
+
+// Must be done in afterEvaluate as the specific curseforge$id
+// task is generated lazily
+afterEvaluate {
+    tasks.named("curseforge${project.curseforge_project_id}").get().dependsOn makeChangelog
 }
 
 tasks.register('generateGBLangFile') {
