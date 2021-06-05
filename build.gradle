@@ -171,6 +171,9 @@ curseforge {
         id = project.curseforge_project_id
         changelog = 'Changelog inprogress...'
         releaseType = findProperty("curseforge_release_type") ?: 'alpha'
+        for (String v : project.additional_mc_versions.split(',')) {
+            addGameVersion v
+        }
         addArtifact apiJar
     }
 }
