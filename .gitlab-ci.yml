@@ -13,6 +13,7 @@ build:
   stage: build
   cache:
     key: "$CI_COMMIT_REF_SLUG"
+    when: 'always'
     paths:
       - .gradle/
   script:
