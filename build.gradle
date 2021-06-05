@@ -185,8 +185,7 @@ curseforge {
         addArtifact apiJar
     }
     options {
-//        debug = !(System.getenv('CI') && !version.endsWith('SNAPSHOT'))
-        debug = true
+        debug = !(System.getenv('CI') && !version.endsWith('SNAPSHOT'))
     }
 }
 
