@@ -189,7 +189,7 @@ curseforge {
     apiKey = findProperty('curseforge_api_key') ?: 0
     project {
         id = project.curseforge_project_id
-        changelog = file("build/changelog.html")
+        changelog = file("$buildDir/changelog.html")
         changelogType = 'html'
         releaseType = 'beta'
         for (String v : project.additional_mc_versions.split(',')) {
