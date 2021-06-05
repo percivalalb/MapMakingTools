@@ -211,4 +211,13 @@ tasks.register('generateGBLangFile') {
     }
 }
 processResources.finalizedBy(generateGBLangFile)
+
+if (project.hasProperty('UPDATE_MAPPINGS')) {
+   extractRangeMap {
+     sources sourceSets.api.java.srcDirs
+   }
+   applyRangeMap {
+     sources sourceSets.api.java.srcDirs
+   }
+   sourceSets.api.java.srcDirs.each { extractMappedNew.addTarget it }
  }
