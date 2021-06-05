@@ -37,7 +37,7 @@ public class BookDetailsAttribute extends IItemAttribute {
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, PacketBuffer buffer, PlayerEntity player) {
         switch(buffer.readByte()) {
         case 0:
             NBTUtil.getOrCreateTag(stack).putString("title", buffer.readString(128));
@@ -92,16 +92,16 @@ public class BookDetailsAttribute extends IItemAttribute {
             private Button convertBackBtn;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.bookNameInput = WidgetFactory.getTextField(screen, x + 2, y + 28, 80, 13, this.bookNameInput, () -> NBTUtil.hasTag(stack, "title", Constants.NBT.TAG_STRING) ? stack.getTag().getString("title") : "");
+            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
+                this.bookNameInput = WidgetFactory.getTextField(screen, x + 2, y + 28, 80, 13, this.bookNameInput, () -> NBTUtil.hasTag(stack.get(), "title", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("title") : "");
                 this.bookNameInput.setMaxStringLength(128);
                 this.bookNameInput.setResponder(BufferFactory.createString(0, update));
 
-                this.authorInput = WidgetFactory.getTextField(screen, x + 86, y + 28, 80, 13, this.authorInput, () -> NBTUtil.hasTag(stack, "author", Constants.NBT.TAG_STRING) ? stack.getTag().getString("author") : "");
+                this.authorInput = WidgetFactory.getTextField(screen, x + 86, y + 28, 80, 13, this.authorInput, () -> NBTUtil.hasTag(stack.get(), "author", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("author") : "");
                 this.authorInput.setMaxStringLength(128);
                 this.authorInput.setResponder(BufferFactory.createString(1, update));
 
-                this.generationInput = WidgetFactory.getTextField(screen, x + 170, y + 28, 80, 13, this.generationInput, () -> NBTUtil.hasTag(stack, "generation", Constants.NBT.TAG_ANY_NUMERIC) ? stack.getTag().getInt("generation") : 0);
+                this.generationInput = WidgetFactory.getTextField(screen, x + 170, y + 28, 80, 13, this.generationInput, () -> NBTUtil.hasTag(stack.get(), "generation", Constants.NBT.TAG_ANY_NUMERIC) ? stack.get().getTag().getInt("generation") : 0);
                 this.generationInput.setMaxStringLength(1);
                 this.generationInput.setResponder(BufferFactory.createInteger(2, Strings::isNullOrEmpty, update));
                 this.generationInput.setValidator(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
