@@ -17,7 +17,10 @@ apply plugin: 'com.matthewprenger.cursegradle'
 
 version = project.output_version
 group = 'com.github.percivalalb' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'MapMakingTools-1.16.5'
+archivesBaseName = "MapMakingTools-${project.target_mc_version}"
+
+println "Version: ${version}"
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
@@ -54,7 +57,7 @@ configurations {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: project.mcp_mappings
+    mappings channel: project.mcp_channel, version: project.mcp_mappings
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -122,7 +125,27 @@ artifacts {
     archives apiJar
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
+task replaceResources(type: Copy) {
+    outputs.upToDateWhen { false }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand([
+            'version': project.version,
+            'minecraft_version_range': project.minecraft_version_range,
+            'forge_version_range': project.forge_version_range,
+            'fml_version_range': project.fml_version_range,
+        ])
+    }
+    into "$buildDir/resources/main/"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+    finalizedBy replaceResources
+}
+
 jar {
     from sourceSets.main.output.classesDirs
     from sourceSets.api.output.classesDirs

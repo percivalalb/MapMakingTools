@@ -1,20 +1,26 @@
 modLoader="javafml"
-loaderVersion="[32,)"
+loaderVersion="${fml_version_range}"
 license="GNU GPLv3"
 issueTrackerURL="https://github.com/percivalalb/MapMakingTools/issues"
 displayURL="https://minecraft.curseforge.com/projects/map-making-tools/"
 logoFile="mmt_logo.png"
-[[mods]] #mandatory
+[[mods]]
     modId="mapmakingtools"
-    version="${file.jarVersion}"
+    version="${version}"
     updateJSONURL="https://raw.githubusercontent.com/percivalalb/MapMakingTools/1.16.x/version.json"
     displayName="Map Making Tools"
     credits="percivalalb"
     authors="percivalalb"
     description='''Map Making Tools'''
-[[dependencies.mapmakingtools]] #optional
+[[dependencies.doggytalents]]
     modId="forge"
     mandatory=true
-    versionRange="[32.0.108,)" #mandatory
+    versionRange="${forge_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.doggytalents]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
