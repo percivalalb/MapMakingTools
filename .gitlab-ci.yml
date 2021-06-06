@@ -37,7 +37,7 @@ build_on_old_versions:
     - ./gradlew build -Pforge_version=1.16.2-33.0.61 -Pjei_version=1.16.3:7.6.0.51
     - ./gradlew build -Pforge_version=1.16.3-34.1.42 -Pjei_version=1.16.3:7.6.0.51
     - ./gradlew build -Pforge_version=1.16.4-35.1.37 -Pjei_version=1.16.4:7.6.1.74
-    - ./gradlew build -Pforge_version=1.16.5-36.1.0 -Pjei_version=1.16.3:7.7.0.104
+    - ./gradlew build -Pforge_version=1.16.5-36.1.0
   after_script:
     - git checkout .
 
