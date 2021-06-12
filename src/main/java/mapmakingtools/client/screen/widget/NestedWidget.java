@@ -1,15 +1,13 @@
 package mapmakingtools.client.screen.widget;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.INestedGuiEventHandler;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.text.ITextComponent;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class NestedWidget extends Widget implements INestedGuiEventHandler {
 

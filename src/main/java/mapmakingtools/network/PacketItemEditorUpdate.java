@@ -1,7 +1,5 @@
 package mapmakingtools.network;
 
-import java.util.function.Supplier;
-
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.Registries;
@@ -9,6 +7,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class PacketItemEditorUpdate {
 

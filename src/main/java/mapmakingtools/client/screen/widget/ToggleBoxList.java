@@ -1,17 +1,15 @@
 package mapmakingtools.client.screen.widget;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import net.minecraft.state.Property;
+import net.minecraft.tags.Tag;
+
+import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import net.minecraft.state.Property;
-import net.minecraft.tags.Tag;
 
 public class ToggleBoxList<T> extends ScrollPane {
 

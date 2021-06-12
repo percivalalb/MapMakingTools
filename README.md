@@ -1,7 +1,7 @@
-MapMakingTools
+Map Making Tools [![Curseforge](https://cf.way2muchnoise.eu/versions/For%20MC_map-making-tools_all.svg)](https://minecraft.curseforge.com/projects/map-making-tools)
 ==============
 
-Custom adventure maps just became a hell of alot easier!
+Custom adventure maps just became a lot easier!
 
 Short list of included features...
   

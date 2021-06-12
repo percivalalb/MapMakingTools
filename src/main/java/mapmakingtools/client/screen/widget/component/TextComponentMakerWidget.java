@@ -1,21 +1,7 @@
 package mapmakingtools.client.screen.widget.component;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import mapmakingtools.client.screen.widget.NestedWidget;
 import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.ComponentPart;
@@ -30,6 +16,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class TextComponentMakerWidget extends NestedWidget {
 

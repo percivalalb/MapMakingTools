@@ -95,5 +95,29 @@
    "attribute.name.minecraft.generic.armor.horse.bonus": "Horse Bonus Armor",
    "attribute.name.minecraft.horse.jump_strength": "Horse Jump Strength",
    "attribute.name.minecraft.zombie.spawn_reinforcements": "Zombie Spawn Reinforcements",
-   "attribute.name.minecraft.generic.movement_speed.zombie.baby": "Zombie Baby Speed Bonus"
+   "attribute.name.minecraft.generic.movement_speed.zombie.baby": "Zombie Baby Speed Bonus",
+
+   "world_editor.mapmakingtools.selection.none": "Nothing Selected",
+   "world_editor.mapmakingtools.selection.describe": "Selection Size: %d * %d * %d = %d",
+
+   "item.mapmakingtools.wrench.quick_build": "Wrench\/Quick Build",
+   "item.mapmakingtools.wrench.block_edit": "Wrench\/Block Edit",
+   "item.mapmakingtools.wrench.entity_edit": "Wrench\/Entity Edit",
+   "item.mapmakingtools.wrench.in_development": "This feature is current in development so is not usable, it is only here to tease you!",
+   "item.mapmakingtools.wrench.quick_build.word.primary": "primary",
+   "item.mapmakingtools.wrench.quick_build.word.secondary": "secondary",
+   "item.mapmakingtools.wrench.quick_build.desc.1": "Left Click: Sets %s position",
+   "item.mapmakingtools.wrench.quick_build.desc.2": "Right Click: Sets %s position",
+   "item.mapmakingtools.wrench.quick_build.desc.3": "Then use commands to alter selected area...",
+   "item.mapmakingtools.wrench.block_edit.desc.1": "Right Click: Rotates blocks 90\u00B0",
+   "item.mapmakingtools.wrench.block_edit.desc.2": "Right Click + shifting: Rotates blocks -90\u00B0",
+   "item.mapmakingtools.wrench.block_edit.desc.3": "",
+   "mtt.wrench.mode.name": "Wrench ()",
+   "command.mapmakingtools.undo.none": "There is nothing to undo.",
+   "command.mapmakingtools.undo.success": "%s block(s) have been undone.",
+   "command.mapmakingtools.redo.none": "There is nothing to redo.",
+   "command.mapmakingtools.redo.success": "%s block(s) have been redone.",
+   "command.mapmakingtools.set.success": "%s blocks(s) have been set.",
+
+   "argument.biome.id.invalid": ""
 }

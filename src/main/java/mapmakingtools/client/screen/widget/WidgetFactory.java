@@ -1,16 +1,15 @@
 package mapmakingtools.client.screen.widget;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import mapmakingtools.client.screen.widget.AbstractTickButton.IPressable;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.ITextComponent;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public class WidgetFactory {
 

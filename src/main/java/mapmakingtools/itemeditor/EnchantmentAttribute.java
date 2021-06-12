@@ -1,14 +1,7 @@
 package mapmakingtools.itemeditor;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
@@ -31,6 +24,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class EnchantmentAttribute extends IItemAttribute {
 

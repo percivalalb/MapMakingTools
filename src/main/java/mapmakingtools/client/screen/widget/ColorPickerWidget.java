@@ -1,14 +1,7 @@
 package mapmakingtools.client.screen.widget;
 
-import java.util.Arrays;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import mapmakingtools.util.TextUtil;
 import mapmakingtools.util.Util;
 import net.minecraft.client.Minecraft;
@@ -21,6 +14,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
 
 public class ColorPickerWidget extends NestedWidget {
 

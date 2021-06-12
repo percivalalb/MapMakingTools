@@ -1,13 +1,12 @@
 package mapmakingtools.client.screen.widget;
 
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import mapmakingtools.util.Util;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.lang3.ArrayUtils;
+
+import javax.annotation.Nullable;
 
 public class ToggleButton<T> extends Button {
 

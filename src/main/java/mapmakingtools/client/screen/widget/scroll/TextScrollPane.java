@@ -1,15 +1,13 @@
 package mapmakingtools.client.screen.widget.scroll;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import mapmakingtools.client.screen.widget.ScrollPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.ITextComponent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class TextScrollPane extends ScrollPane {

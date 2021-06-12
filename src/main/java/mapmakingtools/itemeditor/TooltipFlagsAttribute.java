@@ -1,12 +1,6 @@
 package mapmakingtools.itemeditor;
 
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.TickButton;
@@ -23,6 +17,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class TooltipFlagsAttribute extends IItemAttribute {
 

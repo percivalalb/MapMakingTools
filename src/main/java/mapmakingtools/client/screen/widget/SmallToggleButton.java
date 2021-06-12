@@ -1,13 +1,8 @@
 package mapmakingtools.client.screen.widget;
 
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -15,6 +10,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 public class SmallToggleButton<T> extends ToggleButton<T> {
 

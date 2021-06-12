@@ -1,11 +1,11 @@
 package mapmakingtools.client.screen.widget;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 public class AbstractTickButton extends AbstractButton {
 

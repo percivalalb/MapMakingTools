@@ -1,11 +1,6 @@
 package mapmakingtools;
 
-import java.util.HashMap;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Maps;
-
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.api.itemeditor.Registries;
@@ -16,6 +11,9 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryInternal;
 import net.minecraftforge.registries.RegistryManager;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
 
 public class MMTRegistries {
 

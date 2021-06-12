@@ -1,18 +1,16 @@
 package mapmakingtools.client.screen.widget;
 
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import mapmakingtools.lib.Resources;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.ITextComponent;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ToggleBoxWidget<T> extends AbstractTickButton {
 

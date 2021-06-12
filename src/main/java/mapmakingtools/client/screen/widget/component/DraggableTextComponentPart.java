@@ -1,23 +1,11 @@
 package mapmakingtools.client.screen.widget.component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
-import org.lwjgl.opengl.GL11;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.client.screen.widget.ToggleButton;
 import mapmakingtools.client.screen.widget.WidgetUtil;
@@ -39,6 +27,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.lwjgl.opengl.GL11;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 
 public abstract class DraggableTextComponentPart extends Widget {
 

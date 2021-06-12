@@ -1,15 +1,7 @@
 package mapmakingtools.util;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-
 import com.google.common.base.Strings;
-
 import io.netty.buffer.Unpooled;
-import mapmakingtools.api.util.IFeatureState;
 import mapmakingtools.lib.Constants;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -19,6 +11,11 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class Util {
 

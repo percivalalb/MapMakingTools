@@ -1,32 +1,15 @@
 package mapmakingtools.client.screen;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import mapmakingtools.api.util.IFeatureState;
-import mapmakingtools.api.util.State;
-import net.minecraft.util.text.*;
-import net.minecraftforge.registries.IRegistryDelegate;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import mapmakingtools.MMTRegistries;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.api.itemeditor.Registries;
+import mapmakingtools.api.util.IFeatureState;
+import mapmakingtools.api.util.State;
 import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.network.PacketItemEditorUpdate;
@@ -38,6 +21,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.registries.IRegistryDelegate;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 public class ItemEditorScreen extends Screen {
 
@@ -271,12 +268,9 @@ public class ItemEditorScreen extends Screen {
         RenderSystem.pushMatrix();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableRescaleNormal();
-        int k = 240;
-        int l = 240;
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.setBlitOffset(100);
         this.itemRenderer.zLevel = 100.0F;
 
         RenderSystem.enableDepthTest();
@@ -284,7 +278,6 @@ public class ItemEditorScreen extends Screen {
         this.itemRenderer.renderItemOverlayIntoGUI(this.font, this.stack, 23, 23, null);
 
         this.itemRenderer.zLevel = 0.0F;
-        this.setBlitOffset(0);
         // Draw item tooltip and shade slot if mouse is above
         if (Util.isPointInRegion(23, 23, 16, 16, mouseX, mouseY)) {
             RenderSystem.disableDepthTest();
@@ -318,6 +311,7 @@ public class ItemEditorScreen extends Screen {
 
     // TODO Check if it was removed in 1.16
 //    @Override
+
 //    public void removed() {
 //        //TODO Maybe use this over onClose
 //    }
