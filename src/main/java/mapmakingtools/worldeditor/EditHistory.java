@@ -57,7 +57,6 @@ public class EditHistory {
     }
 
     public static EditHistory read(CompoundNBT nbt) {
-        MapMakingTools.LOGGER.info(nbt);
         EditHistory selection = new EditHistory();
         if (nbt.contains("history", Constants.NBT.TAG_LIST)) {
             ListNBT historyList = nbt.getList("history", Constants.NBT.TAG_COMPOUND);
@@ -69,10 +68,9 @@ public class EditHistory {
 
         if (nbt.contains("future", Constants.NBT.TAG_LIST)) {
             ListNBT futureList = nbt.getList("future", Constants.NBT.TAG_COMPOUND);
-            MapMakingTools.LOGGER.info(futureList);
+
             for (int i = Math.max(0, futureList.size() - MAX_UNDO_HISTORY_SIZE); i < futureList.size(); i++) {
                 CompoundNBT cacheNBT = futureList.getCompound(i);
-                MapMakingTools.LOGGER.info(cacheNBT);
                 selection.historyForwards.add(CachedCuboidArea.read(cacheNBT));
             }
         }
