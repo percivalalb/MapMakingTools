@@ -46,16 +46,16 @@ public class StackSizeAttribute extends IItemAttribute {
             @Override
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.stackSizeInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.stackSizeInput, stack::getCount);
-                this.stackSizeInput.setMaxStringLength(6);
+                this.stackSizeInput.setMaxLength(6);
                 this.stackSizeInput.setResponder(BufferFactory.createInteger(0, Strings::isNullOrEmpty, update));
-                this.stackSizeInput.setValidator(Util.BYTE_INPUT_PREDICATE);
+                this.stackSizeInput.setFilter(Util.BYTE_INPUT_PREDICATE);
 
                 add.accept(this.stackSizeInput);
             }
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                if (!Strings.isNullOrEmpty(this.stackSizeInput.getText())) {
+                if (!Strings.isNullOrEmpty(this.stackSizeInput.getValue())) {
                     WidgetUtil.setTextQuietly(this.stackSizeInput, String.valueOf(stack.getCount()));
                 }
             }

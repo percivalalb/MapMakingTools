@@ -14,12 +14,14 @@ import net.minecraft.util.text.ITextComponent;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 public class SmallToggleButton<T> extends ToggleButton<T> {
 
     private Function<T, ITextComponent> displayFunc;
 
     public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, ITextComponent> displayFunc, @Nullable ToggleButton<T> previous, IPressable onPress) {
-        this(xIn, yIn, widthIn, heightIn, values, displayFunc, previous, onPress, Button.EMPTY_TOOLTIP);
+        this(xIn, yIn, widthIn, heightIn, values, displayFunc, previous, onPress, Button.NO_TOOLTIP);
     }
 
     public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, ITextComponent> displayFunc, @Nullable ToggleButton<T> previous, IPressable onPress, Button.ITooltip onTooltip) {
@@ -28,10 +30,10 @@ public class SmallToggleButton<T> extends ToggleButton<T> {
     }
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
+        FontRenderer fontrenderer = minecraft.font;
+        minecraft.getTextureManager().bind(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());
         RenderSystem.enableBlend();

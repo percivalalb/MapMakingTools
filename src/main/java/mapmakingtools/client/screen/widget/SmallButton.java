@@ -9,10 +9,12 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 public class SmallButton extends Button {
 
     public SmallButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, IPressable onPress) {
-        this(xIn, yIn, widthIn, heightIn, title, onPress, Button.EMPTY_TOOLTIP);
+        this(xIn, yIn, widthIn, heightIn, title, onPress, Button.NO_TOOLTIP);
     }
 
     public SmallButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, IPressable onPress, Button.ITooltip onTooltip) {
@@ -20,10 +22,10 @@ public class SmallButton extends Button {
     }
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
+        FontRenderer fontrenderer = minecraft.font;
+        minecraft.getTextureManager().bind(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());
         RenderSystem.enableBlend();

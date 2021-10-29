@@ -26,10 +26,12 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class WrenchItem extends Item {
 
     public WrenchItem() {
-        super(new Properties().isImmuneToFire().setNoRepair());
+        super(new Properties().fireResistant().setNoRepair());
     }
 
     @Override
@@ -41,25 +43,25 @@ public class WrenchItem extends Item {
 
         switch (mode) {
             case BLOCK_EDIT:
-                BlockState state = context.getWorld().getBlockState(context.getPos());
-                TileEntity tileEntity = context.getWorld().getTileEntity(context.getPos());
-                if (state.getBlock().matchesBlock(Blocks.SNOW)) {
-                    int i = state.get(SnowBlock.LAYERS);
-                    BlockState rotState = state.with(SnowBlock.LAYERS, context.getPlayer().isSneaking() ? ((i + 6) % 8) + 1 : i % 8 + 1);
-                    if (!context.getWorld().isRemote) {
-                        context.getWorld().setBlockState(context.getPos(), rotState, Constants.BlockFlags.DEFAULT);
+                BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+                TileEntity tileEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+                if (state.getBlock().is(Blocks.SNOW)) {
+                    int i = state.getValue(SnowBlock.LAYERS);
+                    BlockState rotState = state.setValue(SnowBlock.LAYERS, context.getPlayer().isShiftKeyDown() ? ((i + 6) % 8) + 1 : i % 8 + 1);
+                    if (!context.getLevel().isClientSide) {
+                        context.getLevel().setBlock(context.getClickedPos(), rotState, Constants.BlockFlags.DEFAULT);
                     }
 
                     return ActionResultType.SUCCESS;
                 }
 
-                BlockState rotState = context.getPlayer().isSneaking()
+                BlockState rotState = context.getPlayer().isShiftKeyDown()
                         ? state.mirror(Mirror.FRONT_BACK)
-                        : state.rotate(context.getWorld(), context.getPos(), Rotation.CLOCKWISE_90);
+                        : state.rotate(context.getLevel(), context.getClickedPos(), Rotation.CLOCKWISE_90);
 
                 if (!rotState.equals(state)) {
-                    if (!context.getWorld().isRemote) {
-                        context.getWorld().setBlockState(context.getPos(), rotState, Constants.BlockFlags.DEFAULT);
+                    if (!context.getLevel().isClientSide) {
+                        context.getLevel().setBlock(context.getClickedPos(), rotState, Constants.BlockFlags.DEFAULT);
                     }
 
                     return ActionResultType.SUCCESS;
@@ -67,13 +69,13 @@ public class WrenchItem extends Item {
 
                 return ActionResultType.FAIL;
             case QUICK_BUILD:
-                if (!context.getWorld().isRemote) {
-                    BlockPos pos = context.getPos();
-                    if (context.getPlayer().isSneaking()) {
-                        pos = pos.offset(context.getFace());
+                if (!context.getLevel().isClientSide) {
+                    BlockPos pos = context.getClickedPos();
+                    if (context.getPlayer().isShiftKeyDown()) {
+                        pos = pos.relative(context.getClickedFace());
                     }
 
-                    SelectionManager selManager = DimensionData.get(context.getWorld()).getSelectionManager();
+                    SelectionManager selManager = DimensionData.get(context.getLevel()).getSelectionManager();
                     if (selManager.setSecondary(context.getPlayer(), pos)) {
                         selManager.sync(context.getPlayer());
                     }
@@ -94,12 +96,12 @@ public class WrenchItem extends Item {
         }
 
         if (mode == Mode.QUICK_BUILD) {
-            if (!player.getEntityWorld().isRemote) {
-                if (player.isSneaking()) {
-                    pos = pos.offset(face);
+            if (!player.getCommandSenderWorld().isClientSide) {
+                if (player.isShiftKeyDown()) {
+                    pos = pos.relative(face);
                 }
 
-                SelectionManager selManager = DimensionData.get(player.getEntityWorld()).getSelectionManager();
+                SelectionManager selManager = DimensionData.get(player.getCommandSenderWorld()).getSelectionManager();
                 if (selManager.setPrimary(player, pos)) {
                     selManager.sync(player);
                 }
@@ -113,29 +115,29 @@ public class WrenchItem extends Item {
 
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public ITextComponent getName(ItemStack stack) {
         Mode mode = this.getMode(stack);
-        IFormattableTextComponent label = new TranslationTextComponent(this.getTranslationKey(stack));
+        IFormattableTextComponent label = new TranslationTextComponent(this.getDescriptionId(stack));
         if (mode.getFeatureState() != State.RELEASE) {
-            label = label.appendSibling(new StringTextComponent(" ("+mode.getFeatureState().letter+")").mergeStyle(TextFormatting.RED));
+            label = label.append(new StringTextComponent(" ("+mode.getFeatureState().letter+")").withStyle(TextFormatting.RED));
         }
         return label;
     }
 
     @Override
-    public String getTranslationKey(ItemStack stack) {
-        return this.getTranslationKey() + '.' + this.getMode(stack).getModeName();
+    public String getDescriptionId(ItemStack stack) {
+        return this.getDescriptionId() + '.' + this.getMode(stack).getModeName();
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         Mode mode = this.getMode(stack);
         if (!mode.canUse()) {
-            tooltip.add(new TranslationTextComponent("item.mapmakingtools.wrench.in_development").mergeStyle(TextFormatting.ITALIC));
+            tooltip.add(new TranslationTextComponent("item.mapmakingtools.wrench.in_development").withStyle(TextFormatting.ITALIC));
         } else {
-            tooltip.add(new TranslationTextComponent(this.getTranslationKey(stack) + ".desc.1", new TranslationTextComponent(this.getTranslationKey(stack) + ".word.primary").mergeStyle(TextFormatting.YELLOW)));
-            tooltip.add(new TranslationTextComponent(this.getTranslationKey(stack) + ".desc.2", new TranslationTextComponent(this.getTranslationKey(stack) + ".word.secondary").mergeStyle(TextFormatting.AQUA)));
-            tooltip.add(new TranslationTextComponent(this.getTranslationKey(stack) + ".desc.3"));
+            tooltip.add(new TranslationTextComponent(this.getDescriptionId(stack) + ".desc.1", new TranslationTextComponent(this.getDescriptionId(stack) + ".word.primary").withStyle(TextFormatting.YELLOW)));
+            tooltip.add(new TranslationTextComponent(this.getDescriptionId(stack) + ".desc.2", new TranslationTextComponent(this.getDescriptionId(stack) + ".word.secondary").withStyle(TextFormatting.AQUA)));
+            tooltip.add(new TranslationTextComponent(this.getDescriptionId(stack) + ".desc.3"));
         }
     }
 

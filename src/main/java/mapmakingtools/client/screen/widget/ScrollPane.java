@@ -47,13 +47,13 @@ public class ScrollPane extends Widget {
     }
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        double scale = minecraft.getMainWindow().getGuiScaleFactor();
+        FontRenderer fontrenderer = minecraft.font;
+        double scale = minecraft.getWindow().getGuiScale();
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor((int)(this.x * scale), (int)((minecraft.getMainWindow().getScaledHeight() - this.height - this.y) * scale),
+        GL11.glScissor((int)(this.x * scale), (int)((minecraft.getWindow().getGuiScaledHeight() - this.height - this.y) * scale),
                 (int)(this.width * scale), (int)(this.height * scale));
 
         RenderSystem.translated(0, this.scrollOffset, 0);

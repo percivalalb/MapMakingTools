@@ -30,7 +30,7 @@ public class PacketWrenchMode {
     public static void handle(final PacketWrenchMode msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             PlayerEntity player = ctx.get().getSender();
-            ItemStack stack = player.inventory.getStackInSlot(msg.slotIdx).copy();
+            ItemStack stack = player.inventory.getItem(msg.slotIdx).copy();
 
             WrenchItem.Mode mode = WrenchItem.getMode(stack);
             WrenchItem.Mode tmp;
@@ -42,7 +42,7 @@ public class PacketWrenchMode {
                 }
             }
             stack.getOrCreateTag().putString("mode", mode.getModeName());
-            player.inventory.setInventorySlotContents(msg.slotIdx, stack);
+            player.inventory.setItem(msg.slotIdx, stack);
         });
 
         ctx.get().setPacketHandled(true);

@@ -20,18 +20,18 @@ public class MazeAction implements Action {
 
     @Override
     public ICachedArea doAction(PlayerEntity player, ISelection selection, CachedBlock input) {
-        World world = player.getEntityWorld();
+        World world = player.getCommandSenderWorld();
 
         ICachedArea cachedArea = CachedCuboidArea.from(world, selection);
 
-        Iterable<BlockPos> positions = BlockPos.getAllInBoxMutable(selection.getPrimaryPoint(), selection.getSecondaryPoint());
+        Iterable<BlockPos> positions = BlockPos.betweenClosed(selection.getPrimaryPoint(), selection.getSecondaryPoint());
 
         Map<BlockPos, Integer> groups = new HashMap<>();
         int group = 0;
         for (BlockPos pos : positions) {
             if ((pos.getX() - selection.getMinX()) % 2 == 1 && (pos.getZ() - selection.getMinZ()) % 2 == 1 && pos.getX() != selection.getMaxX() && pos.getZ() != selection.getMaxZ()) {
-                IClearable.clearObj(world.getTileEntity(pos));
-                world.setBlockState(pos, Blocks.AIR.getDefaultState(), Constants.BlockFlags.BLOCK_UPDATE);
+                IClearable.tryClear(world.getBlockEntity(pos));
+                world.setBlock(pos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
                 groups.put(new BlockPos(pos.getX(), 0, pos.getZ()), group);
                 group += 1;
             }
@@ -47,7 +47,7 @@ public class MazeAction implements Action {
         while (true) {
 
             BlockPos[] keys = groups.keySet().toArray(new BlockPos[groups.size()]);
-            BlockPos intersectionPos = keys[world.rand.nextInt(groups.size())];
+            BlockPos intersectionPos = keys[world.random.nextInt(groups.size())];
             int thisId = groups.get(intersectionPos);
 
             // Checks if all groups are the same - all pathways are connected
@@ -63,13 +63,13 @@ public class MazeAction implements Action {
                 break;
             }
 
-            Direction dir = Direction.byHorizontalIndex(world.rand.nextInt(4));
-            BlockPos.Mutable posHere = intersectionPos.toMutable().move(0, selection.getMinY(), 0).move(dir, 1);
-            if (world.isAirBlock(posHere)) {
+            Direction dir = Direction.from2DDataValue(world.random.nextInt(4));
+            BlockPos.Mutable posHere = intersectionPos.mutable().move(0, selection.getMinY(), 0).move(dir, 1);
+            if (world.isEmptyBlock(posHere)) {
                 continue;
             }
 
-            BlockPos nextIntersectionPos = intersectionPos.offset(dir, 2);
+            BlockPos nextIntersectionPos = intersectionPos.relative(dir, 2);
 
             // Spot it wants to connect to doesn't exist
             if (!groups.containsKey(nextIntersectionPos)) {
@@ -91,8 +91,8 @@ public class MazeAction implements Action {
 
             // Clear pathway
             for (int y = selection.getMinY(); y <= selection.getMaxY(); y++) {
-                IClearable.clearObj(world.getTileEntity(posHere));
-                world.setBlockState(posHere, Blocks.AIR.getDefaultState(), Constants.BlockFlags.BLOCK_UPDATE);
+                IClearable.tryClear(world.getBlockEntity(posHere));
+                world.setBlock(posHere, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
                 posHere.move(0, 1, 0);
             }
         }

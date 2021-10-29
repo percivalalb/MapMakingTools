@@ -68,7 +68,7 @@ public class ItemEditorScreen extends Screen {
     @Override
     public void init() {
         super.init();
-        this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         this.guiX = 150;
         this.guiY = 13;
         this.guiWidth = this.width - this.guiX - 13;
@@ -112,14 +112,14 @@ public class ItemEditorScreen extends Screen {
 
     @Override
     public void tick() {
-        long systemTimeMillis = net.minecraft.util.Util.milliTime();
+        long systemTimeMillis = net.minecraft.util.Util.getMillis();
 
         ItemEditorScreen.current.ifPresent(p -> {
             p.getRight().tick(this, systemTimeMillis, this::sendItemUpdate);
         });
 
-        ItemStack playersStack = this.player.inventory.getStackInSlot(this.slotIndex);
-        if (!ItemStack.areItemStacksEqual(playersStack, this.stack)) {
+        ItemStack playersStack = this.player.inventory.getItem(this.slotIndex);
+        if (!ItemStack.matches(playersStack, this.stack)) {
             this.requiresUpdate = ItemEditorScreen.current.isPresent() ? this.current.get().getRight().requiresUpdate(playersStack, this.stack) : false;
             this.stack = playersStack.copy();
             for (Entry<IRegistryDelegate<IItemAttribute>, Widget> attributeBtns : this.attributeTabWidgets.entrySet()) {
@@ -153,11 +153,11 @@ public class ItemEditorScreen extends Screen {
             int original = this.slotIndex;
 
             do {
-                int direction = MathHelper.signum(amount);
-                this.slotIndex += direction + this.player.inventory.getSizeInventory();
-                this.slotIndex %= this.player.inventory.getSizeInventory();
+                int direction = MathHelper.sign(amount);
+                this.slotIndex += direction + this.player.inventory.getContainerSize();
+                this.slotIndex %= this.player.inventory.getContainerSize();
 
-                ItemStack stack = this.player.inventory.getStackInSlot(this.slotIndex);
+                ItemStack stack = this.player.inventory.getItem(this.slotIndex);
                 if (!stack.isEmpty()) {
                     break;
                 }
@@ -198,7 +198,7 @@ public class ItemEditorScreen extends Screen {
     }
 
     public void pauseStackUpdatesFor(int millis) {
-        this.blockUpdateTill = Math.max(net.minecraft.util.Util.milliTime() + millis, this.blockUpdateTill);
+        this.blockUpdateTill = Math.max(net.minecraft.util.Util.getMillis() + millis, this.blockUpdateTill);
     }
 
     public void recalculatePage(int perPage, boolean findPage) {
@@ -228,7 +228,7 @@ public class ItemEditorScreen extends Screen {
 
             IFormattableTextComponent label = new TranslationTextComponent(attribute.get().getTranslationKey());
             if (attribute.get().getFeatureState() != State.RELEASE) {
-                label = label.appendSibling(new StringTextComponent(" ("+attribute.get().getFeatureState().letter+")").mergeStyle(TextFormatting.RED));
+                label = label.append(new StringTextComponent(" ("+attribute.get().getFeatureState().letter+")").withStyle(TextFormatting.RED));
             }
 
             Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, label, (btn) -> {
@@ -246,19 +246,19 @@ public class ItemEditorScreen extends Screen {
     @Override
     public void render(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stackIn);
-        this.minecraft.getTextureManager().bindTexture(Resources.ITEM_EDITOR_SLOT);
+        this.minecraft.getTextureManager().bind(Resources.ITEM_EDITOR_SLOT);
         this.blit(stackIn, 13, 13, 0, 0, 35, 35);
         RenderSystem.pushMatrix();
         RenderSystem.translatef(23, 16, 0);
         RenderSystem.scalef(0.48F, 0.48F, 0.48F);
-        this.minecraft.fontRenderer.drawString(stackIn, "Slot: " + this.slotIndex, 0, 0, 0);
+        this.minecraft.font.draw(stackIn, "Slot: " + this.slotIndex, 0, 0, 0);
         RenderSystem.popMatrix();
 
         Screen.fill(stackIn, this.guiX, this.guiY, this.guiX + this.guiWidth, this.guiY + this.guiHeight, ItemEditorScreen.attributeBackgroundColour);
 
         ItemEditorScreen.current.ifPresent(p -> {
             if (p.getRight().shouldRenderTitle(this, this.stack)) {
-                this.minecraft.fontRenderer.drawText(stackIn, new TranslationTextComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
+                this.minecraft.font.draw(stackIn, new TranslationTextComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
             }
             p.getRight().render(stackIn, this, this.guiX, this.guiY, this.guiWidth, this.guiHeight);
         });
@@ -271,13 +271,13 @@ public class ItemEditorScreen extends Screen {
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.itemRenderer.zLevel = 100.0F;
+        this.itemRenderer.blitOffset = 100.0F;
 
         RenderSystem.enableDepthTest();
-        this.itemRenderer.renderItemAndEffectIntoGUI(this.minecraft.player, this.stack, 23, 23);
-        this.itemRenderer.renderItemOverlayIntoGUI(this.font, this.stack, 23, 23, null);
+        this.itemRenderer.renderAndDecorateItem(this.minecraft.player, this.stack, 23, 23);
+        this.itemRenderer.renderGuiItemDecorations(this.font, this.stack, 23, 23, null);
 
-        this.itemRenderer.zLevel = 0.0F;
+        this.itemRenderer.blitOffset = 0.0F;
         // Draw item tooltip and shade slot if mouse is above
         if (Util.isPointInRegion(23, 23, 16, 16, mouseX, mouseY)) {
             RenderSystem.disableDepthTest();
@@ -300,9 +300,9 @@ public class ItemEditorScreen extends Screen {
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        super.removed();
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 
         ItemEditorScreen.current.ifPresent(p -> {
             p.getRight().clear(this);
@@ -336,12 +336,12 @@ public class ItemEditorScreen extends Screen {
     private void drawItemStack(ItemStack stack, int x, int y) {
         RenderSystem.translatef(0.0F, 0.0F, 32.0F);
         this.setBlitOffset(200);
-        this.itemRenderer.zLevel = 200.0F;
+        this.itemRenderer.blitOffset = 200.0F;
         net.minecraft.client.gui.FontRenderer font = stack.getItem().getFontRenderer(stack);
         if (font == null) font = this.font;
-        this.itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
-        this.itemRenderer.renderItemOverlayIntoGUI(font, stack, x, y, null);
+        this.itemRenderer.renderAndDecorateItem(stack, x, y);
+        this.itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
         this.setBlitOffset(0);
-        this.itemRenderer.zLevel = 0.0F;
+        this.itemRenderer.blitOffset = 0.0F;
     }
 }

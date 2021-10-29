@@ -40,13 +40,13 @@ public class KeyboardInput {
     }
 
     public static KeyBinding create(String name, String key) {
-        KeyBinding keyBinding = new KeyBinding("mapmakingtools.keybind." + name, (key == null ? InputMappings.INPUT_INVALID : InputMappings.getInputByName("key.keyboard." + key)).getKeyCode(), "mapmakingtools.key.category");
+        KeyBinding keyBinding = new KeyBinding("mapmakingtools.keybind." + name, (key == null ? InputMappings.UNKNOWN : InputMappings.getKey("key.keyboard." + key)).getValue(), "mapmakingtools.key.category");
         ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }
 
     public static void onKeyPressed(final KeyboardKeyPressedEvent.Pre event) {
-        if (KEY_ITEM_EDITOR == null || event.getKeyCode() != KEY_ITEM_EDITOR.getKey().getKeyCode()) {
+        if (KEY_ITEM_EDITOR == null || event.getKeyCode() != KEY_ITEM_EDITOR.getKey().getValue()) {
             return;
         }
 
@@ -56,12 +56,12 @@ public class KeyboardInput {
             ContainerScreen<?> containerScreen = (ContainerScreen<?>) event.getGui();
 
             Optional<Slot> hoveredSlot = Optional.ofNullable(containerScreen.getSlotUnderMouse())
-                    .filter(s -> s.inventory instanceof PlayerInventory)
-                    .filter(Slot::isEnabled)
-                    .filter(Slot::getHasStack);
+                    .filter(s -> s.container instanceof PlayerInventory)
+                    .filter(Slot::isActive)
+                    .filter(Slot::hasItem);
 
             hoveredSlot.ifPresent(slot -> {
-               containerScreen.getMinecraft().displayGuiScreen(new ItemEditorScreen(containerScreen.getMinecraft().player, slot.getSlotIndex(), slot.getStack()));
+               containerScreen.getMinecraft().setScreen(new ItemEditorScreen(containerScreen.getMinecraft().player, slot.getSlotIndex(), slot.getItem()));
                event.setCanceled(true);
             });
         }
@@ -72,14 +72,14 @@ public class KeyboardInput {
             ContainerScreen<?> containerScreen = (ContainerScreen<?>) event.getGui();
 
             Optional<Slot> hoveredSlot = Optional.ofNullable(containerScreen.getSlotUnderMouse())
-                    .filter(s -> s.inventory instanceof PlayerInventory)
-                    .filter(Slot::isEnabled)
-                    .filter(Slot::getHasStack);
+                    .filter(s -> s.container instanceof PlayerInventory)
+                    .filter(Slot::isActive)
+                    .filter(Slot::hasItem);
 
             hoveredSlot.ifPresent(slot -> {
                 Minecraft mc = Minecraft.getInstance();
 
-                if (FeatureAvailability.canEdit(mc.player) && slot.getStack().getItem() == MapMakingTools.WRENCH) {
+                if (FeatureAvailability.canEdit(mc.player) && slot.getItem().getItem() == MapMakingTools.WRENCH) {
                     MapMakingTools.HANDLER.sendToServer(new PacketWrenchMode(slot.getSlotIndex(), Math.signum(event.getScrollDelta()) == 1));
                     event.setCanceled(true);
                 }
@@ -88,13 +88,13 @@ public class KeyboardInput {
     }
 
     public static void onKeyReleased(final InputEvent.KeyInputEvent event) {
-        if (KEY_ITEM_EDITOR == null || event.getKey() != KEY_ITEM_EDITOR.getKey().getKeyCode()) {
+        if (KEY_ITEM_EDITOR == null || event.getKey() != KEY_ITEM_EDITOR.getKey().getValue()) {
             return;
         }
 
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.currentScreen == null && FeatureAvailability.canEdit(mc.player) && mc.player.getHeldItemMainhand().getItem() == MapMakingTools.WRENCH) {
+        if (mc.screen == null && FeatureAvailability.canEdit(mc.player) && mc.player.getMainHandItem().getItem() == MapMakingTools.WRENCH) {
             if (event.getAction() == 1) {
                 if (lastPressed == null || lastPressed + 500 < System.currentTimeMillis()) {
                     lastPressed = System.currentTimeMillis();

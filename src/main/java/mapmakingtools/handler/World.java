@@ -25,7 +25,7 @@ public class World {
     }
 
     public static void onJoinWorld(final EntityJoinWorldEvent e) {
-        if (e.getWorld().isRemote) {
+        if (e.getWorld().isClientSide) {
             return;
         }
 
@@ -48,6 +48,6 @@ public class World {
     }
 
     public static void changeDimension(final PlayerEvent.PlayerChangedDimensionEvent e) {
-        DimensionData.get(e.getEntity().getEntityWorld().getServer().getWorld(e.getTo())).getSelectionManager().sync(e.getPlayer());
+        DimensionData.get(e.getEntity().getCommandSenderWorld().getServer().getLevel(e.getTo())).getSelectionManager().sync(e.getPlayer());
     }
 }

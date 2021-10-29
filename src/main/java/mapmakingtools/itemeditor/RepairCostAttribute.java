@@ -55,19 +55,19 @@ public class RepairCostAttribute extends IItemAttribute {
 
             @Override
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.repairCostInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.repairCostInput, stack::getRepairCost);
+                this.repairCostInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.repairCostInput, stack::getBaseRepairCost);
 
-                this.repairCostInput.setMaxStringLength(3);
+                this.repairCostInput.setMaxLength(3);
                 this.repairCostInput.setResponder(BufferFactory.createInteger(0, Util.IS_NULL_OR_EMPTY.or(""::equals), update));
-                this.repairCostInput.setValidator(Util.NUMBER_INPUT_PREDICATE);
+                this.repairCostInput.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
                 add.accept(this.repairCostInput);
             }
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                if (!Strings.isNullOrEmpty(this.repairCostInput.getText())) {
-                    WidgetUtil.setTextQuietly(this.repairCostInput, String.valueOf(stack.getRepairCost()));
+                if (!Strings.isNullOrEmpty(this.repairCostInput.getValue())) {
+                    WidgetUtil.setTextQuietly(this.repairCostInput, String.valueOf(stack.getBaseRepairCost()));
                 }
             }
 
@@ -78,7 +78,7 @@ public class RepairCostAttribute extends IItemAttribute {
 
             @Override
             public boolean requiresUpdate(ItemStack newStack, ItemStack oldStack) {
-                return newStack.getRepairCost() != oldStack.getRepairCost();
+                return newStack.getBaseRepairCost() != oldStack.getBaseRepairCost();
             }
         };
     }

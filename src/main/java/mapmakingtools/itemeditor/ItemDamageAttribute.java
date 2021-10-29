@@ -27,7 +27,7 @@ public class ItemDamageAttribute extends IItemAttribute {
 
     @Override
     public boolean isApplicable(PlayerEntity player, Item item) {
-        return item.isDamageable();
+        return item.canBeDepleted();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ItemDamageAttribute extends IItemAttribute {
                 NBTUtil.removeTagIfEmpty(stack);
             }
             else {
-                stack.setDamage(damage);
+                stack.setDamageValue(damage);
             }
 
             return stack;
@@ -70,11 +70,11 @@ public class ItemDamageAttribute extends IItemAttribute {
 
             @Override
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
-                this.damageInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.damageInput, () -> stack.get().getDamage());
+                this.damageInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.damageInput, () -> stack.get().getDamageValue());
 
-                this.damageInput.setMaxStringLength(3);
+                this.damageInput.setMaxLength(3);
                 this.damageInput.setResponder(BufferFactory.createInteger(0, Util.IS_NULL_OR_EMPTY.or(""::equals), update));
-                this.damageInput.setValidator(Util.NUMBER_INPUT_PREDICATE);
+                this.damageInput.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
                 this.unbreakableBtn = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslationTextComponent(getTranslationKey("button.toggle.unbreakable")), BufferFactory.ping(1, update));
 
@@ -84,8 +84,8 @@ public class ItemDamageAttribute extends IItemAttribute {
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                if (!Strings.isNullOrEmpty(this.damageInput.getText())) {
-                    WidgetUtil.setTextQuietly(this.damageInput, String.valueOf(stack.getDamage()));
+                if (!Strings.isNullOrEmpty(this.damageInput.getValue())) {
+                    WidgetUtil.setTextQuietly(this.damageInput, String.valueOf(stack.getDamageValue()));
                 }
 
                 //this.unbreakableBtn.active = NBTUtil.hasTag(stack, "Unbreakable", Constants.NBT.TAG_BYTE) && stack.getTag().getBoolean("Unbreakable");
@@ -99,7 +99,7 @@ public class ItemDamageAttribute extends IItemAttribute {
 
             @Override
             public boolean requiresUpdate(ItemStack newStack, ItemStack oldStack) {
-                return newStack.getRepairCost() != oldStack.getRepairCost();
+                return newStack.getBaseRepairCost() != oldStack.getBaseRepairCost();
             }
         };
     }

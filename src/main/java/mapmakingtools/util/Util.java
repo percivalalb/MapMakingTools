@@ -79,7 +79,7 @@ public class Util {
 
     public static Direction[] HORIZONTAL_DIRECTIONS = net.minecraft.util.Util.make(() -> Arrays.stream(Direction.values()).filter((dir) -> {
         return dir.getAxis().isHorizontal();
-    }).sorted(Comparator.comparingInt(Direction::getHorizontalIndex)).toArray(Direction[]::new));
+    }).sorted(Comparator.comparingInt(Direction::get2DDataValue)).toArray(Direction[]::new));
 
     public static ResourceLocation getResource(String name) {
         return new ResourceLocation(Constants.MOD_ID, name);

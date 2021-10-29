@@ -39,7 +39,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
     public ItemStack read(ItemStack stack, PacketBuffer buffer) {
         switch(buffer.readByte()) {
         case 0:
-            this.setPlayerName(stack, buffer.readString(128));
+            this.setPlayerName(stack, buffer.readUtf(128));
             return stack;
         case 1:
             this.setPlayerName(stack, null);
@@ -86,9 +86,9 @@ public class PlayerHeadAttribute extends IItemAttribute {
             @Override
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.nameInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.nameInput, () -> getSkullName(stack));
-                this.nameInput.setMaxStringLength(128);
+                this.nameInput.setMaxLength(128);
                 this.nameInput.setResponder(str -> {
-                    this.triggerAfter = net.minecraft.util.Util.milliTime() + 750L;
+                    this.triggerAfter = net.minecraft.util.Util.getMillis() + 750L;
                 });
 
                 this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
@@ -108,7 +108,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
                 this.nameExists.ifPresent(b -> {
                     String text = b ? "text.player.exists" : "text.player.exists.not";
                     int colour = b ? 65025 : 16581375;
-                    screen.getMinecraft().fontRenderer.drawText(stackIn, new TranslationTextComponent(getTranslationKey(text)), x + 2, y + 30, colour);
+                    screen.getMinecraft().font.draw(stackIn, new TranslationTextComponent(getTranslationKey(text)), x + 2, y + 30, colour);
                 });
             }
 
@@ -118,7 +118,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
                     this.nameRemoval.active = true;
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
-                    buf.writeString(this.nameInput.getText(), 128);
+                    buf.writeUtf(this.nameInput.getValue(), 128);
                     update.accept(buf);
                     this.triggerAfter = -1;
                 }

@@ -31,7 +31,7 @@ public class CachedCuboidArea implements ICachedArea {
     public CachedCuboidArea(IWorldReader worldIn, BlockPos pos1, BlockPos pos2) {
         this(pos1, pos2);
         int i = 0;
-        for (BlockPos pos : BlockPos.getAllInBoxMutable(pos1, pos2)) {
+        for (BlockPos pos : BlockPos.betweenClosed(pos1, pos2)) {
             this.blocks[i++] = CachedBlock.from(worldIn, pos);
         }
     }
@@ -40,7 +40,7 @@ public class CachedCuboidArea implements ICachedArea {
     public void restore(World world) {
         int i = 0;
         // Assumes that getAllInBoxMutable generates BlockPos
-        for (BlockPos pos : BlockPos.getAllInBoxMutable(this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.pos.getX() + this.width - 1, this.pos.getY()  + this.height - 1, this.pos.getZ() + this.depth - 1)) {
+        for (BlockPos pos : BlockPos.betweenClosed(this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.pos.getX() + this.width - 1, this.pos.getY()  + this.height - 1, this.pos.getZ() + this.depth - 1)) {
             this.blocks[i++].place(world, pos);
         }
     }
@@ -60,8 +60,8 @@ public class CachedCuboidArea implements ICachedArea {
             // TODO Throw
         }
 
-        BlockPos pos = BlockPos.fromLong(nbt.getLong("base_pos"));
-        BlockPos otherPos = BlockPos.fromLong(nbt.getLong("other_pos"));
+        BlockPos pos = BlockPos.of(nbt.getLong("base_pos"));
+        BlockPos otherPos = BlockPos.of(nbt.getLong("other_pos"));
         CachedCuboidArea area = new CachedCuboidArea(pos, otherPos);
         ListNBT blockList = nbt.getList("blocks", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < blockList.size(); i++) {
@@ -72,8 +72,8 @@ public class CachedCuboidArea implements ICachedArea {
     }
 
     public CompoundNBT write(CompoundNBT nbt) {
-        nbt.putLong("base_pos", this.pos.toLong());
-        nbt.putLong("other_pos", BlockPos.pack(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
+        nbt.putLong("base_pos", this.pos.asLong());
+        nbt.putLong("other_pos", BlockPos.asLong(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
         ListNBT blockList = new ListNBT();
         for (int i = 0; i < this.blocks.length; i++) {
             blockList.add(this.blocks[i].write(new CompoundNBT()));

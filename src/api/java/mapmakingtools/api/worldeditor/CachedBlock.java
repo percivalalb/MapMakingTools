@@ -24,17 +24,17 @@ public class CachedBlock {
 
     public void place(World world, BlockPos pos) {
         // Clear the last tile entity
-        IClearable.clearObj(world.getTileEntity(pos));
+        IClearable.tryClear(world.getBlockEntity(pos));
 
-        if (world.setBlockState(pos, this.state, Constants.BlockFlags.BLOCK_UPDATE)) {
+        if (world.setBlock(pos, this.state, Constants.BlockFlags.BLOCK_UPDATE)) {
             if (this.tag != null) {
-                TileEntity tileentity = world.getTileEntity(pos);
+                TileEntity tileentity = world.getBlockEntity(pos);
                 if (tileentity != null) {
                     CompoundNBT compoundnbt = this.tag.copy();
                     compoundnbt.putInt("x", pos.getX());
                     compoundnbt.putInt("y", pos.getY());
                     compoundnbt.putInt("z", pos.getZ());
-                    tileentity.read(this.state, compoundnbt);
+                    tileentity.load(this.state, compoundnbt);
                 }
             }
         }
@@ -61,8 +61,8 @@ public class CachedBlock {
 
     public static CachedBlock from(IWorldReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        TileEntity tileEntity = world.getTileEntity(pos);
-        CompoundNBT nbt = tileEntity != null ? tileEntity.write(new CompoundNBT()) : null;
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        CompoundNBT nbt = tileEntity != null ? tileEntity.save(new CompoundNBT()) : null;
         return new CachedBlock(state, nbt);
     }
 }

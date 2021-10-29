@@ -17,12 +17,12 @@ public class PacketUpdateLastCommand {
     public static void encode(PacketUpdateLastCommand msg, PacketBuffer buf) {
         buf.writeBoolean(msg.lastCommand != null);
         if (msg.lastCommand != null) {
-            buf.writeString(msg.lastCommand, 256);
+            buf.writeUtf(msg.lastCommand, 256);
         }
     }
 
     public static PacketUpdateLastCommand decode(PacketBuffer buf) {
-        return new PacketUpdateLastCommand(buf.readBoolean() ? buf.readString(256) : null);
+        return new PacketUpdateLastCommand(buf.readBoolean() ? buf.readUtf(256) : null);
     }
 
     public static void handle(final PacketUpdateLastCommand msg, Supplier<NetworkEvent.Context> ctx) {

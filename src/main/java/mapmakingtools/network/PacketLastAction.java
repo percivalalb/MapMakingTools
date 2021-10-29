@@ -31,14 +31,14 @@ public class PacketLastAction {
                 return;
             }
 
-            CommandTracker tracker = WorldData.get(player.getEntityWorld()).getCommandTracker();
+            CommandTracker tracker = WorldData.get(player.getCommandSenderWorld()).getCommandTracker();
             String lastCommand = tracker.getLastCommand(player);
 
             if (lastCommand == null) {
                 return;
             }
 
-            player.getServer().getCommandManager().handleCommand(player.getCommandSource(), lastCommand);
+            player.getServer().getCommands().performCommand(player.createCommandSourceStack(), lastCommand);
         });
 
         ctx.get().setPacketHandled(true);

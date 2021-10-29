@@ -21,21 +21,21 @@ public class RedoCommand {
 
     public static void register(final CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
-                literal("/redo").requires(s -> s.hasPermissionLevel(2)).executes(c -> doCommand(c)));
+                literal("/redo").requires(s -> s.hasPermission(2)).executes(c -> doCommand(c)));
     }
 
     public static int doCommand(final CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         CommandSource source = ctx.getSource();
-        ServerPlayerEntity player = source.asPlayer();
-        EditHistory editHistory = DimensionData.get(player.getEntityWorld()).getEditHistoryManager().get(player);
+        ServerPlayerEntity player = source.getPlayerOrException();
+        EditHistory editHistory = DimensionData.get(player.getCommandSenderWorld()).getEditHistoryManager().get(player);
 
         ICachedArea area;
-        if ((area = editHistory.redo(player.getEntityWorld())) == null) {
-            source.sendErrorMessage(new TranslationTextComponent("command.mapmakingtools.redo.none"));
+        if ((area = editHistory.redo(player.getCommandSenderWorld())) == null) {
+            source.sendFailure(new TranslationTextComponent("command.mapmakingtools.redo.none"));
             return 0;
         }
 
-        source.sendFeedback(new TranslationTextComponent("command.mapmakingtools.redo.success", area.getSize()), true);
+        source.sendSuccess(new TranslationTextComponent("command.mapmakingtools.redo.success", area.getSize()), true);
         return 1;
     }
 }

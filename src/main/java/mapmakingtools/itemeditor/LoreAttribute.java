@@ -40,11 +40,11 @@ public class LoreAttribute extends IItemAttribute {
     public ItemStack read(ItemStack stack, PacketBuffer buffer) {
         switch(buffer.readByte()) {
         case 0:
-            CompoundNBT display = stack.getOrCreateChildTag("display");
+            CompoundNBT display = stack.getOrCreateTagElement("display");
             ListNBT list = new ListNBT();
             int size = buffer.readInt();
             for (int i = 0; i < size; i++) {
-                list.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(buffer.readString(256)))));
+                list.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(buffer.readUtf(256)))));
             }
 
             display.put("Lore", list);
@@ -135,13 +135,13 @@ public class LoreAttribute extends IItemAttribute {
                 List<String> lines = Lists.newArrayList();
                 for (TextFieldWidget field : this.lineInput) {
                     if (field.visible) {
-                        lines.add(field.getText());
+                        lines.add(field.getValue());
                     } else {
                         break;
                     }
                 }
                 buf.writeInt(lines.size());
-                lines.forEach((l) -> buf.writeString(l, 256));
+                lines.forEach((l) -> buf.writeUtf(l, 256));
 
                 update.accept(buf);
             }
@@ -157,8 +157,8 @@ public class LoreAttribute extends IItemAttribute {
                         Button removeBtn = this.removeInput.get(i);
 
                         if (i < list.size()) {
-                            ITextComponent text = ITextComponent.Serializer.getComponentFromJson(list.getString(i));
-                            WidgetUtil.setTextQuietly(textWidget,  text == null ? "" : text.getUnformattedComponentText());
+                            ITextComponent text = ITextComponent.Serializer.fromJson(list.getString(i));
+                            WidgetUtil.setTextQuietly(textWidget,  text == null ? "" : text.getContents());
                             textWidget.visible = true;
                             removeBtn.visible = true;
                         } else {

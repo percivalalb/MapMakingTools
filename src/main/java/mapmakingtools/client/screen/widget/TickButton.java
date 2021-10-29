@@ -20,10 +20,10 @@ public class TickButton extends AbstractTickButton {
     }
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        minecraft.getTextureManager().bindTexture(BEACON_GUI_TEXTURES);
+        FontRenderer fontrenderer = minecraft.font;
+        minecraft.getTextureManager().bind(BEACON_GUI_TEXTURES);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());
         RenderSystem.enableBlend();

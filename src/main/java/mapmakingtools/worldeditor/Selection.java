@@ -64,7 +64,7 @@ public class Selection implements ISelection {
 
     private static void putBlockPos(CompoundNBT nbt, String key, @Nullable BlockPos pos) {
         if (pos != null) {
-            nbt.putLong(key, pos.toLong());
+            nbt.putLong(key, pos.asLong());
         }
     }
 
@@ -74,7 +74,7 @@ public class Selection implements ISelection {
             return null;
         }
 
-        return BlockPos.fromLong(nbt.getLong(key));
+        return BlockPos.of(nbt.getLong(key));
     }
 
     private static void writeBlockPos(PacketBuffer buf, @Nullable BlockPos pos) {

@@ -67,8 +67,8 @@ public class ModifiersAttribute extends IItemAttribute {
             this.convertModifiersToNBT(stack, player);
             Modifier modifier = MODIFIERS[buffer.readInt()];
             double value = buffer.readDouble();
-            AttributeModifier.Operation op = AttributeModifier.Operation.byId(buffer.readInt());
-            EquipmentSlotType equipmentType = EquipmentSlotType.fromString(buffer.readString(64));
+            AttributeModifier.Operation op = AttributeModifier.Operation.fromValue(buffer.readInt());
+            EquipmentSlotType equipmentType = EquipmentSlotType.byName(buffer.readUtf(64));
 
             value /= op != AttributeModifier.Operation.ADDITION ? 100 : 1;
 
@@ -81,8 +81,8 @@ public class ModifiersAttribute extends IItemAttribute {
             this.convertModifiersToNBT(stack, player);
 
             Modifier modifier2 = MODIFIERS[buffer.readInt()];
-            AttributeModifier.Operation op2 = AttributeModifier.Operation.byId(buffer.readInt());
-            EquipmentSlotType equipmentType2 = EquipmentSlotType.fromString(buffer.readString(64));
+            AttributeModifier.Operation op2 = AttributeModifier.Operation.fromValue(buffer.readInt());
+            EquipmentSlotType equipmentType2 = EquipmentSlotType.byName(buffer.readUtf(64));
 
             this.removeSimilarModifier(stack, modifier2, op2, equipmentType2);
             return stack;
@@ -108,11 +108,11 @@ public class ModifiersAttribute extends IItemAttribute {
 
             for (int k = 0; k < nbttaglist.size(); k++) {
                 CompoundNBT compound = nbttaglist.getCompound(k);
-                Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.tryCreate(compound.getString("AttributeName")));
-                boolean correctOp = compound.getInt("Operation") == op.getId();
+                Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.tryParse(compound.getString("AttributeName")));
+                boolean correctOp = compound.getInt("Operation") == op.toValue();
                 boolean correctSlot = !compound.contains("Slot", Constants.NBT.TAG_STRING)
                         || compound.getString("Slot").equals(slotType.getName());
-                boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, compound.getUniqueId("UUID"));
+                boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, compound.getUUID("UUID"));
 
                 if (attr != null && attr.delegate.equals(modifier.attribute.get().delegate) && correctSlot && correctOp && correctUUID) {
                     nbttaglist.remove(k);
@@ -135,14 +135,14 @@ public class ModifiersAttribute extends IItemAttribute {
                      // The damage a player can deal is not just based
                      if (player != null) {
                          double bonus = 0D;
-                         if (entry.getValue().getID() == Item.ATTACK_DAMAGE_MODIFIER) {
-                             bonus += player.getBaseAttributeValue(Attributes.ATTACK_DAMAGE);
-                             bonus += EnchantmentHelper.getModifierForCreature(stack, CreatureAttribute.UNDEFINED);
-                         } else if (entry.getValue().getID() == Item.ATTACK_SPEED_MODIFIER) {
-                             bonus += player.getBaseAttributeValue(Attributes.ATTACK_SPEED);
+                         if (entry.getValue().getId() == Item.BASE_ATTACK_DAMAGE_UUID) {
+                             bonus += player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+                             bonus += EnchantmentHelper.getDamageBonus(stack, CreatureAttribute.UNDEFINED);
+                         } else if (entry.getValue().getId() == Item.BASE_ATTACK_SPEED_UUID) {
+                             bonus += player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
                          }
 
-                         modifier = new AttributeModifier(modifier.getID(), modifier.getName(), modifier.getAmount() + bonus, modifier.getOperation());
+                         modifier = new AttributeModifier(modifier.getId(), modifier.getName(), modifier.getAmount() + bonus, modifier.getOperation());
                      }
 
                      stack.addAttributeModifier(entry.getKey(), modifier, equipmentSlot);
@@ -179,25 +179,25 @@ public class ModifiersAttribute extends IItemAttribute {
                     }, (_button, matrixStack, mouseX, mouseY) -> {
                         ToggleButton<AttributeModifier.Operation> button = (ToggleButton<AttributeModifier.Operation>) _button;
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, screen.getMinecraft().fontRenderer.trimStringToWidth(new TranslationTextComponent("item_editor.mapmakingtools.modifiers.button.op." + button.getValue().name().toLowerCase(Locale.ROOT)).mergeStyle(TextFormatting.ITALIC), Math.max(screen.width / 2 - 43, 170)), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, screen.getMinecraft().font.split(new TranslationTextComponent("item_editor.mapmakingtools.modifiers.button.op." + button.getValue().name().toLowerCase(Locale.ROOT)).withStyle(TextFormatting.ITALIC), Math.max(screen.width / 2 - 43, 170)), mouseX, mouseY);
                         }
                     });
 
                     TextFieldWidget inputWidget = WidgetFactory.getTextField(screen, x + 122, y + 39 + i * 17, inputSize, 14, null, () -> "");
-                    inputWidget.setValidator(Util.NUMBER_INPUT_PREDICATE);
+                    inputWidget.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
 
                     Button addBtn = new SmallButton(x + 155 + inputSize, y + 38 + i * 17, 16, 16, new StringTextComponent("+"), (btn) -> {
-                        if (Strings.isNullOrEmpty(inputWidget.getText()) || "-".equals(inputWidget.getText())) {
+                        if (Strings.isNullOrEmpty(inputWidget.getValue()) || "-".equals(inputWidget.getValue())) {
                             return;
                         }
 
                         PacketBuffer buf = Util.createBuf();
                         buf.writeByte(0);
                         buf.writeInt(index);
-                        buf.writeDouble(Double.valueOf(inputWidget.getText()));
-                        buf.writeInt(opBtn.getValue().getId());
-                        buf.writeString(this.btn_slot.getValue().getName(), 64);
+                        buf.writeDouble(Double.valueOf(inputWidget.getValue()));
+                        buf.writeInt(opBtn.getValue().toValue());
+                        buf.writeUtf(this.btn_slot.getValue().getName(), 64);
                         update.accept(buf);
                     }, (button, matrixStack, mouseX, mouseY) -> {
                         if (button.active) {
@@ -209,8 +209,8 @@ public class ModifiersAttribute extends IItemAttribute {
                         PacketBuffer buf = Util.createBuf();
                         buf.writeByte(1);
                         buf.writeInt(index);
-                        buf.writeInt(opBtn.getValue().getId());
-                        buf.writeString(this.btn_slot.getValue().getName(), 64);
+                        buf.writeInt(opBtn.getValue().toValue());
+                        buf.writeUtf(this.btn_slot.getValue().getName(), 64);
                         update.accept(buf);
                     }, (button, matrixStack, mouseX, mouseY) -> {
                         if (button.active) {
@@ -245,12 +245,12 @@ public class ModifiersAttribute extends IItemAttribute {
 
             @Override
             public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().fontRenderer;
+                FontRenderer font = screen.getMinecraft().font;
                 //font.drawString(stackIn, "OP", x + 130 + MathHelper.clamp(width - 200, 40, 100), y + 25, 16777120);
                 for (int i = 0; i < MODIFIERS.length; i++) {
                     Attribute attr = MODIFIERS[i].attribute.get();
                     String translationKey = "attribute.name." + attr.getRegistryName().getNamespace() + '.' + attr.getRegistryName().getPath() + (MODIFIERS[i].modifierId != null ? '.' + MODIFIERS[i].modifierId : "");
-                    font.drawText(stackIn, I18n.hasKey(translationKey) ? new TranslationTextComponent(translationKey) : new StringTextComponent(MODIFIERS[i].attribute.get().getAttributeName()), x + 6, y + 42 + i * 17, 16777120);
+                    font.draw(stackIn, I18n.exists(translationKey) ? new TranslationTextComponent(translationKey) : new StringTextComponent(MODIFIERS[i].attribute.get().getDescriptionId()), x + 6, y + 42 + i * 17, 16777120);
                 }
             }
 
@@ -266,24 +266,24 @@ public class ModifiersAttribute extends IItemAttribute {
                         AttributeModifier attributemodifier = entry.getValue();
 
                         boolean correctOp = attributemodifier.getOperation() == this.opBtnList.get(i).getValue();
-                        boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, attributemodifier.getID());
+                        boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, attributemodifier.getId());
 
                         if (key.delegate.equals(modifier.attribute.get().delegate) && correctOp && correctUUID) {
                             this.addBtnList.get(i).setMessage(new StringTextComponent("#"));
 
                             double amount = attributemodifier.getAmount();
 
-                            if (attributemodifier.getID() == Item.ATTACK_DAMAGE_MODIFIER) {
-                                amount += screen.getMinecraft().player.getBaseAttributeValue(Attributes.ATTACK_DAMAGE);
-                                amount += EnchantmentHelper.getModifierForCreature(stack, CreatureAttribute.UNDEFINED);
-                            } else if (attributemodifier.getID() == Item.ATTACK_SPEED_MODIFIER) {
-                                amount += screen.getMinecraft().player.getBaseAttributeValue(Attributes.ATTACK_SPEED);
+                            if (attributemodifier.getId() == Item.BASE_ATTACK_DAMAGE_UUID) {
+                                amount += screen.getMinecraft().player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+                                amount += EnchantmentHelper.getDamageBonus(stack, CreatureAttribute.UNDEFINED);
+                            } else if (attributemodifier.getId() == Item.BASE_ATTACK_SPEED_UUID) {
+                                amount += screen.getMinecraft().player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
                             }
 
                             int scale = attributemodifier.getOperation() != AttributeModifier.Operation.ADDITION ? 100 : key.equals(Attributes.KNOCKBACK_RESISTANCE) ? 10 : 1;
                             amount *= scale;
 
-                            this.valueInputList.get(i).setText(Util.tryToWriteAsInt(amount));
+                            this.valueInputList.get(i).setValue(Util.tryToWriteAsInt(amount));
                             this.opBtnList.get(i).setValue(attributemodifier.getOperation());
                             this.removeBtnList.get(i).visible = true;
                             continue MODIFIER;
@@ -293,7 +293,7 @@ public class ModifiersAttribute extends IItemAttribute {
                     // Only run if no modifier is found
                     this.addBtnList.get(i).setMessage(new StringTextComponent("+"));
 
-                    this.valueInputList.get(i).setText("");
+                    this.valueInputList.get(i).setValue("");
                     //this.opBtnList.get(i).setValue(AttributeModifier.Operation.ADDITION);
                     this.removeBtnList.get(i).visible = false;
                 }
@@ -343,19 +343,19 @@ public class ModifiersAttribute extends IItemAttribute {
     private Modifier KNOCKBACK_RESISTANCE = new Modifier(Attributes.KNOCKBACK_RESISTANCE.delegate, "Knockback Resistance");
     private Modifier MAX_HEALTH = new Modifier(Attributes.MAX_HEALTH.delegate, "Max Health");
     private Modifier MOVEMENT_SPEED = new Modifier(Attributes.MOVEMENT_SPEED.delegate, "Movement Speed"); // MULT_PERCENTAGE_OPERATION
-    private Modifier SPRINTING_SPEED_BOOST = new Modifier(LivingEntity.SPRINTING_SPEED_BOOST_ID, Attributes.MOVEMENT_SPEED.delegate, "Sprinting speed boost", "sprinting"); //MULTIPLY_TOTAL
+    private Modifier SPRINTING_SPEED_BOOST = new Modifier(LivingEntity.SPEED_MODIFIER_SPRINTING_UUID, Attributes.MOVEMENT_SPEED.delegate, "Sprinting speed boost", "sprinting"); //MULTIPLY_TOTAL
     private Modifier FLYING_SPEED = new Modifier(Attributes.FLYING_SPEED.delegate, "Flying Speed"); // MULT_PERCENTAGE_OPERATION
     private Modifier FOLLOW_RANGE = new Modifier(Attributes.FOLLOW_RANGE.delegate, "Follow Range"); // MULT_PERCENTAGE_OPERATION
     private Modifier ARMOR = new Modifier(Attributes.ARMOR.delegate, "Armor modifier");
     private Modifier ARMOR_TOUGHNESS = new Modifier(Attributes.ARMOR_TOUGHNESS.delegate, "Armor toughness");
-    private Modifier SPAWN_REINFORCEMENTS = new Modifier(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS.delegate, "Spawn Reinforcements Chance");
-    private Modifier BABY_SPEED_BOOST = new Modifier(ZombieEntity.BABY_SPEED_BOOST_ID, Attributes.MOVEMENT_SPEED.delegate, "Baby speed boost", "zombie.baby");
-    private Modifier HORSE_JUMP_STRENGTH = new Modifier(Attributes.HORSE_JUMP_STRENGTH.delegate, "Jump Strength");
+    private Modifier SPAWN_REINFORCEMENTS = new Modifier(Attributes.SPAWN_REINFORCEMENTS_CHANCE.delegate, "Spawn Reinforcements Chance");
+    private Modifier BABY_SPEED_BOOST = new Modifier(ZombieEntity.SPEED_MODIFIER_BABY_UUID, Attributes.MOVEMENT_SPEED.delegate, "Baby speed boost", "zombie.baby");
+    private Modifier HORSE_JUMP_STRENGTH = new Modifier(Attributes.JUMP_STRENGTH.delegate, "Jump Strength");
     private Modifier HORSE_ARMOR = new Modifier(HorseEntity.ARMOR_MODIFIER_UUID, Attributes.ARMOR.delegate, "Horse armor bonus", "horse.bonus");
 
     // Potion Luck Modifier
-    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), Attributes.LUCK.delegate, Effects.LUCK.getName(), null);
-    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), Attributes.LUCK.delegate, Effects.UNLUCK.getName(), "un");
+    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), Attributes.LUCK.delegate, Effects.LUCK.getDescriptionId(), null);
+    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), Attributes.LUCK.delegate, Effects.UNLUCK.getDescriptionId(), "un");
 
     // Forge Modifiers
     private Modifier SLOW_FALLING = new Modifier(UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA"), ForgeMod.ENTITY_GRAVITY, "Slow falling acceleration reduction", "slow.falling");

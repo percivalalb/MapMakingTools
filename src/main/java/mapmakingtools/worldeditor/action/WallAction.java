@@ -13,10 +13,10 @@ public class WallAction implements Action {
     public ICachedArea doAction(PlayerEntity player, ISelection selection, CachedBlock input) {
         BlockPos firstPos = selection.getPrimaryPoint();
         BlockPos secondPos = selection.getSecondaryPoint();
-        Iterable<BlockPos> positions = BlockPos.getAllInBoxMutable(Math.min(firstPos.getX(), secondPos.getX()), Math.min(firstPos.getY(), secondPos.getY()), Math.min(firstPos.getZ(), secondPos.getZ()), Math.max(firstPos.getX(), secondPos.getX()), Math.min(firstPos.getY(), secondPos.getY()), Math.max(firstPos.getZ(), secondPos.getZ()));
+        Iterable<BlockPos> positions = BlockPos.betweenClosed(Math.min(firstPos.getX(), secondPos.getX()), Math.min(firstPos.getY(), secondPos.getY()), Math.min(firstPos.getZ(), secondPos.getZ()), Math.max(firstPos.getX(), secondPos.getX()), Math.min(firstPos.getY(), secondPos.getY()), Math.max(firstPos.getZ(), secondPos.getZ()));
 
         for (BlockPos pos : positions) {
-            input.place(player.getEntityWorld(), pos);
+            input.place(player.getCommandSenderWorld(), pos);
         }
         return null;
     }

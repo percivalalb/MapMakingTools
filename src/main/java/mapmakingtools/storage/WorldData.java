@@ -14,7 +14,7 @@ public class WorldData extends WorldSavedData {
 
     public WorldData() {
         super(Constants.STORAGE_WORLD);
-        this.lastCommand = new CommandTracker(this::markDirty);
+        this.lastCommand = new CommandTracker(this::setDirty);
     }
 
     public static WorldData get(World world) {
@@ -27,9 +27,9 @@ public class WorldData extends WorldSavedData {
 
     public static WorldData get(MinecraftServer server) {
         return server
-                .getWorld(World.OVERWORLD)
-                .getSavedData()
-                .getOrCreate(WorldData::new, Constants.STORAGE_WORLD);
+                .getLevel(World.OVERWORLD)
+                .getDataStorage()
+                .computeIfAbsent(WorldData::new, Constants.STORAGE_WORLD);
     }
 
     public CommandTracker getCommandTracker() {
@@ -37,12 +37,12 @@ public class WorldData extends WorldSavedData {
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
-        this.lastCommand = CommandTracker.read(nbt, this::markDirty);
+    public void load(CompoundNBT nbt) {
+        this.lastCommand = CommandTracker.read(nbt, this::setDirty);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         this.lastCommand.write(nbt);
         return nbt;
     }

@@ -8,13 +8,15 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 public class ToggleButton<T> extends Button {
 
     private int index;
     private T[] values;
 
     public ToggleButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, T[] values, @Nullable ToggleButton<T> previous, IPressable onPress) {
-        this(xIn, yIn, widthIn, heightIn, title, values, previous, onPress, Button.EMPTY_TOOLTIP);
+        this(xIn, yIn, widthIn, heightIn, title, values, previous, onPress, Button.NO_TOOLTIP);
     }
 
     public ToggleButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, T[] values, @Nullable ToggleButton<T> previous, IPressable onPress, Button.ITooltip onTooltip) {
@@ -34,7 +36,7 @@ public class ToggleButton<T> extends Button {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         if (Util.isPointInRegion(this.x, this.y, this.width, this.height, mouseX, mouseY)) {
-            this.index = (int) MathHelper.positiveModulo(this.index + MathHelper.signum(amount), this.values.length);
+            this.index = (int) MathHelper.positiveModulo(this.index + MathHelper.sign(amount), this.values.length);
             super.onPress();
             return true;
         }

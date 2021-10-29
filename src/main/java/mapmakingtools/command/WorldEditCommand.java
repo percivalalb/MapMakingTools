@@ -36,34 +36,34 @@ public class WorldEditCommand {
 
     public static void registerSimple(final CommandDispatcher<CommandSource> dispatcher, String command, Action action) {
         dispatcher.register(literal(command)
-                .requires(s -> s.hasPermissionLevel(2))
-                .then(Commands.argument("block", BlockStateArgument.blockState())
+                .requires(s -> s.hasPermission(2))
+                .then(Commands.argument("block", BlockStateArgument.block())
                         .executes(c -> doCommand(c, action))));
     }
 
     public static int doCommand(final CommandContext<CommandSource> ctx, final Action action) throws CommandSyntaxException {
         CommandSource source = ctx.getSource();
-        ServerPlayerEntity player = source.asPlayer();
-        World world = player.getEntityWorld();
+        ServerPlayerEntity player = source.getPlayerOrException();
+        World world = player.getCommandSenderWorld();
 
-        DimensionData dimData = DimensionData.get(player.getEntityWorld());
+        DimensionData dimData = DimensionData.get(player.getCommandSenderWorld());
         SelectionManager selectionManager = dimData.getSelectionManager();
 
         ISelection selection = selectionManager.get(player);
 
         if (!selection.isSet()) {
-            source.sendErrorMessage(new TranslationTextComponent("world_editor.mapmakingtools.selection.none"));
+            source.sendFailure(new TranslationTextComponent("world_editor.mapmakingtools.selection.none"));
             return 0;
         }
 
-        BlockStateInput input = BlockStateArgument.getBlockState(ctx, "block");
+        BlockStateInput input = BlockStateArgument.getBlock(ctx, "block");
         CachedBlock cache = new CachedBlock(input.getState(), null);
 
         ICachedArea cachedArea = action.doAction(player, selection, cache);
         EditHistory editHistory = DimensionData.get(world).getEditHistoryManager().get(player);
         editHistory.add(cachedArea);
 
-        source.sendFeedback(new TranslationTextComponent("command.mapmakingtools.set.success", cachedArea.getSize()), true);
+        source.sendSuccess(new TranslationTextComponent("command.mapmakingtools.set.success", cachedArea.getSize()), true);
         return 1;
     }
 }

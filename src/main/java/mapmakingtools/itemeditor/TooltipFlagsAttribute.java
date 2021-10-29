@@ -129,14 +129,14 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 
             @Override
             public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
-                font.drawText(stackIn, new TranslationTextComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
+                FontRenderer font = screen.getMinecraft().font;
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
+                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
             }
 
             @Override

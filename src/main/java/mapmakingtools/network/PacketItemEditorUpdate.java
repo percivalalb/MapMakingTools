@@ -37,7 +37,7 @@ public class PacketItemEditorUpdate {
     public static void handle(final PacketItemEditorUpdate msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             PlayerEntity player = ctx.get().getSender();
-            ItemStack stack = player.inventory.getStackInSlot(msg.slotIndex).copy();
+            ItemStack stack = player.inventory.getItem(msg.slotIndex).copy();
 
             try {
                 // Protected servers against people by-passing the GUI and
@@ -47,7 +47,7 @@ public class PacketItemEditorUpdate {
                 }
 
                 stack = msg.attributeManager.read(stack, msg.data, player);
-                player.inventory.setInventorySlotContents(msg.slotIndex, stack);
+                player.inventory.setItem(msg.slotIndex, stack);
             } catch (Exception e) {
                 MapMakingTools.LOGGER.warn("Failed to edit item", e);
             } finally {

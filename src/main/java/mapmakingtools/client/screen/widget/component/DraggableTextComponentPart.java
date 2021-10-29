@@ -54,7 +54,7 @@ public abstract class DraggableTextComponentPart extends Widget {
     public abstract List<? extends Widget> createEditWidget();
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         // Check disconnections
         Collection<Entry<Direction, DraggableTextComponentPart>> connections = this.getConnectionEntries();
 
@@ -67,16 +67,16 @@ public abstract class DraggableTextComponentPart extends Widget {
             Vector2f thisSide = WidgetUtil.getCentreOfSide(this, dir.getOpposite());
             Vector2f otherSide = WidgetUtil.getCentreOfSide(otherPart, dir);
 
-            BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+            BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
             GL11.glLineWidth(2.5F);
 
             bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(thisSide.x, thisSide.y, 0).color(0, 0, 0, 255).endVertex();
-            bufferbuilder.pos(otherSide.x, otherSide.y, 0).color(0, 0, 0, 255).endVertex();
+            bufferbuilder.vertex(thisSide.x, thisSide.y, 0).color(0, 0, 0, 255).endVertex();
+            bufferbuilder.vertex(otherSide.x, otherSide.y, 0).color(0, 0, 0, 255).endVertex();
 
-            bufferbuilder.finishDrawing();
+            bufferbuilder.end();
             RenderSystem.enableAlphaTest();
-            WorldVertexBufferUploader.draw(bufferbuilder);
+            WorldVertexBufferUploader.end(bufferbuilder);
         }
         RenderSystem.popMatrix();
     }
@@ -167,10 +167,10 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-            super.renderWidget(stackIn, mouseX, mouseY, partialTicks);
+        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+            super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
-            FontRenderer fontrenderer = minecraft.fontRenderer;
+            FontRenderer fontrenderer = minecraft.font;
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
@@ -184,13 +184,13 @@ public abstract class DraggableTextComponentPart extends Widget {
                 int green = color & 255;
                 RenderSystem.color4f(red / 255F, blue / 255F, green / 255F, 1.0F);
 
-                minecraft.getTextureManager().bindTexture(Resources.BUTTON_TEXT_COLOR);
+                minecraft.getTextureManager().bind(Resources.BUTTON_TEXT_COLOR);
                 this.blit(stackIn, this.x, y, 0, 46 + i * 20, 10, this.height / 2);//top left
                 this.blit(stackIn, this.x + 10, y, 200 - 10, 46 + i * 20, 10, this.height / 2);//top right
                 this.blit(stackIn, this.x, y + this.height / 2, 0, 46 + i * 20 + 20 - this.height / 2, 10, this.height / 2);//bottom left
                 this.blit(stackIn, this.x + 10, y + this.height / 2, 200 - 10, 46 + i * 20 + 20 - this.height / 2, 10, this.height / 2);//bottom right
             } else {
-                minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
+                minecraft.getTextureManager().bind(WIDGETS_LOCATION);
                 this.blit(stackIn, this.x, y, 0, 46 + i * 20, this.width / 2, this.height / 2); //top left
                 this.blit(stackIn, this.x + this.width / 2, y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height / 2); //top right
                 this.blit(stackIn, this.x, y + this.height / 2, 0, 46 + i * 20 + 20 - this.height / 2, this.width / 2, this.height / 2); //bottom left
@@ -213,13 +213,13 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         public ITextComponent getLabel(TextFormatting formattingIn) {
-            if (formattingIn.isFancyStyling()) {
+            if (formattingIn.isFormat()) {
                 switch (formattingIn) {
-                    case BOLD: return new StringTextComponent("B").mergeStyle(TextFormatting.BOLD);
-                    case STRIKETHROUGH: return new StringTextComponent("S").mergeStyle(TextFormatting.STRIKETHROUGH);
-                    case UNDERLINE: return new StringTextComponent("U").mergeStyle(TextFormatting.UNDERLINE);
-                    case ITALIC: return new StringTextComponent("I").mergeStyle(TextFormatting.ITALIC);
-                    case OBFUSCATED: return new StringTextComponent("O").mergeStyle(TextFormatting.OBFUSCATED);
+                    case BOLD: return new StringTextComponent("B").withStyle(TextFormatting.BOLD);
+                    case STRIKETHROUGH: return new StringTextComponent("S").withStyle(TextFormatting.STRIKETHROUGH);
+                    case UNDERLINE: return new StringTextComponent("U").withStyle(TextFormatting.UNDERLINE);
+                    case ITALIC: return new StringTextComponent("I").withStyle(TextFormatting.ITALIC);
+                    case OBFUSCATED: return new StringTextComponent("O").withStyle(TextFormatting.OBFUSCATED);
                 }
 
             }
@@ -252,7 +252,7 @@ public abstract class DraggableTextComponentPart extends Widget {
 
         @Override
         public ITextComponent apply(ITextComponent textComponent) {
-            return textComponent.copyRaw().mergeStyle(this.color);
+            return textComponent.plainCopy().withStyle(this.color);
         }
 
         @Override
@@ -297,11 +297,11 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-            super.renderWidget(stackIn, mouseX, mouseY, partialTicks);
+        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+            super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
-            FontRenderer fontrenderer = minecraft.fontRenderer;
-            minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
+            FontRenderer fontrenderer = minecraft.font;
+            minecraft.getTextureManager().bind(WIDGETS_LOCATION);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
@@ -341,13 +341,13 @@ public abstract class DraggableTextComponentPart extends Widget {
         @Override
         public ITextComponent apply(ITextComponent textComponent) {
             ITextComponent comp = this.create();
-            textComponent.copyRaw().appendSibling(comp);
+            textComponent.plainCopy().append(comp);
             return comp;
         }
 
         @Override
         public List<? extends Widget> createEditWidget() {
-            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
+            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
             widget.setResponder((str) -> {
                 this.text = str;
             });
@@ -370,11 +370,11 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-            super.renderWidget(stackIn, mouseX, mouseY, partialTicks);
+        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+            super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
-            FontRenderer fontrenderer = minecraft.fontRenderer;
-            minecraft.getTextureManager().bindTexture(WIDGETS_LOCATION);
+            FontRenderer fontrenderer = minecraft.font;
+            minecraft.getTextureManager().bind(WIDGETS_LOCATION);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
@@ -409,13 +409,13 @@ public abstract class DraggableTextComponentPart extends Widget {
         @Override
         public ITextComponent apply(ITextComponent textComponent) {
             ITextComponent comp = this.create();
-            textComponent.copyRaw().appendSibling(comp);
+            textComponent.plainCopy().append(comp);
             return comp;
         }
 
         @Override
         public List<? extends Widget> createEditWidget() {
-            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
+            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
             widget.setResponder((str) -> {});
             return Collections.unmodifiableList(Lists.newArrayList(widget));
         }

@@ -37,10 +37,10 @@ public class ColorFormattingSelector extends Widget {
      }
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        minecraft.getTextureManager().bindTexture(Resources.BUTTON_TEXT_COLOR);
+        FontRenderer fontrenderer = minecraft.font;
+        minecraft.getTextureManager().bind(Resources.BUTTON_TEXT_COLOR);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

@@ -19,7 +19,7 @@ public class EditHistoryManager {
     }
 
     public EditHistory get(PlayerEntity player) {
-        return this.POSITION.computeIfAbsent(player.getUniqueID(), k -> new EditHistory());
+        return this.POSITION.computeIfAbsent(player.getUUID(), k -> new EditHistory());
     }
 
     public static EditHistoryManager read(CompoundNBT nbt, Runnable markDirty) {
@@ -34,11 +34,11 @@ public class EditHistoryManager {
         for (int i = 0; i < pointsList.size(); i++) {
             CompoundNBT historyNBT = pointsList.getCompound(i);
 
-            if (!historyNBT.hasUniqueId("player_uuid")) {
+            if (!historyNBT.hasUUID("player_uuid")) {
                 continue;
             }
 
-            UUID uuid = historyNBT.getUniqueId("player_uuid");
+            UUID uuid = historyNBT.getUUID("player_uuid");
             EditHistory selection = EditHistory.read(historyNBT);
 
             editHistoryManager.POSITION.put(uuid, selection);
@@ -54,7 +54,7 @@ public class EditHistoryManager {
             CompoundNBT historyNBT = new CompoundNBT();
 
             entry.getValue().write(historyNBT);
-            historyNBT.putUniqueId("player_uuid", entry.getKey());
+            historyNBT.putUUID("player_uuid", entry.getKey());
 
             pointsList.add(historyNBT);
         }

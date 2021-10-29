@@ -40,11 +40,11 @@ public class SelectionManager {
         for (int i = 0; i < pointsList.size(); i++) {
             CompoundNBT pointNBT = pointsList.getCompound(i);
 
-            if (!pointNBT.hasUniqueId("player_uuid")) {
+            if (!pointNBT.hasUUID("player_uuid")) {
                 continue;
             }
 
-            UUID uuid = pointNBT.getUniqueId("player_uuid");
+            UUID uuid = pointNBT.getUUID("player_uuid");
             Selection selection = Selection.read(pointNBT);
 
             selectionManager.POSITION.put(uuid, selection);
@@ -60,7 +60,7 @@ public class SelectionManager {
             CompoundNBT pointNBT = new CompoundNBT();
 
             entry.getValue().write(pointNBT);
-            pointNBT.putUniqueId("player_uuid", entry.getKey());
+            pointNBT.putUUID("player_uuid", entry.getKey());
 
             pointsList.add(pointNBT);
         }
@@ -71,7 +71,7 @@ public class SelectionManager {
     }
 
     public ISelection get(PlayerEntity player) {
-        return this.POSITION.getOrDefault(player.getUniqueID(), EmptySelection.INSTANCE);
+        return this.POSITION.getOrDefault(player.getUUID(), EmptySelection.INSTANCE);
     }
 
     /**
@@ -82,13 +82,13 @@ public class SelectionManager {
      * @return If the position changed
      */
     public boolean setPrimary(PlayerEntity player, @Nullable BlockPos pos) {
-        UUID uuid = player.getUniqueID();
+        UUID uuid = player.getUUID();
 
         Selection selection = (Selection) this.POSITION.computeIfAbsent(uuid, (k) -> new Selection());
         if (Objects.equals(selection.points[0], pos)) {
             return false;
         }
-        selection.points[0] = pos.toImmutable();
+        selection.points[0] = pos.immutable();
         this.markDirty.run();
         return true;
     }
@@ -101,13 +101,13 @@ public class SelectionManager {
      * @return If the position changed
      */
     public boolean setSecondary(PlayerEntity player, @Nullable BlockPos pos) {
-        UUID uuid = player.getUniqueID();
+        UUID uuid = player.getUUID();
 
         Selection selection = (Selection) this.POSITION.computeIfAbsent(uuid, (k) -> new Selection());
         if (Objects.equals(selection.points[1], pos)) {
             return false;
         }
-        selection.points[1] = pos.toImmutable();
+        selection.points[1] = pos.immutable();
         this.markDirty.run();
         return true;
     }

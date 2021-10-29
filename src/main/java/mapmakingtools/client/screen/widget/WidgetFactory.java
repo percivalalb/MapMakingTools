@@ -18,13 +18,13 @@ public class WidgetFactory {
     }
 
     public static TextFieldWidget getTextField(Screen screen, int xIn, int yIn, int widthIn, int heightIn, @Nullable TextFieldWidget previous, @Nullable Supplier<Object> text, ITextComponent title) {
-        return getTextField(screen.getMinecraft().fontRenderer, xIn, yIn, widthIn, heightIn, previous, text, title);
+        return getTextField(screen.getMinecraft().font, xIn, yIn, widthIn, heightIn, previous, text, title);
     }
 
     public static TextFieldWidget getTextField(FontRenderer fontIn, int xIn, int yIn, int widthIn, int heightIn, @Nullable TextFieldWidget previous, @Nullable Supplier<Object> text, ITextComponent title) {
         TextFieldWidget widget = new TextFieldWidget(fontIn, xIn, yIn, widthIn, heightIn, previous, title);
         if (Objects.isNull(previous)) {
-            widget.setText(Objects.toString(text.get(), ""));
+            widget.setValue(Objects.toString(text.get(), ""));
         }
         return widget;
     }

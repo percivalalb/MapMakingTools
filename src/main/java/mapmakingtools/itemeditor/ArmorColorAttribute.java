@@ -39,7 +39,7 @@ public class ArmorColorAttribute extends IItemAttribute {
         case 1:
             if (stack.getItem() instanceof IDyeableArmorItem) {
                 IDyeableArmorItem dye = (IDyeableArmorItem) stack.getItem();
-                dye.removeColor(stack);
+                dye.clearColor(stack);
                 NBTUtil.removeTagIfEmpty(stack);
             }
 
@@ -78,7 +78,7 @@ public class ArmorColorAttribute extends IItemAttribute {
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                this.removeBtn.active = stack.getItem() instanceof IDyeableArmorItem && ((IDyeableArmorItem)stack.getItem()).hasColor(stack);
+                this.removeBtn.active = stack.getItem() instanceof IDyeableArmorItem && ((IDyeableArmorItem)stack.getItem()).hasCustomColor(stack);
 
                 if (stack.getItem() instanceof IDyeableArmorItem) {
                     if (this.removeBtn.active) {

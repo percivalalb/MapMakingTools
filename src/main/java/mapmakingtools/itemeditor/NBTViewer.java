@@ -69,7 +69,7 @@ public class NBTViewer extends IItemAttribute {
                 this.nbtRemoval.active = stack.hasTag();
                 if (stack.hasTag()) {
                     assert stack.getTag() != null;
-                    this.nbtTextPane.setText(stack.getTag().toFormattedComponent("   ", 0));
+                    this.nbtTextPane.setText(stack.getTag().getPrettyDisplay("   ", 0));
                 } else {
                     this.nbtTextPane.setText(null);
                 }

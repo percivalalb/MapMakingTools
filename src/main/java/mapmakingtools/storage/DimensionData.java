@@ -16,8 +16,8 @@ public class DimensionData extends WorldSavedData {
     public DimensionData() {
         super(Constants.STORAGE_DIMENSION);
         // Defaults required since read is not called if no data exists
-        this.selectionManager = new SelectionManager(this::markDirty);
-        this.editHistoryManager = new EditHistoryManager(this::markDirty);
+        this.selectionManager = new SelectionManager(this::setDirty);
+        this.editHistoryManager = new EditHistoryManager(this::setDirty);
     }
 
     public static DimensionData get(World world) {
@@ -25,8 +25,8 @@ public class DimensionData extends WorldSavedData {
             throw new RuntimeException(String.format("Tried to access %s data on client.", Constants.STORAGE_DIMENSION));
         }
 
-        return ((ServerWorld) world).getSavedData()
-                .getOrCreate(DimensionData::new, Constants.STORAGE_DIMENSION);
+        return ((ServerWorld) world).getDataStorage()
+                .computeIfAbsent(DimensionData::new, Constants.STORAGE_DIMENSION);
     }
 
     public SelectionManager getSelectionManager() {
@@ -38,13 +38,13 @@ public class DimensionData extends WorldSavedData {
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
-        this.selectionManager = SelectionManager.read(nbt.getCompound("selection"), this::markDirty);
-        this.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), this::markDirty);
+    public void load(CompoundNBT nbt) {
+        this.selectionManager = SelectionManager.read(nbt.getCompound("selection"), this::setDirty);
+        this.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), this::setDirty);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         nbt.put("selection", this.selectionManager.write(new CompoundNBT()));
         nbt.put("history", this.editHistoryManager.write(new CompoundNBT()));
         return nbt;

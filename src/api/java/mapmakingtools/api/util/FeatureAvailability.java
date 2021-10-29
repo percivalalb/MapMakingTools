@@ -11,8 +11,8 @@ public class FeatureAvailability {
             return false;
         }
 
-        boolean isCreativeMode = player.abilities.isCreativeMode;
-        boolean isOpped = player.hasPermissionLevel(2);
+        boolean isCreativeMode = player.abilities.instabuild;
+        boolean isOpped = player.hasPermissions(2);
 
         return isCreativeMode && isOpped;
     }

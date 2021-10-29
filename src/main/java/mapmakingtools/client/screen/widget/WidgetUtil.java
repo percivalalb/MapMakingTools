@@ -14,19 +14,19 @@ public class WidgetUtil {
      */
     public static void setTextQuietly(TextFieldWidget widget, String textIn) {
         // If text is equal do nothing
-        if (textIn.equals(widget.text)) {
+        if (textIn.equals(widget.value)) {
             return;
         }
 
-        if (widget.validator.test(textIn)) {
-            if (textIn.length() > widget.maxStringLength) {
-                widget.text = textIn.substring(0, widget.maxStringLength);
+        if (widget.filter.test(textIn)) {
+            if (textIn.length() > widget.maxLength) {
+                widget.value = textIn.substring(0, widget.maxLength);
             } else {
-                widget.text = textIn;
+                widget.value = textIn;
             }
 
-            widget.clampCursorPosition(widget.getCursorPosition());
-            widget.setSelectionPos(widget.getCursorPosition());
+            widget.setCursorPosition(widget.getCursorPosition());
+            widget.setHighlightPos(widget.getCursorPosition());
         }
 
     }

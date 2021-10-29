@@ -34,14 +34,14 @@ public class ItemNameAttribute extends IItemAttribute {
     public ItemStack read(ItemStack stack, PacketBuffer buffer) {
         switch(buffer.readByte()) {
         case 0:
-            return stack.setDisplayName(new StringTextComponent(buffer.readString(128)));
+            return stack.setHoverName(new StringTextComponent(buffer.readUtf(128)));
         case 1:
-            return stack.setDisplayName(new TranslationTextComponent(buffer.readString(128)));
+            return stack.setHoverName(new TranslationTextComponent(buffer.readUtf(128)));
         case 2:
-            stack.clearCustomName();
+            stack.resetHoverName();
             return stack;
         case 3:
-            return stack.setDisplayName(buffer.readTextComponent());
+            return stack.setHoverName(buffer.readComponent());
         default:
             throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
@@ -67,7 +67,7 @@ public class ItemNameAttribute extends IItemAttribute {
                         PacketBuffer buf = Util.createBuf();
                         buf.writeByte(3);
                         System.out.println("Send2");
-                        buf.writeTextComponent(this.widgetMaker.getTextComponent());
+                        buf.writeComponent(this.widgetMaker.getTextComponent());
                         update.accept(buf);
                     }
                 });
@@ -79,17 +79,17 @@ public class ItemNameAttribute extends IItemAttribute {
 
 
 
-                this.nameInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.nameInput, () -> stack.get().getDisplayName().getUnformattedComponentText());
-                this.nameInput.setMaxStringLength(128);
+                this.nameInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.nameInput, () -> stack.get().getHoverName().getContents());
+                this.nameInput.setMaxLength(128);
                 this.nameInput.setResponder(str -> {
-                    if (!stack.get().hasDisplayName() && stack.get().getItem().getDisplayName(stack.get()).getUnformattedComponentText().equals(str)) {
+                    if (!stack.get().hasCustomHoverName() && stack.get().getItem().getName(stack.get()).getContents().equals(str)) {
                         return;
                     }
 
                     this.nameRemoval.active = true;
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
-                    buf.writeString(str, 128);
+                    buf.writeUtf(str, 128);
                     update.accept(buf);
                 });
 
@@ -106,10 +106,10 @@ public class ItemNameAttribute extends IItemAttribute {
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                WidgetUtil.setTextQuietly(this.nameInput, stack.getDisplayName().getString());
-                this.nameRemoval.active = stack.hasDisplayName();
+                WidgetUtil.setTextQuietly(this.nameInput, stack.getHoverName().getString());
+                this.nameRemoval.active = stack.hasCustomHoverName();
 
-                this.widgetMaker.populateFrom(stack.getDisplayName());
+                this.widgetMaker.populateFrom(stack.getHoverName());
             }
 
             @Override
@@ -121,7 +121,7 @@ public class ItemNameAttribute extends IItemAttribute {
 
             @Override
             public boolean requiresUpdate(ItemStack newStack, ItemStack oldStack) {
-                return !newStack.getDisplayName().equals(oldStack.getDisplayName());
+                return !newStack.getHoverName().equals(oldStack.getHoverName());
             }
         };
     }

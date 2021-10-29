@@ -21,35 +21,35 @@ public class SetBiomeCommand {
 
     public static void register(final CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(literal("/setbioem")
-                .requires(s -> s.hasPermissionLevel(2))
+                .requires(s -> s.hasPermission(2))
                 .then(Commands.argument("biome", BiomeArgument.biome())
                         .executes(c -> doCommand(c))));
     }
 
     public static int doCommand(final CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         CommandSource source = ctx.getSource();
-        ServerPlayerEntity player = source.asPlayer();
-        World world = player.getEntityWorld();
+        ServerPlayerEntity player = source.getPlayerOrException();
+        World world = player.getCommandSenderWorld();
 
-        DimensionData dimData = DimensionData.get(player.getEntityWorld());
+        DimensionData dimData = DimensionData.get(player.getCommandSenderWorld());
         SelectionManager selectionManager = dimData.getSelectionManager();
 
         ISelection selection = selectionManager.get(player);
 
         if (!selection.isSet()) {
-            source.sendErrorMessage(new TranslationTextComponent("world_editor.mapmakingtools.selection.none"));
+            source.sendFailure(new TranslationTextComponent("world_editor.mapmakingtools.selection.none"));
             return 0;
         }
 
         Biome input = BiomeArgument.getBiome(ctx, "biome");
 
-        Iterable<BlockPos> positions = BlockPos.getAllInBoxMutable(selection.getPrimaryPoint(), selection.getSecondaryPoint());
+        Iterable<BlockPos> positions = BlockPos.betweenClosed(selection.getPrimaryPoint(), selection.getSecondaryPoint());
 
         for (BlockPos pos : positions) {
 
         }
 
-        source.sendFeedback(new TranslationTextComponent("command.mapmakingtools.set.success"), true);
+        source.sendSuccess(new TranslationTextComponent("command.mapmakingtools.set.success"), true);
         return 1;
     }
 }

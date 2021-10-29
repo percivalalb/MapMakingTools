@@ -32,7 +32,7 @@ public class BufferFactory {
         return (value) -> {
             PacketBuffer buf = Util.createBuf();
             buf.writeByte(i);
-            buf.writeString(value);
+            buf.writeUtf(value);
             destination.accept(buf);
         };
     }

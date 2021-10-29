@@ -33,13 +33,13 @@ public class TextScrollPane extends ScrollPane {
     public void renderOffset(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         super.renderOffset(stackIn, mouseX, mouseY, partialTicks);
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer font = minecraft.fontRenderer;
+        FontRenderer font = minecraft.font;
 
         if (this.text != null) {
 
-            List<IReorderingProcessor> test = font.trimStringToWidth(this.text, Integer.MAX_VALUE);
+            List<IReorderingProcessor> test = font.split(this.text, Integer.MAX_VALUE);
             for (int i = 0; i < test.size(); i++) {
-                font.func_238422_b_(stackIn, test.get(i), this.x + 2, this.y + 2 + i * 10, 0);
+                font.draw(stackIn, test.get(i), this.x + 2, this.y + 2 + i * 10, 0);
             }
         }
     }

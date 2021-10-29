@@ -46,11 +46,11 @@ public class TextComponentMakerWidget extends NestedWidget {
 //        }));
 
         this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, new StringTextComponent("Color"), (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.BLUE.getFriendlyName()), this, TextFormatting.BLUE));
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.BLUE.getName()), this, TextFormatting.BLUE));
         }));
 
         this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, new StringTextComponent("Format"), (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.ITALIC.getFriendlyName()), this, TextFormatting.ITALIC));
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.ITALIC.getName()), this, TextFormatting.ITALIC));
         }));
     }
 
@@ -145,7 +145,7 @@ public class TextComponentMakerWidget extends NestedWidget {
     }
 
     public Optional<DraggableTextComponentPart> getPartAbove(double mouseX, double mouseY) {
-        for (IGuiEventListener iguieventlistener : this.getEventListeners()) {
+        for (IGuiEventListener iguieventlistener : this.children()) {
             if (iguieventlistener instanceof DraggableTextComponentPart && iguieventlistener.isMouseOver(mouseX, mouseY)) {
                return Optional.of((DraggableTextComponentPart) iguieventlistener);
             }
@@ -263,11 +263,11 @@ public class TextComponentMakerWidget extends NestedWidget {
         this.createChild();
         if (this.hasTextComponent()) {
             Minecraft mc = Minecraft.getInstance();
-            FontRenderer font = mc.fontRenderer;
+            FontRenderer font = mc.font;
 
             String[] text = this.textComponent.getString().split("\n");
             for (int i = 0; i < text.length; i++) {
-                font.drawString(stackIn, text[i], this.x + 10, this.y + 30 + i * 10, 0);
+                font.draw(stackIn, text[i], this.x + 10, this.y + 30 + i * 10, 0);
             }
         }
     }

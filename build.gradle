@@ -5,16 +5,16 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        classpath 'org.ajoberstar.grgit:grgit-gradle:4.1.0'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath "gradle.plugin.se.bjurr.gitchangelog:git-changelog-gradle-plugin:1.71.4"
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
-        classpath "gradle.plugin.se.bjurr.gitchangelog:git-changelog-gradle-plugin:1.66"
+        classpath 'org.ajoberstar.grgit:grgit-gradle:4.1.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'org.ajoberstar.grgit'
 apply plugin: 'se.bjurr.gitchangelog.git-changelog-gradle-plugin'
 apply plugin: 'com.matthewprenger.cursegradle'
@@ -34,21 +34,6 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
-repositories {
-    maven {
-        url "http://dvs1.progwml6.com/files/maven"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-    maven {
-        url "https://modmaven.k-4u.nl"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-}
-
 sourceSets {
     api
     main {
@@ -63,7 +48,21 @@ sourceSets {
 }
 
 configurations {
-    apiCompile.extendsFrom(compile)
+    apiImplementation.extendsFrom(implementation)
+    apiRuntimeOnly.extendsFrom(runtimeOnly)
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+repositories {
+    maven {
+        url "https://dvs1.progwml6.com/files/maven"
+        content { includeGroup "mezz.jei" }
+    }
+    maven {
+        url "https://modmaven.k-4u.nl"
+        content { includeGroup "mezz.jei" }
+    }
 }
 
 minecraft {
@@ -74,38 +73,29 @@ minecraft {
     runs {
         client {
             taskName 'mapmakingtools_client'
-            workingDirectory project.file('run')
+            workingDirectory file('run')
             property 'forge.logging.console.level', 'debug'
             mods {
-                mapmakingtools {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
+                mapmakingtools.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
 
         server {
             taskName 'mapmakingtools_server'
-            workingDirectory project.file('run-server')
+            workingDirectory file('run-server')
             property 'forge.logging.console.level', 'debug'
             mods {
-                mapmakingtools {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
+                mapmakingtools.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
 
         data {
             taskName 'mapmakingtools_data'
-            workingDirectory project.file('run')
+            workingDirectory file('run')
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'mapmakingtools', '--all', '--output', '"' + file('src/generated/resources/') + '"', '--existing', '"' + sourceSets.main.resources.srcDirs[0] + '"'
             mods {
-                mapmakingtools {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
+                mapmakingtools.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
     }
@@ -119,12 +109,14 @@ dependencies {
 }
 
 task sourcesJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier = "sources"
     from sourceSets.main.allJava
     from sourceSets.api.allJava
 }
 
 task apiJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier = "api"
     from sourceSets.api.output
     from sourceSets.api.allJava
@@ -135,9 +127,9 @@ artifacts {
     archives apiJar
 }
 
-task replaceResources(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources.srcDirs) {
+def replaceResources = tasks.register('replaceResources', Copy) {
+    it.outputs.upToDateWhen { false }
+    it.from(sourceSets.main.resources) {
         include 'META-INF/mods.toml'
         expand([
             'version': project.version,
@@ -146,21 +138,47 @@ task replaceResources(type: Copy) {
             'fml_version_range': project.fml_version_range,
         ])
     }
-    into "$buildDir/resources/main/"
+    it.into "$buildDir/resources/main/"
+}
+
+def generateGBLangFile = tasks.register('generateGBLangFile',) {
+    def inputFile = file('src/main/resources/assets/mapmakingtools/lang/en_us.json');
+    def outputFile = file("$buildDir/resources/main/assets/mapmakingtools/lang/en_gb.json")
+    inputs.files inputFile
+    outputs.files outputFile
+
+    doLast {
+        def json = new groovy.json.JsonSlurper().parseText(inputFile.text)
+        json.replaceAll { key, value ->
+
+            value = value.replaceAll("(?i)(c)olor", "\$1olour");
+            value = value.replaceAll("(?i)(a)rmor", "\$1rmour");
+            return value;
+        }
+
+        def dataGB = groovy.json.JsonOutput.toJson(json)
+        dataGB = groovy.json.JsonOutput.prettyPrint(dataGB)
+        outputFile.write(dataGB + System.getProperty("line.separator"));
+    }
 }
 
 processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    exclude('META-INF/mods.toml')
+    configure {
+        finalizedBy(replaceResources)
+        finalizedBy(generateGBLangFile)
     }
-    finalizedBy replaceResources
+}
+
+classes.configure {
+    dependsOn(replaceResources)
+    dependsOn(generateGBLangFile)
 }
 
 jar {
-    from sourceSets.main.output.classesDirs
-    from sourceSets.api.output.classesDirs
-    from sourceSets.main.output.resourcesDir
-    from sourceSets.api.output.resourcesDir
+    from sourceSets.main.output
+    from sourceSets.api.output
 
     manifest {
         attributes([
@@ -207,35 +225,3 @@ curseforge {
 afterEvaluate {
     tasks.named("curseforge${project.curseforge_project_id}").get().dependsOn makeChangelog
 }
-
-tasks.register('generateGBLangFile') {
-    def inputFile = file('src/main/resources/assets/mapmakingtools/lang/en_us.json');
-    def outputFile = file("$buildDir/resources/main/assets/mapmakingtools/lang/en_gb.json")
-    inputs.files inputFile
-    outputs.files outputFile
-
-    doLast {
-        def json = new groovy.json.JsonSlurper().parseText(inputFile.text)
-        json.replaceAll { key, value ->
-
-            value = value.replaceAll("(?i)(c)olor", "\$1olour");
-            value = value.replaceAll("(?i)(a)rmor", "\$1rmour");
-            return value;
-        }
-
-        def dataGB = groovy.json.JsonOutput.toJson(json)
-        dataGB = groovy.json.JsonOutput.prettyPrint(dataGB)
-        outputFile.write(dataGB + System.getProperty("line.separator"));
-    }
-}
-processResources.finalizedBy(generateGBLangFile)
-
-if (project.hasProperty('UPDATE_MAPPINGS')) {
-   extractRangeMap {
-     sources sourceSets.api.java.srcDirs
-   }
-   applyRangeMap {
-     sources sourceSets.api.java.srcDirs
-   }
-   sourceSets.api.java.srcDirs.each { extractMappedNew.addTarget it }
- }

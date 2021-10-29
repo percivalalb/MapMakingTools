@@ -112,7 +112,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
                 int amount1 = buffer.readInt();
                 for (int i = 0; i < amount1; i++) {
-                    String blockStateStr = buffer.readString(1024);
+                    String blockStateStr = buffer.readUtf(1024);
                     for (int j = 0; j < list.size(); j++) {
                         if (blockStateStr.equals(list.getString(j))) {
                             list.remove(j);
@@ -141,8 +141,8 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
     @SuppressWarnings("unchecked")
     public <T extends Comparable<T>> void applyPropertyValue(BlockState blockState, String propertyStr, String valueStr) {
-        Property<T> property = (Property<T>) blockState.getBlock().getStateContainer().getProperty(propertyStr);
-        property.parseValue(valueStr).ifPresent(value -> { blockState.with(property, value); });
+        Property<T> property = (Property<T>) blockState.getBlock().getStateDefinition().getProperty(propertyStr);
+        property.getValue(valueStr).ifPresent(value -> { blockState.setValue(property, value); });
     }
 
     @SuppressWarnings("unchecked")
@@ -186,7 +186,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.blockList.setSelectionGroupManager(ToggleBoxGroup.builder(Block.class).min(1).max(1).listen((selection) -> {
                     if (!selection.isEmpty()) {
                         List<Property<?>> p = Lists.newArrayList();
-                        selection.get(0).getStateContainer().getProperties().forEach(p::add);
+                        selection.get(0).getStateDefinition().getProperties().forEach(p::add);
 //                        this.blockPropertiesList.setValues(p, Property::getName, this.blockPropertiesList);
 //                        this.blockPropertyValuesList.clear();
                     }
@@ -198,7 +198,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.tagList.setSelectionGroupManager(ToggleBoxGroup.builder(ResourceLocation.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> {
                     updateAddButton();
                 }).build());
-                this.tagList.setValues(BlockTags.getCollection().getRegisteredTags(), ResourceLocation::toString, this.tagList);
+                this.tagList.setValues(BlockTags.getAllTags().getAvailableTags(), ResourceLocation::toString, this.tagList);
                 this.tagList.visible = false;
 
 //                this.blockPropertiesList = new ScrollWidget<>(x + 200, y + 12, 200, (height - 80) / 2, this.blockPropertiesList);
@@ -270,7 +270,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                     List<String> blockStates = this.currentPlacableList.getGroupManager().getSelected();
                     buf.writeInt(blockStates.size());
                     blockStates.forEach(block -> {
-                        buf.writeString(block, 1024);
+                        buf.writeUtf(block, 1024);
                     });
                     update.accept(buf);
                 });

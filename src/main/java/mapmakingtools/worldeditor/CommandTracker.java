@@ -19,11 +19,11 @@ public class CommandTracker {
     }
 
     public String getLastCommand(PlayerEntity entity) {
-        return this.lastCommand.get(entity.getUniqueID());
+        return this.lastCommand.get(entity.getUUID());
     }
 
     public void setLastCommand(PlayerEntity entity, String command) {
-        this.lastCommand.put(entity.getUniqueID(), command);
+        this.lastCommand.put(entity.getUUID(), command);
         this.markDirty.run();
     }
 
@@ -39,11 +39,11 @@ public class CommandTracker {
         for (int i = 0; i < commandsList.size(); i++) {
             CompoundNBT commandNBT = commandsList.getCompound(i);
 
-            if (!commandNBT.hasUniqueId("player_uuid")) {
+            if (!commandNBT.hasUUID("player_uuid")) {
                 continue;
             }
 
-            UUID uuid = commandNBT.getUniqueId("player_uuid");
+            UUID uuid = commandNBT.getUUID("player_uuid");
             String lastCommand = commandNBT.getString("command");
 
             tracker.lastCommand.put(uuid, lastCommand);
@@ -58,7 +58,7 @@ public class CommandTracker {
         for (Map.Entry<UUID, String> entry : this.lastCommand.entrySet()) {
             CompoundNBT pointNBT = new CompoundNBT();
 
-            pointNBT.putUniqueId("player_uuid", entry.getKey());
+            pointNBT.putUUID("player_uuid", entry.getKey());
             pointNBT.putString("command", entry.getValue());
 
             commandsList.add(pointNBT);

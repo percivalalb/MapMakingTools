@@ -38,29 +38,29 @@ public class GameRender {
     public static void onPreRenderGameOverlay(RenderGameOverlayEvent.Pre e) {
         Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity player = mc.player;
-        ItemStack stack = player.getHeldItemMainhand();
+        ItemStack stack = player.getMainHandItem();
         if (e.getType() == ElementType.TEXT && FeatureAvailability.canEdit(mc.player) && stack.getItem() == MapMakingTools.WRENCH && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
 
-            if (mc.loadingGui instanceof ResourceLoadProgressGui) {
+            if (mc.overlay instanceof ResourceLoadProgressGui) {
                 return;
             }
 
-            FontRenderer font = Minecraft.getInstance().fontRenderer;
-            GlStateManager.pushMatrix();
+            FontRenderer font = Minecraft.getInstance().font;
+            GlStateManager._pushMatrix();
 //            GlStateManager.disableRescaleNormal();
 //            RenderHelper.disableStandardItemLighting();
 //            GlStateManager.disableDepthTest();
 
             if (ClientSelection.SELECTION.isSet()) {
                 int[] dimensions = ClientSelection.SELECTION.getDimensions();
-                font.drawTextWithShadow(e.getMatrixStack(), new TranslationTextComponent("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
+                font.drawShadow(e.getMatrixStack(), new TranslationTextComponent("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
             }
             else {
-                font.drawTextWithShadow(e.getMatrixStack(), new TranslationTextComponent("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
+                font.drawShadow(e.getMatrixStack(), new TranslationTextComponent("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
             }
 
             if (ClientSelection.LAST_COMMAND != null) {
-                font.drawTextWithShadow(e.getMatrixStack(), new StringTextComponent(ClientSelection.LAST_COMMAND), 4, 15, -1);
+                font.drawShadow(e.getMatrixStack(), new StringTextComponent(ClientSelection.LAST_COMMAND), 4, 15, -1);
             }
 
             RenderSystem.popMatrix();
@@ -94,7 +94,7 @@ public class GameRender {
 
     public static void onWorldRenderLast(final RenderWorldLastEvent event) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        ItemStack stack = player.getHeldItemMainhand();
+        ItemStack stack = player.getMainHandItem();
         if (ClientSelection.SELECTION.anySet() && stack.getItem() == MapMakingTools.WRENCH && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
             drawSelectionBox(event.getMatrixStack(), ClientSelection.SELECTION.getPrimaryBB(), ClientSelection.SELECTION.getSecondaryBB());
         }
@@ -111,23 +111,23 @@ public class GameRender {
         RenderSystem.lineWidth(2.0F);
 
         RenderSystem.disableTexture();
-        Vector3d vec3d = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
-        double d0 = vec3d.getX();
-        double d1 = vec3d.getY();
-        double d2 = vec3d.getZ();
+        Vector3d vec3d = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        double d0 = vec3d.x();
+        double d1 = vec3d.y();
+        double d2 = vec3d.z();
 
-        BufferBuilder buf = Tessellator.getInstance().getBuffer();
+        BufferBuilder buf = Tessellator.getInstance().getBuilder();
         buf.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         if (boundingBox1 != null && boundingBox2 != null) {
-            WorldRenderer.drawBoundingBox(stack, buf, boundingBox1.union(boundingBox2).offset(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
+            WorldRenderer.renderLineBox(stack, buf, boundingBox1.minmax(boundingBox2).move(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
         }
         if (boundingBox1 != null) {
-            WorldRenderer.drawBoundingBox(stack, buf, boundingBox1.offset(-d0, -d1, -d2), 1F, 1F, 0F, 0.8F);
+            WorldRenderer.renderLineBox(stack, buf, boundingBox1.move(-d0, -d1, -d2), 1F, 1F, 0F, 0.8F);
         }
         if (boundingBox2 != null) {
-            WorldRenderer.drawBoundingBox(stack, buf, boundingBox2.offset(-d0, -d1, -d2), 0F, 1F, 1F, 0.8F);
+            WorldRenderer.renderLineBox(stack, buf, boundingBox2.move(-d0, -d1, -d2), 0F, 1F, 1F, 0.8F);
         }
-        Tessellator.getInstance().draw();
+        Tessellator.getInstance().end();
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 0.3F);
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);

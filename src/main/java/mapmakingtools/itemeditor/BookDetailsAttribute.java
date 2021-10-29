@@ -39,10 +39,10 @@ public class BookDetailsAttribute extends IItemAttribute {
     public ItemStack read(ItemStack stack, PacketBuffer buffer, PlayerEntity player) {
         switch(buffer.readByte()) {
         case 0:
-            NBTUtil.getOrCreateTag(stack).putString("title", buffer.readString(128));
+            NBTUtil.getOrCreateTag(stack).putString("title", buffer.readUtf(128));
             return stack;
         case 1:
-            NBTUtil.getOrCreateTag(stack).putString("author", buffer.readString(128));
+            NBTUtil.getOrCreateTag(stack).putString("author", buffer.readUtf(128));
             return stack;
         case 2:
             int generation = buffer.readInt();
@@ -68,7 +68,7 @@ public class BookDetailsAttribute extends IItemAttribute {
                 for (int i = 0; i < listNBT.size(); ++i) {
                     String s = listNBT.getString(i);
 
-                    ITextComponent textComponent = ITextComponent.Serializer.getComponentFromJson(s);
+                    ITextComponent textComponent = ITextComponent.Serializer.fromJson(s);
                     listNBT.set(i, StringNBT.valueOf(textComponent.getString()));
                 }
 
@@ -93,17 +93,17 @@ public class BookDetailsAttribute extends IItemAttribute {
             @Override
             public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.bookNameInput = WidgetFactory.getTextField(screen, x + 2, y + 28, 80, 13, this.bookNameInput, () -> NBTUtil.hasTag(stack.get(), "title", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("title") : "");
-                this.bookNameInput.setMaxStringLength(128);
+                this.bookNameInput.setMaxLength(128);
                 this.bookNameInput.setResponder(BufferFactory.createString(0, update));
 
                 this.authorInput = WidgetFactory.getTextField(screen, x + 86, y + 28, 80, 13, this.authorInput, () -> NBTUtil.hasTag(stack.get(), "author", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("author") : "");
-                this.authorInput.setMaxStringLength(128);
+                this.authorInput.setMaxLength(128);
                 this.authorInput.setResponder(BufferFactory.createString(1, update));
 
                 this.generationInput = WidgetFactory.getTextField(screen, x + 170, y + 28, 80, 13, this.generationInput, () -> NBTUtil.hasTag(stack.get(), "generation", Constants.NBT.TAG_ANY_NUMERIC) ? stack.get().getTag().getInt("generation") : 0);
-                this.generationInput.setMaxStringLength(1);
+                this.generationInput.setMaxLength(1);
                 this.generationInput.setResponder(BufferFactory.createInteger(2, Strings::isNullOrEmpty, update));
-                this.generationInput.setValidator(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
+                this.generationInput.setFilter(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
 
                 this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, new StringTextComponent("Convert back to writable book"), BufferFactory.ping(3, update));
 
@@ -115,10 +115,10 @@ public class BookDetailsAttribute extends IItemAttribute {
 
             @Override
             public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.drawString(stackIn, "Title", x + 2, y + 17, -1);
-                font.drawString(stackIn, "Author", x + 86, y + 17, -1);
-                font.drawString(stackIn, "Generation", x + 170, y + 17, -1);
+                FontRenderer font = screen.getMinecraft().font;
+                font.draw(stackIn, "Title", x + 2, y + 17, -1);
+                font.draw(stackIn, "Author", x + 86, y + 17, -1);
+                font.draw(stackIn, "Generation", x + 170, y + 17, -1);
             }
 
             @Override

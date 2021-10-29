@@ -38,7 +38,7 @@ public class ColorPickerWidget extends NestedWidget {
     }
 
     @Override
-    public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
         for (Widget widget : this.children) {
             widget.render(stackIn, mouseX, mouseY, partialTicks);
         }
@@ -47,10 +47,10 @@ public class ColorPickerWidget extends NestedWidget {
         this.drawSingleColor(stackIn, this.x + this.width + 5, this.y + 31, 20, 20, this.getColorPicked());
 
         Minecraft mc = Minecraft.getInstance();
-        FontRenderer font = mc.fontRenderer;
-        font.drawString(stackIn, "RBG: " + Arrays.toString(this.getColorPicked()), this.x + this.width + 5, this.y, 0);
-        font.drawString(stackIn, "Base: " + Arrays.toString(this.getBaseColor()), this.x + this.width + 5, this.y + 11, 0);
-        font.drawString(stackIn, "Hex: " + Util.toHex(this.getColorPicked()), this.x + this.width + 5, this.y + 20, 0);
+        FontRenderer font = mc.font;
+        font.draw(stackIn, "RBG: " + Arrays.toString(this.getColorPicked()), this.x + this.width + 5, this.y, 0);
+        font.draw(stackIn, "Base: " + Arrays.toString(this.getBaseColor()), this.x + this.width + 5, this.y + 11, 0);
+        font.draw(stackIn, "Hex: " + Util.toHex(this.getColorPicked()), this.x + this.width + 5, this.y + 20, 0);
     }
 
     public int[] getContrastColor(int[] color, int threshold) {
@@ -130,44 +130,44 @@ public class ColorPickerWidget extends NestedWidget {
 
 
     protected void testFillGradient(MatrixStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
-       Matrix4f matrix = stackIn.getLast().getMatrix();
+       Matrix4f matrix = stackIn.last().pose();
        this.enableGradientDrawing();
-       BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+       BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-       bufferbuilder.pos(matrix, xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
-       bufferbuilder.pos(matrix, xIn, yIn, this.getBlitOffset()).color(255, 255, 255, 255).endVertex();
-       bufferbuilder.pos(matrix, xIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
-       bufferbuilder.pos(matrix, xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
-       bufferbuilder.finishDrawing();
-       WorldVertexBufferUploader.draw(bufferbuilder);
+       bufferbuilder.vertex(matrix, xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
+       bufferbuilder.vertex(matrix, xIn, yIn, this.getBlitOffset()).color(255, 255, 255, 255).endVertex();
+       bufferbuilder.vertex(matrix, xIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
+       bufferbuilder.vertex(matrix, xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
+       bufferbuilder.end();
+       WorldVertexBufferUploader.end(bufferbuilder);
        this.disableGradientDrawing();
     }
 
     protected void drawSingleColor(MatrixStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
-        Matrix4f matrix = stackIn.getLast().getMatrix();
+        Matrix4f matrix = stackIn.last().pose();
         this.enableGradientDrawing();
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
-        bufferbuilder.pos(xIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
-        bufferbuilder.pos(xIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
-        bufferbuilder.pos(xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
-        bufferbuilder.finishDrawing();
-        WorldVertexBufferUploader.draw(bufferbuilder);
+        bufferbuilder.vertex(xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
+        bufferbuilder.vertex(xIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
+        bufferbuilder.vertex(xIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
+        bufferbuilder.vertex(xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
+        bufferbuilder.end();
+        WorldVertexBufferUploader.end(bufferbuilder);
         this.disableGradientDrawing();
      }
 
     protected void fillGradientHorizontal(MatrixStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] left, int[] right) {
-        Matrix4f matrix = stackIn.getLast().getMatrix();
+        Matrix4f matrix = stackIn.last().pose();
         this.enableGradientDrawing();
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(xIn + widthIn, yIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
-        bufferbuilder.pos(xIn, yIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
-        bufferbuilder.pos(xIn, yIn + heightIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
-        bufferbuilder.pos(xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
-        bufferbuilder.finishDrawing();
-        WorldVertexBufferUploader.draw(bufferbuilder);
+        bufferbuilder.vertex(xIn + widthIn, yIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
+        bufferbuilder.vertex(xIn, yIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
+        bufferbuilder.vertex(xIn, yIn + heightIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
+        bufferbuilder.vertex(xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
+        bufferbuilder.end();
+        WorldVertexBufferUploader.end(bufferbuilder);
         this.disableGradientDrawing();
      }
 
@@ -206,7 +206,7 @@ public class ColorPickerWidget extends NestedWidget {
         }
 
         @Override
-        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.disableTexture();
             ColorPickerWidget.this.testFillGradient(stackIn, this.x, this.y, this.width, this.height, ColorPickerWidget.this.getBaseColor());
 
@@ -272,7 +272,7 @@ public class ColorPickerWidget extends NestedWidget {
         }
 
         @Override
-        public void renderWidget(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.disableTexture();
 
             int w = this.width / (PRIMARY_COLORS.length - 1);

@@ -43,7 +43,7 @@ public class EnchantmentAttribute extends IItemAttribute {
     }
 
     public void addEnchantment(ItemStack stack, Enchantment ench, int level) {
-        stack.addEnchantment(ench, level);
+        stack.enchant(ench, level);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class EnchantmentAttribute extends IItemAttribute {
             ListNBT enchantmentList = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < enchantmentList.size(); ++i) {
                 CompoundNBT t = enchantmentList.getCompound(i);
-                Optional.ofNullable(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryCreate(t.getString("id")))).ifPresent((enchantment) -> {
+                Optional.ofNullable(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(t.getString("id")))).ifPresent((enchantment) -> {
                     enchantments.add(new EnchantmentDetails(enchantment, t.getInt("lvl")));
                 });
             }
@@ -127,7 +127,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                 return false;
             }
 
-            Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryCreate(nbt.getString("id")));
+            Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(nbt.getString("id")));
             return Objects.equal(ench, this.enchantment);
         }
 
@@ -140,7 +140,7 @@ public class EnchantmentAttribute extends IItemAttribute {
         }
 
         public String getDisplayString() {
-            return this.enchantment.getDisplayName(this.level).getString();
+            return this.enchantment.getFullname(this.level).getString();
         }
     }
 
@@ -168,7 +168,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                     PacketBuffer buf = Util.createBuf();
                     buf.writeByte(0);
                     List<Enchantment> enchamtments = this.enchantmentList.getGroupManager().getSelected();
-                    buf.writeInt(Integer.valueOf(this.lvlInput.getText()));
+                    buf.writeInt(Integer.valueOf(this.lvlInput.getValue()));
                     buf.writeInt(enchamtments.size());
                     enchamtments.forEach(ench -> {
                         buf.writeRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS, ench);
@@ -193,8 +193,8 @@ public class EnchantmentAttribute extends IItemAttribute {
                 this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(2, update));
 
                 this.lvlInput = WidgetFactory.getTextField(screen, x + 2, y + height / 2 - 20, 50, 14, this.lvlInput, "1"::toString);
-                this.lvlInput.setMaxStringLength(3);
-                this.lvlInput.setValidator(Util.NUMBER_INPUT_PREDICATE);
+                this.lvlInput.setMaxLength(3);
+                this.lvlInput.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
 
                 add.accept(this.enchantmentList);

@@ -22,7 +22,7 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
     }
 
     @Override
-    public List<? extends IGuiEventListener> getEventListeners() {
+    public List<? extends IGuiEventListener> children() {
         return this.children;
     }
 
@@ -38,12 +38,12 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
 
     @Override
     @Nullable
-    public IGuiEventListener getListener() {
+    public IGuiEventListener getFocused() {
        return this.focused;
     }
 
     @Override
-    public void setListener(@Nullable IGuiEventListener eventListener) {
+    public void setFocused(@Nullable IGuiEventListener eventListener) {
        this.focused = eventListener;
     }
 

@@ -90,8 +90,8 @@ public class SpawnEggAttribute extends IItemAttribute {
 
             @Override
             public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().fontRenderer;
-                font.drawText(stackIn, new TranslationTextComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
+                FontRenderer font = screen.getMinecraft().font;
+                font.draw(stackIn, new TranslationTextComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
             }
 
             @Override
@@ -101,7 +101,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                     CompoundNBT entityTag = tag.getCompound("EntityTag");
                     if (entityTag.contains("id", Constants.NBT.TAG_STRING)) {
                         this.currentEntitySpawned = entityTag.getString("id");
-                        ResourceLocation rl = ResourceLocation.tryCreate(this.currentEntitySpawned);
+                        ResourceLocation rl = ResourceLocation.tryParse(this.currentEntitySpawned);
                         if (rl != null && ForgeRegistries.ENTITIES.containsKey(rl)) {
                             this.entityTypeList.selectValue(ForgeRegistries.ENTITIES.getValue(rl).delegate);
                         }

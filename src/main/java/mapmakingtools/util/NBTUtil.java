@@ -30,7 +30,7 @@ public class NBTUtil {
             return stack.getTag().getCompound(key);
         else {
             CompoundNBT tagList = new CompoundNBT();
-            stack.setTagInfo(key, tagList);
+            stack.addTagElement(key, tagList);
             return tagList;
         }
     }
@@ -44,7 +44,7 @@ public class NBTUtil {
             return stack.getTag().getList(key, tagId);
         else {
             ListNBT tagList = new ListNBT();
-            stack.setTagInfo(key, tagList);
+            stack.addTagElement(key, tagList);
             return tagList;
         }
     }
@@ -111,7 +111,7 @@ public class NBTUtil {
 
 
     public static boolean contains(ListNBT tagList, String value) {
-        if (tagList.getTagType() != Constants.NBT.TAG_STRING) return false;
+        if (tagList.getElementType() != Constants.NBT.TAG_STRING) return false;
 
         for (int i = 0; i < tagList.size(); i++)
             if (tagList.getString(i).equals(value))
