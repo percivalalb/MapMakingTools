@@ -1,13 +1,13 @@
 package mapmakingtools.api.worldeditor;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.IClearable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.Clearable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -15,22 +15,22 @@ import javax.annotation.Nullable;
 public class CachedBlock {
 
     private final BlockState state;
-    private final CompoundNBT tag;
+    private final CompoundTag tag;
 
-    public CachedBlock(BlockState state, @Nullable CompoundNBT nbt) {
+    public CachedBlock(BlockState state, @Nullable CompoundTag nbt) {
         this.state = state;
         this.tag = nbt;
     }
 
-    public void place(World world, BlockPos pos) {
+    public void place(Level world, BlockPos pos) {
         // Clear the last tile entity
-        IClearable.tryClear(world.getBlockEntity(pos));
+        Clearable.tryClear(world.getBlockEntity(pos));
 
         if (world.setBlock(pos, this.state, Constants.BlockFlags.BLOCK_UPDATE)) {
             if (this.tag != null) {
-                TileEntity tileentity = world.getBlockEntity(pos);
+                BlockEntity tileentity = world.getBlockEntity(pos);
                 if (tileentity != null) {
-                    CompoundNBT compoundnbt = this.tag.copy();
+                    CompoundTag compoundnbt = this.tag.copy();
                     compoundnbt.putInt("x", pos.getX());
                     compoundnbt.putInt("y", pos.getY());
                     compoundnbt.putInt("z", pos.getZ());
@@ -40,9 +40,9 @@ public class CachedBlock {
         }
     }
 
-    public static CachedBlock read(CompoundNBT nbt) {
-        BlockState state = NBTUtil.readBlockState(nbt);
-        CompoundNBT tileNBT = null;
+    public static CachedBlock read(CompoundTag nbt) {
+        BlockState state = NbtUtils.readBlockState(nbt);
+        CompoundTag tileNBT = null;
         if (nbt.contains("tag", Constants.NBT.TAG_COMPOUND)) {
             tileNBT = nbt.getCompound("tag");
         }
@@ -50,8 +50,8 @@ public class CachedBlock {
         return new CachedBlock(state, tileNBT);
     }
 
-    public CompoundNBT write(CompoundNBT nbt) {
-        CompoundNBT state = nbt.merge(NBTUtil.writeBlockState(this.state));
+    public CompoundTag write(CompoundTag nbt) {
+        CompoundTag state = nbt.merge(NbtUtils.writeBlockState(this.state));
         if (this.tag != null) {
             nbt.put("tag", this.tag);
         }
@@ -59,10 +59,10 @@ public class CachedBlock {
         return nbt;
     }
 
-    public static CachedBlock from(IWorldReader world, BlockPos pos) {
+    public static CachedBlock from(LevelReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        TileEntity tileEntity = world.getBlockEntity(pos);
-        CompoundNBT nbt = tileEntity != null ? tileEntity.save(new CompoundNBT()) : null;
+        BlockEntity tileEntity = world.getBlockEntity(pos);
+        CompoundTag nbt = tileEntity != null ? tileEntity.save(new CompoundTag()) : null;
         return new CachedBlock(state, nbt);
     }
 }

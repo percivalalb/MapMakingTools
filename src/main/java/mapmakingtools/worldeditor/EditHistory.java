@@ -2,9 +2,9 @@ package mapmakingtools.worldeditor;
 
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.ICachedArea;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ public class EditHistory {
         }
     }
 
-    public ICachedArea undo(World world) {
+    public ICachedArea undo(Level world) {
         if (this.historyBackwards.isEmpty()) {
             return null;
         }
@@ -44,7 +44,7 @@ public class EditHistory {
         return cachedArea;
     }
 
-    public ICachedArea redo(World world) {
+    public ICachedArea redo(Level world) {
         if (this.historyForwards.isEmpty()) {
             return null;
         }
@@ -56,21 +56,21 @@ public class EditHistory {
         return cachedArea;
     }
 
-    public static EditHistory read(CompoundNBT nbt) {
+    public static EditHistory read(CompoundTag nbt) {
         EditHistory selection = new EditHistory();
         if (nbt.contains("history", Constants.NBT.TAG_LIST)) {
-            ListNBT historyList = nbt.getList("history", Constants.NBT.TAG_COMPOUND);
+            ListTag historyList = nbt.getList("history", Constants.NBT.TAG_COMPOUND);
             for (int i = Math.max(0, historyList.size() - MAX_UNDO_HISTORY_SIZE); i < historyList.size(); i++) {
-                CompoundNBT cacheNBT = historyList.getCompound(i);
+                CompoundTag cacheNBT = historyList.getCompound(i);
                 selection.historyBackwards.add(CachedCuboidArea.read(cacheNBT));
             }
         }
 
         if (nbt.contains("future", Constants.NBT.TAG_LIST)) {
-            ListNBT futureList = nbt.getList("future", Constants.NBT.TAG_COMPOUND);
+            ListTag futureList = nbt.getList("future", Constants.NBT.TAG_COMPOUND);
 
             for (int i = Math.max(0, futureList.size() - MAX_UNDO_HISTORY_SIZE); i < futureList.size(); i++) {
-                CompoundNBT cacheNBT = futureList.getCompound(i);
+                CompoundTag cacheNBT = futureList.getCompound(i);
                 selection.historyForwards.add(CachedCuboidArea.read(cacheNBT));
             }
         }
@@ -78,19 +78,19 @@ public class EditHistory {
         return selection;
     }
 
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         if (!this.historyBackwards.isEmpty()) {
-            ListNBT historyList = new ListNBT();
+            ListTag historyList = new ListTag();
             for (ICachedArea cachedArea : this.historyBackwards) {
-                historyList.add(cachedArea.write(new CompoundNBT()));
+                historyList.add(cachedArea.write(new CompoundTag()));
             }
             nbt.put("history", historyList);
         }
 
         if (!this.historyForwards.isEmpty()) {
-            ListNBT futureList = new ListNBT();
+            ListTag futureList = new ListTag();
             for (ICachedArea cachedArea : this.historyForwards) {
-                futureList.add(cachedArea.write(new CompoundNBT()));
+                futureList.add(cachedArea.write(new CompoundTag()));
             }
             nbt.put("future", futureList);
         }

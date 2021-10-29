@@ -6,11 +6,11 @@ import mapmakingtools.client.screen.ItemEditorScreen;
 import mapmakingtools.network.PacketLastAction;
 import mapmakingtools.network.PacketWrenchMode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.KeyboardKeyPressedEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class KeyboardInput {
 
-    public static KeyBinding KEY_ITEM_EDITOR;
+    public static KeyMapping KEY_ITEM_EDITOR;
     public static Long lastPressed = null;
     public static boolean released = false;
 
@@ -39,8 +39,8 @@ public class KeyboardInput {
         forgeEventBus.addListener(KeyboardInput::onTick);
     }
 
-    public static KeyBinding create(String name, String key) {
-        KeyBinding keyBinding = new KeyBinding("mapmakingtools.keybind." + name, (key == null ? InputMappings.UNKNOWN : InputMappings.getKey("key.keyboard." + key)).getValue(), "mapmakingtools.key.category");
+    public static KeyMapping create(String name, String key) {
+        KeyMapping keyBinding = new KeyMapping("mapmakingtools.keybind." + name, (key == null ? InputConstants.UNKNOWN : InputConstants.getKey("key.keyboard." + key)).getValue(), "mapmakingtools.key.category");
         ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }
@@ -52,11 +52,11 @@ public class KeyboardInput {
 
         Minecraft mc = Minecraft.getInstance();
 
-        if (FeatureAvailability.canEdit(mc.player) && event.getGui() instanceof ContainerScreen) {
-            ContainerScreen<?> containerScreen = (ContainerScreen<?>) event.getGui();
+        if (FeatureAvailability.canEdit(mc.player) && event.getGui() instanceof AbstractContainerScreen) {
+            AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getGui();
 
             Optional<Slot> hoveredSlot = Optional.ofNullable(containerScreen.getSlotUnderMouse())
-                    .filter(s -> s.container instanceof PlayerInventory)
+                    .filter(s -> s.container instanceof Inventory)
                     .filter(Slot::isActive)
                     .filter(Slot::hasItem);
 
@@ -68,11 +68,11 @@ public class KeyboardInput {
     }
 
     public static void onGUIScroll(final GuiScreenEvent.MouseScrollEvent event) {
-        if (event.getGui() instanceof ContainerScreen) {
-            ContainerScreen<?> containerScreen = (ContainerScreen<?>) event.getGui();
+        if (event.getGui() instanceof AbstractContainerScreen) {
+            AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getGui();
 
             Optional<Slot> hoveredSlot = Optional.ofNullable(containerScreen.getSlotUnderMouse())
-                    .filter(s -> s.container instanceof PlayerInventory)
+                    .filter(s -> s.container instanceof Inventory)
                     .filter(Slot::isActive)
                     .filter(Slot::hasItem);
 

@@ -1,20 +1,20 @@
 package mapmakingtools.client.screen.widget;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.util.Mth;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrollPane extends Widget {
+public class ScrollPane extends AbstractWidget {
 
-    protected final List<Widget> widgets;
+    protected final List<AbstractWidget> widgets;
     protected double scrollOffset = 0;
     protected int hiddenHeight;
 
@@ -47,9 +47,9 @@ public class ScrollPane extends Widget {
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.font;
+        Font fontrenderer = minecraft.font;
         double scale = minecraft.getWindow().getGuiScale();
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -65,15 +65,15 @@ public class ScrollPane extends Widget {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
-    public void renderOffset(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-        for (Widget w : this.widgets) {
+    public void renderOffset(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        for (AbstractWidget w : this.widgets) {
             w.render(stackIn, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        for (Widget w : this.widgets) {
+        for (AbstractWidget w : this.widgets) {
             if (w.isMouseOver(mouseX, mouseY - this.scrollOffset)) {
                 w.onClick(mouseX, mouseY - this.scrollOffset);
                 break;
@@ -96,6 +96,6 @@ public class ScrollPane extends Widget {
     }
 
     public void clampScrollOffset(double offset) {
-        this.scrollOffset = MathHelper.clamp(offset, -this.hiddenHeight, 0);
+        this.scrollOffset = Mth.clamp(offset, -this.hiddenHeight, 0);
     }
 }

@@ -1,8 +1,8 @@
 package mapmakingtools.worldeditor;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
@@ -18,21 +18,21 @@ public class EditHistoryManager {
         this.markDirty = markDirty;
     }
 
-    public EditHistory get(PlayerEntity player) {
+    public EditHistory get(Player player) {
         return this.POSITION.computeIfAbsent(player.getUUID(), k -> new EditHistory());
     }
 
-    public static EditHistoryManager read(CompoundNBT nbt, Runnable markDirty) {
+    public static EditHistoryManager read(CompoundTag nbt, Runnable markDirty) {
         EditHistoryManager editHistoryManager = new EditHistoryManager(markDirty);
 
         if (!nbt.contains("histories", Constants.NBT.TAG_LIST)) {
             return editHistoryManager;
         }
 
-        ListNBT pointsList = nbt.getList("histories", Constants.NBT.TAG_COMPOUND);
+        ListTag pointsList = nbt.getList("histories", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < pointsList.size(); i++) {
-            CompoundNBT historyNBT = pointsList.getCompound(i);
+            CompoundTag historyNBT = pointsList.getCompound(i);
 
             if (!historyNBT.hasUUID("player_uuid")) {
                 continue;
@@ -47,11 +47,11 @@ public class EditHistoryManager {
         return editHistoryManager;
     }
 
-    public CompoundNBT write(CompoundNBT nbt) {
-        ListNBT pointsList = new ListNBT();
+    public CompoundTag write(CompoundTag nbt) {
+        ListTag pointsList = new ListTag();
 
         for (Map.Entry<UUID, EditHistory> entry : this.POSITION.entrySet()) {
-            CompoundNBT historyNBT = new CompoundNBT();
+            CompoundTag historyNBT = new CompoundTag();
 
             entry.getValue().write(historyNBT);
             historyNBT.putUUID("player_uuid", entry.getKey());

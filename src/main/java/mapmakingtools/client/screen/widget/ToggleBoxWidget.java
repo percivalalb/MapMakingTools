@@ -1,11 +1,11 @@
 package mapmakingtools.client.screen.widget;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -23,16 +23,16 @@ public class ToggleBoxWidget<T> extends AbstractTickButton {
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer font = minecraft.font;
+        Font font = minecraft.font;
         minecraft.getTextureManager().bind(Resources.SCREEN_SCROLL);
         this.blit(stackIn, this.x, this.y, 0 + (this.ticked ? 8 : 0), 135, 8, 9);
 
         Object obj = this.getDisplayObject();
 
-        if (obj instanceof ITextComponent) {
-            font.draw(stackIn, (ITextComponent) obj, this.x + 10, this.y, 0);
+        if (obj instanceof Component) {
+            font.draw(stackIn, (Component) obj, this.x + 10, this.y, 0);
         } else {
             font.draw(stackIn, obj.toString(), this.x + 10, this.y, 0);
         }

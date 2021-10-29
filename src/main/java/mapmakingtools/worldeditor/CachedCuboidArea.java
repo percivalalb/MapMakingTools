@@ -3,11 +3,11 @@ package mapmakingtools.worldeditor;
 import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 public class CachedCuboidArea implements ICachedArea {
@@ -28,7 +28,7 @@ public class CachedCuboidArea implements ICachedArea {
         this.blocks = new CachedBlock[this.width * this.height * this.depth];
     }
 
-    public CachedCuboidArea(IWorldReader worldIn, BlockPos pos1, BlockPos pos2) {
+    public CachedCuboidArea(LevelReader worldIn, BlockPos pos1, BlockPos pos2) {
         this(pos1, pos2);
         int i = 0;
         for (BlockPos pos : BlockPos.betweenClosed(pos1, pos2)) {
@@ -37,7 +37,7 @@ public class CachedCuboidArea implements ICachedArea {
     }
 
     @Override
-    public void restore(World world) {
+    public void restore(Level world) {
         int i = 0;
         // Assumes that getAllInBoxMutable generates BlockPos
         for (BlockPos pos : BlockPos.betweenClosed(this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.pos.getX() + this.width - 1, this.pos.getY()  + this.height - 1, this.pos.getZ() + this.depth - 1)) {
@@ -51,11 +51,11 @@ public class CachedCuboidArea implements ICachedArea {
     }
 
     @Override
-    public ICachedArea cacheLive(IWorldReader world) {
+    public ICachedArea cacheLive(LevelReader world) {
         return new CachedCuboidArea(world, this.pos, new BlockPos(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
     }
 
-    public static CachedCuboidArea read(CompoundNBT nbt) {
+    public static CachedCuboidArea read(CompoundTag nbt) {
         if (!nbt.contains("base_pos", Constants.NBT.TAG_LONG) || !nbt.contains("other_pos", Constants.NBT.TAG_LONG)) {
             // TODO Throw
         }
@@ -63,31 +63,31 @@ public class CachedCuboidArea implements ICachedArea {
         BlockPos pos = BlockPos.of(nbt.getLong("base_pos"));
         BlockPos otherPos = BlockPos.of(nbt.getLong("other_pos"));
         CachedCuboidArea area = new CachedCuboidArea(pos, otherPos);
-        ListNBT blockList = nbt.getList("blocks", Constants.NBT.TAG_COMPOUND);
+        ListTag blockList = nbt.getList("blocks", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < blockList.size(); i++) {
-            CompoundNBT blockNBT = blockList.getCompound(i);
+            CompoundTag blockNBT = blockList.getCompound(i);
             area.blocks[i] = CachedBlock.read(blockNBT);
         }
         return area;
     }
 
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         nbt.putLong("base_pos", this.pos.asLong());
         nbt.putLong("other_pos", BlockPos.asLong(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
-        ListNBT blockList = new ListNBT();
+        ListTag blockList = new ListTag();
         for (int i = 0; i < this.blocks.length; i++) {
-            blockList.add(this.blocks[i].write(new CompoundNBT()));
+            blockList.add(this.blocks[i].write(new CompoundTag()));
         }
         nbt.put("blocks", blockList);
         return nbt;
     }
 
-    public static CachedCuboidArea from(IWorldReader world, ISelection selection) {
+    public static CachedCuboidArea from(LevelReader world, ISelection selection) {
         // TODO when selection is not set
         return new CachedCuboidArea(world, selection.getPrimaryPoint(), selection.getSecondaryPoint());
     }
 
-    public static CachedCuboidArea from(IWorldReader world, BlockPos pos1, BlockPos pos2) {
+    public static CachedCuboidArea from(LevelReader world, BlockPos pos1, BlockPos pos2) {
         // TODO when selection is not set
         return new CachedCuboidArea(world, pos1, pos2);
     }

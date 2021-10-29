@@ -1,7 +1,7 @@
 package mapmakingtools.client.screen.widget;
 
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -12,7 +12,7 @@ public class AbstractTickButton extends AbstractButton {
     protected final AbstractTickButton.IPressable onPress;
     protected boolean ticked;
 
-    public AbstractTickButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, @Nullable TickButton previous, IPressable onPress) {
+    public AbstractTickButton(int xIn, int yIn, int widthIn, int heightIn, Component title, @Nullable TickButton previous, IPressable onPress) {
         super(xIn, yIn, widthIn, heightIn, title);
         this.onPress = onPress;
         if (previous != null) {

@@ -1,7 +1,7 @@
 package mapmakingtools.client.screen;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.MMTRegistries;
 import mapmakingtools.MapMakingTools;
@@ -14,17 +14,17 @@ import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.network.PacketItemEditorUpdate;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -44,21 +44,21 @@ public class ItemEditorScreen extends Screen {
     private int currentPage = 0;
     private int maxPages = 1;
     private static Optional<Pair<IRegistryDelegate<IItemAttribute>, IItemAttributeClient>> current = Optional.empty();
-    private List<Widget> attributeWidgets = Lists.newArrayList();
-    private Map<IRegistryDelegate<IItemAttribute>, Widget> attributeTabWidgets = new HashMap<>();
+    private List<AbstractWidget> attributeWidgets = Lists.newArrayList();
+    private Map<IRegistryDelegate<IItemAttribute>, AbstractWidget> attributeTabWidgets = new HashMap<>();
     private int guiX, guiY, guiWidth, guiHeight;
     private long blockUpdateTill = 0;
     private boolean requiresUpdate = false;
 
-    private PlayerEntity player;
+    private Player player;
     private ItemStack stack;
     private int slotIndex;
     private List<IRegistryDelegate<IItemAttribute>> itemList;
 
     private Button leftBtn, rightBtn;
 
-    public ItemEditorScreen(PlayerEntity player, int slotIndex, ItemStack stack) {
-        super(new TranslationTextComponent("screen.mapmakingtools.item_editor"));
+    public ItemEditorScreen(Player player, int slotIndex, ItemStack stack) {
+        super(new TranslatableComponent("screen.mapmakingtools.item_editor"));
         this.player = player;
         this.stack = stack;
         this.slotIndex = slotIndex;
@@ -75,10 +75,10 @@ public class ItemEditorScreen extends Screen {
         this.guiHeight = this.height - this.guiY * 2;
 
         int size = this.itemList.size();
-        int perPage = Math.max(MathHelper.floor((this.height - 42 - 3) / (double) TAB_HEIGHT), 1);
+        int perPage = Math.max(Mth.floor((this.height - 42 - 3) / (double) TAB_HEIGHT), 1);
 
         if (perPage < size) {
-            this.leftBtn = new Button(49, 18, 20, 20, new StringTextComponent("<"), (btn) -> {
+            this.leftBtn = new Button(49, 18, 20, 20, new TextComponent("<"), (btn) -> {
                 this.currentPage = Math.max(0, this.currentPage - 1);
                 btn.active = this.currentPage > 0;
                 this.rightBtn.active = true;
@@ -86,7 +86,7 @@ public class ItemEditorScreen extends Screen {
             });
             this.leftBtn.active = false;
 
-            this.rightBtn = new Button(72, 18, 20, 20, new StringTextComponent(">"), (btn) -> {
+            this.rightBtn = new Button(72, 18, 20, 20, new TextComponent(">"), (btn) -> {
                 this.currentPage = Math.min(this.maxPages - 1, this.currentPage + 1);
                 btn.active = this.currentPage < this.maxPages - 1;
                 this.leftBtn.active = true;
@@ -112,7 +112,7 @@ public class ItemEditorScreen extends Screen {
 
     @Override
     public void tick() {
-        long systemTimeMillis = net.minecraft.util.Util.getMillis();
+        long systemTimeMillis = net.minecraft.Util.getMillis();
 
         ItemEditorScreen.current.ifPresent(p -> {
             p.getRight().tick(this, systemTimeMillis, this::sendItemUpdate);
@@ -122,7 +122,7 @@ public class ItemEditorScreen extends Screen {
         if (!ItemStack.matches(playersStack, this.stack)) {
             this.requiresUpdate = ItemEditorScreen.current.isPresent() ? this.current.get().getRight().requiresUpdate(playersStack, this.stack) : false;
             this.stack = playersStack.copy();
-            for (Entry<IRegistryDelegate<IItemAttribute>, Widget> attributeBtns : this.attributeTabWidgets.entrySet()) {
+            for (Entry<IRegistryDelegate<IItemAttribute>, AbstractWidget> attributeBtns : this.attributeTabWidgets.entrySet()) {
                 IItemAttribute iAttr = attributeBtns.getKey().get();
                 attributeBtns.getValue().active = iAttr.canUse() && iAttr.isApplicable(this.player, this.stack);
             }
@@ -153,7 +153,7 @@ public class ItemEditorScreen extends Screen {
             int original = this.slotIndex;
 
             do {
-                int direction = MathHelper.sign(amount);
+                int direction = Mth.sign(amount);
                 this.slotIndex += direction + this.player.inventory.getContainerSize();
                 this.slotIndex %= this.player.inventory.getContainerSize();
 
@@ -190,7 +190,7 @@ public class ItemEditorScreen extends Screen {
         }
     }
 
-    public void sendItemUpdate(PacketBuffer buf) {
+    public void sendItemUpdate(FriendlyByteBuf buf) {
         ItemEditorScreen.current.ifPresent(c -> {
             this.pauseStackUpdatesFor(1000);
             MapMakingTools.HANDLER.sendToServer(new PacketItemEditorUpdate(this.slotIndex, c.getLeft().get(), buf));
@@ -198,20 +198,20 @@ public class ItemEditorScreen extends Screen {
     }
 
     public void pauseStackUpdatesFor(int millis) {
-        this.blockUpdateTill = Math.max(net.minecraft.util.Util.getMillis() + millis, this.blockUpdateTill);
+        this.blockUpdateTill = Math.max(net.minecraft.Util.getMillis() + millis, this.blockUpdateTill);
     }
 
     public void recalculatePage(int perPage, boolean findPage) {
         this.attributeTabWidgets.values().forEach(this::removeWidget);
         this.attributeTabWidgets.clear();
 
-        this.maxPages = MathHelper.ceil(this.itemList.size() / (double) perPage);
+        this.maxPages = Mth.ceil(this.itemList.size() / (double) perPage);
 
         if (findPage && this.leftBtn != null && this.rightBtn != null) {
             ItemEditorScreen.current.ifPresent(p -> {
                 int index = this.itemList.indexOf(p.getLeft());
                 if (index >= 0) {
-                    this.currentPage = MathHelper.floor((index + 1) / (double) perPage);
+                    this.currentPage = Mth.floor((index + 1) / (double) perPage);
                     this.leftBtn.active = this.currentPage > 0;
                     this.rightBtn.active = this.currentPage < this.maxPages - 1;
                 }
@@ -226,9 +226,9 @@ public class ItemEditorScreen extends Screen {
             IRegistryDelegate<IItemAttribute> attribute = this.itemList.get(index);
             IItemAttributeClient client = MMTRegistries.getClientMapping().get(attribute);
 
-            IFormattableTextComponent label = new TranslationTextComponent(attribute.get().getTranslationKey());
+            MutableComponent label = new TranslatableComponent(attribute.get().getTranslationKey());
             if (attribute.get().getFeatureState() != State.RELEASE) {
-                label = label.append(new StringTextComponent(" ("+attribute.get().getFeatureState().letter+")").withStyle(TextFormatting.RED));
+                label = label.append(new TextComponent(" ("+attribute.get().getFeatureState().letter+")").withStyle(ChatFormatting.RED));
             }
 
             Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, label, (btn) -> {
@@ -244,7 +244,7 @@ public class ItemEditorScreen extends Screen {
     }
 
     @Override
-    public void render(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stackIn);
         this.minecraft.getTextureManager().bind(Resources.ITEM_EDITOR_SLOT);
         this.blit(stackIn, 13, 13, 0, 0, 35, 35);
@@ -258,7 +258,7 @@ public class ItemEditorScreen extends Screen {
 
         ItemEditorScreen.current.ifPresent(p -> {
             if (p.getRight().shouldRenderTitle(this, this.stack)) {
-                this.minecraft.font.draw(stackIn, new TranslationTextComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
+                this.minecraft.font.draw(stackIn, new TranslatableComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
             }
             p.getRight().render(stackIn, this, this.guiX, this.guiY, this.guiWidth, this.guiHeight);
         });
@@ -289,7 +289,7 @@ public class ItemEditorScreen extends Screen {
             this.renderTooltip(stackIn, this.stack, mouseX, mouseY);
         }
 
-        for (Widget widget : this.buttons) {
+        for (AbstractWidget widget : this.buttons) {
             if (widget.visible && widget.isHovered()) {
                 widget.renderToolTip(stackIn, mouseX, mouseY);
             }
@@ -316,13 +316,13 @@ public class ItemEditorScreen extends Screen {
 //        //TODO Maybe use this over onClose
 //    }
 
-    protected <T extends Widget> T addAttributeWidget(T widgetIn) {
+    protected <T extends AbstractWidget> T addAttributeWidget(T widgetIn) {
         this.addButton(widgetIn);
         this.attributeWidgets.add(widgetIn);
         return widgetIn;
     }
 
-    protected <T extends Widget> T removeWidget(T widgetIn) {
+    protected <T extends AbstractWidget> T removeWidget(T widgetIn) {
         this.buttons.remove(widgetIn);
         this.children.remove(widgetIn);
         return widgetIn;
@@ -337,7 +337,7 @@ public class ItemEditorScreen extends Screen {
         RenderSystem.translatef(0.0F, 0.0F, 32.0F);
         this.setBlitOffset(200);
         this.itemRenderer.blitOffset = 200.0F;
-        net.minecraft.client.gui.FontRenderer font = stack.getItem().getFontRenderer(stack);
+        net.minecraft.client.gui.Font font = stack.getItem().getFontRenderer(stack);
         if (font == null) font = this.font;
         this.itemRenderer.renderAndDecorateItem(stack, x, y);
         this.itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);

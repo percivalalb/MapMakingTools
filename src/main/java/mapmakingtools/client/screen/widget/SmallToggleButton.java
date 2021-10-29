@@ -1,38 +1,38 @@
 package mapmakingtools.client.screen.widget;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
-import net.minecraft.client.gui.widget.button.Button.IPressable;
+import net.minecraft.client.gui.components.Button.OnPress;
 
 public class SmallToggleButton<T> extends ToggleButton<T> {
 
-    private Function<T, ITextComponent> displayFunc;
+    private Function<T, Component> displayFunc;
 
-    public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, ITextComponent> displayFunc, @Nullable ToggleButton<T> previous, IPressable onPress) {
+    public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, Component> displayFunc, @Nullable ToggleButton<T> previous, OnPress onPress) {
         this(xIn, yIn, widthIn, heightIn, values, displayFunc, previous, onPress, Button.NO_TOOLTIP);
     }
 
-    public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, ITextComponent> displayFunc, @Nullable ToggleButton<T> previous, IPressable onPress, Button.ITooltip onTooltip) {
+    public SmallToggleButton(int xIn, int yIn, int widthIn, int heightIn, T[] values, Function<T, Component> displayFunc, @Nullable ToggleButton<T> previous, OnPress onPress, Button.OnTooltip onTooltip) {
         super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY, values, previous, onPress, onTooltip);
         this.displayFunc = displayFunc;
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.font;
+        Font fontrenderer = minecraft.font;
         minecraft.getTextureManager().bind(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());
@@ -47,12 +47,12 @@ public class SmallToggleButton<T> extends ToggleButton<T> {
 
         this.renderBg(stackIn, minecraft, mouseX, mouseY);
         int j = getFGColor();
-        AbstractGui.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+        GuiComponent.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
         RenderSystem.enableDepthTest();
     }
 
     @Override
-    public ITextComponent getMessage() {
+    public Component getMessage() {
         return this.displayFunc.apply(this.getValue());
     }
 }

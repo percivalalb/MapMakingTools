@@ -1,31 +1,31 @@
 package mapmakingtools.client.screen.widget.component;
 
 import com.google.common.base.Predicates;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.lib.Resources;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.Util;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class OtherFormattingSelector extends Widget {
+public class OtherFormattingSelector extends AbstractWidget {
 
-    private static final List<TextFormatting> COLORS = Util.make(() -> Arrays.stream(TextFormatting.values()).filter(Predicates.not(TextFormatting::isColor)).collect(Collectors.toList()));
+    private static final List<ChatFormatting> COLORS = Util.make(() -> Arrays.stream(ChatFormatting.values()).filter(Predicates.not(ChatFormatting::isColor)).collect(Collectors.toList()));
 
-    private Consumer<TextFormatting> action;
+    private Consumer<ChatFormatting> action;
 
-    public OtherFormattingSelector(int xIn, int yIn, Consumer<TextFormatting> action) {
-        super(xIn, yIn, COLORS.size() * 20, 20, new StringTextComponent("Other Formatting Selector"));
+    public OtherFormattingSelector(int xIn, int yIn, Consumer<ChatFormatting> action) {
+        super(xIn, yIn, COLORS.size() * 20, 20, new TextComponent("Other Formatting Selector"));
         this.action = action;
     }
 
@@ -33,21 +33,21 @@ public class OtherFormattingSelector extends Widget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         int index = (int) ((mouseX - this.x) / 20);
-        index = MathHelper.clamp(index, 0, COLORS.size() - 1);
+        index = Mth.clamp(index, 0, COLORS.size() - 1);
         this.action.accept(COLORS.get(index));
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.font;
+        Font fontrenderer = minecraft.font;
         minecraft.getTextureManager().bind(Resources.BUTTON_TEXT_COLOR);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         for (int j = 0; j < COLORS.size(); j++) {
-            TextFormatting formatting = COLORS.get(j);
+            ChatFormatting formatting = COLORS.get(j);
 
             int i = this.getYImage(this.isHovered() && mouseX >= this.x + j * 20 && mouseY >= this.y && mouseX < this.x + (j + 1) * 20 && mouseY < this.y + this.height);
 

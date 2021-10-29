@@ -1,7 +1,7 @@
 package mapmakingtools.lib;
 
 import mapmakingtools.util.Util;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class Resources {
 

@@ -1,7 +1,7 @@
 package mapmakingtools.handler;
 
 import mapmakingtools.MapMakingTools;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -16,8 +16,8 @@ public class Interact {
 
     public static void onMouseClick(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getItemStack().getItem() == MapMakingTools.WRENCH) {
-            ActionResultType type = MapMakingTools.WRENCH.onBlockStartBreak(event.getItemStack(), event.getPos(), event.getFace(), event.getPlayer());
-            if (type != ActionResultType.PASS) {
+            InteractionResult type = MapMakingTools.WRENCH.onBlockStartBreak(event.getItemStack(), event.getPos(), event.getFace(), event.getPlayer());
+            if (type != InteractionResult.PASS) {
                 event.setCanceled(true);
             }
         }

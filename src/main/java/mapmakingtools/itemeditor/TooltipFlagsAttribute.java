@@ -1,21 +1,21 @@
 package mapmakingtools.itemeditor;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.TickButton;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
@@ -26,16 +26,16 @@ import java.util.function.Supplier;
 public class TooltipFlagsAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
             int index = buffer.readInt();
-            CompoundNBT tag = NBTUtil.getOrCreateTag(stack);
+            CompoundTag tag = NBTUtil.getOrCreateTag(stack);
             int flagBinaryString = tag.getInt("HideFlags") ^ (1 << index);
 
             if (flagBinaryString == 0) {
@@ -53,7 +53,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
                 NBTUtil.removeTag(stack, "HideFlags", Constants.NBT.TAG_ANY_NUMERIC);
                 NBTUtil.removeTagIfEmpty(stack);
             } else {
-                CompoundNBT tag1 = NBTUtil.getOrCreateTag(stack);
+                CompoundTag tag1 = NBTUtil.getOrCreateTag(stack);
                 tag1.putInt("HideFlags", (int) Math.pow(2, 6) - 1);
             }
 
@@ -98,14 +98,14 @@ public class TooltipFlagsAttribute extends IItemAttribute {
             private TickButton flagAllButton;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
 
                 for (int i = 0; i < 6; i++) {
                     final int index = i; // creates final variable
 
                     TickButton tickBtn = WidgetFactory.getTickbox(x + 102, y + 16 + 22 * i, this.flagTickButtons.getSafe(i), () -> true, (btn) -> {
                         this.flagAllButton.setTicked(this.allTicked(((TickButton)btn).isTicked()));
-                        PacketBuffer buf = Util.createBuf();
+                        FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(0);
                         buf.writeInt(index);
                         update.accept(buf);
@@ -128,15 +128,15 @@ public class TooltipFlagsAttribute extends IItemAttribute {
             }
 
             @Override
-            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().font;
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
-                font.draw(stackIn, new TranslationTextComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
+            public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
+                Font font = screen.getMinecraft().font;
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
             }
 
             @Override

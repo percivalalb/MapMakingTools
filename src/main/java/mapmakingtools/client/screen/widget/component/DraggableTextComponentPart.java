@@ -3,7 +3,7 @@ package mapmakingtools.client.screen.widget.component;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.client.screen.widget.SmallButton;
@@ -12,38 +12,38 @@ import mapmakingtools.client.screen.widget.WidgetUtil;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
-public abstract class DraggableTextComponentPart extends Widget {
+public abstract class DraggableTextComponentPart extends AbstractWidget {
 
     protected TextComponentMakerWidget parent;
-    private List<? extends Widget> editWidget;
+    private List<? extends AbstractWidget> editWidget;
 
-    public DraggableTextComponentPart(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, TextComponentMakerWidget parent) {
+    public DraggableTextComponentPart(int xIn, int yIn, int widthIn, int heightIn, Component title, TextComponentMakerWidget parent) {
         super(xIn, yIn, widthIn, heightIn, title);
         this.parent = parent;
     }
 
-    public final List<? extends Widget> getOrCreateEditWidget() {
+    public final List<? extends AbstractWidget> getOrCreateEditWidget() {
         if (this.editWidget == null) {
             this.editWidget = this.createEditWidget();
         }
@@ -51,10 +51,10 @@ public abstract class DraggableTextComponentPart extends Widget {
         return this.editWidget;
     }
 
-    public abstract List<? extends Widget> createEditWidget();
+    public abstract List<? extends AbstractWidget> createEditWidget();
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         // Check disconnections
         Collection<Entry<Direction, DraggableTextComponentPart>> connections = this.getConnectionEntries();
 
@@ -64,19 +64,19 @@ public abstract class DraggableTextComponentPart extends Widget {
             Direction dir = connection.getKey();
             DraggableTextComponentPart otherPart = connection.getValue();
 
-            Vector2f thisSide = WidgetUtil.getCentreOfSide(this, dir.getOpposite());
-            Vector2f otherSide = WidgetUtil.getCentreOfSide(otherPart, dir);
+            Vec2 thisSide = WidgetUtil.getCentreOfSide(this, dir.getOpposite());
+            Vec2 otherSide = WidgetUtil.getCentreOfSide(otherPart, dir);
 
-            BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
+            BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
             GL11.glLineWidth(2.5F);
 
-            bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+            bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormat.POSITION_COLOR);
             bufferbuilder.vertex(thisSide.x, thisSide.y, 0).color(0, 0, 0, 255).endVertex();
             bufferbuilder.vertex(otherSide.x, otherSide.y, 0).color(0, 0, 0, 255).endVertex();
 
             bufferbuilder.end();
             RenderSystem.enableAlphaTest();
-            WorldVertexBufferUploader.end(bufferbuilder);
+            BufferUploader.end(bufferbuilder);
         }
         RenderSystem.popMatrix();
     }
@@ -101,8 +101,8 @@ public abstract class DraggableTextComponentPart extends Widget {
                 widget.y += changeY1;
             }
 
-            widget.x = MathHelper.clamp(widget.x, widget.parent.x, widget.parent.x + widget.parent.getWidth() - widget.getWidth());
-            widget.y = MathHelper.clamp(widget.y, widget.parent.y, widget.parent.y + widget.parent.getHeight() - widget.getHeight() - 29);
+            widget.x = Mth.clamp(widget.x, widget.parent.x, widget.parent.x + widget.parent.getWidth() - widget.getWidth());
+            widget.y = Mth.clamp(widget.y, widget.parent.y, widget.parent.y + widget.parent.getHeight() - widget.getHeight() - 29);
         };
 
         if (Screen.hasShiftDown()) {
@@ -147,11 +147,11 @@ public abstract class DraggableTextComponentPart extends Widget {
 
     public abstract boolean canConnectTo(DraggableTextComponentPart otherPart, Direction direction);
 
-    public abstract ITextComponent create();
+    public abstract Component create();
 
     public abstract int applyOrder();
 
-    public abstract ITextComponent apply(ITextComponent textComponent);
+    public abstract Component apply(Component textComponent);
 
     public boolean canBeStartingPiece() {
         return true;
@@ -159,18 +159,18 @@ public abstract class DraggableTextComponentPart extends Widget {
 
     public static class StylePart extends DraggableTextComponentPart {
 
-        private TextFormatting color;
+        private ChatFormatting color;
 
-        public StylePart(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, TextComponentMakerWidget parent, TextFormatting color) {
+        public StylePart(int xIn, int yIn, int widthIn, int heightIn, Component title, TextComponentMakerWidget parent, ChatFormatting color) {
             super(xIn, yIn, widthIn, heightIn, title, parent);
             this.color = color;
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
             super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
-            FontRenderer fontrenderer = minecraft.font;
+            Font fontrenderer = minecraft.font;
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
@@ -202,36 +202,36 @@ public abstract class DraggableTextComponentPart extends Widget {
 
 
             if (!this.color.isColor()) {
-                this.drawCenteredString(stackIn, fontrenderer, this.getLabel(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+                this.drawCenteredString(stackIn, fontrenderer, this.getLabel(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
             } else {
                // this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
             }
         }
 
-        public ITextComponent getLabel() {
+        public Component getLabel() {
             return this.getLabel(this.color);
         }
 
-        public ITextComponent getLabel(TextFormatting formattingIn) {
+        public Component getLabel(ChatFormatting formattingIn) {
             if (formattingIn.isFormat()) {
                 switch (formattingIn) {
-                    case BOLD: return new StringTextComponent("B").withStyle(TextFormatting.BOLD);
-                    case STRIKETHROUGH: return new StringTextComponent("S").withStyle(TextFormatting.STRIKETHROUGH);
-                    case UNDERLINE: return new StringTextComponent("U").withStyle(TextFormatting.UNDERLINE);
-                    case ITALIC: return new StringTextComponent("I").withStyle(TextFormatting.ITALIC);
-                    case OBFUSCATED: return new StringTextComponent("O").withStyle(TextFormatting.OBFUSCATED);
+                    case BOLD: return new TextComponent("B").withStyle(ChatFormatting.BOLD);
+                    case STRIKETHROUGH: return new TextComponent("S").withStyle(ChatFormatting.STRIKETHROUGH);
+                    case UNDERLINE: return new TextComponent("U").withStyle(ChatFormatting.UNDERLINE);
+                    case ITALIC: return new TextComponent("I").withStyle(ChatFormatting.ITALIC);
+                    case OBFUSCATED: return new TextComponent("O").withStyle(ChatFormatting.OBFUSCATED);
                 }
 
             }
 
-            return new StringTextComponent("?");
+            return new TextComponent("?");
         }
 
         @Override
         public boolean canConnectTo(DraggableTextComponentPart otherPart, Direction direction) {
             if (otherPart instanceof StylePart) {
                 StylePart otherStyle = (StylePart)otherPart;
-                if (otherStyle.color.isColor() && this.color.isColor() || (this.color == otherStyle.color && otherStyle.color != TextFormatting.RESET)) {
+                if (otherStyle.color.isColor() && this.color.isColor() || (this.color == otherStyle.color && otherStyle.color != ChatFormatting.RESET)) {
                     return false;
                 }
             }
@@ -240,18 +240,18 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public ITextComponent create() {
+        public Component create() {
             return apply(TextUtil.EMPTY);
         }
 
 
         @Override
         public int applyOrder() {
-            return this.color == TextFormatting.RESET ? -1 : 0;
+            return this.color == ChatFormatting.RESET ? -1 : 0;
         }
 
         @Override
-        public ITextComponent apply(ITextComponent textComponent) {
+        public Component apply(Component textComponent) {
             return textComponent.plainCopy().withStyle(this.color);
         }
 
@@ -261,7 +261,7 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public List<? extends Widget> createEditWidget() {
+        public List<? extends AbstractWidget> createEditWidget() {
             if (this.color.isColor()) {
                 ColorFormattingSelector widget = new ColorFormattingSelector(this.parent.x + (this.parent.getWidth() - 320) / 2, this.parent.y + this.parent.getHeight() - 25, (formatting) -> {
                     this.color = formatting;
@@ -269,9 +269,9 @@ public abstract class DraggableTextComponentPart extends Widget {
 
                 return Collections.unmodifiableList(Lists.newArrayList(widget));
             } else {
-                List<Widget> options = new ArrayList<>();
+                List<AbstractWidget> options = new ArrayList<>();
                 int i = 0;
-                for (TextFormatting formatting : TextFormatting.values()) {
+                for (ChatFormatting formatting : ChatFormatting.values()) {
                     if (formatting.isColor()) {
                         continue;
                     }
@@ -292,15 +292,15 @@ public abstract class DraggableTextComponentPart extends Widget {
         private boolean translation = false;
         private String text = "";
 
-        public ComponentPart(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, TextComponentMakerWidget parent) {
+        public ComponentPart(int xIn, int yIn, int widthIn, int heightIn, Component title, TextComponentMakerWidget parent) {
             super(xIn, yIn, widthIn, heightIn, title, parent);
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
             super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
-            FontRenderer fontrenderer = minecraft.font;
+            Font fontrenderer = minecraft.font;
             minecraft.getTextureManager().bind(WIDGETS_LOCATION);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
@@ -315,7 +315,7 @@ public abstract class DraggableTextComponentPart extends Widget {
 
             this.renderBg(stackIn, minecraft, mouseX, mouseY);
             int j = getFGColor();
-            this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+            this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
         }
 
         @Override
@@ -325,11 +325,11 @@ public abstract class DraggableTextComponentPart extends Widget {
 
         @SuppressWarnings("unchecked")
         @Override
-        public ITextComponent create() {
+        public Component create() {
             if (!this.translation) {
-                return new StringTextComponent(this.text);
+                return new TextComponent(this.text);
             } else {
-                return new TranslationTextComponent(this.text);
+                return new TranslatableComponent(this.text);
             }
         }
 
@@ -339,24 +339,24 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public ITextComponent apply(ITextComponent textComponent) {
-            ITextComponent comp = this.create();
+        public Component apply(Component textComponent) {
+            Component comp = this.create();
             textComponent.plainCopy().append(comp);
             return comp;
         }
 
         @Override
-        public List<? extends Widget> createEditWidget() {
-            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
+        public List<? extends AbstractWidget> createEditWidget() {
+            EditBox widget = new EditBox(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
             widget.setResponder((str) -> {
                 this.text = str;
             });
-            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, new StringTextComponent("Exact"), new Boolean[] {true, false}, null, (btn) -> {
+            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, new TextComponent("Exact"), new Boolean[] {true, false}, null, (btn) -> {
                 this.translation = ((ToggleButton<Boolean>) btn).getValue();
                 if (this.translation) {
-                    btn.setMessage(new StringTextComponent("Trans"));
+                    btn.setMessage(new TextComponent("Trans"));
                 } else {
-                    btn.setMessage(new StringTextComponent("Exact"));
+                    btn.setMessage(new TextComponent("Exact"));
                 }
             });
             return Collections.unmodifiableList(Lists.newArrayList(widget, toggleButton));
@@ -365,15 +365,15 @@ public abstract class DraggableTextComponentPart extends Widget {
 
     public static class NewLinePart extends DraggableTextComponentPart {
 
-        public NewLinePart(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, TextComponentMakerWidget parent) {
+        public NewLinePart(int xIn, int yIn, int widthIn, int heightIn, Component title, TextComponentMakerWidget parent) {
             super(xIn, yIn, widthIn, heightIn, title, parent);
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
             super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
-            FontRenderer fontrenderer = minecraft.font;
+            Font fontrenderer = minecraft.font;
             minecraft.getTextureManager().bind(WIDGETS_LOCATION);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
@@ -388,7 +388,7 @@ public abstract class DraggableTextComponentPart extends Widget {
 
             this.renderBg(stackIn, minecraft, mouseX, mouseY);
             int j = getFGColor();
-            this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+            this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
         }
 
         @Override
@@ -397,8 +397,8 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public ITextComponent create() {
-            return new StringTextComponent("\n");
+        public Component create() {
+            return new TextComponent("\n");
         }
 
         @Override
@@ -407,15 +407,15 @@ public abstract class DraggableTextComponentPart extends Widget {
         }
 
         @Override
-        public ITextComponent apply(ITextComponent textComponent) {
-            ITextComponent comp = this.create();
+        public Component apply(Component textComponent) {
+            Component comp = this.create();
             textComponent.plainCopy().append(comp);
             return comp;
         }
 
         @Override
-        public List<? extends Widget> createEditWidget() {
-            TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
+        public List<? extends AbstractWidget> createEditWidget() {
+            EditBox widget = new EditBox(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
             widget.setResponder((str) -> {});
             return Collections.unmodifiableList(Lists.newArrayList(widget));
         }

@@ -9,21 +9,21 @@ import mapmakingtools.client.screen.widget.ToggleBoxList;
 import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.command.arguments.BlockStateParser;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.Property;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 public class CanPlaceOnAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
@@ -45,11 +45,11 @@ public class CanPlaceOnAttribute extends IItemAttribute {
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
             int amount = buffer.readInt();
-            ListNBT blockPlaceList = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Constants.NBT.TAG_STRING);
+            ListTag blockPlaceList = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Constants.NBT.TAG_STRING);
 
             for (int i = 0; i < amount; i++) {
 //                StringBuilder stringbuilder = new StringBuilder(block.getRegistryName().toString());
@@ -99,7 +99,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
             return stack;
         case 1:
             int amount2 = buffer.readInt();
-            ListNBT blockPlaceList2 = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Constants.NBT.TAG_STRING);
+            ListTag blockPlaceList2 = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Constants.NBT.TAG_STRING);
 
             for (int i = 0; i < amount2; i++) {
                 ResourceLocation blockTag = buffer.readResourceLocation();
@@ -108,7 +108,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
             return stack;
         case 2:
             if (NBTUtil.hasTag(stack, this.getNBTName(), Constants.NBT.TAG_LIST)) {
-                ListNBT list = stack.getTag().getList(this.getNBTName(), Constants.NBT.TAG_STRING);
+                ListTag list = stack.getTag().getList(this.getNBTName(), Constants.NBT.TAG_STRING);
 
                 int amount1 = buffer.readInt();
                 for (int i = 0; i < amount1; i++) {
@@ -153,7 +153,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
     public List<String> getBlocks(ItemStack stack) {
         List<String> blocks = Lists.newArrayList();
         if (NBTUtil.hasTag(stack, this.getNBTName(), Constants.NBT.TAG_LIST)) {
-            ListNBT blockPlaceList = stack.getTag().getList(this.getNBTName(), Constants.NBT.TAG_STRING);
+            ListTag blockPlaceList = stack.getTag().getList(this.getNBTName(), Constants.NBT.TAG_STRING);
             for (int i = 0; i < blockPlaceList.size(); ++i) {
                 try {
                     BlockStateParser blockstateparser = (new BlockStateParser(new StringReader(blockPlaceList.getString(i)), true)).parse(true);
@@ -181,7 +181,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
             private Button blockTagBtn, addBtn, removeBtn, removeAllBtn;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.blockList = new ToggleBoxList<>(x + 2, y + 12, 200, (height - 80) / 2, this.blockList);
                 this.blockList.setSelectionGroupManager(ToggleBoxGroup.builder(Block.class).min(1).max(1).listen((selection) -> {
                     if (!selection.isEmpty()) {
@@ -215,16 +215,16 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.currentPlacableList.setSelectionGroupManager(ToggleBoxGroup.builder(String.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> { this.removeBtn.active = !selection.isEmpty(); }).build());
                 this.currentPlacableList.setValues(getBlocks(stack), Objects::toString, this.currentPlacableList);
 
-                this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, new TranslationTextComponent(getTranslationKey("button.tag")), (btn) -> {
+                this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.tag")), (btn) -> {
                     this.blockList.visible = this.tagList.visible;
 //                    this.blockPropertiesList.visible = this.blockList.visible;
                     this.tagList.visible = !this.tagList.visible;
                     this.updateAddButton();
-                    btn.setMessage(new TranslationTextComponent(getTranslationKey(this.blockList.visible ? "button.tag" : "button.block")));
+                    btn.setMessage(new TranslatableComponent(getTranslationKey(this.blockList.visible ? "button.tag" : "button.block")));
                 });
 
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslationTextComponent(getTranslationKey("button.add")), (btn) -> {
-                    PacketBuffer buf = Util.createBuf();
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.add")), (btn) -> {
+                    FriendlyByteBuf buf = Util.createBuf();
 
 
                     if (this.blockList.visible) {
@@ -264,8 +264,8 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 });
                 this.addBtn.active = false;
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
-                    PacketBuffer buf = Util.createBuf();
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                    FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(2);
                     List<String> blockStates = this.currentPlacableList.getGroupManager().getSelected();
                     buf.writeInt(blockStates.size());
@@ -275,7 +275,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
 
                 add.accept(this.blockList);
                 add.accept(this.tagList);

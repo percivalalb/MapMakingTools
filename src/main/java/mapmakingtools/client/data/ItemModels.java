@@ -3,8 +3,8 @@ package mapmakingtools.client.data;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.lib.Constants;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -24,19 +24,19 @@ public class ItemModels extends ItemModelProvider {
         handheld(MapMakingTools.WRENCH.delegate);
     }
 
-    private String name(Supplier<? extends IItemProvider> item) {
+    private String name(Supplier<? extends ItemLike> item) {
         return item.get().asItem().getRegistryName().getPath();
     }
 
-    private ResourceLocation itemTexture(Supplier<? extends IItemProvider> item) {
+    private ResourceLocation itemTexture(Supplier<? extends ItemLike> item) {
         return modLoc(ModelProvider.ITEM_FOLDER + "/" + name(item));
     }
 
-    private ItemModelBuilder handheld(Supplier<? extends IItemProvider> item) {
+    private ItemModelBuilder handheld(Supplier<? extends ItemLike> item) {
         return handheld(item, itemTexture(item));
     }
 
-    private ItemModelBuilder handheld(Supplier<? extends IItemProvider> item, ResourceLocation texture) {
+    private ItemModelBuilder handheld(Supplier<? extends ItemLike> item, ResourceLocation texture) {
         return getBuilder(name(item)).parent(new ModelFile.UncheckedModelFile(ModelProvider.ITEM_FOLDER + "/handheld")).texture("layer0", texture);
     }
 }

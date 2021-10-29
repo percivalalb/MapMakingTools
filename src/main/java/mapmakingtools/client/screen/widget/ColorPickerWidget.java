@@ -1,19 +1,19 @@
 package mapmakingtools.client.screen.widget;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.util.TextUtil;
 import mapmakingtools.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix4f;
+import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -38,8 +38,8 @@ public class ColorPickerWidget extends NestedWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
-        for (Widget widget : this.children) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        for (AbstractWidget widget : this.children) {
             widget.render(stackIn, mouseX, mouseY, partialTicks);
         }
 
@@ -47,7 +47,7 @@ public class ColorPickerWidget extends NestedWidget {
         this.drawSingleColor(stackIn, this.x + this.width + 5, this.y + 31, 20, 20, this.getColorPicked());
 
         Minecraft mc = Minecraft.getInstance();
-        FontRenderer font = mc.font;
+        Font font = mc.font;
         font.draw(stackIn, "RBG: " + Arrays.toString(this.getColorPicked()), this.x + this.width + 5, this.y, 0);
         font.draw(stackIn, "Base: " + Arrays.toString(this.getBaseColor()), this.x + this.width + 5, this.y + 11, 0);
         font.draw(stackIn, "Hex: " + Util.toHex(this.getColorPicked()), this.x + this.width + 5, this.y + 20, 0);
@@ -129,45 +129,45 @@ public class ColorPickerWidget extends NestedWidget {
     }
 
 
-    protected void testFillGradient(MatrixStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
+    protected void testFillGradient(PoseStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
        Matrix4f matrix = stackIn.last().pose();
        this.enableGradientDrawing();
-       BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
-       bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+       BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+       bufferbuilder.begin(7, DefaultVertexFormat.POSITION_COLOR);
        bufferbuilder.vertex(matrix, xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
        bufferbuilder.vertex(matrix, xIn, yIn, this.getBlitOffset()).color(255, 255, 255, 255).endVertex();
        bufferbuilder.vertex(matrix, xIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
        bufferbuilder.vertex(matrix, xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
        bufferbuilder.end();
-       WorldVertexBufferUploader.end(bufferbuilder);
+       BufferUploader.end(bufferbuilder);
        this.disableGradientDrawing();
     }
 
-    protected void drawSingleColor(MatrixStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
+    protected void drawSingleColor(PoseStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
         Matrix4f matrix = stackIn.last().pose();
         this.enableGradientDrawing();
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(7, DefaultVertexFormat.POSITION_COLOR);
         bufferbuilder.vertex(xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.vertex(xIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.vertex(xIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.vertex(xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.end();
-        WorldVertexBufferUploader.end(bufferbuilder);
+        BufferUploader.end(bufferbuilder);
         this.disableGradientDrawing();
      }
 
-    protected void fillGradientHorizontal(MatrixStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] left, int[] right) {
+    protected void fillGradientHorizontal(PoseStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] left, int[] right) {
         Matrix4f matrix = stackIn.last().pose();
         this.enableGradientDrawing();
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(7, DefaultVertexFormat.POSITION_COLOR);
         bufferbuilder.vertex(xIn + widthIn, yIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
         bufferbuilder.vertex(xIn, yIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
         bufferbuilder.vertex(xIn, yIn + heightIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
         bufferbuilder.vertex(xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
         bufferbuilder.end();
-        WorldVertexBufferUploader.end(bufferbuilder);
+        BufferUploader.end(bufferbuilder);
         this.disableGradientDrawing();
      }
 
@@ -186,7 +186,7 @@ public class ColorPickerWidget extends NestedWidget {
         RenderSystem.enableTexture();
     }
 
-    public class MainColorWidget extends Widget {
+    public class MainColorWidget extends AbstractWidget {
 
         private int[] mainColor = new int[] {255, 0, 0};
         private int[] contrastColor = WHITE;
@@ -195,7 +195,7 @@ public class ColorPickerWidget extends NestedWidget {
         private double distanceY = 0;
 
         public MainColorWidget(int xIn, int yIn, int widthIn, int heightIn, @Nullable MainColorWidget previous) {
-            super(xIn, yIn, widthIn, heightIn, new StringTextComponent("Main Color Picker"));
+            super(xIn, yIn, widthIn, heightIn, new TextComponent("Main Color Picker"));
 
             if (previous != null) {
                 this.mainColor = previous.mainColor;
@@ -206,7 +206,7 @@ public class ColorPickerWidget extends NestedWidget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.disableTexture();
             ColorPickerWidget.this.testFillGradient(stackIn, this.x, this.y, this.width, this.height, ColorPickerWidget.this.getBaseColor());
 
@@ -222,8 +222,8 @@ public class ColorPickerWidget extends NestedWidget {
         public void onClick(double mouseX, double mouseY) {
             this.distanceX = (mouseX - this.x) / this.width;
             this.distanceY = (mouseY - this.y) / this.height;
-            this.distanceX =  MathHelper.clamp(this.distanceX, 0, 1.0D);
-            this.distanceY = MathHelper.clamp(this.distanceY, 0, 1.0D);
+            this.distanceX =  Mth.clamp(this.distanceX, 0, 1.0D);
+            this.distanceY = Mth.clamp(this.distanceY, 0, 1.0D);
 
             ColorPickerWidget.this.recalculateColor();
         }
@@ -252,7 +252,7 @@ public class ColorPickerWidget extends NestedWidget {
 
     }
 
-    public class BaseColorWidget extends Widget {
+    public class BaseColorWidget extends AbstractWidget {
 
         private int[] baseColor = new int[] {255, 0, 0};
         private int[] contrastColor = WHITE;
@@ -261,7 +261,7 @@ public class ColorPickerWidget extends NestedWidget {
         private double distX = 0;
 
         public BaseColorWidget(int xIn, int yIn, int widthIn, int heightIn, @Nullable BaseColorWidget previous) {
-            super(xIn, yIn, widthIn, heightIn, new StringTextComponent("Base Color Picker"));
+            super(xIn, yIn, widthIn, heightIn, new TextComponent("Base Color Picker"));
 
             if (previous != null) {
                 this.baseColor = previous.baseColor;
@@ -272,7 +272,7 @@ public class ColorPickerWidget extends NestedWidget {
         }
 
         @Override
-        public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.disableTexture();
 
             int w = this.width / (PRIMARY_COLORS.length - 1);
@@ -293,17 +293,17 @@ public class ColorPickerWidget extends NestedWidget {
         public void onClick(double mouseX, double mouseY) {
             int w = this.width / (PRIMARY_COLORS.length - 1);
 
-            int index = MathHelper.floor((mouseX - this.x) / w);
-            index = MathHelper.clamp(index, 0, PRIMARY_COLORS.length - 2);
+            int index = Mth.floor((mouseX - this.x) / w);
+            index = Mth.clamp(index, 0, PRIMARY_COLORS.length - 2);
             this.indexIn = index;
 
             double distance = (mouseX - this.x) / w  - index;
-            distance = MathHelper.clamp(distance, 0, 1.0D);
+            distance = Mth.clamp(distance, 0, 1.0D);
             this.distX = distance;
 
             int[] intermediate = new int[3];
             for (int i = 0; i < 3; i++) {
-                intermediate[i] = MathHelper.floor(PRIMARY_COLORS[index][i] + (PRIMARY_COLORS[index+1][i] - PRIMARY_COLORS[index][i]) * distance);
+                intermediate[i] = Mth.floor(PRIMARY_COLORS[index][i] + (PRIMARY_COLORS[index+1][i] - PRIMARY_COLORS[index][i]) * distance);
             }
 
             this.setBaseColor(intermediate);

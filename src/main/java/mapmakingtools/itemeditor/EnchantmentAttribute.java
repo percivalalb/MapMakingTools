@@ -9,19 +9,19 @@ import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 public class EnchantmentAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
@@ -47,7 +47,7 @@ public class EnchantmentAttribute extends IItemAttribute {
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
             int level = buffer.readInt();
@@ -60,13 +60,13 @@ public class EnchantmentAttribute extends IItemAttribute {
             return stack;
         case 1:
             if (NBTUtil.hasTag(stack, getNBTName(), Constants.NBT.TAG_LIST)) {
-                ListNBT enchantments = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
+                ListTag enchantments = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
                 int amount2 = buffer.readInt();
                 for (int i = 0; i < amount2; i++) {
                     EnchantmentDetails details = EnchantmentDetails.readFromBuffer(buffer);
 
                     for (int j = 0; j < enchantments.size(); j++) {
-                        CompoundNBT nbt = enchantments.getCompound(j);
+                        CompoundTag nbt = enchantments.getCompound(j);
                         if (details.equals(nbt)) {
                             enchantments.remove(j);
                             break;
@@ -94,9 +94,9 @@ public class EnchantmentAttribute extends IItemAttribute {
     public List<EnchantmentDetails> getEnchaments(ItemStack stack) {
         List<EnchantmentDetails> enchantments = Lists.newArrayList();
         if (NBTUtil.hasTag(stack, getNBTName(), Constants.NBT.TAG_LIST)) {
-            ListNBT enchantmentList = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
+            ListTag enchantmentList = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < enchantmentList.size(); ++i) {
-                CompoundNBT t = enchantmentList.getCompound(i);
+                CompoundTag t = enchantmentList.getCompound(i);
                 Optional.ofNullable(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(t.getString("id")))).ifPresent((enchantment) -> {
                     enchantments.add(new EnchantmentDetails(enchantment, t.getInt("lvl")));
                 });
@@ -115,14 +115,14 @@ public class EnchantmentAttribute extends IItemAttribute {
             this.level = level;
         }
 
-        public static EnchantmentDetails readFromBuffer(PacketBuffer buf) {
+        public static EnchantmentDetails readFromBuffer(FriendlyByteBuf buf) {
             Enchantment ench = buf.readRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS);
             int level = buf.readInt();
 
             return new EnchantmentDetails(ench, level);
         }
 
-        public boolean equals(CompoundNBT nbt) {
+        public boolean equals(CompoundTag nbt) {
             if (nbt.getInt("lvl") != this.level) {
                 return false;
             }
@@ -151,10 +151,10 @@ public class EnchantmentAttribute extends IItemAttribute {
             private ToggleBoxList<Enchantment> enchantmentList;
             private ToggleBoxList<EnchantmentDetails> currentEnchantmentList;
             private Button addBtn, removeBtn, removeAllBtn;
-            private TextFieldWidget lvlInput;
+            private EditBox lvlInput;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.enchantmentList = new ToggleBoxList<>(x + 2, y + 12, width - 4, (height - 80) / 2, this.enchantmentList);
                 this.enchantmentList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
                 this.enchantmentList.setValues(ForgeRegistries.ENCHANTMENTS.getValues(), Enchantment::getRegistryName, this.enchantmentList);
@@ -164,8 +164,8 @@ public class EnchantmentAttribute extends IItemAttribute {
                 this.currentEnchantmentList.setValues(getEnchaments(stack), EnchantmentDetails::getDisplayString, this.currentEnchantmentList);
 
                 //this.currentEnchantmentList.set
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslationTextComponent(getTranslationKey("button.add")), (btn) -> {
-                    PacketBuffer buf = Util.createBuf();
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.add")), (btn) -> {
+                    FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
                     List<Enchantment> enchamtments = this.enchantmentList.getGroupManager().getSelected();
                     buf.writeInt(Integer.valueOf(this.lvlInput.getValue()));
@@ -176,8 +176,8 @@ public class EnchantmentAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
-                    PacketBuffer buf = Util.createBuf();
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                    FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(1);
                     List<EnchantmentDetails> enchamtments = this.currentEnchantmentList.getGroupManager().getSelected();
                     System.out.println(enchamtments);
@@ -190,7 +190,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(2, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(2, update));
 
                 this.lvlInput = WidgetFactory.getTextField(screen, x + 2, y + height / 2 - 20, 50, 14, this.lvlInput, "1"::toString);
                 this.lvlInput.setMaxLength(3);

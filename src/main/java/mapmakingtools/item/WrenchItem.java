@@ -5,28 +5,34 @@ import mapmakingtools.api.util.IFeatureState;
 import mapmakingtools.api.util.State;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.SelectionManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SnowBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.text.*;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class WrenchItem extends Item {
 
@@ -35,24 +41,24 @@ public class WrenchItem extends Item {
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Mode mode = this.getMode(stack);
         if (!FeatureAvailability.canEdit(context.getPlayer()) || !mode.canUse()) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
 
         switch (mode) {
             case BLOCK_EDIT:
                 BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-                TileEntity tileEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+                BlockEntity tileEntity = context.getLevel().getBlockEntity(context.getClickedPos());
                 if (state.getBlock().is(Blocks.SNOW)) {
-                    int i = state.getValue(SnowBlock.LAYERS);
-                    BlockState rotState = state.setValue(SnowBlock.LAYERS, context.getPlayer().isShiftKeyDown() ? ((i + 6) % 8) + 1 : i % 8 + 1);
+                    int i = state.getValue(SnowLayerBlock.LAYERS);
+                    BlockState rotState = state.setValue(SnowLayerBlock.LAYERS, context.getPlayer().isShiftKeyDown() ? ((i + 6) % 8) + 1 : i % 8 + 1);
                     if (!context.getLevel().isClientSide) {
                         context.getLevel().setBlock(context.getClickedPos(), rotState, Constants.BlockFlags.DEFAULT);
                     }
 
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
 
                 BlockState rotState = context.getPlayer().isShiftKeyDown()
@@ -64,10 +70,10 @@ public class WrenchItem extends Item {
                         context.getLevel().setBlock(context.getClickedPos(), rotState, Constants.BlockFlags.DEFAULT);
                     }
 
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
 
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             case QUICK_BUILD:
                 if (!context.getLevel().isClientSide) {
                     BlockPos pos = context.getClickedPos();
@@ -79,20 +85,20 @@ public class WrenchItem extends Item {
                     if (selManager.setSecondary(context.getPlayer(), pos)) {
                         selManager.sync(context.getPlayer());
                     }
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             case ENTITY_EDIT:
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
         }
 
         return null;
     }
 
-    public ActionResultType onBlockStartBreak(ItemStack stack, BlockPos pos, Direction face, PlayerEntity player) {
+    public InteractionResult onBlockStartBreak(ItemStack stack, BlockPos pos, Direction face, Player player) {
         Mode mode = this.getMode(stack);
         if (!FeatureAvailability.canEdit(player) || !mode.canUse()) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (mode == Mode.QUICK_BUILD) {
@@ -106,20 +112,20 @@ public class WrenchItem extends Item {
                     selManager.sync(player);
                 }
 
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
 
     @Override
-    public ITextComponent getName(ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Mode mode = this.getMode(stack);
-        IFormattableTextComponent label = new TranslationTextComponent(this.getDescriptionId(stack));
+        MutableComponent label = new TranslatableComponent(this.getDescriptionId(stack));
         if (mode.getFeatureState() != State.RELEASE) {
-            label = label.append(new StringTextComponent(" ("+mode.getFeatureState().letter+")").withStyle(TextFormatting.RED));
+            label = label.append(new TextComponent(" ("+mode.getFeatureState().letter+")").withStyle(ChatFormatting.RED));
         }
         return label;
     }
@@ -130,14 +136,14 @@ public class WrenchItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         Mode mode = this.getMode(stack);
         if (!mode.canUse()) {
-            tooltip.add(new TranslationTextComponent("item.mapmakingtools.wrench.in_development").withStyle(TextFormatting.ITALIC));
+            tooltip.add(new TranslatableComponent("item.mapmakingtools.wrench.in_development").withStyle(ChatFormatting.ITALIC));
         } else {
-            tooltip.add(new TranslationTextComponent(this.getDescriptionId(stack) + ".desc.1", new TranslationTextComponent(this.getDescriptionId(stack) + ".word.primary").withStyle(TextFormatting.YELLOW)));
-            tooltip.add(new TranslationTextComponent(this.getDescriptionId(stack) + ".desc.2", new TranslationTextComponent(this.getDescriptionId(stack) + ".word.secondary").withStyle(TextFormatting.AQUA)));
-            tooltip.add(new TranslationTextComponent(this.getDescriptionId(stack) + ".desc.3"));
+            tooltip.add(new TranslatableComponent(this.getDescriptionId(stack) + ".desc.1", new TranslatableComponent(this.getDescriptionId(stack) + ".word.primary").withStyle(ChatFormatting.YELLOW)));
+            tooltip.add(new TranslatableComponent(this.getDescriptionId(stack) + ".desc.2", new TranslatableComponent(this.getDescriptionId(stack) + ".word.secondary").withStyle(ChatFormatting.AQUA)));
+            tooltip.add(new TranslatableComponent(this.getDescriptionId(stack) + ".desc.3"));
         }
     }
 

@@ -1,10 +1,10 @@
 package mapmakingtools.api.worldeditor;
 
 import net.minecraft.command.arguments.BlockStateInput;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 @FunctionalInterface
 public interface Action {
 
-    public ICachedArea doAction(PlayerEntity player, ISelection selection, CachedBlock input);
+    public ICachedArea doAction(Player player, ISelection selection, CachedBlock input);
 }

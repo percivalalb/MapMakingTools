@@ -5,8 +5,8 @@ import mapmakingtools.network.PacketUpdateLastCommand;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.storage.WorldData;
 import mapmakingtools.worldeditor.CommandTracker;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
@@ -30,11 +30,11 @@ public class World {
         }
 
         Entity entity = e.getEntity();
-        if (!(entity instanceof ServerPlayerEntity)) {
+        if (!(entity instanceof ServerPlayer)) {
             return;
         }
 
-        ServerPlayerEntity player = (ServerPlayerEntity) entity;
+        ServerPlayer player = (ServerPlayer) entity;
 
         // TODO Combine
         DimensionData.get(e.getWorld()).getSelectionManager().sync(player);

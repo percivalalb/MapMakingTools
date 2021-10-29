@@ -7,11 +7,11 @@ import javax.annotation.Nullable;
 
 import mapmakingtools.api.util.IFeatureState;
 import mapmakingtools.api.util.State;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Util;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.Util;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> implements IFeatureState {
@@ -40,11 +40,11 @@ public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> 
      * @param stack The stack in question
      * @return If the stack can have the given attribute
      */
-    public boolean isApplicable(PlayerEntity player, ItemStack stack) {
+    public boolean isApplicable(Player player, ItemStack stack) {
         return this.isApplicable(player, stack.getItem());
     }
 
-    public abstract boolean isApplicable(PlayerEntity player, Item item);
+    public abstract boolean isApplicable(Player player, Item item);
 
     /**
      *
@@ -52,11 +52,11 @@ public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> 
      * @param buffer Data sent from the client
      */
     @Deprecated // Call player sensitive version
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         throw new UnsupportedOperationException();
     }
 
-    public ItemStack read(ItemStack stack, PacketBuffer buffer, @Nullable PlayerEntity player) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer, @Nullable Player player) {
         return this.read(stack, buffer);
     }
 

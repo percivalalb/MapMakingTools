@@ -16,10 +16,10 @@ import mapmakingtools.itemeditor.*;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.network.*;
 import mapmakingtools.util.Util;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -100,7 +100,7 @@ public class MapMakingTools {
     }
 
     public void registerCommands(final RegisterCommandsEvent event) {
-        CommandDispatcher<CommandSource> dispatcher =  event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher =  event.getDispatcher();
         UndoCommand.register(dispatcher);
         RedoCommand.register(dispatcher);
         WorldEditCommand.register(dispatcher);

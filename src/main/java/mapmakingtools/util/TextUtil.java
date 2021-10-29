@@ -1,10 +1,10 @@
 package mapmakingtools.util;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 public class TextUtil {
 
-    public static final ITextComponent EMPTY = StringTextComponent.EMPTY;
+    public static final Component EMPTY = TextComponent.EMPTY;
 
 }

@@ -1,9 +1,9 @@
 package mapmakingtools.client.screen.widget;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec2;
 
 public class WidgetUtil {
 
@@ -12,7 +12,7 @@ public class WidgetUtil {
      *
      * A copy of {@link TextFieldWidget#setText(String)} with necessary changes
      */
-    public static void setTextQuietly(TextFieldWidget widget, String textIn) {
+    public static void setTextQuietly(EditBox widget, String textIn) {
         // If text is equal do nothing
         if (textIn.equals(widget.value)) {
             return;
@@ -32,7 +32,7 @@ public class WidgetUtil {
     }
 
 
-    public static Vector2f getCentreOfSide(Widget widget, Direction dir) {
+    public static Vec2 getCentreOfSide(AbstractWidget widget, Direction dir) {
         float x = widget.x;
         float y = widget.y;
 
@@ -57,6 +57,6 @@ public class WidgetUtil {
             break;
         }
 
-        return new Vector2f(x, y);
+        return new Vec2(x, y);
     }
 }

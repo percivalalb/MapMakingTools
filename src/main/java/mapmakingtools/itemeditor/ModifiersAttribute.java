@@ -3,7 +3,7 @@ package mapmakingtools.itemeditor;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.api.util.State;
@@ -13,34 +13,34 @@ import mapmakingtools.client.screen.widget.ToggleButton;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.passive.horse.HorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -55,12 +55,12 @@ import java.util.function.Supplier;
 public class ModifiersAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer, PlayerEntity player) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer, Player player) {
         switch(buffer.readByte()) {
         case 0:
 
@@ -68,7 +68,7 @@ public class ModifiersAttribute extends IItemAttribute {
             Modifier modifier = MODIFIERS[buffer.readInt()];
             double value = buffer.readDouble();
             AttributeModifier.Operation op = AttributeModifier.Operation.fromValue(buffer.readInt());
-            EquipmentSlotType equipmentType = EquipmentSlotType.byName(buffer.readUtf(64));
+            EquipmentSlot equipmentType = EquipmentSlot.byName(buffer.readUtf(64));
 
             value /= op != AttributeModifier.Operation.ADDITION ? 100 : 1;
 
@@ -82,7 +82,7 @@ public class ModifiersAttribute extends IItemAttribute {
 
             Modifier modifier2 = MODIFIERS[buffer.readInt()];
             AttributeModifier.Operation op2 = AttributeModifier.Operation.fromValue(buffer.readInt());
-            EquipmentSlotType equipmentType2 = EquipmentSlotType.byName(buffer.readUtf(64));
+            EquipmentSlot equipmentType2 = EquipmentSlot.byName(buffer.readUtf(64));
 
             this.removeSimilarModifier(stack, modifier2, op2, equipmentType2);
             return stack;
@@ -94,20 +94,20 @@ public class ModifiersAttribute extends IItemAttribute {
             NBTUtil.removeTagIfEmpty(stack);
             return stack;
         case 4:
-            stack.getOrCreateTag().put("AttributeModifiers", new ListNBT());
+            stack.getOrCreateTag().put("AttributeModifiers", new ListTag());
             return stack;
         default:
             throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
     }
 
-    public void removeSimilarModifier(ItemStack stack,  Modifier modifier, AttributeModifier.Operation op, EquipmentSlotType slotType) {
+    public void removeSimilarModifier(ItemStack stack,  Modifier modifier, AttributeModifier.Operation op, EquipmentSlot slotType) {
         // Removes modifier with same name, slot and op
         if (NBTUtil.hasTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST)) {
-            ListNBT nbttaglist = stack.getTag().getList("AttributeModifiers", Constants.NBT.TAG_COMPOUND);
+            ListTag nbttaglist = stack.getTag().getList("AttributeModifiers", Constants.NBT.TAG_COMPOUND);
 
             for (int k = 0; k < nbttaglist.size(); k++) {
-                CompoundNBT compound = nbttaglist.getCompound(k);
+                CompoundTag compound = nbttaglist.getCompound(k);
                 Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.tryParse(compound.getString("AttributeName")));
                 boolean correctOp = compound.getInt("Operation") == op.toValue();
                 boolean correctSlot = !compound.contains("Slot", Constants.NBT.TAG_STRING)
@@ -122,10 +122,10 @@ public class ModifiersAttribute extends IItemAttribute {
         }
     }
 
-    public void convertModifiersToNBT(ItemStack stack, PlayerEntity player) {
+    public void convertModifiersToNBT(ItemStack stack, Player player) {
         if (!NBTUtil.hasTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST)) {
 
-            for (EquipmentSlotType equipmentSlot : EquipmentSlotType.values()) {
+            for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 Multimap<Attribute, AttributeModifier> builtIn = stack.getAttributeModifiers(equipmentSlot);
 
                  for (Entry<Attribute, AttributeModifier> entry : builtIn.entries()) {
@@ -137,7 +137,7 @@ public class ModifiersAttribute extends IItemAttribute {
                          double bonus = 0D;
                          if (entry.getValue().getId() == Item.BASE_ATTACK_DAMAGE_UUID) {
                              bonus += player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
-                             bonus += EnchantmentHelper.getDamageBonus(stack, CreatureAttribute.UNDEFINED);
+                             bonus += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
                          } else if (entry.getValue().getId() == Item.BASE_ATTACK_SPEED_UUID) {
                              bonus += player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
                          }
@@ -156,43 +156,43 @@ public class ModifiersAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private List<TextFieldWidget> valueInputList = Lists.newArrayList();
+            private List<EditBox> valueInputList = Lists.newArrayList();
             private List<ToggleButton<AttributeModifier.Operation>> opBtnList = Lists.newArrayList();
             private List<Button> addBtnList = Lists.newArrayList();
             private List<Button> removeBtnList = Lists.newArrayList();
             private Button convertInternalBtn;
             private Button removeModifiersNBT;
             private Button removeModifiers;
-            private ToggleButton<EquipmentSlotType> btn_slot;
+            private ToggleButton<EquipmentSlot> btn_slot;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
-                Multimap<Attribute, AttributeModifier> modifiers = stack.get().getAttributeModifiers(EquipmentSlotType.CHEST);
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
+                Multimap<Attribute, AttributeModifier> modifiers = stack.get().getAttributeModifiers(EquipmentSlot.CHEST);
 
                 for (int i = 0; i < MODIFIERS.length; i++) {
                     final int index = i;
 
-                    int inputSize = MathHelper.clamp(width - 200, 20, 100);
+                    int inputSize = Mth.clamp(width - 200, 20, 100);
 
                     ToggleButton<AttributeModifier.Operation> opBtn = new SmallToggleButton<>(x + 127 + inputSize, y + 38 + i * 17, 18, 16, AttributeModifier.Operation.values(), this::getOpString, null, (btn) -> {
                         this.populateFrom(screen, stack.get());
                     }, (_button, matrixStack, mouseX, mouseY) -> {
                         ToggleButton<AttributeModifier.Operation> button = (ToggleButton<AttributeModifier.Operation>) _button;
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, screen.getMinecraft().font.split(new TranslationTextComponent("item_editor.mapmakingtools.modifiers.button.op." + button.getValue().name().toLowerCase(Locale.ROOT)).withStyle(TextFormatting.ITALIC), Math.max(screen.width / 2 - 43, 170)), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, screen.getMinecraft().font.split(new TranslatableComponent("item_editor.mapmakingtools.modifiers.button.op." + button.getValue().name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.ITALIC), Math.max(screen.width / 2 - 43, 170)), mouseX, mouseY);
                         }
                     });
 
-                    TextFieldWidget inputWidget = WidgetFactory.getTextField(screen, x + 122, y + 39 + i * 17, inputSize, 14, null, () -> "");
+                    EditBox inputWidget = WidgetFactory.getTextField(screen, x + 122, y + 39 + i * 17, inputSize, 14, null, () -> "");
                     inputWidget.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
 
-                    Button addBtn = new SmallButton(x + 155 + inputSize, y + 38 + i * 17, 16, 16, new StringTextComponent("+"), (btn) -> {
+                    Button addBtn = new SmallButton(x + 155 + inputSize, y + 38 + i * 17, 16, 16, new TextComponent("+"), (btn) -> {
                         if (Strings.isNullOrEmpty(inputWidget.getValue()) || "-".equals(inputWidget.getValue())) {
                             return;
                         }
 
-                        PacketBuffer buf = Util.createBuf();
+                        FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(0);
                         buf.writeInt(index);
                         buf.writeDouble(Double.valueOf(inputWidget.getValue()));
@@ -201,12 +201,12 @@ public class ModifiersAttribute extends IItemAttribute {
                         update.accept(buf);
                     }, (button, matrixStack, mouseX, mouseY) -> {
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, new TranslationTextComponent("item_editor.mapmakingtools.modifiers.button." + (button.getMessage().getString().equals("#") ? "modify" : "add")), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, new TranslatableComponent("item_editor.mapmakingtools.modifiers.button." + (button.getMessage().getString().equals("#") ? "modify" : "add")), mouseX, mouseY);
                         }
                     });
 
-                    Button removeBtn = new SmallButton(x + 171 + inputSize, y + 38 + i * 17, 16, 16, new StringTextComponent("-"), (btn) -> {
-                        PacketBuffer buf = Util.createBuf();
+                    Button removeBtn = new SmallButton(x + 171 + inputSize, y + 38 + i * 17, 16, 16, new TextComponent("-"), (btn) -> {
+                        FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(1);
                         buf.writeInt(index);
                         buf.writeInt(opBtn.getValue().toValue());
@@ -214,7 +214,7 @@ public class ModifiersAttribute extends IItemAttribute {
                         update.accept(buf);
                     }, (button, matrixStack, mouseX, mouseY) -> {
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, new TranslationTextComponent("item_editor.mapmakingtools.modifiers.button.remove"), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, new TranslatableComponent("item_editor.mapmakingtools.modifiers.button.remove"), mouseX, mouseY);
                         }
                     });
 
@@ -224,14 +224,14 @@ public class ModifiersAttribute extends IItemAttribute {
                     this.removeBtnList.add(removeBtn);
                 }
 
-                this.btn_slot = new SmallToggleButton<>(x + 2, y + 16, 100, 20, EquipmentSlotType.values(), (type) -> new TranslationTextComponent("item.modifiers." + type.getName()), this.btn_slot, (btn) -> {
+                this.btn_slot = new SmallToggleButton<>(x + 2, y + 16, 100, 20, EquipmentSlot.values(), (type) -> new TranslatableComponent("item.modifiers." + type.getName()), this.btn_slot, (btn) -> {
                     this.populateFrom(screen, stack.get());
                 });
 
-                this.convertInternalBtn = new Button(x + 110, y + 16, 130, 20, new TranslationTextComponent(getTranslationKey("button.convert_to_tag")), BufferFactory.ping(2, update));
+                this.convertInternalBtn = new Button(x + 110, y + 16, 130, 20, new TranslatableComponent(getTranslationKey("button.convert_to_tag")), BufferFactory.ping(2, update));
 
-                this.removeModifiersNBT = new Button(x + 10, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.tag")), BufferFactory.ping(3, update));
-                this.removeModifiers = new Button(x + 145, y + height - 23, 130, 20, new TranslationTextComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(4, update));
+                this.removeModifiersNBT = new Button(x + 10, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.tag")), BufferFactory.ping(3, update));
+                this.removeModifiers = new Button(x + 145, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(4, update));
 
                 this.valueInputList.forEach(add);
                 this.opBtnList.forEach(add);
@@ -244,13 +244,13 @@ public class ModifiersAttribute extends IItemAttribute {
             }
 
             @Override
-            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().font;
+            public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
+                Font font = screen.getMinecraft().font;
                 //font.drawString(stackIn, "OP", x + 130 + MathHelper.clamp(width - 200, 40, 100), y + 25, 16777120);
                 for (int i = 0; i < MODIFIERS.length; i++) {
                     Attribute attr = MODIFIERS[i].attribute.get();
                     String translationKey = "attribute.name." + attr.getRegistryName().getNamespace() + '.' + attr.getRegistryName().getPath() + (MODIFIERS[i].modifierId != null ? '.' + MODIFIERS[i].modifierId : "");
-                    font.draw(stackIn, I18n.exists(translationKey) ? new TranslationTextComponent(translationKey) : new StringTextComponent(MODIFIERS[i].attribute.get().getDescriptionId()), x + 6, y + 42 + i * 17, 16777120);
+                    font.draw(stackIn, I18n.exists(translationKey) ? new TranslatableComponent(translationKey) : new TextComponent(MODIFIERS[i].attribute.get().getDescriptionId()), x + 6, y + 42 + i * 17, 16777120);
                 }
             }
 
@@ -269,13 +269,13 @@ public class ModifiersAttribute extends IItemAttribute {
                         boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, attributemodifier.getId());
 
                         if (key.delegate.equals(modifier.attribute.get().delegate) && correctOp && correctUUID) {
-                            this.addBtnList.get(i).setMessage(new StringTextComponent("#"));
+                            this.addBtnList.get(i).setMessage(new TextComponent("#"));
 
                             double amount = attributemodifier.getAmount();
 
                             if (attributemodifier.getId() == Item.BASE_ATTACK_DAMAGE_UUID) {
                                 amount += screen.getMinecraft().player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
-                                amount += EnchantmentHelper.getDamageBonus(stack, CreatureAttribute.UNDEFINED);
+                                amount += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
                             } else if (attributemodifier.getId() == Item.BASE_ATTACK_SPEED_UUID) {
                                 amount += screen.getMinecraft().player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
                             }
@@ -291,14 +291,14 @@ public class ModifiersAttribute extends IItemAttribute {
                     }
 
                     // Only run if no modifier is found
-                    this.addBtnList.get(i).setMessage(new StringTextComponent("+"));
+                    this.addBtnList.get(i).setMessage(new TextComponent("+"));
 
                     this.valueInputList.get(i).setValue("");
                     //this.opBtnList.get(i).setValue(AttributeModifier.Operation.ADDITION);
                     this.removeBtnList.get(i).visible = false;
                 }
 
-                this.removeModifiers.active = Arrays.stream(EquipmentSlotType.values()).anyMatch((slotType) -> !stack.getItem().getAttributeModifiers(slotType, stack).isEmpty());
+                this.removeModifiers.active = Arrays.stream(EquipmentSlot.values()).anyMatch((slotType) -> !stack.getItem().getAttributeModifiers(slotType, stack).isEmpty());
                 this.removeModifiersNBT.active = NBTUtil.hasTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST);
                 this.convertInternalBtn.active = !this.removeModifiersNBT.active && this.removeModifiers.active;
             }
@@ -316,16 +316,16 @@ public class ModifiersAttribute extends IItemAttribute {
                 return true; // TODO
             }
 
-            public ITextComponent getOpString(AttributeModifier.Operation op) {
+            public Component getOpString(AttributeModifier.Operation op) {
                 switch(op) {
                 case ADDITION:
-                    return new StringTextComponent("+|");
+                    return new TextComponent("+|");
                 case MULTIPLY_BASE:
-                    return new StringTextComponent("+%");
+                    return new TextComponent("+%");
                 case MULTIPLY_TOTAL:
-                    return new StringTextComponent("x%");
+                    return new TextComponent("x%");
                 default:
-                    return new StringTextComponent("??");
+                    return new TextComponent("??");
                 }
             }
         };
@@ -349,13 +349,13 @@ public class ModifiersAttribute extends IItemAttribute {
     private Modifier ARMOR = new Modifier(Attributes.ARMOR.delegate, "Armor modifier");
     private Modifier ARMOR_TOUGHNESS = new Modifier(Attributes.ARMOR_TOUGHNESS.delegate, "Armor toughness");
     private Modifier SPAWN_REINFORCEMENTS = new Modifier(Attributes.SPAWN_REINFORCEMENTS_CHANCE.delegate, "Spawn Reinforcements Chance");
-    private Modifier BABY_SPEED_BOOST = new Modifier(ZombieEntity.SPEED_MODIFIER_BABY_UUID, Attributes.MOVEMENT_SPEED.delegate, "Baby speed boost", "zombie.baby");
+    private Modifier BABY_SPEED_BOOST = new Modifier(Zombie.SPEED_MODIFIER_BABY_UUID, Attributes.MOVEMENT_SPEED.delegate, "Baby speed boost", "zombie.baby");
     private Modifier HORSE_JUMP_STRENGTH = new Modifier(Attributes.JUMP_STRENGTH.delegate, "Jump Strength");
-    private Modifier HORSE_ARMOR = new Modifier(HorseEntity.ARMOR_MODIFIER_UUID, Attributes.ARMOR.delegate, "Horse armor bonus", "horse.bonus");
+    private Modifier HORSE_ARMOR = new Modifier(Horse.ARMOR_MODIFIER_UUID, Attributes.ARMOR.delegate, "Horse armor bonus", "horse.bonus");
 
     // Potion Luck Modifier
-    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), Attributes.LUCK.delegate, Effects.LUCK.getDescriptionId(), null);
-    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), Attributes.LUCK.delegate, Effects.UNLUCK.getDescriptionId(), "un");
+    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), Attributes.LUCK.delegate, MobEffects.LUCK.getDescriptionId(), null);
+    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), Attributes.LUCK.delegate, MobEffects.UNLUCK.getDescriptionId(), "un");
 
     // Forge Modifiers
     private Modifier SLOW_FALLING = new Modifier(UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA"), ForgeMod.ENTITY_GRAVITY, "Slow falling acceleration reduction", "slow.falling");

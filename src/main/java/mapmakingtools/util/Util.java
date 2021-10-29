@@ -3,9 +3,9 @@ package mapmakingtools.util;
 import com.google.common.base.Strings;
 import io.netty.buffer.Unpooled;
 import mapmakingtools.lib.Constants;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IRegistryDelegate;
@@ -21,7 +21,7 @@ public class Util {
 
     private static Pattern number = Pattern.compile("^-?\\d*\\.?\\d*$");
 
-    private static DecimalFormat FORMAT_NUMBER_3DP = net.minecraft.util.Util.make(() -> {
+    private static DecimalFormat FORMAT_NUMBER_3DP = net.minecraft.Util.make(() -> {
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
         return df;
@@ -77,7 +77,7 @@ public class Util {
 
     public static Predicate<String> IS_NULL_OR_EMPTY = Strings::isNullOrEmpty;
 
-    public static Direction[] HORIZONTAL_DIRECTIONS = net.minecraft.util.Util.make(() -> Arrays.stream(Direction.values()).filter((dir) -> {
+    public static Direction[] HORIZONTAL_DIRECTIONS = net.minecraft.Util.make(() -> Arrays.stream(Direction.values()).filter((dir) -> {
         return dir.getAxis().isHorizontal();
     }).sorted(Comparator.comparingInt(Direction::get2DDataValue)).toArray(Direction[]::new));
 
@@ -88,11 +88,11 @@ public class Util {
     /**
      * @return
      */
-    public static PacketBuffer createBuf() {
-        return new PacketBuffer(Unpooled.buffer());
+    public static FriendlyByteBuf createBuf() {
+        return new FriendlyByteBuf(Unpooled.buffer());
     }
 
-    public static PacketBuffer writeVarIntArray(PacketBuffer buf, Integer[] array) {
+    public static FriendlyByteBuf writeVarIntArray(FriendlyByteBuf buf, Integer[] array) {
         buf.writeVarInt(array.length);
 
         for (int i : array) {

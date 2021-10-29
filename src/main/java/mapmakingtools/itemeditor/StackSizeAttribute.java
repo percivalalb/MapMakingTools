@@ -6,13 +6,13 @@ import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.client.screen.widget.WidgetUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -21,12 +21,12 @@ import java.util.function.Supplier;
 public class StackSizeAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
             stack.setCount(buffer.readInt());
@@ -41,10 +41,10 @@ public class StackSizeAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private TextFieldWidget stackSizeInput;
+            private EditBox stackSizeInput;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.stackSizeInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.stackSizeInput, stack::getCount);
                 this.stackSizeInput.setMaxLength(6);
                 this.stackSizeInput.setResponder(BufferFactory.createInteger(0, Strings::isNullOrEmpty, update));

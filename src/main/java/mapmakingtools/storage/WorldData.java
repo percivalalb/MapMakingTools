@@ -2,13 +2,13 @@ package mapmakingtools.storage;
 
 import mapmakingtools.lib.Constants;
 import mapmakingtools.worldeditor.CommandTracker;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class WorldData extends WorldSavedData {
+public class WorldData extends SavedData {
 
     private CommandTracker lastCommand;
 
@@ -17,8 +17,8 @@ public class WorldData extends WorldSavedData {
         this.lastCommand = new CommandTracker(this::setDirty);
     }
 
-    public static WorldData get(World world) {
-        if (!(world instanceof ServerWorld)) {
+    public static WorldData get(Level world) {
+        if (!(world instanceof ServerLevel)) {
             throw new RuntimeException(String.format("Tried to access %s data on client.", Constants.STORAGE_WORLD));
         }
 
@@ -27,7 +27,7 @@ public class WorldData extends WorldSavedData {
 
     public static WorldData get(MinecraftServer server) {
         return server
-                .getLevel(World.OVERWORLD)
+                .getLevel(Level.OVERWORLD)
                 .getDataStorage()
                 .computeIfAbsent(WorldData::new, Constants.STORAGE_WORLD);
     }
@@ -37,12 +37,12 @@ public class WorldData extends WorldSavedData {
     }
 
     @Override
-    public void load(CompoundNBT nbt) {
+    public void load(CompoundTag nbt) {
         this.lastCommand = CommandTracker.read(nbt, this::setDirty);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         this.lastCommand.write(nbt);
         return nbt;
     }

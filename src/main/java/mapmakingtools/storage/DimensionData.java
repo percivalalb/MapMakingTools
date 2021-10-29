@@ -3,12 +3,12 @@ package mapmakingtools.storage;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.worldeditor.EditHistoryManager;
 import mapmakingtools.worldeditor.SelectionManager;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class DimensionData extends WorldSavedData {
+public class DimensionData extends SavedData {
 
     private SelectionManager selectionManager;
     private EditHistoryManager editHistoryManager;
@@ -20,12 +20,12 @@ public class DimensionData extends WorldSavedData {
         this.editHistoryManager = new EditHistoryManager(this::setDirty);
     }
 
-    public static DimensionData get(World world) {
-        if (!(world instanceof ServerWorld)) {
+    public static DimensionData get(Level world) {
+        if (!(world instanceof ServerLevel)) {
             throw new RuntimeException(String.format("Tried to access %s data on client.", Constants.STORAGE_DIMENSION));
         }
 
-        return ((ServerWorld) world).getDataStorage()
+        return ((ServerLevel) world).getDataStorage()
                 .computeIfAbsent(DimensionData::new, Constants.STORAGE_DIMENSION);
     }
 
@@ -38,15 +38,15 @@ public class DimensionData extends WorldSavedData {
     }
 
     @Override
-    public void load(CompoundNBT nbt) {
+    public void load(CompoundTag nbt) {
         this.selectionManager = SelectionManager.read(nbt.getCompound("selection"), this::setDirty);
         this.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), this::setDirty);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
-        nbt.put("selection", this.selectionManager.write(new CompoundNBT()));
-        nbt.put("history", this.editHistoryManager.write(new CompoundNBT()));
+    public CompoundTag save(CompoundTag nbt) {
+        nbt.put("selection", this.selectionManager.write(new CompoundTag()));
+        nbt.put("history", this.editHistoryManager.write(new CompoundTag()));
         return nbt;
     }
 }

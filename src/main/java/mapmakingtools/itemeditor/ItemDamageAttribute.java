@@ -7,16 +7,16 @@ import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.client.screen.widget.WidgetUtil;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.concurrent.Callable;
@@ -26,12 +26,12 @@ import java.util.function.Supplier;
 public class ItemDamageAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return item.canBeDepleted();
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
             int damage = buffer.readInt();
@@ -46,7 +46,7 @@ public class ItemDamageAttribute extends IItemAttribute {
 
             return stack;
         case 1:
-            CompoundNBT nbt = NBTUtil.getOrCreateTag(stack);
+            CompoundTag nbt = NBTUtil.getOrCreateTag(stack);
 
             if (NBTUtil.hasTag(stack, "Unbreakable", Constants.NBT.TAG_BYTE) && nbt.getBoolean("Unbreakable")) {
                 nbt.remove("Unbreakable");
@@ -65,18 +65,18 @@ public class ItemDamageAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private TextFieldWidget damageInput;
+            private EditBox damageInput;
             private Button unbreakableBtn;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.damageInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.damageInput, () -> stack.get().getDamageValue());
 
                 this.damageInput.setMaxLength(3);
                 this.damageInput.setResponder(BufferFactory.createInteger(0, Util.IS_NULL_OR_EMPTY.or(""::equals), update));
                 this.damageInput.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
-                this.unbreakableBtn = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslationTextComponent(getTranslationKey("button.toggle.unbreakable")), BufferFactory.ping(1, update));
+                this.unbreakableBtn = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslatableComponent(getTranslationKey("button.toggle.unbreakable")), BufferFactory.ping(1, update));
 
                 add.accept(this.damageInput);
                 add.accept(this.unbreakableBtn);

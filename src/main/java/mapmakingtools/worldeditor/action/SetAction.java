@@ -5,13 +5,13 @@ import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.worldeditor.CachedCuboidArea;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
 
 public class SetAction implements Action {
 
     @Override
-    public ICachedArea doAction(PlayerEntity player, ISelection selection, CachedBlock input) {
+    public ICachedArea doAction(Player player, ISelection selection, CachedBlock input) {
         ICachedArea cachedArea = CachedCuboidArea.from(player.getCommandSenderWorld(), selection);
 
         Iterable<BlockPos> positions = BlockPos.betweenClosed(selection.getPrimaryPoint(), selection.getSecondaryPoint());

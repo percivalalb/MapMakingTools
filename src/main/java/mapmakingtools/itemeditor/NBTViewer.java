@@ -1,18 +1,18 @@
 package mapmakingtools.itemeditor;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.scroll.TextScrollPane;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -21,12 +21,12 @@ import java.util.function.Supplier;
 public class NBTViewer extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
             stack.setTag(null);
@@ -45,10 +45,10 @@ public class NBTViewer extends IItemAttribute {
             private TextScrollPane nbtTextPane;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, Supplier<ItemStack> stack, int x, int y, int width, int height) {
-                this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, new TranslationTextComponent(getTranslationKey("button.remove")), (btn) -> {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, Supplier<ItemStack> stack, int x, int y, int width, int height) {
+                this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
                     btn.active = false;
-                    PacketBuffer buf = Util.createBuf();
+                    FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
                     update.accept(buf);
                 });
@@ -60,7 +60,7 @@ public class NBTViewer extends IItemAttribute {
             }
 
             @Override
-            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
+            public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
 
             }
 

@@ -1,7 +1,7 @@
 package mapmakingtools.client.screen.widget.component;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.client.screen.widget.NestedWidget;
 import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.ComponentPart;
@@ -9,13 +9,13 @@ import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.
 import mapmakingtools.util.TextUtil;
 import mapmakingtools.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -31,26 +31,26 @@ public class TextComponentMakerWidget extends NestedWidget {
     @Nullable
     public DraggableTextComponentPart draggingPart;
     @Nullable
-    private List<? extends Widget> editWidget;
+    private List<? extends AbstractWidget> editWidget;
     @Nullable
-    public ITextComponent textComponent;
+    public Component textComponent;
 
     public TextComponentMakerWidget(int xIn, int yIn, int widthIn, int heightIn) {
         super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY);
-        this.children.add(new SmallButton(this.x + 3, this.y + 15, 63, 12, new StringTextComponent("Text"), (btn) -> {
-            this.addPart(new ComponentPart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 80, 20, new StringTextComponent("Comp Piece"), this));
+        this.children.add(new SmallButton(this.x + 3, this.y + 15, 63, 12, new TextComponent("Text"), (btn) -> {
+            this.addPart(new ComponentPart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 80, 20, new TextComponent("Comp Piece"), this));
         }));
 
 //        this.children.add(new SmallButton(this.x + 18, this.y + 15, 13, 12, "N", (btn) -> {
 //            this.addPart(new NewLinePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, "\\n", this));
 //        }));
 
-        this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, new StringTextComponent("Color"), (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.BLUE.getName()), this, TextFormatting.BLUE));
+        this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, new TextComponent("Color"), (btn) -> {
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new TextComponent(ChatFormatting.BLUE.getName()), this, ChatFormatting.BLUE));
         }));
 
-        this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, new StringTextComponent("Format"), (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new StringTextComponent(TextFormatting.ITALIC.getName()), this, TextFormatting.ITALIC));
+        this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, new TextComponent("Format"), (btn) -> {
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new TextComponent(ChatFormatting.ITALIC.getName()), this, ChatFormatting.ITALIC));
         }));
     }
 
@@ -59,7 +59,7 @@ public class TextComponentMakerWidget extends NestedWidget {
     }
 
     @Nullable
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return this.textComponent;
     }
 
@@ -67,7 +67,7 @@ public class TextComponentMakerWidget extends NestedWidget {
         if (this.starting == null) return;
 
         try {
-            ITextComponent component = this.starting.create();
+            Component component = this.starting.create();
             this.applyRecursive(component, this.starting, Sets.newHashSet(this.starting));
             this.textComponent = component;
         } catch(Exception e) {
@@ -75,7 +75,7 @@ public class TextComponentMakerWidget extends NestedWidget {
         }
     }
 
-    public void applyRecursive(ITextComponent textComponent, DraggableTextComponentPart part, Set<DraggableTextComponentPart> visited) {
+    public void applyRecursive(Component textComponent, DraggableTextComponentPart part, Set<DraggableTextComponentPart> visited) {
         Collection<DraggableTextComponentPart> next = part.getConnections()
                 .stream()
                 .sorted(Comparator.comparingInt(DraggableTextComponentPart::applyOrder)) // Apply in the correct order
@@ -104,7 +104,7 @@ public class TextComponentMakerWidget extends NestedWidget {
         }
     }
 
-    public void setEditWidgets(List<? extends Widget> editWidget) {
+    public void setEditWidgets(List<? extends AbstractWidget> editWidget) {
         if (this.editWidget != null) {
             this.children.removeAll(this.editWidget);
         }
@@ -145,7 +145,7 @@ public class TextComponentMakerWidget extends NestedWidget {
     }
 
     public Optional<DraggableTextComponentPart> getPartAbove(double mouseX, double mouseY) {
-        for (IGuiEventListener iguieventlistener : this.children()) {
+        for (GuiEventListener iguieventlistener : this.children()) {
             if (iguieventlistener instanceof DraggableTextComponentPart && iguieventlistener.isMouseOver(mouseX, mouseY)) {
                return Optional.of((DraggableTextComponentPart) iguieventlistener);
             }
@@ -255,15 +255,15 @@ public class TextComponentMakerWidget extends NestedWidget {
     }
 
     @Override
-    public void render(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         //super.render(mouseX, mouseY, partialTicks);
-        for (Widget part : this.children) {
+        for (AbstractWidget part : this.children) {
             part.render(stackIn, mouseX, mouseY, partialTicks);
         }
         this.createChild();
         if (this.hasTextComponent()) {
             Minecraft mc = Minecraft.getInstance();
-            FontRenderer font = mc.font;
+            Font font = mc.font;
 
             String[] text = this.textComponent.getString().split("\n");
             for (int i = 0; i < text.length; i++) {
@@ -286,7 +286,7 @@ public class TextComponentMakerWidget extends NestedWidget {
 
     }
 
-    public void populateFrom(ITextComponent textComponent) {
+    public void populateFrom(Component textComponent) {
         textComponent.getSiblings();
     }
 }

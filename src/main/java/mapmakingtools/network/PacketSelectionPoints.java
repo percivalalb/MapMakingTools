@@ -3,8 +3,8 @@ package mapmakingtools.network;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.client.ClientSelection;
 import mapmakingtools.worldeditor.Selection;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import javax.annotation.Nullable;
@@ -18,11 +18,11 @@ public class PacketSelectionPoints {
         this.selection = selection;
     }
 
-    public static void encode(PacketSelectionPoints msg, PacketBuffer buf) {
+    public static void encode(PacketSelectionPoints msg, FriendlyByteBuf buf) {
         msg.selection.write(buf);
     }
 
-    public static PacketSelectionPoints decode(PacketBuffer buf) {
+    public static PacketSelectionPoints decode(FriendlyByteBuf buf) {
         return new PacketSelectionPoints(Selection.read(buf));
     }
 
@@ -34,7 +34,7 @@ public class PacketSelectionPoints {
         ctx.get().setPacketHandled(true);
     }
 
-    public static void writeBlockPos(PacketBuffer buf, @Nullable BlockPos pos) {
+    public static void writeBlockPos(FriendlyByteBuf buf, @Nullable BlockPos pos) {
         if (pos != null) {
             buf.writeBoolean(true);
             buf.writeBlockPos(pos);
@@ -43,7 +43,7 @@ public class PacketSelectionPoints {
         }
     }
 
-    public static BlockPos readBlockPos(PacketBuffer buf) {
+    public static BlockPos readBlockPos(FriendlyByteBuf buf) {
         if (buf.readBoolean()) {
             return buf.readBlockPos();
         }

@@ -3,9 +3,9 @@ package mapmakingtools.network;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.Registries;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -14,29 +14,29 @@ public class PacketItemEditorUpdate {
 
     public int slotIndex;
     public IItemAttribute attributeManager;
-    public PacketBuffer data;
+    public FriendlyByteBuf data;
 
-    public PacketItemEditorUpdate(int slotIndex, IItemAttribute attributeManager, PacketBuffer data) {
+    public PacketItemEditorUpdate(int slotIndex, IItemAttribute attributeManager, FriendlyByteBuf data) {
         this.slotIndex = slotIndex;
         this.attributeManager = attributeManager;
         this.data = data;
     }
 
-    public static void encode(PacketItemEditorUpdate msg, PacketBuffer buf) {
+    public static void encode(PacketItemEditorUpdate msg, FriendlyByteBuf buf) {
         buf.writeInt(msg.slotIndex);
         buf.writeRegistryIdUnsafe(Registries.ITEM_ATTRIBUTES, msg.attributeManager);
         buf.writeBytes(msg.data);
     }
 
-    public static PacketItemEditorUpdate decode(PacketBuffer buf) {
+    public static PacketItemEditorUpdate decode(FriendlyByteBuf buf) {
         int slotId = buf.readInt();
         IItemAttribute attributeManager = buf.readRegistryIdUnsafe(Registries.ITEM_ATTRIBUTES);
-        return new PacketItemEditorUpdate(slotId, attributeManager, new PacketBuffer(buf.discardReadBytes()));
+        return new PacketItemEditorUpdate(slotId, attributeManager, new FriendlyByteBuf(buf.discardReadBytes()));
     }
 
     public static void handle(final PacketItemEditorUpdate msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            PlayerEntity player = ctx.get().getSender();
+            Player player = ctx.get().getSender();
             ItemStack stack = player.inventory.getItem(msg.slotIndex).copy();
 
             try {

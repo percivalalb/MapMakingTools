@@ -1,27 +1,27 @@
 package mapmakingtools.itemeditor;
 
 import com.google.common.base.Strings;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.client.screen.widget.WidgetUtil;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.concurrent.Callable;
@@ -31,12 +31,12 @@ import java.util.function.Supplier;
 public class BookDetailsAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return item == Items.WRITTEN_BOOK;
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer, PlayerEntity player) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer, Player player) {
         switch(buffer.readByte()) {
         case 0:
             NBTUtil.getOrCreateTag(stack).putString("title", buffer.readUtf(128));
@@ -63,13 +63,13 @@ public class BookDetailsAttribute extends IItemAttribute {
             ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount());
             book.setTag(stack.getTag());
             if (NBTUtil.hasTag(stack, "pages", Constants.NBT.TAG_LIST)) {
-                ListNBT listNBT = book.getTag().getList("pages", Constants.NBT.TAG_STRING);
+                ListTag listNBT = book.getTag().getList("pages", Constants.NBT.TAG_STRING);
 
                 for (int i = 0; i < listNBT.size(); ++i) {
                     String s = listNBT.getString(i);
 
-                    ITextComponent textComponent = ITextComponent.Serializer.fromJson(s);
-                    listNBT.set(i, StringNBT.valueOf(textComponent.getString()));
+                    Component textComponent = Component.Serializer.fromJson(s);
+                    listNBT.set(i, StringTag.valueOf(textComponent.getString()));
                 }
 
             }
@@ -85,13 +85,13 @@ public class BookDetailsAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private TextFieldWidget bookNameInput;
-            private TextFieldWidget authorInput;
-            private TextFieldWidget generationInput;
+            private EditBox bookNameInput;
+            private EditBox authorInput;
+            private EditBox generationInput;
             private Button convertBackBtn;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.bookNameInput = WidgetFactory.getTextField(screen, x + 2, y + 28, 80, 13, this.bookNameInput, () -> NBTUtil.hasTag(stack.get(), "title", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("title") : "");
                 this.bookNameInput.setMaxLength(128);
                 this.bookNameInput.setResponder(BufferFactory.createString(0, update));
@@ -105,7 +105,7 @@ public class BookDetailsAttribute extends IItemAttribute {
                 this.generationInput.setResponder(BufferFactory.createInteger(2, Strings::isNullOrEmpty, update));
                 this.generationInput.setFilter(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
 
-                this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, new StringTextComponent("Convert back to writable book"), BufferFactory.ping(3, update));
+                this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, new TextComponent("Convert back to writable book"), BufferFactory.ping(3, update));
 
                 add.accept(this.bookNameInput);
                 add.accept(this.authorInput);
@@ -114,8 +114,8 @@ public class BookDetailsAttribute extends IItemAttribute {
             }
 
             @Override
-            public void render(MatrixStack stackIn, Screen screen, int x, int y, int width, int height) {
-                FontRenderer font = screen.getMinecraft().font;
+            public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
+                Font font = screen.getMinecraft().font;
                 font.draw(stackIn, "Title", x + 2, y + 17, -1);
                 font.draw(stackIn, "Author", x + 86, y + 17, -1);
                 font.draw(stackIn, "Generation", x + 170, y + 17, -1);

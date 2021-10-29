@@ -32,8 +32,6 @@ version = (grgit.describe(longDescr: true, tags: true) ?: '0-0-0').split('-').wi
 println "Version: ${version}"
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-
 sourceSets {
     api
     main {
@@ -52,7 +50,7 @@ configurations {
     apiRuntimeOnly.extendsFrom(runtimeOnly)
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 repositories {
     maven {

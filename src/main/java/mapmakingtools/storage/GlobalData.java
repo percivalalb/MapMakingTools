@@ -1,22 +1,22 @@
 package mapmakingtools.storage;
 
 import mapmakingtools.lib.Constants;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class GlobalData extends WorldSavedData {
+public class GlobalData extends SavedData {
 
     public GlobalData(String name) {
         super(Constants.STORAGE_GLOBAL);
     }
 
     @Override
-    public void load(CompoundNBT nbt) {
+    public void load(CompoundTag nbt) {
 
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         return null;
     }
 }

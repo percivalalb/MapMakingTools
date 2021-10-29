@@ -1,30 +1,30 @@
 package mapmakingtools.client.screen.widget;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 
-import net.minecraft.client.gui.widget.button.Button.IPressable;
+import net.minecraft.client.gui.components.Button.OnPress;
 
 public class SmallButton extends Button {
 
-    public SmallButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, IPressable onPress) {
+    public SmallButton(int xIn, int yIn, int widthIn, int heightIn, Component title, OnPress onPress) {
         this(xIn, yIn, widthIn, heightIn, title, onPress, Button.NO_TOOLTIP);
     }
 
-    public SmallButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent title, IPressable onPress, Button.ITooltip onTooltip) {
+    public SmallButton(int xIn, int yIn, int widthIn, int heightIn, Component title, OnPress onPress, Button.OnTooltip onTooltip) {
         super(xIn, yIn, widthIn, heightIn, title, onPress, onTooltip);
     }
 
     @Override
-    public void renderButton(MatrixStack stackIn, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.font;
+        Font fontrenderer = minecraft.font;
         minecraft.getTextureManager().bind(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());
@@ -39,6 +39,6 @@ public class SmallButton extends Button {
 
         this.renderBg(stackIn, minecraft, mouseX, mouseY);
         int j = getFGColor();
-        AbstractGui.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+        GuiComponent.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }
 }

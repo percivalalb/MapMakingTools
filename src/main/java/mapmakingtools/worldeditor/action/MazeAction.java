@@ -5,12 +5,12 @@ import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.worldeditor.CachedCuboidArea;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IClearable;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Clearable;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
@@ -19,8 +19,8 @@ import java.util.Map;
 public class MazeAction implements Action {
 
     @Override
-    public ICachedArea doAction(PlayerEntity player, ISelection selection, CachedBlock input) {
-        World world = player.getCommandSenderWorld();
+    public ICachedArea doAction(Player player, ISelection selection, CachedBlock input) {
+        Level world = player.getCommandSenderWorld();
 
         ICachedArea cachedArea = CachedCuboidArea.from(world, selection);
 
@@ -30,7 +30,7 @@ public class MazeAction implements Action {
         int group = 0;
         for (BlockPos pos : positions) {
             if ((pos.getX() - selection.getMinX()) % 2 == 1 && (pos.getZ() - selection.getMinZ()) % 2 == 1 && pos.getX() != selection.getMaxX() && pos.getZ() != selection.getMaxZ()) {
-                IClearable.tryClear(world.getBlockEntity(pos));
+                Clearable.tryClear(world.getBlockEntity(pos));
                 world.setBlock(pos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
                 groups.put(new BlockPos(pos.getX(), 0, pos.getZ()), group);
                 group += 1;
@@ -64,7 +64,7 @@ public class MazeAction implements Action {
             }
 
             Direction dir = Direction.from2DDataValue(world.random.nextInt(4));
-            BlockPos.Mutable posHere = intersectionPos.mutable().move(0, selection.getMinY(), 0).move(dir, 1);
+            BlockPos.MutableBlockPos posHere = intersectionPos.mutable().move(0, selection.getMinY(), 0).move(dir, 1);
             if (world.isEmptyBlock(posHere)) {
                 continue;
             }
@@ -91,7 +91,7 @@ public class MazeAction implements Action {
 
             // Clear pathway
             for (int y = selection.getMinY(); y <= selection.getMaxY(); y++) {
-                IClearable.tryClear(world.getBlockEntity(posHere));
+                Clearable.tryClear(world.getBlockEntity(posHere));
                 world.setBlock(posHere, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
                 posHere.move(0, 1, 0);
             }

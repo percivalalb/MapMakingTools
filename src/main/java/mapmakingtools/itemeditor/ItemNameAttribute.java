@@ -8,16 +8,16 @@ import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.client.screen.widget.WidgetUtil;
 import mapmakingtools.client.screen.widget.component.TextComponentMakerWidget;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -26,17 +26,17 @@ import java.util.function.Supplier;
 public class ItemNameAttribute extends IItemAttribute {
 
     @Override
-    public boolean isApplicable(PlayerEntity player, Item item) {
+    public boolean isApplicable(Player player, Item item) {
         return true;
     }
 
     @Override
-    public ItemStack read(ItemStack stack, PacketBuffer buffer) {
+    public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
-            return stack.setHoverName(new StringTextComponent(buffer.readUtf(128)));
+            return stack.setHoverName(new TextComponent(buffer.readUtf(128)));
         case 1:
-            return stack.setHoverName(new TranslationTextComponent(buffer.readUtf(128)));
+            return stack.setHoverName(new TranslatableComponent(buffer.readUtf(128)));
         case 2:
             stack.resetHoverName();
             return stack;
@@ -53,18 +53,18 @@ public class ItemNameAttribute extends IItemAttribute {
         return () -> () -> new IItemAttributeClient() {
 
             private TextComponentMakerWidget widgetMaker;
-            private TextFieldWidget nameInput;
+            private EditBox nameInput;
             private Button nameRemoval;
 
             @Override
-            public void init(Screen screen, Consumer<Widget> add, Consumer<PacketBuffer> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
+            public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.widgetMaker = new TextComponentMakerWidget(x + 3, y + 16, width - 6, height - 36);
                 add.accept(this.widgetMaker);
 
-                Button setBtn = new SmallButton(x + width / 2 - 100, y + height - 23, 200, 20, new TranslationTextComponent(getTranslationKey("button.set")), (btn) -> {
+                Button setBtn = new SmallButton(x + width / 2 - 100, y + height - 23, 200, 20, new TranslatableComponent(getTranslationKey("button.set")), (btn) -> {
                     System.out.println("Send");
                     if (this.widgetMaker.hasTextComponent()) {
-                        PacketBuffer buf = Util.createBuf();
+                        FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(3);
                         System.out.println("Send2");
                         buf.writeComponent(this.widgetMaker.getTextComponent());
@@ -87,15 +87,15 @@ public class ItemNameAttribute extends IItemAttribute {
                     }
 
                     this.nameRemoval.active = true;
-                    PacketBuffer buf = Util.createBuf();
+                    FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
                     buf.writeUtf(str, 128);
                     update.accept(buf);
                 });
 
-                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslationTextComponent(getTranslationKey("button.remove.tag")), (btn) -> {
+                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslatableComponent(getTranslationKey("button.remove.tag")), (btn) -> {
                     btn.active = false;
-                    PacketBuffer buf = Util.createBuf();
+                    FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(2);
                     update.accept(buf);
                 });

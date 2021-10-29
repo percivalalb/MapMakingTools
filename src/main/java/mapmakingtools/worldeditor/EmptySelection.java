@@ -1,9 +1,9 @@
 package mapmakingtools.worldeditor;
 
 import mapmakingtools.api.worldeditor.ISelection;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nullable;
 
@@ -36,12 +36,12 @@ public final class EmptySelection implements ISelection {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         return nbt;
     }
 
     @Override
-    public PacketBuffer write(PacketBuffer buf) {
+    public FriendlyByteBuf write(FriendlyByteBuf buf) {
         buf.writeBoolean(false);
         buf.writeBoolean(false);
         return buf;

@@ -1,8 +1,8 @@
 package mapmakingtools.worldeditor;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
@@ -18,26 +18,26 @@ public class CommandTracker {
         this.markDirty = markDirty;
     }
 
-    public String getLastCommand(PlayerEntity entity) {
+    public String getLastCommand(Player entity) {
         return this.lastCommand.get(entity.getUUID());
     }
 
-    public void setLastCommand(PlayerEntity entity, String command) {
+    public void setLastCommand(Player entity, String command) {
         this.lastCommand.put(entity.getUUID(), command);
         this.markDirty.run();
     }
 
-    public static CommandTracker read(CompoundNBT nbt, Runnable markDirty) {
+    public static CommandTracker read(CompoundTag nbt, Runnable markDirty) {
         CommandTracker tracker = new CommandTracker(markDirty);
 
         if (!nbt.contains("commands", Constants.NBT.TAG_LIST)) {
             return tracker;
         }
 
-        ListNBT commandsList = nbt.getList("commands", Constants.NBT.TAG_COMPOUND);
+        ListTag commandsList = nbt.getList("commands", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < commandsList.size(); i++) {
-            CompoundNBT commandNBT = commandsList.getCompound(i);
+            CompoundTag commandNBT = commandsList.getCompound(i);
 
             if (!commandNBT.hasUUID("player_uuid")) {
                 continue;
@@ -52,11 +52,11 @@ public class CommandTracker {
         return tracker;
     }
 
-    public CompoundNBT write(CompoundNBT nbt) {
-        ListNBT commandsList = new ListNBT();
+    public CompoundTag write(CompoundTag nbt) {
+        ListTag commandsList = new ListTag();
 
         for (Map.Entry<UUID, String> entry : this.lastCommand.entrySet()) {
-            CompoundNBT pointNBT = new CompoundNBT();
+            CompoundTag pointNBT = new CompoundTag();
 
             pointNBT.putUUID("player_uuid", entry.getKey());
             pointNBT.putString("command", entry.getValue());

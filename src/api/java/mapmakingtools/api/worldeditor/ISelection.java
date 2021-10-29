@@ -1,9 +1,9 @@
 package mapmakingtools.api.worldeditor;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nullable;
 
@@ -23,9 +23,9 @@ public interface ISelection {
 
     public long getChangeTime();
 
-    public CompoundNBT write(CompoundNBT nbt);
+    public CompoundTag write(CompoundTag nbt);
 
-    public PacketBuffer write(PacketBuffer buf);
+    public FriendlyByteBuf write(FriendlyByteBuf buf);
 
     default boolean anySet() {
         BlockPos primary = this.getPrimaryPoint();
@@ -57,19 +57,19 @@ public interface ISelection {
     }
 
     @Nullable
-    default AxisAlignedBB getPrimaryBB() {
+    default AABB getPrimaryBB() {
         BlockPos primary = this.getPrimaryPoint();
         if (primary != null) {
-            return new AxisAlignedBB(primary);
+            return new AABB(primary);
         }
         return null;
     }
 
     @Nullable
-    default AxisAlignedBB getSecondaryBB() {
+    default AABB getSecondaryBB() {
         BlockPos secondary = this.getSecondaryPoint();
         if (secondary != null) {
-            return new AxisAlignedBB(secondary);
+            return new AABB(secondary);
         }
         return null;
     }

@@ -2,8 +2,8 @@ package mapmakingtools.client.screen.widget;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.state.Property;
-import net.minecraft.tags.Tag;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.tags.SetTag;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -193,8 +193,8 @@ public class ToggleBoxList<T> extends ScrollPane {
             return new Builder<E>();
         }
 
-        public static <T> Builder<Tag<T>> builderTag(Class<T> subType) {
-            return new Builder<Tag<T>>();
+        public static <T> Builder<SetTag<T>> builderTag(Class<T> subType) {
+            return new Builder<SetTag<T>>();
         }
 
         public static Builder<Property<?>> builderProperty() {

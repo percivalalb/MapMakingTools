@@ -1,9 +1,9 @@
 package mapmakingtools.network;
 
 import mapmakingtools.item.WrenchItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -18,18 +18,18 @@ public class PacketWrenchMode {
         this.up = up;
     }
 
-    public static void encode(PacketWrenchMode msg, PacketBuffer buf) {
+    public static void encode(PacketWrenchMode msg, FriendlyByteBuf buf) {
         buf.writeInt(msg.slotIdx);
         buf.writeBoolean(msg.up);
     }
 
-    public static PacketWrenchMode decode(PacketBuffer buf) {
+    public static PacketWrenchMode decode(FriendlyByteBuf buf) {
         return new PacketWrenchMode(buf.readInt(), buf.readBoolean());
     }
 
     public static void handle(final PacketWrenchMode msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            PlayerEntity player = ctx.get().getSender();
+            Player player = ctx.get().getSender();
             ItemStack stack = player.inventory.getItem(msg.slotIdx).copy();
 
             WrenchItem.Mode mode = WrenchItem.getMode(stack);

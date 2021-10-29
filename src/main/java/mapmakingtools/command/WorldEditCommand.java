@@ -14,19 +14,17 @@ import mapmakingtools.worldeditor.action.FloorAction;
 import mapmakingtools.worldeditor.action.MazeAction;
 import mapmakingtools.worldeditor.action.RoofAction;
 import mapmakingtools.worldeditor.action.SetAction;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraft.command.arguments.BlockStateInput;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.commands.arguments.blocks.BlockInput;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 
 import static net.minecraft.command.Commands.literal;
 
-public class WorldEditCommand {
-
-    public static void register(final CommandDispatcher<CommandSource> dispatcher) {
+public clasnet.minecraft.commands.Commandsblic static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         registerSimple(dispatcher, "/set", new SetAction());
         registerSimple(dispatcher, "/roof", new RoofAction());
         registerSimple(dispatcher, "/floor", new FloorAction());
@@ -34,17 +32,17 @@ public class WorldEditCommand {
         registerSimple(dispatcher, "/maze", new MazeAction());
     }
 
-    public static void registerSimple(final CommandDispatcher<CommandSource> dispatcher, String command, Action action) {
+    public static void registerSimple(final CommandDispatcher<CommandSourceStack> dispatcher, String command, Action action) {
         dispatcher.register(literal(command)
                 .requires(s -> s.hasPermission(2))
                 .then(Commands.argument("block", BlockStateArgument.block())
                         .executes(c -> doCommand(c, action))));
     }
 
-    public static int doCommand(final CommandContext<CommandSource> ctx, final Action action) throws CommandSyntaxException {
-        CommandSource source = ctx.getSource();
-        ServerPlayerEntity player = source.getPlayerOrException();
-        World world = player.getCommandSenderWorld();
+    public static int doCommand(final CommandContext<CommandSourceStack> ctx, final Action action) throws CommandSyntaxException {
+        CommandSourceStack source = ctx.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        Level world = player.getCommandSenderWorld();
 
         DimensionData dimData = DimensionData.get(player.getCommandSenderWorld());
         SelectionManager selectionManager = dimData.getSelectionManager();
@@ -52,18 +50,18 @@ public class WorldEditCommand {
         ISelection selection = selectionManager.get(player);
 
         if (!selection.isSet()) {
-            source.sendFailure(new TranslationTextComponent("world_editor.mapmakingtools.selection.none"));
+            source.sendFailure(new TranslatableComponent("world_editor.mapmakingtools.selection.none"));
             return 0;
         }
 
-        BlockStateInput input = BlockStateArgument.getBlock(ctx, "block");
+        BlockInput input = BlockStateArgument.getBlock(ctx, "block");
         CachedBlock cache = new CachedBlock(input.getState(), null);
 
         ICachedArea cachedArea = action.doAction(player, selection, cache);
         EditHistory editHistory = DimensionData.get(world).getEditHistoryManager().get(player);
         editHistory.add(cachedArea);
 
-        source.sendSuccess(new TranslationTextComponent("command.mapmakingtools.set.success", cachedArea.getSize()), true);
+        source.sendSuccess(new TranslatableComponent("command.mapmakingtools.set.success", cachedArea.getSize()), true);
         return 1;
     }
 }

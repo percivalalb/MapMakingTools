@@ -4,10 +4,10 @@ import mapmakingtools.MapMakingTools;
 import mapmakingtools.network.PacketUpdateLastCommand;
 import mapmakingtools.storage.WorldData;
 import mapmakingtools.worldeditor.CommandTracker;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
@@ -25,13 +25,13 @@ public class Command {
     public static void onCommand(CommandEvent e) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            CommandSource source = e.getParseResults().getContext().getSource();
+            CommandSourceStack source = e.getParseResults().getContext().getSource();
             Entity entity = source.getEntity();
-            if (entity instanceof ServerPlayerEntity) {
+            if (entity instanceof ServerPlayer) {
                 CommandTracker tracker = WorldData.get(server).getCommandTracker();
-                tracker.setLastCommand((PlayerEntity) entity, e.getParseResults().getReader().getString());
-                MapMakingTools.HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) entity),
-                        new PacketUpdateLastCommand(tracker.getLastCommand((PlayerEntity) entity)));
+                tracker.setLastCommand((Player) entity, e.getParseResults().getReader().getString());
+                MapMakingTools.HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) entity),
+                        new PacketUpdateLastCommand(tracker.getLastCommand((Player) entity)));
             }
         }
     }

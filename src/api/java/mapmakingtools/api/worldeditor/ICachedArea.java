@@ -1,8 +1,8 @@
 package mapmakingtools.api.worldeditor;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 
 public interface ICachedArea {
 
@@ -11,7 +11,7 @@ public interface ICachedArea {
      *
      * @param world The world to restore to
      */
-    public void restore(World world);
+    public void restore(Level world);
 
     /**
      * Returns the number blocks represented by this cached area
@@ -24,7 +24,7 @@ public interface ICachedArea {
      * @param world The world
      * @return The live cached area of the area represented by this cache
      */
-    public ICachedArea cacheLive(IWorldReader world);
+    public ICachedArea cacheLive(LevelReader world);
 
-    public CompoundNBT write(CompoundNBT nbt);
+    public CompoundTag write(CompoundTag nbt);
 }

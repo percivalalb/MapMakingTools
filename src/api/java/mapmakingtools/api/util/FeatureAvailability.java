@@ -1,12 +1,12 @@
 package mapmakingtools.api.util;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
 public class FeatureAvailability {
 
-    public static boolean canEdit(@Nullable PlayerEntity player) {
+    public static boolean canEdit(@Nullable Player player) {
         if(player == null) {
             return false;
         }

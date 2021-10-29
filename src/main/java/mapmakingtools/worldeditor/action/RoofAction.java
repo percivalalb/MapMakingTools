@@ -5,15 +5,15 @@ import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.worldeditor.CachedCuboidArea;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
 
 public class RoofAction implements Action {
 
     @Override
-    public ICachedArea doAction(PlayerEntity player, ISelection selection, CachedBlock input) {
-        BlockPos.Mutable pos1 = selection.getPrimaryPoint().mutable();
-        BlockPos.Mutable pos2 = selection.getSecondaryPoint().mutable();
+    public ICachedArea doAction(Player player, ISelection selection, CachedBlock input) {
+        BlockPos.MutableBlockPos pos1 = selection.getPrimaryPoint().mutable();
+        BlockPos.MutableBlockPos pos2 = selection.getSecondaryPoint().mutable();
         pos1.setY(selection.getMaxY());
         pos2.setY(selection.getMaxY());
 

@@ -3,11 +3,11 @@ package mapmakingtools.worldeditor;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.network.PacketSelectionPoints;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -28,17 +28,17 @@ public class SelectionManager {
         this.markDirty = markDirty;
     }
 
-    public static SelectionManager read(CompoundNBT nbt, Runnable markDirty) {
+    public static SelectionManager read(CompoundTag nbt, Runnable markDirty) {
         SelectionManager selectionManager = new SelectionManager(markDirty);
 
         if (!nbt.contains("points", Constants.NBT.TAG_LIST)) {
             return selectionManager;
         }
 
-        ListNBT pointsList = nbt.getList("points", Constants.NBT.TAG_COMPOUND);
+        ListTag pointsList = nbt.getList("points", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < pointsList.size(); i++) {
-            CompoundNBT pointNBT = pointsList.getCompound(i);
+            CompoundTag pointNBT = pointsList.getCompound(i);
 
             if (!pointNBT.hasUUID("player_uuid")) {
                 continue;
@@ -53,11 +53,11 @@ public class SelectionManager {
         return selectionManager;
     }
 
-    public CompoundNBT write(CompoundNBT nbt) {
-        ListNBT pointsList = new ListNBT();
+    public CompoundTag write(CompoundTag nbt) {
+        ListTag pointsList = new ListTag();
 
         for (Map.Entry<UUID, ISelection> entry : this.POSITION.entrySet()) {
-            CompoundNBT pointNBT = new CompoundNBT();
+            CompoundTag pointNBT = new CompoundTag();
 
             entry.getValue().write(pointNBT);
             pointNBT.putUUID("player_uuid", entry.getKey());
@@ -70,7 +70,7 @@ public class SelectionManager {
         return nbt;
     }
 
-    public ISelection get(PlayerEntity player) {
+    public ISelection get(Player player) {
         return this.POSITION.getOrDefault(player.getUUID(), EmptySelection.INSTANCE);
     }
 
@@ -81,7 +81,7 @@ public class SelectionManager {
      * @param pos The position to set to
      * @return If the position changed
      */
-    public boolean setPrimary(PlayerEntity player, @Nullable BlockPos pos) {
+    public boolean setPrimary(Player player, @Nullable BlockPos pos) {
         UUID uuid = player.getUUID();
 
         Selection selection = (Selection) this.POSITION.computeIfAbsent(uuid, (k) -> new Selection());
@@ -100,7 +100,7 @@ public class SelectionManager {
      * @param pos The position to set to
      * @return If the position changed
      */
-    public boolean setSecondary(PlayerEntity player, @Nullable BlockPos pos) {
+    public boolean setSecondary(Player player, @Nullable BlockPos pos) {
         UUID uuid = player.getUUID();
 
         Selection selection = (Selection) this.POSITION.computeIfAbsent(uuid, (k) -> new Selection());
@@ -112,8 +112,8 @@ public class SelectionManager {
         return true;
     }
 
-    public void sync(PlayerEntity player) {
-        MapMakingTools.HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+    public void sync(Player player) {
+        MapMakingTools.HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
                 new PacketSelectionPoints(this.get(player)));
     }
 }

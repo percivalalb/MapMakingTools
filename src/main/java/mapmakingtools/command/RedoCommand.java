@@ -7,35 +7,33 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.EditHistory;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import static net.minecraft.command.Commands.literal;
 
-public class RedoCommand {
-
-    public static final DynamicCommandExceptionType SPAWN_EXCEPTION = new DynamicCommandExceptionType((arg) -> {
-        return new TranslationTextComponent("command.mapmakingtools.undo.nothing", arg);
+public clasnet.minecraft.commands.Commandsstatic final DynamicCommandExceptionType SPAWN_EXCEPTION = new DynamicCommandExceptionType((arg) -> {
+        return new TranslatableComponent("command.mapmakingtools.undo.nothing", arg);
     });
 
-    public static void register(final CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 literal("/redo").requires(s -> s.hasPermission(2)).executes(c -> doCommand(c)));
     }
 
-    public static int doCommand(final CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        CommandSource source = ctx.getSource();
-        ServerPlayerEntity player = source.getPlayerOrException();
+    public static int doCommand(final CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSourceStack source = ctx.getSource();
+        ServerPlayer player = source.getPlayerOrException();
         EditHistory editHistory = DimensionData.get(player.getCommandSenderWorld()).getEditHistoryManager().get(player);
 
         ICachedArea area;
         if ((area = editHistory.redo(player.getCommandSenderWorld())) == null) {
-            source.sendFailure(new TranslationTextComponent("command.mapmakingtools.redo.none"));
+            source.sendFailure(new TranslatableComponent("command.mapmakingtools.redo.none"));
             return 0;
         }
 
-        source.sendSuccess(new TranslationTextComponent("command.mapmakingtools.redo.success", area.getSize()), true);
+        source.sendSuccess(new TranslatableComponent("command.mapmakingtools.redo.success", area.getSize()), true);
         return 1;
     }
 }

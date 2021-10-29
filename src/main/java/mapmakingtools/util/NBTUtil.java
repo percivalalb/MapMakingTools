@@ -1,10 +1,10 @@
 package mapmakingtools.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.function.Function;
@@ -16,20 +16,20 @@ public class NBTUtil {
      * or current tag is empty it creates new object
      */
     @Deprecated // Use ItemStack.getOrCreateTag
-    public static CompoundNBT getOrCreateTag(ItemStack stack) {
+    public static CompoundTag getOrCreateTag(ItemStack stack) {
         if (!stack.hasTag()) {
-            stack.setTag(new CompoundNBT());
+            stack.setTag(new CompoundTag());
         }
 
         return stack.getTag();
     }
 
     @Deprecated // Use ItemStack.getOrCreateChildTag
-    public static CompoundNBT getOrCreateSubCompound(ItemStack stack, String key) {
+    public static CompoundTag getOrCreateSubCompound(ItemStack stack, String key) {
         if (hasTag(stack, key, Constants.NBT.TAG_COMPOUND))
             return stack.getTag().getCompound(key);
         else {
-            CompoundNBT tagList = new CompoundNBT();
+            CompoundTag tagList = new CompoundTag();
             stack.addTagElement(key, tagList);
             return tagList;
         }
@@ -39,11 +39,11 @@ public class NBTUtil {
      * Returns the stack's tag or if it does not have a tag
      * or current tag is empty it creates new object
      */
-    public static ListNBT getOrCreateSubList(ItemStack stack, String key, int tagId) {
+    public static ListTag getOrCreateSubList(ItemStack stack, String key, int tagId) {
         if (hasTag(stack, key, Constants.NBT.TAG_LIST))
             return stack.getTag().getList(key, tagId);
         else {
-            ListNBT tagList = new ListNBT();
+            ListTag tagList = new ListTag();
             stack.addTagElement(key, tagList);
             return tagList;
         }
@@ -64,10 +64,10 @@ public class NBTUtil {
     }
 
     // Only adds if it is not already contained
-    public static boolean addToSet(ListNBT nbt, Object value, int type) {
+    public static boolean addToSet(ListTag nbt, Object value, int type) {
         boolean contains = false;
-        Function<Object, INBT> f = toHolder(type);
-        INBT holder = f.apply(value);
+        Function<Object, Tag> f = toHolder(type);
+        Tag holder = f.apply(value);
         for (int i = 0; i < nbt.size(); i++) {
             if (nbt.get(i).equals(holder)) {
                 contains = true;
@@ -83,10 +83,10 @@ public class NBTUtil {
         return false;
     }
 
-    public static Function<Object, INBT> toHolder(int type) {
+    public static Function<Object, Tag> toHolder(int type) {
         switch (type) {
         case Constants.NBT.TAG_STRING:
-            return (v) -> StringNBT.valueOf(v.toString());
+            return (v) -> StringTag.valueOf(v.toString());
         default: throw new RuntimeException();
         }
     }
@@ -98,7 +98,7 @@ public class NBTUtil {
 
     public static void removeTagFromSubList(ItemStack stack, String key, int tagId, int tagIndex) {
         if (hasTag(stack, key, Constants.NBT.TAG_LIST)) {
-            ListNBT tagList = stack.getTag().getList(key, tagId);
+            ListTag tagList = stack.getTag().getList(key, tagId);
             tagList.remove(tagIndex);
 
             if (tagList.isEmpty())
@@ -110,7 +110,7 @@ public class NBTUtil {
 
 
 
-    public static boolean contains(ListNBT tagList, String value) {
+    public static boolean contains(ListTag tagList, String value) {
         if (tagList.getElementType() != Constants.NBT.TAG_STRING) return false;
 
         for (int i = 0; i < tagList.size(); i++)
@@ -127,7 +127,7 @@ public class NBTUtil {
 
     public static void removeTagFromSubCompound(ItemStack stack, String key, int tagId, String tagKey) {
         if (hasTag(stack, key, Constants.NBT.TAG_COMPOUND)) {
-            CompoundNBT subCompound = stack.getTag().getCompound(key);
+            CompoundTag subCompound = stack.getTag().getCompound(key);
 
             if (subCompound.contains(tagKey, tagId))
                 subCompound.remove(tagKey);
@@ -149,7 +149,7 @@ public class NBTUtil {
         return stack.getTag().getCompound(key).getInt(key2);
     }
 
-    public static ListNBT getListInSubCompound(ItemStack stack, String key, String key2, int tagId) {
+    public static ListTag getListInSubCompound(ItemStack stack, String key, String key2, int tagId) {
         return stack.getTag().getCompound(key).getList(key2, tagId);
     }
 

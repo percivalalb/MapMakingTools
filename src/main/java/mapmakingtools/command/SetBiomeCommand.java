@@ -7,29 +7,27 @@ import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.command.argument.BiomeArgument;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.SelectionManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 
 import static net.minecraft.command.Commands.literal;
 
-public class SetBiomeCommand {
-
-    public static void register(final CommandDispatcher<CommandSource> dispatcher) {
+public clasnet.minecraft.commands.Commandslic static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("/setbioem")
                 .requires(s -> s.hasPermission(2))
                 .then(Commands.argument("biome", BiomeArgument.biome())
                         .executes(c -> doCommand(c))));
     }
 
-    public static int doCommand(final CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        CommandSource source = ctx.getSource();
-        ServerPlayerEntity player = source.getPlayerOrException();
-        World world = player.getCommandSenderWorld();
+    public static int doCommand(final CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSourceStack source = ctx.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        Level world = player.getCommandSenderWorld();
 
         DimensionData dimData = DimensionData.get(player.getCommandSenderWorld());
         SelectionManager selectionManager = dimData.getSelectionManager();
@@ -37,7 +35,7 @@ public class SetBiomeCommand {
         ISelection selection = selectionManager.get(player);
 
         if (!selection.isSet()) {
-            source.sendFailure(new TranslationTextComponent("world_editor.mapmakingtools.selection.none"));
+            source.sendFailure(new TranslatableComponent("world_editor.mapmakingtools.selection.none"));
             return 0;
         }
 
@@ -49,7 +47,7 @@ public class SetBiomeCommand {
 
         }
 
-        source.sendSuccess(new TranslationTextComponent("command.mapmakingtools.set.success"), true);
+        source.sendSuccess(new TranslatableComponent("command.mapmakingtools.set.success"), true);
         return 1;
     }
 }
