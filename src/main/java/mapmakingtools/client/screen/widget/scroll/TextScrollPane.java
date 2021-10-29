@@ -36,9 +36,9 @@ public class TextScrollPane extends ScrollPane {
         FontRenderer font = minecraft.fontRenderer;
 
         if (this.text != null) {
-            String[] text = this.text.getString().split("\n");
+
             List<IReorderingProcessor> test = font.trimStringToWidth(this.text, Integer.MAX_VALUE);
-            for (int i = 0; i < text.length; i++) {
+            for (int i = 0; i < test.size(); i++) {
                 font.func_238422_b_(stackIn, test.get(i), this.x + 2, this.y + 2 + i * 10, 0);
             }
         }
