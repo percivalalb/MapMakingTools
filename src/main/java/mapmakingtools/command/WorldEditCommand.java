@@ -22,9 +22,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.commands.Commands.literal;
 
-public clasnet.minecraft.commands.Commandsblic static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+public class WorldEditCommand {
+
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         registerSimple(dispatcher, "/set", new SetAction());
         registerSimple(dispatcher, "/roof", new RoofAction());
         registerSimple(dispatcher, "/floor", new FloorAction());

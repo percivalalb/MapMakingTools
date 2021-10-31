@@ -1,10 +1,12 @@
 package mapmakingtools.client.screen.widget;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
@@ -26,7 +28,9 @@ public class ToggleBoxWidget<T> extends AbstractTickButton {
     public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
-        minecraft.getTextureManager().bind(Resources.SCREEN_SCROLL);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, Resources.SCREEN_SCROLL);
         this.blit(stackIn, this.x, this.y, 0 + (this.ticked ? 8 : 0), 135, 8, 9);
 
         Object obj = this.getDisplayObject();

@@ -5,7 +5,7 @@ import mapmakingtools.client.ClientSelection;
 import mapmakingtools.worldeditor.Selection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;

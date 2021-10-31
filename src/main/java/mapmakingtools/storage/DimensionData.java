@@ -14,8 +14,6 @@ public class DimensionData extends SavedData {
     private EditHistoryManager editHistoryManager;
 
     public DimensionData() {
-        super(Constants.STORAGE_DIMENSION);
-        // Defaults required since read is not called if no data exists
         this.selectionManager = new SelectionManager(this::setDirty);
         this.editHistoryManager = new EditHistoryManager(this::setDirty);
     }
@@ -26,7 +24,7 @@ public class DimensionData extends SavedData {
         }
 
         return ((ServerLevel) world).getDataStorage()
-                .computeIfAbsent(DimensionData::new, Constants.STORAGE_DIMENSION);
+                .computeIfAbsent(DimensionData::load, DimensionData::new, Constants.STORAGE_DIMENSION);
     }
 
     public SelectionManager getSelectionManager() {
@@ -37,10 +35,11 @@ public class DimensionData extends SavedData {
         return this.editHistoryManager;
     }
 
-    @Override
-    public void load(CompoundTag nbt) {
-        this.selectionManager = SelectionManager.read(nbt.getCompound("selection"), this::setDirty);
-        this.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), this::setDirty);
+    public static DimensionData load(CompoundTag nbt) {
+        DimensionData savedData = new DimensionData();
+        savedData.selectionManager = SelectionManager.read(nbt.getCompound("selection"), savedData::setDirty);
+        savedData.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), savedData::setDirty);
+        return savedData;
     }
 
     @Override

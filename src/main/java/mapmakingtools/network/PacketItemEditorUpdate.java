@@ -6,7 +6,7 @@ import mapmakingtools.api.itemeditor.Registries;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -37,7 +37,7 @@ public class PacketItemEditorUpdate {
     public static void handle(final PacketItemEditorUpdate msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
-            ItemStack stack = player.inventory.getItem(msg.slotIndex).copy();
+            ItemStack stack = player.getInventory().getItem(msg.slotIndex).copy();
 
             try {
                 // Protected servers against people by-passing the GUI and
@@ -47,7 +47,7 @@ public class PacketItemEditorUpdate {
                 }
 
                 stack = msg.attributeManager.read(stack, msg.data, player);
-                player.inventory.setItem(msg.slotIndex, stack);
+                player.getInventory().setItem(msg.slotIndex, stack);
             } catch (Exception e) {
                 MapMakingTools.LOGGER.warn("Failed to edit item", e);
             } finally {

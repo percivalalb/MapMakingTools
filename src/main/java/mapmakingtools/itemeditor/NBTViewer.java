@@ -8,6 +8,7 @@ import mapmakingtools.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.TextComponentTagVisitor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +70,7 @@ public class NBTViewer extends IItemAttribute {
                 this.nbtRemoval.active = stack.hasTag();
                 if (stack.hasTag()) {
                     assert stack.getTag() != null;
-                    this.nbtTextPane.setText(stack.getTag().getPrettyDisplay("   ", 0));
+                    this.nbtTextPane.setText(new TextComponentTagVisitor("    ", 0).visit(stack.getTag()));
                 } else {
                     this.nbtTextPane.setText(null);
                 }

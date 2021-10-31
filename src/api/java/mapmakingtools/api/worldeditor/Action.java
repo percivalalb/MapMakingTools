@@ -1,6 +1,5 @@
 package mapmakingtools.api.worldeditor;
 
-import net.minecraft.command.arguments.BlockStateInput;
 import net.minecraft.world.entity.player.Player;
 
 @FunctionalInterface

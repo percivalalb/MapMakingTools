@@ -14,9 +14,11 @@ import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.network.PacketItemEditorUpdate;
 import mapmakingtools.util.Util;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
@@ -93,8 +95,8 @@ public class ItemEditorScreen extends Screen {
                 this.recalculatePage(perPage, false);
             });
 
-            this.addButton(this.leftBtn);
-            this.addButton(this.rightBtn);
+            this.addRenderableWidget(this.leftBtn);
+            this.addRenderableWidget(this.rightBtn);
         }
 
         this.recalculatePage(perPage, true);
@@ -118,7 +120,7 @@ public class ItemEditorScreen extends Screen {
             p.getRight().tick(this, systemTimeMillis, this::sendItemUpdate);
         });
 
-        ItemStack playersStack = this.player.inventory.getItem(this.slotIndex);
+        ItemStack playersStack = this.player.getInventory().getItem(this.slotIndex);
         if (!ItemStack.matches(playersStack, this.stack)) {
             this.requiresUpdate = ItemEditorScreen.current.isPresent() ? this.current.get().getRight().requiresUpdate(playersStack, this.stack) : false;
             this.stack = playersStack.copy();
@@ -154,10 +156,10 @@ public class ItemEditorScreen extends Screen {
 
             do {
                 int direction = Mth.sign(amount);
-                this.slotIndex += direction + this.player.inventory.getContainerSize();
-                this.slotIndex %= this.player.inventory.getContainerSize();
+                this.slotIndex += direction + this.player.getInventory().getContainerSize();
+                this.slotIndex %= this.player.getInventory().getContainerSize();
 
-                ItemStack stack = this.player.inventory.getItem(this.slotIndex);
+                ItemStack stack = this.player.getInventory().getItem(this.slotIndex);
                 if (!stack.isEmpty()) {
                     break;
                 }
@@ -239,20 +241,22 @@ public class ItemEditorScreen extends Screen {
             button.active = attribute.get().canUse() && attribute.get().isApplicable(this.player, this.stack);
 
             this.attributeTabWidgets.put(attribute, button);
-            this.addButton(button);
+            this.addRenderableWidget(button);
         }
     }
 
     @Override
     public void render(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stackIn);
-        this.minecraft.getTextureManager().bind(Resources.ITEM_EDITOR_SLOT);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, Resources.ITEM_EDITOR_SLOT);
         this.blit(stackIn, 13, 13, 0, 0, 35, 35);
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(23, 16, 0);
-        RenderSystem.scalef(0.48F, 0.48F, 0.48F);
+        stackIn.pushPose();
+        stackIn.translate(23, 16, 0);
+        stackIn.scale(0.48F, 0.48F, 0.48F);
         this.minecraft.font.draw(stackIn, "Slot: " + this.slotIndex, 0, 0, 0);
-        RenderSystem.popMatrix();
+        stackIn.popPose();
 
         Screen.fill(stackIn, this.guiX, this.guiY, this.guiX + this.guiWidth, this.guiY + this.guiHeight, ItemEditorScreen.attributeBackgroundColour);
 
@@ -265,16 +269,17 @@ public class ItemEditorScreen extends Screen {
 
         super.render(stackIn, mouseX, mouseY, partialTicks);
 
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.enableRescaleNormal();
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        stackIn.pushPose();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        // TODO
+//        RenderSystem.enableRescaleNormal();
+//        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.itemRenderer.blitOffset = 100.0F;
 
         RenderSystem.enableDepthTest();
-        this.itemRenderer.renderAndDecorateItem(this.minecraft.player, this.stack, 23, 23);
+        this.itemRenderer.renderAndDecorateItem(this.stack, 23, 23);
         this.itemRenderer.renderGuiItemDecorations(this.font, this.stack, 23, 23, null);
 
         this.itemRenderer.blitOffset = 0.0F;
@@ -289,13 +294,15 @@ public class ItemEditorScreen extends Screen {
             this.renderTooltip(stackIn, this.stack, mouseX, mouseY);
         }
 
-        for (AbstractWidget widget : this.buttons) {
+        for (Widget w : this.renderables) {
+            if (!(w instanceof AbstractWidget widget)) { continue; }
+
             if (widget.visible && widget.isHovered()) {
                 widget.renderToolTip(stackIn, mouseX, mouseY);
             }
         }
 
-        RenderSystem.popMatrix();
+        stackIn.popPose();
         RenderSystem.enableDepthTest();
     }
 
@@ -317,31 +324,13 @@ public class ItemEditorScreen extends Screen {
 //    }
 
     protected <T extends AbstractWidget> T addAttributeWidget(T widgetIn) {
-        this.addButton(widgetIn);
+        this.addRenderableWidget(widgetIn);
         this.attributeWidgets.add(widgetIn);
         return widgetIn;
     }
 
     protected <T extends AbstractWidget> T removeWidget(T widgetIn) {
-        this.buttons.remove(widgetIn);
-        this.children.remove(widgetIn);
+        super.removeWidget(widgetIn);
         return widgetIn;
-    }
-
-    /**
-     * Draws an ItemStack.
-     *
-     * The z index is increased by 32 (and not decreased afterwards), and the item is then rendered at z=200.
-     */
-    private void drawItemStack(ItemStack stack, int x, int y) {
-        RenderSystem.translatef(0.0F, 0.0F, 32.0F);
-        this.setBlitOffset(200);
-        this.itemRenderer.blitOffset = 200.0F;
-        net.minecraft.client.gui.Font font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = this.font;
-        this.itemRenderer.renderAndDecorateItem(stack, x, y);
-        this.itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
-        this.setBlitOffset(0);
-        this.itemRenderer.blitOffset = 0.0F;
     }
 }

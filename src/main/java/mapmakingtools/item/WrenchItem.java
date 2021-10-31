@@ -19,14 +19,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.text.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -51,7 +48,7 @@ public class WrenchItem extends Item {
             case BLOCK_EDIT:
                 BlockState state = context.getLevel().getBlockState(context.getClickedPos());
                 BlockEntity tileEntity = context.getLevel().getBlockEntity(context.getClickedPos());
-                if (state.getBlock().is(Blocks.SNOW)) {
+                if (state.getBlock() == Blocks.SNOW) {
                     int i = state.getValue(SnowLayerBlock.LAYERS);
                     BlockState rotState = state.setValue(SnowLayerBlock.LAYERS, context.getPlayer().isShiftKeyDown() ? ((i + 6) % 8) + 1 : i % 8 + 1);
                     if (!context.getLevel().isClientSide) {

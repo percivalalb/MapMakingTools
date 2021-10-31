@@ -42,7 +42,7 @@ public class PotionAttribute extends IItemAttribute {
             int level = buffer.readInt();
             int amount = buffer.readInt();
             for (int i = 0; i < amount; i++) {
-                MobEffect effect = buffer.readRegistryIdUnsafe(ForgeRegistries.POTIONS);
+                MobEffect effect = buffer.readRegistryIdUnsafe(ForgeRegistries.MOB_EFFECTS);
                 PotionUtils.setCustomEffects(stack, Collections.singletonList(new MobEffectInstance(effect, amount, level)));
             }
 
@@ -71,7 +71,7 @@ public class PotionAttribute extends IItemAttribute {
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.potionList = new ToggleBoxList<>(x + 2, y + 12, width - 4, (height - 80) / 2, this.potionList);
                 this.potionList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
-                this.potionList.setValues(ForgeRegistries.POTIONS.getValues(), MobEffect::getRegistryName, this.potionList);
+                this.potionList.setValues(ForgeRegistries.MOB_EFFECTS.getValues(), MobEffect::getRegistryName, this.potionList);
 
                 this.currentPotionList = new ToggleBoxList<>(x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, this.currentPotionList);
                 this.currentPotionList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
@@ -85,7 +85,7 @@ public class PotionAttribute extends IItemAttribute {
                     buf.writeInt(Integer.valueOf(this.lvlInput.getValue()));
                     buf.writeInt(effects.size());
                     effects.forEach(ench -> {
-                        buf.writeRegistryIdUnsafe(ForgeRegistries.POTIONS, ench);
+                        buf.writeRegistryIdUnsafe(ForgeRegistries.MOB_EFFECTS, ench);
                     });
                     update.accept(buf);
                 });

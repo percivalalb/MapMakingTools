@@ -3,7 +3,7 @@ package mapmakingtools.client.screen.widget.component;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.client.screen.widget.SmallButton;
@@ -13,13 +13,11 @@ import mapmakingtools.lib.Resources;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
@@ -58,7 +56,8 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         // Check disconnections
         Collection<Entry<Direction, DraggableTextComponentPart>> connections = this.getConnectionEntries();
 
-        RenderSystem.pushMatrix();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        stackIn.pushPose();
 
         for (Entry<Direction, DraggableTextComponentPart> connection : connections) {
             Direction dir = connection.getKey();
@@ -70,15 +69,14 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
             GL11.glLineWidth(2.5F);
 
-            bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
             bufferbuilder.vertex(thisSide.x, thisSide.y, 0).color(0, 0, 0, 255).endVertex();
             bufferbuilder.vertex(otherSide.x, otherSide.y, 0).color(0, 0, 0, 255).endVertex();
 
             bufferbuilder.end();
-            RenderSystem.enableAlphaTest();
             BufferUploader.end(bufferbuilder);
         }
-        RenderSystem.popMatrix();
+        stackIn.popPose();
     }
 
     @Override
@@ -157,6 +155,11 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         return true;
     }
 
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        // TODO
+    }
+
     public static class StylePart extends DraggableTextComponentPart {
 
         private ChatFormatting color;
@@ -171,7 +174,8 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
             Font fontrenderer = minecraft.font;
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
@@ -182,15 +186,15 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
                 int red = (color >> 16) & 255;
                 int blue = (color >> 8) & 255;
                 int green = color & 255;
-                RenderSystem.color4f(red / 255F, blue / 255F, green / 255F, 1.0F);
+                RenderSystem.setShaderColor(red / 255F, blue / 255F, green / 255F, 1.0F);
 
-                minecraft.getTextureManager().bind(Resources.BUTTON_TEXT_COLOR);
+                RenderSystem.setShaderTexture(0, Resources.BUTTON_TEXT_COLOR);
                 this.blit(stackIn, this.x, y, 0, 46 + i * 20, 10, this.height / 2);//top left
                 this.blit(stackIn, this.x + 10, y, 200 - 10, 46 + i * 20, 10, this.height / 2);//top right
                 this.blit(stackIn, this.x, y + this.height / 2, 0, 46 + i * 20 + 20 - this.height / 2, 10, this.height / 2);//bottom left
                 this.blit(stackIn, this.x + 10, y + this.height / 2, 200 - 10, 46 + i * 20 + 20 - this.height / 2, 10, this.height / 2);//bottom right
             } else {
-                minecraft.getTextureManager().bind(WIDGETS_LOCATION);
+                RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
                 this.blit(stackIn, this.x, y, 0, 46 + i * 20, this.width / 2, this.height / 2); //top left
                 this.blit(stackIn, this.x + this.width / 2, y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height / 2); //top right
                 this.blit(stackIn, this.x, y + this.height / 2, 0, 46 + i * 20 + 20 - this.height / 2, this.width / 2, this.height / 2); //bottom left
@@ -301,8 +305,9 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
             Font fontrenderer = minecraft.font;
-            minecraft.getTextureManager().bind(WIDGETS_LOCATION);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
@@ -374,8 +379,9 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             super.renderButton(stackIn, mouseX, mouseY, partialTicks);
             Minecraft minecraft = Minecraft.getInstance();
             Font fontrenderer = minecraft.font;
-            minecraft.getTextureManager().bind(WIDGETS_LOCATION);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.getYImage(this.isHovered());
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();

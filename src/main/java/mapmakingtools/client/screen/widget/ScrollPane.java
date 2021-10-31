@@ -6,6 +6,7 @@ import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.util.Mth;
 import org.lwjgl.opengl.GL11;
 
@@ -56,11 +57,11 @@ public class ScrollPane extends AbstractWidget {
         GL11.glScissor((int)(this.x * scale), (int)((minecraft.getWindow().getGuiScaledHeight() - this.height - this.y) * scale),
                 (int)(this.width * scale), (int)(this.height * scale));
 
-        RenderSystem.translated(0, this.scrollOffset, 0);
+        stackIn.translate(0, this.scrollOffset, 0);
 
         this.renderOffset(stackIn, mouseX, mouseY, partialTicks);
 
-        RenderSystem.translated(0, -this.scrollOffset, 0);
+        stackIn.translate(0, -this.scrollOffset, 0);
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
@@ -97,5 +98,10 @@ public class ScrollPane extends AbstractWidget {
 
     public void clampScrollOffset(double offset) {
         this.scrollOffset = Mth.clamp(offset, -this.hiddenHeight, 0);
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        // TODO
     }
 }

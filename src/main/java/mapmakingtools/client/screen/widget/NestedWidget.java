@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
@@ -136,5 +137,10 @@ public class NestedWidget extends AbstractWidget implements ContainerEventHandle
         }
 
         return false;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        // TODO
     }
 }

@@ -15,9 +15,11 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.commands.Commands.literal;
 
-public clasnet.minecraft.commands.Commandslic static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+public class SetBiomeCommand {
+
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("/setbioem")
                 .requires(s -> s.hasPermission(2))
                 .then(Commands.argument("biome", BiomeArgument.biome())

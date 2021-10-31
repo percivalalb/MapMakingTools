@@ -34,7 +34,7 @@ public class CachedBlock {
                     compoundnbt.putInt("x", pos.getX());
                     compoundnbt.putInt("y", pos.getY());
                     compoundnbt.putInt("z", pos.getZ());
-                    tileentity.load(this.state, compoundnbt);
+                    tileentity.load(compoundnbt);
                 }
             }
         }

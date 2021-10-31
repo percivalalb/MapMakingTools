@@ -1,6 +1,7 @@
 package mapmakingtools.client.screen.widget;
 
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,6 +37,11 @@ public class AbstractTickButton extends AbstractButton {
 
     public void toggle() {
         this.ticked = !this.ticked;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        // TODO
     }
 
     @OnlyIn(Dist.CLIENT)

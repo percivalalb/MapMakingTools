@@ -6,17 +6,15 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 public class GlobalData extends SavedData {
 
-    public GlobalData(String name) {
-        super(Constants.STORAGE_GLOBAL);
-    }
+    public GlobalData() {}
 
-    @Override
-    public void load(CompoundTag nbt) {
-
+    public static GlobalData load(CompoundTag nbt) {
+        GlobalData savedData = new GlobalData();
+        return savedData;
     }
 
     @Override
     public CompoundTag save(CompoundTag compound) {
-        return null;
+        return compound;
     }
 }

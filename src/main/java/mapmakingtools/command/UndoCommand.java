@@ -10,9 +10,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.commands.Commands.literal;
 
-public clasnet.minecraft.commands.Commandsstatic void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+public class UndoCommand {
+
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 literal("/undo").requires(s -> s.hasPermission(2)).executes(c -> doCommand(c)));
     }

@@ -1,6 +1,6 @@
 package mapmakingtools.handler;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.MapMakingTools;
@@ -11,10 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.LoadingOverlay;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -41,29 +39,32 @@ public class GameRender {
         ItemStack stack = player.getMainHandItem();
         if (e.getType() == ElementType.TEXT && FeatureAvailability.canEdit(mc.player) && stack.getItem() == MapMakingTools.WRENCH && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
 
-            if (mc.overlay instanceof LoadingOverlay) {
+            if (mc.getOverlay() instanceof LoadingOverlay) {
                 return;
             }
 
+            PoseStack poseStack = e.getMatrixStack();
+
             Font font = Minecraft.getInstance().font;
-            GlStateManager._pushMatrix();
+            poseStack.pushPose();
+            // TODO
 //            GlStateManager.disableRescaleNormal();
 //            RenderHelper.disableStandardItemLighting();
 //            GlStateManager.disableDepthTest();
 
             if (ClientSelection.SELECTION.isSet()) {
                 int[] dimensions = ClientSelection.SELECTION.getDimensions();
-                font.drawShadow(e.getMatrixStack(), new TranslatableComponent("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
+                font.drawShadow(poseStack, new TranslatableComponent("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
             }
             else {
-                font.drawShadow(e.getMatrixStack(), new TranslatableComponent("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
+                font.drawShadow(poseStack, new TranslatableComponent("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
             }
 
             if (ClientSelection.LAST_COMMAND != null) {
-                font.drawShadow(e.getMatrixStack(), new TextComponent(ClientSelection.LAST_COMMAND), 4, 15, -1);
+                font.drawShadow(poseStack, new TextComponent(ClientSelection.LAST_COMMAND), 4, 15, -1);
             }
 
-            RenderSystem.popMatrix();
+            poseStack.popPose();
 
 //            ItemStack fillerBlock = new ItemStack(Blocks.PUMPKIN);
 ////            GlStateManager.enableDepthTest();
@@ -101,40 +102,47 @@ public class GameRender {
     }
 
     public static void drawSelectionBox(PoseStack stack, AABB boundingBox1, AABB boundingBox2) {
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableLighting(); // Full bright
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        // TODO
+//        RenderSystem.disableAlphaTest();
+//        RenderSystem.disableLighting(); // Full bright
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest(); // Visible through blocks
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        RenderSystem.lineWidth(2.0F);
 
         RenderSystem.disableTexture();
         Vec3 vec3d = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         double d0 = vec3d.x();
         double d1 = vec3d.y();
         double d2 = vec3d.z();
+        stack.pushPose();
+        stack.translate(-d0, -d1, -d2);
 
-        BufferBuilder buf = Tesselator.getInstance().getBuilder();
-        buf.begin(GL11.GL_LINES, DefaultVertexFormat.POSITION_COLOR);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buf = tesselator.getBuilder();
+        // TODO Has no effect RenderSystem.lineWidth(2.0F);
+        buf.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+
         if (boundingBox1 != null && boundingBox2 != null) {
-            LevelRenderer.renderLineBox(stack, buf, boundingBox1.minmax(boundingBox2).move(-d0, -d1, -d2), 1F, 1F, 1F, 1F);
+            LevelRenderer.renderLineBox(stack, buf, boundingBox1.minmax(boundingBox2), 1F, 1F, 1F, 1F);
         }
         if (boundingBox1 != null) {
-            LevelRenderer.renderLineBox(stack, buf, boundingBox1.move(-d0, -d1, -d2), 1F, 1F, 0F, 0.8F);
+            LevelRenderer.renderLineBox(stack, buf, boundingBox1, 1F, 1F, 0F, 0.8F);
         }
         if (boundingBox2 != null) {
-            LevelRenderer.renderLineBox(stack, buf, boundingBox2.move(-d0, -d1, -d2), 0F, 1F, 1F, 0.8F);
+            LevelRenderer.renderLineBox(stack, buf, boundingBox2, 0F, 1F, 1F, 0.8F);
         }
-        Tesselator.getInstance().end();
-        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 0.3F);
+        tesselator.end();
+        RenderSystem.lineWidth(1.0F);
+        RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 0.3F);
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
         RenderSystem.enableTexture();
         RenderSystem.enableTexture();
-        RenderSystem.enableLighting();
+//        RenderSystem.enableLighting();
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+//        RenderSystem.enableAlphaTest();
+        stack.popPose();
     }
 }

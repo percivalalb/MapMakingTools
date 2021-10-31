@@ -2,7 +2,7 @@ package mapmakingtools.network;
 
 import mapmakingtools.client.ClientSelection;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

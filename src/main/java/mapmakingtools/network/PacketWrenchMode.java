@@ -4,7 +4,7 @@ import mapmakingtools.item.WrenchItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -30,7 +30,7 @@ public class PacketWrenchMode {
     public static void handle(final PacketWrenchMode msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
-            ItemStack stack = player.inventory.getItem(msg.slotIdx).copy();
+            ItemStack stack = player.getInventory().getItem(msg.slotIdx).copy();
 
             WrenchItem.Mode mode = WrenchItem.getMode(stack);
             WrenchItem.Mode tmp;
@@ -42,7 +42,7 @@ public class PacketWrenchMode {
                 }
             }
             stack.getOrCreateTag().putString("mode", mode.getModeName());
-            player.inventory.setItem(msg.slotIdx, stack);
+            player.getInventory().setItem(msg.slotIdx, stack);
         });
 
         ctx.get().setPacketHandled(true);

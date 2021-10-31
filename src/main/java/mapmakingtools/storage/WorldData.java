@@ -10,10 +10,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 public class WorldData extends SavedData {
 
-    private CommandTracker lastCommand;
+    protected CommandTracker lastCommand;
 
     public WorldData() {
-        super(Constants.STORAGE_WORLD);
         this.lastCommand = new CommandTracker(this::setDirty);
     }
 
@@ -29,16 +28,18 @@ public class WorldData extends SavedData {
         return server
                 .getLevel(Level.OVERWORLD)
                 .getDataStorage()
-                .computeIfAbsent(WorldData::new, Constants.STORAGE_WORLD);
+                .computeIfAbsent(WorldData::load, WorldData::new, Constants.STORAGE_WORLD);
     }
+
 
     public CommandTracker getCommandTracker() {
         return this.lastCommand;
     }
 
-    @Override
-    public void load(CompoundTag nbt) {
-        this.lastCommand = CommandTracker.read(nbt, this::setDirty);
+    public static WorldData load(CompoundTag nbt) {
+        WorldData savedData = new WorldData();
+        savedData.lastCommand = CommandTracker.read(nbt, savedData::setDirty);
+        return savedData;
     }
 
     @Override
