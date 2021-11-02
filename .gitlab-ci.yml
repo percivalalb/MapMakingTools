@@ -9,48 +9,33 @@ before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
   - chmod +x ./gradlew
 
+cache: &global_cache
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .gradle/
+    - build/
+  policy: pull-push
+
 build:
   stage: build
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    when: 'always'
-    paths:
-      - .gradle/
-      - build/fg_cache/
   script:
     - ./gradlew build
   artifacts:
     paths:
       - 'build/libs/*.jar'
     expire_in: 1 week
-
-build_on_old_versions:
-  stage: build
-  allow_failure: true
-  cache:
-    key: "${CI_COMMIT_REF_SLUG}-old"
-    when: 'always'
-    paths:
-      - .gradle/
-      - build/fg_cache/
-  script:
-    - ./gradlew build -Pforge_version=1.16.2-33.0.61 -Pjei_version=1.16.3:7.6.0.51
-    - ./gradlew build -Pforge_version=1.16.3-34.1.42 -Pjei_version=1.16.3:7.6.0.51
-    - ./gradlew build -Pforge_version=1.16.4-35.1.37 -Pjei_version=1.16.4:7.6.1.74
-    - ./gradlew build -Pforge_version=1.16.5-36.1.0
-  after_script:
-    - git checkout .
+  except:
+    - tags
 
 publish:
   stage: publish
-  only:
-    - branches
   cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - .gradle/
-      - build/fg_cache/
+    <<: *global_cache
     policy: pull
   script:
     - './gradlew curseforge'
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^\d\.\d{1,3}(?:\.(?:\d{1,3}|x))?$/'
+      when: always
+    - when: never
 
