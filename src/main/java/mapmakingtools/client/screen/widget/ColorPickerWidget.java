@@ -98,16 +98,16 @@ public class ColorPickerWidget extends NestedWidget {
     }
 
     public void setColor(int[] rgb) {
-        // If color is already set do not do anything as this will likely change the base color
+        // If color is already set do not do anything as this will change the base color
         if (Arrays.equals(this.getColorPicked(), rgb)) {
             return;
         }
 
-        int f = rgb[0] >= rgb[1] && rgb[0] >= rgb[2] ? 0 : rgb[1] >= rgb[0] && rgb[1] >= rgb[2] ? 1 : 2; // maxIndex
-        int s = (f + 1) % 3;
-        int t = (f + 2) % 3;
+        int f = rgb[0] >= rgb[1] && rgb[0] >= rgb[2] ? 0 : (rgb[1] >= rgb[0] && rgb[1] >= rgb[2] ? 1 : 2); // maxIndex
+        int s = f == 0 ? 1 : 0;
+        int t = f == 2 ? 1 : 2;
 
-        if (rgb[s] >= rgb[t]) {
+        if (rgb[t] >= rgb[s]) {
             int temp = s;
             s = t;
             t = temp;
