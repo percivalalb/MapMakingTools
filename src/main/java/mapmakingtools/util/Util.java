@@ -111,7 +111,7 @@ public class Util {
     public static String toHex(int[] arr) {
         StringBuilder bd = new StringBuilder(arr.length * 2);
         for (int i = 0; i < arr.length; i++) {
-            bd.append(Integer.toHexString(arr[i]));
+            bd.append(Integer.toHexString(arr[i]).toUpperCase(Locale.ROOT));
             while (bd.length() < i * 2 + 2) {
                 bd.append('0');
             }
