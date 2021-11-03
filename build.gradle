@@ -25,9 +25,7 @@ println "Pipeline branch: " + (System.getenv('CI_COMMIT_BRANCH') ?: 'NONE')
 
 group = 'com.github.percivalalb'
 archivesBaseName = "MapMakingTools-${project.target_mc_version}"
-version = (grgit.describe(longDescr: true, tags: true) ?: '0-0-0').split('-').with {
-    (System.getenv('CI_COMMIT_BRANCH') ?: branch.getName()) in [null, '1.16.x', 'HEAD'] ? "${it[0]}.${it[1]}" : "${it[0]}.${it[2]}-SNAPSHOT"
-}
+version = (grgit.describe(longDescr: true, tags: true) ?: '0-0-0').split('-').with { it -> "${it[0]}.${it[1]}" }
 
 println "Version: ${version}"
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
@@ -210,6 +208,7 @@ curseforge {
         changelog = file("$buildDir/changelog.html")
         changelogType = 'html'
         releaseType = 'beta'
+        addGameVersion project.target_mc_version
         for (String v : project.additional_mc_versions.split(',')) {
             addGameVersion v
         }
