@@ -54,7 +54,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
                 NBTUtil.removeTagIfEmpty(stack);
             } else {
                 CompoundTag tag1 = NBTUtil.getOrCreateTag(stack);
-                tag1.putInt("HideFlags", (int) Math.pow(2, 6) - 1);
+                tag1.putInt("HideFlags", (int) Math.pow(2, 7) - 1);
             }
 
             return stack;
@@ -94,13 +94,13 @@ public class TooltipFlagsAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private FlexibleArrayList<TickButton> flagTickButtons = new FlexibleArrayList<>(6);
+            private FlexibleArrayList<TickButton> flagTickButtons = new FlexibleArrayList<>(7);
             private TickButton flagAllButton;
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
 
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < 7; i++) {
                     final int index = i; // creates final variable
 
                     TickButton tickBtn = WidgetFactory.getTickbox(x + 102, y + 16 + 22 * i, this.flagTickButtons.getSafe(i), () -> true, (btn) -> {
@@ -136,6 +136,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
                 font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
                 font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
                 font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
+                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.dye")), x + 6, y + 157, 10526880);
                 font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
             }
 

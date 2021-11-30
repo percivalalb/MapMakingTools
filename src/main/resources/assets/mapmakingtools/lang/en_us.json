@@ -13,6 +13,7 @@
    "item_editor.mapmakingtools.tooltip_flags.flag.block_destroy": "Block Destroy",
    "item_editor.mapmakingtools.tooltip_flags.flag.can_place_on": "Can Place On",
    "item_editor.mapmakingtools.tooltip_flags.flag.normal_info": "Normal Info",
+   "item_editor.mapmakingtools.tooltip_flags.flag.dye": "Dye Color",
    "item_editor.mapmakingtools.tooltip_flags.flag.all": "Show all Information",
    "item_editor.mapmakingtools.player_head": "Player Head",
    "item_editor.mapmakingtools.player_head.button.remove": "Remove player name",
