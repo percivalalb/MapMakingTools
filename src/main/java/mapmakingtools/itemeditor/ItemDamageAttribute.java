@@ -11,13 +11,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -37,7 +37,7 @@ public class ItemDamageAttribute extends IItemAttribute {
             int damage = buffer.readInt();
 
             if (damage == 0) {
-                NBTUtil.removeTag(stack, "Damage", Constants.NBT.TAG_ANY_NUMERIC);
+                NBTUtil.removeTag(stack, "Damage", Tag.TAG_ANY_NUMERIC);
                 NBTUtil.removeTagIfEmpty(stack);
             }
             else {
@@ -48,7 +48,7 @@ public class ItemDamageAttribute extends IItemAttribute {
         case 1:
             CompoundTag nbt = NBTUtil.getOrCreateTag(stack);
 
-            if (NBTUtil.hasTag(stack, "Unbreakable", Constants.NBT.TAG_BYTE) && nbt.getBoolean("Unbreakable")) {
+            if (NBTUtil.hasTag(stack, "Unbreakable", Tag.TAG_BYTE) && nbt.getBoolean("Unbreakable")) {
                 nbt.remove("Unbreakable");
             } else {
                 nbt.putBoolean("Unbreakable", true);
@@ -88,7 +88,7 @@ public class ItemDamageAttribute extends IItemAttribute {
                     WidgetUtil.setTextQuietly(this.damageInput, String.valueOf(stack.getDamageValue()));
                 }
 
-                //this.unbreakableBtn.active = NBTUtil.hasTag(stack, "Unbreakable", Constants.NBT.TAG_BYTE) && stack.getTag().getBoolean("Unbreakable");
+                //this.unbreakableBtn.active = NBTUtil.hasTag(stack, "Unbreakable", Tag.TAG_BYTE) && stack.getTag().getBoolean("Unbreakable");
             }
 
             @Override

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -52,11 +52,11 @@ public class PlayerHeadAttribute extends IItemAttribute {
 
     @Nullable
     public String getSkullName(ItemStack stack) {
-        if (NBTUtil.hasTag(stack, "SkullOwner", Constants.NBT.TAG_STRING)) {
+        if (NBTUtil.hasTag(stack, "SkullOwner", Tag.TAG_STRING)) {
             return stack.getTag().getString("SkullOwner");
-        } else if (NBTUtil.hasTag(stack, "SkullOwner", Constants.NBT.TAG_COMPOUND)) {
+        } else if (NBTUtil.hasTag(stack, "SkullOwner", Tag.TAG_COMPOUND)) {
             CompoundTag skullNBT = stack.getTag().getCompound("SkullOwner");
-            if (skullNBT.contains("Name", Constants.NBT.TAG_STRING)) {
+            if (skullNBT.contains("Name", Tag.TAG_STRING)) {
                 return skullNBT.getString("Name");
             }
         }
@@ -127,7 +127,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
                 String skullName = getSkullName(stack);
-                this.nameExists = Optional.of(NBTUtil.hasTagInSubCompound(stack, "SkullOwner", "Id", Constants.NBT.TAG_STRING));
+                this.nameExists = Optional.of(NBTUtil.hasTagInSubCompound(stack, "SkullOwner", "Id", Tag.TAG_STRING));
                 WidgetUtil.setTextQuietly(this.nameInput, Objects.toString(skullName, ""));
                 this.nameRemoval.active = skullName != null;
             }

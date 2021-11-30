@@ -1,9 +1,9 @@
 package mapmakingtools.worldeditor;
 
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +25,11 @@ public class EditHistoryManager {
     public static EditHistoryManager read(CompoundTag nbt, Runnable markDirty) {
         EditHistoryManager editHistoryManager = new EditHistoryManager(markDirty);
 
-        if (!nbt.contains("histories", Constants.NBT.TAG_LIST)) {
+        if (!nbt.contains("histories", Tag.TAG_LIST)) {
             return editHistoryManager;
         }
 
-        ListTag pointsList = nbt.getList("histories", Constants.NBT.TAG_COMPOUND);
+        ListTag pointsList = nbt.getList("histories", Tag.TAG_COMPOUND);
 
         for (int i = 0; i < pointsList.size(); i++) {
             CompoundTag historyNBT = pointsList.getCompound(i);

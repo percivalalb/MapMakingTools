@@ -5,9 +5,8 @@ import mapmakingtools.api.util.IFeatureState;
 import mapmakingtools.api.util.State;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.SelectionManager;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -16,11 +15,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,7 +48,7 @@ public class WrenchItem extends Item {
                     int i = state.getValue(SnowLayerBlock.LAYERS);
                     BlockState rotState = state.setValue(SnowLayerBlock.LAYERS, context.getPlayer().isShiftKeyDown() ? ((i + 6) % 8) + 1 : i % 8 + 1);
                     if (!context.getLevel().isClientSide) {
-                        context.getLevel().setBlock(context.getClickedPos(), rotState, Constants.BlockFlags.DEFAULT);
+                        context.getLevel().setBlock(context.getClickedPos(), rotState, Block.UPDATE_ALL);
                     }
 
                     return InteractionResult.SUCCESS;
@@ -64,7 +60,7 @@ public class WrenchItem extends Item {
 
                 if (!rotState.equals(state)) {
                     if (!context.getLevel().isClientSide) {
-                        context.getLevel().setBlock(context.getClickedPos(), rotState, Constants.BlockFlags.DEFAULT);
+                        context.getLevel().setBlock(context.getClickedPos(), rotState, Block.UPDATE_ALL);
                     }
 
                     return InteractionResult.SUCCESS;

@@ -4,8 +4,8 @@ import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.LinkedList;
 
@@ -58,16 +58,16 @@ public class EditHistory {
 
     public static EditHistory read(CompoundTag nbt) {
         EditHistory selection = new EditHistory();
-        if (nbt.contains("history", Constants.NBT.TAG_LIST)) {
-            ListTag historyList = nbt.getList("history", Constants.NBT.TAG_COMPOUND);
+        if (nbt.contains("history", Tag.TAG_LIST)) {
+            ListTag historyList = nbt.getList("history", Tag.TAG_COMPOUND);
             for (int i = Math.max(0, historyList.size() - MAX_UNDO_HISTORY_SIZE); i < historyList.size(); i++) {
                 CompoundTag cacheNBT = historyList.getCompound(i);
                 selection.historyBackwards.add(CachedCuboidArea.read(cacheNBT));
             }
         }
 
-        if (nbt.contains("future", Constants.NBT.TAG_LIST)) {
-            ListTag futureList = nbt.getList("future", Constants.NBT.TAG_COMPOUND);
+        if (nbt.contains("future", Tag.TAG_LIST)) {
+            ListTag futureList = nbt.getList("future", Tag.TAG_COMPOUND);
 
             for (int i = Math.max(0, futureList.size() - MAX_UNDO_HISTORY_SIZE); i < futureList.size(); i++) {
                 CompoundTag cacheNBT = futureList.getCompound(i);

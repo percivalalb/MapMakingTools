@@ -1,5 +1,7 @@
 package mapmakingtools.api.worldeditor;
 
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.Clearable;
 import net.minecraft.nbt.CompoundTag;
@@ -8,7 +10,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +27,7 @@ public class CachedBlock {
         // Clear the last tile entity
         Clearable.tryClear(world.getBlockEntity(pos));
 
-        if (world.setBlock(pos, this.state, Constants.BlockFlags.BLOCK_UPDATE)) {
+        if (world.setBlock(pos, this.state, Block.UPDATE_CLIENTS)) {
             if (this.tag != null) {
                 BlockEntity tileentity = world.getBlockEntity(pos);
                 if (tileentity != null) {
@@ -43,7 +44,7 @@ public class CachedBlock {
     public static CachedBlock read(CompoundTag nbt) {
         BlockState state = NbtUtils.readBlockState(nbt);
         CompoundTag tileNBT = null;
-        if (nbt.contains("tag", Constants.NBT.TAG_COMPOUND)) {
+        if (nbt.contains("tag", Tag.TAG_COMPOUND)) {
             tileNBT = nbt.getCompound("tag");
         }
 

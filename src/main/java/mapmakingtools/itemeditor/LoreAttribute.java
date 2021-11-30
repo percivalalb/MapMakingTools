@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -50,8 +50,8 @@ public class LoreAttribute extends IItemAttribute {
             display.put("Lore", list);
             return stack;
         case 1:
-            if (NBTUtil.hasTagInSubCompound(stack, "display", "Lore", Constants.NBT.TAG_LIST)) {
-                ListTag list2 = stack.getTag().getCompound("display").getList("Lore", Constants.NBT.TAG_STRING);
+            if (NBTUtil.hasTagInSubCompound(stack, "display", "Lore", Tag.TAG_LIST)) {
+                ListTag list2 = stack.getTag().getCompound("display").getList("Lore", Tag.TAG_STRING);
                 int index = buffer.readInt();
                 if (index >= 0 && index < list2.size()) {
                     list2.remove(index);
@@ -59,7 +59,7 @@ public class LoreAttribute extends IItemAttribute {
             }
             return stack;
         case 2:
-            NBTUtil.removeTagFromSubCompound(stack, "display", Constants.NBT.TAG_LIST, "Lore");
+            NBTUtil.removeTagFromSubCompound(stack, "display", Tag.TAG_LIST, "Lore");
             NBTUtil.removeTagIfEmpty(stack);
             return stack;
         default:
@@ -149,8 +149,8 @@ public class LoreAttribute extends IItemAttribute {
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
 
-                if (NBTUtil.hasTagInSubCompound(stack, "display", "Lore", Constants.NBT.TAG_LIST)) {
-                    ListTag list = stack.getTag().getCompound("display").getList("Lore", Constants.NBT.TAG_STRING);
+                if (NBTUtil.hasTagInSubCompound(stack, "display", "Lore", Tag.TAG_LIST)) {
+                    ListTag list = stack.getTag().getCompound("display").getList("Lore", Tag.TAG_STRING);
 
                     for (int i = 0; i < MAX_LINES; i++) {
                         EditBox textWidget = this.lineInput.get(i);

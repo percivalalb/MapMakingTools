@@ -2,9 +2,9 @@ package mapmakingtools.worldeditor;
 
 import mapmakingtools.api.worldeditor.ISelection;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
@@ -70,7 +70,7 @@ public class Selection implements ISelection {
 
     @Nullable
     private static BlockPos getBlockPos(CompoundTag nbt, String key) {
-        if (!nbt.contains(key, Constants.NBT.TAG_LONG)) {
+        if (!nbt.contains(key, Tag.TAG_LONG)) {
             return null;
         }
 

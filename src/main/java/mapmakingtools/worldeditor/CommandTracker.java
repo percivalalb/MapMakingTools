@@ -1,9 +1,9 @@
 package mapmakingtools.worldeditor;
 
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +30,11 @@ public class CommandTracker {
     public static CommandTracker read(CompoundTag nbt, Runnable markDirty) {
         CommandTracker tracker = new CommandTracker(markDirty);
 
-        if (!nbt.contains("commands", Constants.NBT.TAG_LIST)) {
+        if (!nbt.contains("commands", Tag.TAG_LIST)) {
             return tracker;
         }
 
-        ListTag commandsList = nbt.getList("commands", Constants.NBT.TAG_COMPOUND);
+        ListTag commandsList = nbt.getList("commands", Tag.TAG_COMPOUND);
 
         for (int i = 0; i < commandsList.size(); i++) {
             CompoundTag commandNBT = commandsList.getCompound(i);

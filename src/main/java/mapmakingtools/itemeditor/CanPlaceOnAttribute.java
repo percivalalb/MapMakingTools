@@ -9,6 +9,7 @@ import mapmakingtools.client.screen.widget.ToggleBoxList;
 import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
         switch(buffer.readByte()) {
         case 0:
             int amount = buffer.readInt();
-            ListTag blockPlaceList = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Constants.NBT.TAG_STRING);
+            ListTag blockPlaceList = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Tag.TAG_STRING);
 
             for (int i = 0; i < amount; i++) {
 //                StringBuilder stringbuilder = new StringBuilder(block.getRegistryName().toString());
@@ -94,21 +94,21 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 //                }
 //                String parse = BlockStateParser.toString(blockState);
                 String parse = block.getRegistryName().toString();
-                NBTUtil.addToSet(blockPlaceList, parse, Constants.NBT.TAG_STRING);
+                NBTUtil.addToSet(blockPlaceList, parse, Tag.TAG_STRING);
             }
             return stack;
         case 1:
             int amount2 = buffer.readInt();
-            ListTag blockPlaceList2 = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Constants.NBT.TAG_STRING);
+            ListTag blockPlaceList2 = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Tag.TAG_STRING);
 
             for (int i = 0; i < amount2; i++) {
                 ResourceLocation blockTag = buffer.readResourceLocation();
-                NBTUtil.addToSet(blockPlaceList2, "#" + blockTag, Constants.NBT.TAG_STRING);
+                NBTUtil.addToSet(blockPlaceList2, "#" + blockTag, Tag.TAG_STRING);
             }
             return stack;
         case 2:
-            if (NBTUtil.hasTag(stack, this.getNBTName(), Constants.NBT.TAG_LIST)) {
-                ListTag list = stack.getTag().getList(this.getNBTName(), Constants.NBT.TAG_STRING);
+            if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
+                ListTag list = stack.getTag().getList(this.getNBTName(), Tag.TAG_STRING);
 
                 int amount1 = buffer.readInt();
                 for (int i = 0; i < amount1; i++) {
@@ -129,7 +129,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
             }
             return stack;
         case 3:
-            if (NBTUtil.hasTag(stack, this.getNBTName(), Constants.NBT.TAG_LIST)) {
+            if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
                 stack.getTag().remove(this.getNBTName());
                 NBTUtil.removeTagIfEmpty(stack);
             }
@@ -152,8 +152,8 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
     public List<String> getBlocks(ItemStack stack) {
         List<String> blocks = Lists.newArrayList();
-        if (NBTUtil.hasTag(stack, this.getNBTName(), Constants.NBT.TAG_LIST)) {
-            ListTag blockPlaceList = stack.getTag().getList(this.getNBTName(), Constants.NBT.TAG_STRING);
+        if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
+            ListTag blockPlaceList = stack.getTag().getList(this.getNBTName(), Tag.TAG_STRING);
             for (int i = 0; i < blockPlaceList.size(); ++i) {
                 try {
                     BlockStateParser blockstateparser = (new BlockStateParser(new StringReader(blockPlaceList.getString(i)), true)).parse(true);
@@ -316,8 +316,8 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
             @Override
             public boolean requiresUpdate(ItemStack newStack, ItemStack oldStack) {
-                boolean newHas = NBTUtil.hasTag(newStack, getNBTName(), Constants.NBT.TAG_LIST);
-                boolean oldHas = NBTUtil.hasTag(oldStack, getNBTName(), Constants.NBT.TAG_LIST);
+                boolean newHas = NBTUtil.hasTag(newStack, getNBTName(), Tag.TAG_LIST);
+                boolean oldHas = NBTUtil.hasTag(oldStack, getNBTName(), Tag.TAG_LIST);
 
                 if (newHas != oldHas) {
                     return true;
@@ -325,8 +325,8 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                     return false;
                 }
 
-                return !newStack.getTag().getList(getNBTName(), Constants.NBT.TAG_STRING)
-                        .equals(oldStack.getTag().getList(getNBTName(), Constants.NBT.TAG_STRING));
+                return !newStack.getTag().getList(getNBTName(), Tag.TAG_STRING)
+                        .equals(oldStack.getTag().getList(getNBTName(), Tag.TAG_STRING));
             }
         };
     }

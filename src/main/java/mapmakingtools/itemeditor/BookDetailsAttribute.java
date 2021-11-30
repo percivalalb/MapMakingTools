@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -47,7 +47,7 @@ public class BookDetailsAttribute extends IItemAttribute {
         case 2:
             int generation = buffer.readInt();
             if (generation == 0) {
-                if (NBTUtil.hasTag(stack, "generation", Constants.NBT.TAG_ANY_NUMERIC)) {
+                if (NBTUtil.hasTag(stack, "generation", Tag.TAG_ANY_NUMERIC)) {
                     stack.getTag().remove("generation");
                     NBTUtil.removeTagIfEmpty(stack);
                 }
@@ -62,8 +62,8 @@ public class BookDetailsAttribute extends IItemAttribute {
 
             ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount());
             book.setTag(stack.getTag());
-            if (NBTUtil.hasTag(stack, "pages", Constants.NBT.TAG_LIST)) {
-                ListTag listNBT = book.getTag().getList("pages", Constants.NBT.TAG_STRING);
+            if (NBTUtil.hasTag(stack, "pages", Tag.TAG_LIST)) {
+                ListTag listNBT = book.getTag().getList("pages", Tag.TAG_STRING);
 
                 for (int i = 0; i < listNBT.size(); ++i) {
                     String s = listNBT.getString(i);
@@ -92,15 +92,15 @@ public class BookDetailsAttribute extends IItemAttribute {
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final Supplier<ItemStack> stack, int x, int y, int width, int height) {
-                this.bookNameInput = WidgetFactory.getTextField(screen, x + 2, y + 28, 80, 13, this.bookNameInput, () -> NBTUtil.hasTag(stack.get(), "title", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("title") : "");
+                this.bookNameInput = WidgetFactory.getTextField(screen, x + 2, y + 28, 80, 13, this.bookNameInput, () -> NBTUtil.hasTag(stack.get(), "title", Tag.TAG_STRING) ? stack.get().getTag().getString("title") : "");
                 this.bookNameInput.setMaxLength(128);
                 this.bookNameInput.setResponder(BufferFactory.createString(0, update));
 
-                this.authorInput = WidgetFactory.getTextField(screen, x + 86, y + 28, 80, 13, this.authorInput, () -> NBTUtil.hasTag(stack.get(), "author", Constants.NBT.TAG_STRING) ? stack.get().getTag().getString("author") : "");
+                this.authorInput = WidgetFactory.getTextField(screen, x + 86, y + 28, 80, 13, this.authorInput, () -> NBTUtil.hasTag(stack.get(), "author", Tag.TAG_STRING) ? stack.get().getTag().getString("author") : "");
                 this.authorInput.setMaxLength(128);
                 this.authorInput.setResponder(BufferFactory.createString(1, update));
 
-                this.generationInput = WidgetFactory.getTextField(screen, x + 170, y + 28, 80, 13, this.generationInput, () -> NBTUtil.hasTag(stack.get(), "generation", Constants.NBT.TAG_ANY_NUMERIC) ? stack.get().getTag().getInt("generation") : 0);
+                this.generationInput = WidgetFactory.getTextField(screen, x + 170, y + 28, 80, 13, this.generationInput, () -> NBTUtil.hasTag(stack.get(), "generation", Tag.TAG_ANY_NUMERIC) ? stack.get().getTag().getInt("generation") : 0);
                 this.generationInput.setMaxLength(1);
                 this.generationInput.setResponder(BufferFactory.createInteger(2, Strings::isNullOrEmpty, update));
                 this.generationInput.setFilter(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
@@ -123,15 +123,15 @@ public class BookDetailsAttribute extends IItemAttribute {
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                if (NBTUtil.hasTag(stack, "title", Constants.NBT.TAG_STRING)) {
+                if (NBTUtil.hasTag(stack, "title", Tag.TAG_STRING)) {
                     WidgetUtil.setTextQuietly(this.bookNameInput, stack.getTag().getString("title"));
                 }
 
-                if (NBTUtil.hasTag(stack, "author", Constants.NBT.TAG_STRING)) {
+                if (NBTUtil.hasTag(stack, "author", Tag.TAG_STRING)) {
                     WidgetUtil.setTextQuietly(this.authorInput, stack.getTag().getString("author"));
                 }
 
-                if (NBTUtil.hasTag(stack, "generation", Constants.NBT.TAG_ANY_NUMERIC)) {
+                if (NBTUtil.hasTag(stack, "generation", Tag.TAG_ANY_NUMERIC)) {
                     WidgetUtil.setTextQuietly(this.generationInput, String.valueOf(stack.getTag().getInt("generation")));
                 }
             }

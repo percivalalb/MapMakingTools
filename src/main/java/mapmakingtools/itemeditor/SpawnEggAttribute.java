@@ -11,6 +11,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IRegistryDelegate;
 
@@ -44,7 +44,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                 EntityType<?> entityType = buffer.readRegistryIdUnsafe(ForgeRegistries.ENTITIES);
 
                 CompoundTag tag = NBTUtil.getOrCreateTag(stack);
-                if (tag.contains("EntityTag", Constants.NBT.TAG_COMPOUND)) {
+                if (tag.contains("EntityTag", Tag.TAG_COMPOUND)) {
                     CompoundTag entityTag = tag.getCompound("EntityTag");
 
                 }
@@ -97,9 +97,9 @@ public class SpawnEggAttribute extends IItemAttribute {
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
                 CompoundTag tag = NBTUtil.getOrCreateTag(stack);
-                if (tag.contains("EntityTag", Constants.NBT.TAG_COMPOUND)) {
+                if (tag.contains("EntityTag", Tag.TAG_COMPOUND)) {
                     CompoundTag entityTag = tag.getCompound("EntityTag");
-                    if (entityTag.contains("id", Constants.NBT.TAG_STRING)) {
+                    if (entityTag.contains("id", Tag.TAG_STRING)) {
                         this.currentEntitySpawned = entityTag.getString("id");
                         ResourceLocation rl = ResourceLocation.tryParse(this.currentEntitySpawned);
                         if (rl != null && ForgeRegistries.ENTITIES.containsKey(rl)) {

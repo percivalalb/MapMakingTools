@@ -5,13 +5,13 @@ import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.worldeditor.CachedCuboidArea;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Clearable;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class MazeAction implements Action {
         for (BlockPos pos : positions) {
             if ((pos.getX() - selection.getMinX()) % 2 == 1 && (pos.getZ() - selection.getMinZ()) % 2 == 1 && pos.getX() != selection.getMaxX() && pos.getZ() != selection.getMaxZ()) {
                 Clearable.tryClear(world.getBlockEntity(pos));
-                world.setBlock(pos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
+                world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 groups.put(new BlockPos(pos.getX(), 0, pos.getZ()), group);
                 group += 1;
             }
@@ -92,7 +92,7 @@ public class MazeAction implements Action {
             // Clear pathway
             for (int y = selection.getMinY(); y <= selection.getMaxY(); y++) {
                 Clearable.tryClear(world.getBlockEntity(posHere));
-                world.setBlock(posHere, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
+                world.setBlock(posHere, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 posHere.move(0, 1, 0);
             }
         }

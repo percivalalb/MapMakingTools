@@ -3,12 +3,12 @@ package mapmakingtools.worldeditor;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.network.PacketSelectionPoints;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -31,11 +31,11 @@ public class SelectionManager {
     public static SelectionManager read(CompoundTag nbt, Runnable markDirty) {
         SelectionManager selectionManager = new SelectionManager(markDirty);
 
-        if (!nbt.contains("points", Constants.NBT.TAG_LIST)) {
+        if (!nbt.contains("points", Tag.TAG_LIST)) {
             return selectionManager;
         }
 
-        ListTag pointsList = nbt.getList("points", Constants.NBT.TAG_COMPOUND);
+        ListTag pointsList = nbt.getList("points", Tag.TAG_COMPOUND);
 
         for (int i = 0; i < pointsList.size(); i++) {
             CompoundTag pointNBT = pointsList.getCompound(i);

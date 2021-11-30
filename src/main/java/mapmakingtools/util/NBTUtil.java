@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.function.Function;
 
@@ -26,7 +25,7 @@ public class NBTUtil {
 
     @Deprecated // Use ItemStack.getOrCreateChildTag
     public static CompoundTag getOrCreateSubCompound(ItemStack stack, String key) {
-        if (hasTag(stack, key, Constants.NBT.TAG_COMPOUND))
+        if (hasTag(stack, key, Tag.TAG_COMPOUND))
             return stack.getTag().getCompound(key);
         else {
             CompoundTag tagList = new CompoundTag();
@@ -40,7 +39,7 @@ public class NBTUtil {
      * or current tag is empty it creates new object
      */
     public static ListTag getOrCreateSubList(ItemStack stack, String key, int tagId) {
-        if (hasTag(stack, key, Constants.NBT.TAG_LIST))
+        if (hasTag(stack, key, Tag.TAG_LIST))
             return stack.getTag().getList(key, tagId);
         else {
             ListTag tagList = new ListTag();
@@ -85,7 +84,7 @@ public class NBTUtil {
 
     public static Function<Object, Tag> toHolder(int type) {
         switch (type) {
-        case Constants.NBT.TAG_STRING:
+        case Tag.TAG_STRING:
             return (v) -> StringTag.valueOf(v.toString());
         default: throw new RuntimeException();
         }
@@ -93,11 +92,11 @@ public class NBTUtil {
 
     @Deprecated // Use ItemStack.removeChildTag, Note also removes empty tags afterwards
     public static void removeSubList(ItemStack stack, String key) {
-        removeTag(stack, key, Constants.NBT.TAG_LIST);
+        removeTag(stack, key, Tag.TAG_LIST);
     }
 
     public static void removeTagFromSubList(ItemStack stack, String key, int tagId, int tagIndex) {
-        if (hasTag(stack, key, Constants.NBT.TAG_LIST)) {
+        if (hasTag(stack, key, Tag.TAG_LIST)) {
             ListTag tagList = stack.getTag().getList(key, tagId);
             tagList.remove(tagIndex);
 
@@ -111,7 +110,7 @@ public class NBTUtil {
 
 
     public static boolean contains(ListTag tagList, String value) {
-        if (tagList.getElementType() != Constants.NBT.TAG_STRING) return false;
+        if (tagList.getElementType() != Tag.TAG_STRING) return false;
 
         for (int i = 0; i < tagList.size(); i++)
             if (tagList.getString(i).equals(value))
@@ -122,11 +121,11 @@ public class NBTUtil {
 
     @Deprecated // Use ItemStack.removeChildTag, Note also removes empty tags afterwards
     public static void removeSubCompound(ItemStack stack, String key) {
-        removeTag(stack, key, Constants.NBT.TAG_COMPOUND);
+        removeTag(stack, key, Tag.TAG_COMPOUND);
     }
 
     public static void removeTagFromSubCompound(ItemStack stack, String key, int tagId, String tagKey) {
-        if (hasTag(stack, key, Constants.NBT.TAG_COMPOUND)) {
+        if (hasTag(stack, key, Tag.TAG_COMPOUND)) {
             CompoundTag subCompound = stack.getTag().getCompound(key);
 
             if (subCompound.contains(tagKey, tagId))
@@ -138,7 +137,7 @@ public class NBTUtil {
     }
 
     public static boolean hasTagInSubCompound(ItemStack stack, String key, String key2, int tagId) {
-        return hasTag(stack, key, Constants.NBT.TAG_COMPOUND) && stack.getTag().getCompound(key).contains(key2, tagId);
+        return hasTag(stack, key, Tag.TAG_COMPOUND) && stack.getTag().getCompound(key).contains(key2, tagId);
     }
 
     public static byte getByteInSubCompound(ItemStack stack, String key, String key2) {

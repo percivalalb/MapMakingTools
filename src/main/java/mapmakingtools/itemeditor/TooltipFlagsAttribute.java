@@ -10,13 +10,13 @@ import mapmakingtools.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -39,7 +39,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
             int flagBinaryString = tag.getInt("HideFlags") ^ (1 << index);
 
             if (flagBinaryString == 0) {
-                NBTUtil.removeTag(stack, "HideFlags", Constants.NBT.TAG_ANY_NUMERIC);
+                NBTUtil.removeTag(stack, "HideFlags", Tag.TAG_ANY_NUMERIC);
                 NBTUtil.removeTagIfEmpty(stack);
             } else {
                 tag.putInt("HideFlags", tag.getInt("HideFlags") ^ (1 << index));
@@ -50,7 +50,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
             boolean showAll = buffer.readBoolean();
 
             if (showAll) {
-                NBTUtil.removeTag(stack, "HideFlags", Constants.NBT.TAG_ANY_NUMERIC);
+                NBTUtil.removeTag(stack, "HideFlags", Tag.TAG_ANY_NUMERIC);
                 NBTUtil.removeTagIfEmpty(stack);
             } else {
                 CompoundTag tag1 = NBTUtil.getOrCreateTag(stack);

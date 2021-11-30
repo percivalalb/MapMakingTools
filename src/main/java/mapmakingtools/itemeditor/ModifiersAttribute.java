@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,7 +43,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -90,7 +90,7 @@ public class ModifiersAttribute extends IItemAttribute {
             this.convertModifiersToNBT(stack, player);
             return stack;
         case 3:
-            NBTUtil.removeTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST);
+            NBTUtil.removeTag(stack, "AttributeModifiers", Tag.TAG_LIST);
             NBTUtil.removeTagIfEmpty(stack);
             return stack;
         case 4:
@@ -103,14 +103,14 @@ public class ModifiersAttribute extends IItemAttribute {
 
     public void removeSimilarModifier(ItemStack stack,  Modifier modifier, AttributeModifier.Operation op, EquipmentSlot slotType) {
         // Removes modifier with same name, slot and op
-        if (NBTUtil.hasTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST)) {
-            ListTag nbttaglist = stack.getTag().getList("AttributeModifiers", Constants.NBT.TAG_COMPOUND);
+        if (NBTUtil.hasTag(stack, "AttributeModifiers", Tag.TAG_LIST)) {
+            ListTag nbttaglist = stack.getTag().getList("AttributeModifiers", Tag.TAG_COMPOUND);
 
             for (int k = 0; k < nbttaglist.size(); k++) {
                 CompoundTag compound = nbttaglist.getCompound(k);
                 Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.tryParse(compound.getString("AttributeName")));
                 boolean correctOp = compound.getInt("Operation") == op.toValue();
-                boolean correctSlot = !compound.contains("Slot", Constants.NBT.TAG_STRING)
+                boolean correctSlot = !compound.contains("Slot", Tag.TAG_STRING)
                         || compound.getString("Slot").equals(slotType.getName());
                 boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, compound.getUUID("UUID"));
 
@@ -123,7 +123,7 @@ public class ModifiersAttribute extends IItemAttribute {
     }
 
     public void convertModifiersToNBT(ItemStack stack, Player player) {
-        if (!NBTUtil.hasTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST)) {
+        if (!NBTUtil.hasTag(stack, "AttributeModifiers", Tag.TAG_LIST)) {
 
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 Multimap<Attribute, AttributeModifier> builtIn = stack.getAttributeModifiers(equipmentSlot);
@@ -299,7 +299,7 @@ public class ModifiersAttribute extends IItemAttribute {
                 }
 
                 this.removeModifiers.active = Arrays.stream(EquipmentSlot.values()).anyMatch((slotType) -> !stack.getItem().getAttributeModifiers(slotType, stack).isEmpty());
-                this.removeModifiersNBT.active = NBTUtil.hasTag(stack, "AttributeModifiers", Constants.NBT.TAG_LIST);
+                this.removeModifiersNBT.active = NBTUtil.hasTag(stack, "AttributeModifiers", Tag.TAG_LIST);
                 this.convertInternalBtn.active = !this.removeModifiersNBT.active && this.removeModifiers.active;
             }
 

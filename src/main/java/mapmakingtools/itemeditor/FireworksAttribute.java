@@ -18,12 +18,12 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,11 +53,11 @@ public class FireworksAttribute extends IItemAttribute {
             return stack;
         case 1:
             CompoundTag fireworkNBT2 = NBTUtil.getOrCreateSubCompound(stack, "Fireworks");
-            if (!fireworkNBT2.contains("Explosions", Constants.NBT.TAG_LIST)) {
+            if (!fireworkNBT2.contains("Explosions", Tag.TAG_LIST)) {
                 fireworkNBT2.put("Explosions", new ListTag());
             }
 
-            ListTag explosionListNBT = fireworkNBT2.getList("Explosions", Constants.NBT.TAG_COMPOUND);
+            ListTag explosionListNBT = fireworkNBT2.getList("Explosions", Tag.TAG_COMPOUND);
 
             CompoundTag newExplosion = new CompoundTag();
             newExplosion.putByte("Type", buffer.readByte());
@@ -68,9 +68,9 @@ public class FireworksAttribute extends IItemAttribute {
             explosionListNBT.add(newExplosion);
             return stack;
         case 2:
-            if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Constants.NBT.TAG_LIST)) {
+            if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
                 CompoundTag fireworkNBT3 = stack.getTag().getCompound("Fireworks");
-                ListTag explosionsNBT = fireworkNBT3.getList("Explosions", Constants.NBT.TAG_COMPOUND);
+                ListTag explosionsNBT = fireworkNBT3.getList("Explosions", Tag.TAG_COMPOUND);
                 int amount = buffer.readInt();
                 for (int i = 0; i < amount; i++) {
                     explosionsNBT.remove(buffer.readByte());
@@ -87,8 +87,8 @@ public class FireworksAttribute extends IItemAttribute {
             }
             return stack;
         case 3:
-            if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Constants.NBT.TAG_LIST)) {
-                NBTUtil.removeTagFromSubCompound(stack, "Fireworks", Constants.NBT.TAG_LIST, "Explosions");
+            if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
+                NBTUtil.removeTagFromSubCompound(stack, "Fireworks", Tag.TAG_LIST, "Explosions");
                 NBTUtil.removeTagIfEmpty(stack);
             }
             return stack;
@@ -99,8 +99,8 @@ public class FireworksAttribute extends IItemAttribute {
 
     public List<Byte> getExplosionEffects(ItemStack stack) {
         List<Byte> explosions = Lists.newArrayList();
-        if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Constants.NBT.TAG_LIST)) {
-            ListTag explosionList = stack.getTag().getCompound("Fireworks").getList("Explosions", Constants.NBT.TAG_COMPOUND);
+        if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
+            ListTag explosionList = stack.getTag().getCompound("Fireworks").getList("Explosions", Tag.TAG_COMPOUND);
             for (int i = 0; i < explosionList.size(); ++i) {
                 CompoundTag t = explosionList.getCompound(i);
                 explosions.add((byte) i);
@@ -207,7 +207,7 @@ public class FireworksAttribute extends IItemAttribute {
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                if (NBTUtil.hasTag(stack, "Fireworks", Constants.NBT.TAG_COMPOUND)) {
+                if (NBTUtil.hasTag(stack, "Fireworks", Tag.TAG_COMPOUND)) {
                     CompoundTag fireworkNBT = stack.getTag().getCompound("Fireworks");
 
                     WidgetUtil.setTextQuietly(this.flightInput, "" + fireworkNBT.getByte("Flight"));

@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -22,7 +23,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
@@ -59,8 +59,8 @@ public class EnchantmentAttribute extends IItemAttribute {
 
             return stack;
         case 1:
-            if (NBTUtil.hasTag(stack, getNBTName(), Constants.NBT.TAG_LIST)) {
-                ListTag enchantments = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
+            if (NBTUtil.hasTag(stack, getNBTName(), Tag.TAG_LIST)) {
+                ListTag enchantments = stack.getTag().getList(getNBTName(), Tag.TAG_COMPOUND);
                 int amount2 = buffer.readInt();
                 for (int i = 0; i < amount2; i++) {
                     EnchantmentDetails details = EnchantmentDetails.readFromBuffer(buffer);
@@ -93,8 +93,8 @@ public class EnchantmentAttribute extends IItemAttribute {
 
     public List<EnchantmentDetails> getEnchaments(ItemStack stack) {
         List<EnchantmentDetails> enchantments = Lists.newArrayList();
-        if (NBTUtil.hasTag(stack, getNBTName(), Constants.NBT.TAG_LIST)) {
-            ListTag enchantmentList = stack.getTag().getList(getNBTName(), Constants.NBT.TAG_COMPOUND);
+        if (NBTUtil.hasTag(stack, getNBTName(), Tag.TAG_LIST)) {
+            ListTag enchantmentList = stack.getTag().getList(getNBTName(), Tag.TAG_COMPOUND);
             for (int i = 0; i < enchantmentList.size(); ++i) {
                 CompoundTag t = enchantmentList.getCompound(i);
                 Optional.ofNullable(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(t.getString("id")))).ifPresent((enchantment) -> {

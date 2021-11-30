@@ -10,11 +10,11 @@ import mapmakingtools.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -34,7 +34,7 @@ public class RepairCostAttribute extends IItemAttribute {
             int cost = buffer.readInt();
 
             if (cost == 0) {
-                NBTUtil.removeTag(stack, "RepairCost", Constants.NBT.TAG_ANY_NUMERIC);
+                NBTUtil.removeTag(stack, "RepairCost", Tag.TAG_ANY_NUMERIC);
                 NBTUtil.removeTagIfEmpty(stack);
             }
             else {

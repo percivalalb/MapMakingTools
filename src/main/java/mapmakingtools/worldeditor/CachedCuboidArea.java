@@ -6,9 +6,9 @@ import mapmakingtools.api.worldeditor.ISelection;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 public class CachedCuboidArea implements ICachedArea {
 
@@ -56,14 +56,14 @@ public class CachedCuboidArea implements ICachedArea {
     }
 
     public static CachedCuboidArea read(CompoundTag nbt) {
-        if (!nbt.contains("base_pos", Constants.NBT.TAG_LONG) || !nbt.contains("other_pos", Constants.NBT.TAG_LONG)) {
+        if (!nbt.contains("base_pos", Tag.TAG_LONG) || !nbt.contains("other_pos", Tag.TAG_LONG)) {
             // TODO Throw
         }
 
         BlockPos pos = BlockPos.of(nbt.getLong("base_pos"));
         BlockPos otherPos = BlockPos.of(nbt.getLong("other_pos"));
         CachedCuboidArea area = new CachedCuboidArea(pos, otherPos);
-        ListTag blockList = nbt.getList("blocks", Constants.NBT.TAG_COMPOUND);
+        ListTag blockList = nbt.getList("blocks", Tag.TAG_COMPOUND);
         for (int i = 0; i < blockList.size(); i++) {
             CompoundTag blockNBT = blockList.getCompound(i);
             area.blocks[i] = CachedBlock.read(blockNBT);
