@@ -28,7 +28,7 @@ public class TickButton extends AbstractTickButton {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, BEACON_GUI_TEXTURES);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = this.getYImage(this.isHovered());
+        int i = this.getYImage(this.isHoveredOrFocused());
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -40,7 +40,7 @@ public class TickButton extends AbstractTickButton {
 
         if (!this.active)
             k += this.width * 2;
-        else if (this.isHovered())
+        else if (this.isHoveredOrFocused())
             k += this.width * 3;
 
 

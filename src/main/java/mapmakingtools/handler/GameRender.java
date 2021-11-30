@@ -20,10 +20,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import org.lwjgl.opengl.GL11;
 
 public class GameRender {
 
@@ -93,11 +92,11 @@ public class GameRender {
         }
     }
 
-    public static void onWorldRenderLast(final RenderWorldLastEvent event) {
+    public static void onWorldRenderLast(final RenderLevelLastEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         ItemStack stack = player.getMainHandItem();
         if (ClientSelection.SELECTION.anySet() && stack.getItem() == MapMakingTools.WRENCH && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
-            drawSelectionBox(event.getMatrixStack(), ClientSelection.SELECTION.getPrimaryBB(), ClientSelection.SELECTION.getSecondaryBB());
+            drawSelectionBox(event.getPoseStack(), ClientSelection.SELECTION.getPrimaryBB(), ClientSelection.SELECTION.getSecondaryBB());
         }
     }
 

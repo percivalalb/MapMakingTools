@@ -11,13 +11,13 @@ import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.GuiScreenEvent.KeyboardKeyPressedEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.event.ScreenEvent.KeyboardKeyPressedEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import net.minecraftforge.client.ClientRegistry;
 
 import java.util.Optional;
 
@@ -52,8 +52,8 @@ public class KeyboardInput {
 
         Minecraft mc = Minecraft.getInstance();
 
-        if (FeatureAvailability.canEdit(mc.player) && event.getGui() instanceof AbstractContainerScreen) {
-            AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getGui();
+        if (FeatureAvailability.canEdit(mc.player) && event.getScreen() instanceof AbstractContainerScreen) {
+            AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getScreen();
 
             Optional<Slot> hoveredSlot = Optional.ofNullable(containerScreen.getSlotUnderMouse())
                     .filter(s -> s.container instanceof Inventory)
@@ -67,9 +67,9 @@ public class KeyboardInput {
         }
     }
 
-    public static void onGUIScroll(final GuiScreenEvent.MouseScrollEvent event) {
-        if (event.getGui() instanceof AbstractContainerScreen) {
-            AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getGui();
+    public static void onGUIScroll(final ScreenEvent.MouseScrollEvent event) {
+        if (event.getScreen() instanceof AbstractContainerScreen) {
+            AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getScreen();
 
             Optional<Slot> hoveredSlot = Optional.ofNullable(containerScreen.getSlotUnderMouse())
                     .filter(s -> s.container instanceof Inventory)

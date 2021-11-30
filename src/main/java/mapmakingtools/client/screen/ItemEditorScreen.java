@@ -297,7 +297,7 @@ public class ItemEditorScreen extends Screen {
         for (Widget w : this.renderables) {
             if (!(w instanceof AbstractWidget widget)) { continue; }
 
-            if (widget.visible && widget.isHovered()) {
+            if (widget.visible && widget.isHoveredOrFocused()) {
                 widget.renderToolTip(stackIn, mouseX, mouseY);
             }
         }

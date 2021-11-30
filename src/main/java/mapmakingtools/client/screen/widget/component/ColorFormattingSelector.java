@@ -56,7 +56,7 @@ public class ColorFormattingSelector extends AbstractWidget {
             int green = color & 255;
             RenderSystem.setShaderColor(red / 255F, blue / 255F, green / 255F, 1.0F);
 
-            int i = this.getYImage(this.isHovered() && mouseX >= this.x + j * 20 && mouseY >= this.y && mouseX < this.x + (j + 1) * 20 && mouseY < this.y + this.height);
+            int i = this.getYImage(this.isHoveredOrFocused() && mouseX >= this.x + j * 20 && mouseY >= this.y && mouseX < this.x + (j + 1) * 20 && mouseY < this.y + this.height);
 
             this.blit(stackIn, this.x + j * 20, y, 0, 46 + i * 20, 10, this.height / 2);//top left
             this.blit(stackIn, this.x + j * 20 + 10, y, 200 - 10, 46 + i * 20, 10, this.height / 2);//top right
