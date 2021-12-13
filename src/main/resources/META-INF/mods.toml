@@ -7,7 +7,7 @@ logoFile="mmt_logo.png"
 [[mods]]
     modId="mapmakingtools"
     version="${version}"
-    updateJSONURL="https://raw.githubusercontent.com/percivalalb/MapMakingTools/1.16.x/version.json"
+    updateJSONURL="https://www.dropbox.com/s/raw/1mlp6d42h3k65tx/version-mapmakingtools.json"
     displayName="Map Making Tools"
     credits="percivalalb"
     authors="percivalalb"
