@@ -63,7 +63,7 @@ public class CachedBlock {
     public static CachedBlock from(LevelReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         BlockEntity tileEntity = world.getBlockEntity(pos);
-        CompoundTag nbt = tileEntity != null ? tileEntity.save(new CompoundTag()) : null;
+        CompoundTag nbt = tileEntity != null ? tileEntity.saveWithId() : null;
         return new CachedBlock(state, nbt);
     }
 }
