@@ -64,7 +64,7 @@ public class ItemEditorScreen extends Screen {
         this.player = player;
         this.stack = stack;
         this.slotIndex = slotIndex;
-        this.itemList = Util.getDelegates(Registries.ITEM_ATTRIBUTES, IFeatureState::isVisible);
+        this.itemList = Util.getDelegates(Registries.ITEM_ATTRIBUTES.get(), IFeatureState::isVisible);
     }
 
     @Override

@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -198,7 +197,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.tagList.setSelectionGroupManager(ToggleBoxGroup.builder(ResourceLocation.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> {
                     updateAddButton();
                 }).build());
-                this.tagList.setValues(BlockTags.getAllTags().getAvailableTags(), ResourceLocation::toString, this.tagList);
+                this.tagList.setValues(ForgeRegistries.BLOCKS.tags(), this.tagList);
                 this.tagList.visible = false;
 
 //                this.blockPropertiesList = new ScrollWidget<>(x + 200, y + 12, 200, (height - 80) / 2, this.blockPropertiesList);

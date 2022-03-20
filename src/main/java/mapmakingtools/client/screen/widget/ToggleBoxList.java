@@ -2,10 +2,13 @@ package mapmakingtools.client.screen.widget;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.tags.SetTag;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -31,6 +34,30 @@ public class ToggleBoxList<T> extends ScrollPane {
 
     public ToggleBoxList<T> setValues(T[] values, Function<T, Object> toStringFunc, @Nullable ToggleBoxList<?> previous) {
         return this.setValues(Lists.newArrayList(values), toStringFunc, previous);
+    }
+
+    public ToggleBoxList<T> setValues(ITagManager<?> tags, @Nullable ToggleBoxList<T> previous) {
+        this.clear(); // clear old values
+
+        int i = 2;
+        Iterator<? extends ITag<?>> ite = tags.iterator();
+        while (ite.hasNext()) {
+            ITag value = (ITag) ite.next();
+            ToggleBoxWidget<ResourceLocation> box = new ToggleBoxWidget<>(this.x + 2, this.y + i, null, () -> value.getKey().location(), this.toggleGroup::buttonClicked);
+            box.setDisplayString(t -> "#" + t);
+
+            this.widgets.add(box);
+            i += 10;
+            this.noElements++;
+        }
+
+        this.hiddenHeight = Math.max(0, i + 2 - this.height);
+
+        if (previous != null) {
+            this.clampScrollOffset(previous.scrollOffset);
+        }
+
+        return this;
     }
 
     public ToggleBoxList<T> setValues(Iterable<T> values, Function<T, Object> toStringFunc, @Nullable ToggleBoxList<?> previous) { // ? instead of T
@@ -191,10 +218,6 @@ public class ToggleBoxList<T> extends ScrollPane {
 
         public static <E> Builder<E> builder(Class<E> type) {
             return new Builder<E>();
-        }
-
-        public static <T> Builder<SetTag<T>> builderTag(Class<T> subType) {
-            return new Builder<SetTag<T>>();
         }
 
         public static Builder<Property<?>> builderProperty() {

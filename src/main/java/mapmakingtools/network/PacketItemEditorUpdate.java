@@ -24,13 +24,13 @@ public class PacketItemEditorUpdate {
 
     public static void encode(PacketItemEditorUpdate msg, FriendlyByteBuf buf) {
         buf.writeInt(msg.slotIndex);
-        buf.writeRegistryIdUnsafe(Registries.ITEM_ATTRIBUTES, msg.attributeManager);
+        buf.writeRegistryIdUnsafe(Registries.ITEM_ATTRIBUTES.get(), msg.attributeManager);
         buf.writeBytes(msg.data);
     }
 
     public static PacketItemEditorUpdate decode(FriendlyByteBuf buf) {
         int slotId = buf.readInt();
-        IItemAttribute attributeManager = buf.readRegistryIdUnsafe(Registries.ITEM_ATTRIBUTES);
+        IItemAttribute attributeManager = buf.readRegistryIdUnsafe(Registries.ITEM_ATTRIBUTES.get());
         return new PacketItemEditorUpdate(slotId, attributeManager, new FriendlyByteBuf(buf.discardReadBytes()));
     }
 

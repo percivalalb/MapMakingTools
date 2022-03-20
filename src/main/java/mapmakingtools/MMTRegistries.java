@@ -48,6 +48,6 @@ public class MMTRegistries {
 
     @SuppressWarnings("unchecked")
     public static HashMap<ResourceLocation, IItemAttributeClient> getClientMapping() {
-        return Registries.ITEM_ATTRIBUTES.getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class);
+        return Registries.ITEM_ATTRIBUTES.get().getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class);
     }
 }

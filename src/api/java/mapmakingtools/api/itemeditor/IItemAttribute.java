@@ -24,7 +24,7 @@ public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> 
      */
     public String getTranslationKey() {
         if (this.translationKey == null) {
-           this.translationKey = Util.makeDescriptionId("item_editor", Registries.ITEM_ATTRIBUTES.getKey(this));
+           this.translationKey = Util.makeDescriptionId("item_editor", Registries.ITEM_ATTRIBUTES.get().getKey(this));
         }
 
         return this.translationKey;

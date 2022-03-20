@@ -34,6 +34,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -145,13 +146,12 @@ public class MapMakingTools {
         return object;
     }
 
-    public void newRegistry(final RegistryEvent.NewRegistry event) {
-        Registries.ITEM_ATTRIBUTES = new RegistryBuilder<IItemAttribute>()
+    public void newRegistry(final NewRegistryEvent event) {
+        Registries.ITEM_ATTRIBUTES = event.create(new RegistryBuilder<IItemAttribute>()
                                             .setType(IItemAttribute.class)
                                             .setName(Util.getResource("item_attributes"))
                                             .disableSaving()
-                                            .addCallback(MMTRegistries.AttributeCallbacks.INSTANCE)
-                                            .create();
+                                            .addCallback(MMTRegistries.AttributeCallbacks.INSTANCE));
     }
 
     public void gatherData(final GatherDataEvent event) {
