@@ -3,10 +3,12 @@ package mapmakingtools.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.Action;
 import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
+import mapmakingtools.handler.Config;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.EditHistory;
 import mapmakingtools.worldeditor.SelectionManager;
@@ -27,15 +29,16 @@ import static net.minecraft.commands.Commands.literal;
 public class WorldEditCommand {
 
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
-        registerSimple(dispatcher, "/set", new SetAction());
-        registerSimple(dispatcher, "/roof", new RoofAction());
-        registerSimple(dispatcher, "/floor", new FloorAction());
+        MapMakingTools.LOGGER.info("Registering quick build commands.");
+        registerSimple(dispatcher, "set", new SetAction());
+        registerSimple(dispatcher, "roof", new RoofAction());
+        registerSimple(dispatcher, "floor", new FloorAction());
 
-        registerSimple(dispatcher, "/maze", new MazeAction());
+        registerSimple(dispatcher, "maze", new MazeAction());
     }
 
     public static void registerSimple(final CommandDispatcher<CommandSourceStack> dispatcher, String command, Action action) {
-        dispatcher.register(literal(command)
+        dispatcher.register(literal(Config.SERVER.generateQuickBuildCommand(command))
                 .requires(s -> s.hasPermission(2))
                 .then(Commands.argument("block", BlockStateArgument.block())
                         .executes(c -> doCommand(c, action))));

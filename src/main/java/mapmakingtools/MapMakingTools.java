@@ -7,10 +7,7 @@ import mapmakingtools.client.data.ItemModels;
 import mapmakingtools.command.RedoCommand;
 import mapmakingtools.command.UndoCommand;
 import mapmakingtools.command.WorldEditCommand;
-import mapmakingtools.handler.Command;
-import mapmakingtools.handler.GameRender;
-import mapmakingtools.handler.Interact;
-import mapmakingtools.handler.World;
+import mapmakingtools.handler.*;
 import mapmakingtools.item.WrenchItem;
 import mapmakingtools.itemeditor.*;
 import mapmakingtools.lib.Constants;
@@ -64,6 +61,7 @@ public class MapMakingTools {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        Config.init(modEventBus);
         modEventBus.addListener(this::newRegistry);
 
         modEventBus.addListener(this::gatherData);

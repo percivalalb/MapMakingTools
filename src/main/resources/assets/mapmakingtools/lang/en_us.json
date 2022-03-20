@@ -120,5 +120,7 @@
    "command.mapmakingtools.redo.success": "%s block(s) have been redone.",
    "command.mapmakingtools.set.success": "%s blocks(s) have been set.",
 
+   "mapmakingtools.config.commands.quick_build.format": "The format of the quick build commands. Use <cmd> to represent the command name, for example 'qb-<cmd>' makes the commands /qb-set, /qb-undo etc",
+
    "argument.biome.id.invalid": ""
 }
