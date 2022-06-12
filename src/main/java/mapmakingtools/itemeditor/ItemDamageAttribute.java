@@ -12,12 +12,12 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -76,7 +76,7 @@ public class ItemDamageAttribute extends IItemAttribute {
                 this.damageInput.setResponder(BufferFactory.createInteger(0, Util.IS_NULL_OR_EMPTY.or(""::equals), update));
                 this.damageInput.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
-                this.unbreakableBtn = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslatableComponent(getTranslationKey("button.toggle.unbreakable")), BufferFactory.ping(1, update));
+                this.unbreakableBtn = new Button(x + width / 2 - 100, y + 40, 200, 20, Component.translatable(getTranslationKey("button.toggle.unbreakable")), BufferFactory.ping(1, update));
 
                 add.accept(this.damageInput);
                 add.accept(this.unbreakableBtn);

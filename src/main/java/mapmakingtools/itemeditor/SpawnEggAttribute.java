@@ -5,6 +5,7 @@ import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
 import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
+import mapmakingtools.client.screen.widget.ToggleBoxRegistryList;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
 import net.minecraft.client.gui.Font;
@@ -12,6 +13,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,11 +23,11 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IRegistryDelegate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -50,7 +53,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                 }
 
                 CompoundTag entityTagCreate = new CompoundTag();
-                entityTagCreate.putString("id", entityType.getRegistryName().toString());
+                entityTagCreate.putString("id", ForgeRegistries.ENTITIES.getKey(entityType).toString());
                 tag.put("EntityTag", entityTagCreate);
 
                 return stack;
@@ -63,22 +66,22 @@ public class SpawnEggAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private ToggleBoxList<IRegistryDelegate<EntityType<?>>> entityTypeList;
+            private ToggleBoxRegistryList<EntityType<?>> entityTypeList;
             private Button addBtn;
             private String currentEntitySpawned;
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.entityTypeList = new ToggleBoxList<>(x + 2, y + 32, width - 4, (height - 80) / 2, this.entityTypeList);
-                this.entityTypeList.setSelectionGroupManager(new ToggleBoxGroup.Builder<IRegistryDelegate<EntityType<?>>>().min(1).max(1).build());
-                this.entityTypeList.setValues(ForgeRegistries.ENTITIES.getValues().stream().map((entityType) -> entityType.delegate).collect(Collectors.toList()), IRegistryDelegate::name, this.entityTypeList);
+                this.entityTypeList = new ToggleBoxRegistryList<>(x + 2, y + 32, width - 4, (height - 80) / 2, this.entityTypeList);
+                this.entityTypeList.setSelectionGroupManager(new ToggleBoxGroup.Builder<Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>>>().min(1).max(1).build());
+                this.entityTypeList.setValues(ForgeRegistries.ENTITIES, this.entityTypeList);
 
-                this.addBtn = new Button(x + 2, y + height / 2 - 3, 50, 20, new TranslatableComponent(getTranslationKey("button.set")), (btn) -> {
+                this.addBtn = new Button(x + 2, y + height / 2 - 3, 50, 20, Component.translatable(getTranslationKey("button.set")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
-                    List<IRegistryDelegate<EntityType<?>>> entityTypes = this.entityTypeList.getGroupManager().getSelected();
+                    List<Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>>> entityTypes = this.entityTypeList.getGroupManager().getSelected();
                     entityTypes.forEach((type) -> {
-                        buf.writeRegistryIdUnsafe(ForgeRegistries.ENTITIES, type.get());
+                        buf.writeRegistryIdUnsafe(ForgeRegistries.ENTITIES, type.getValue());
                     });
                     update.accept(buf);
                 });
@@ -91,7 +94,7 @@ public class SpawnEggAttribute extends IItemAttribute {
             @Override
             public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
                 Font font = screen.getMinecraft().font;
-                font.draw(stackIn, new TranslatableComponent("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
+                font.draw(stackIn, Component.translatable("item_editor.mapmakingtools.spawn_egg.entity_type", this.currentEntitySpawned), x + 2, y + 17, -1);
             }
 
             @Override
@@ -103,16 +106,16 @@ public class SpawnEggAttribute extends IItemAttribute {
                         this.currentEntitySpawned = entityTag.getString("id");
                         ResourceLocation rl = ResourceLocation.tryParse(this.currentEntitySpawned);
                         if (rl != null && ForgeRegistries.ENTITIES.containsKey(rl)) {
-                            this.entityTypeList.selectValue(ForgeRegistries.ENTITIES.getValue(rl).delegate);
+                            // TODO this.entityTypeList.selectValue(ForgeRegistries.ENTITIES.getValue(rl).delegate);
                         }
                     }
                 }
 
                 if (this.currentEntitySpawned == null) {
                     Item item = stack.getItem();
-                    if (item instanceof SpawnEggItem) {
+                    if (item instanceof SpawnEggItem eggItem) {
                         // Pass null just to get the base type of the spawn egg
-                        this.currentEntitySpawned = ((SpawnEggItem)item).getType(null).getRegistryName().toString();
+                        this.currentEntitySpawned = ForgeRegistries.ENTITIES.getKey(eggItem.getType(null)).toString();
                     }
                 }
             }

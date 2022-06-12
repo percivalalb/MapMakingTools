@@ -12,9 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.Util;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public abstract class IItemAttribute extends ForgeRegistryEntry<IItemAttribute> implements IFeatureState {
+public abstract class IItemAttribute implements IFeatureState {
 
     @Nullable
     private String translationKey;

@@ -5,8 +5,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class BiomeParser {
 
     public static final DynamicCommandExceptionType BIOME_BAD_ID = new DynamicCommandExceptionType((invalidRL) -> {
-        return new TranslatableComponent("argument.biome.id.invalid", invalidRL);
+        return Component.translatable("argument.biome.id.invalid", invalidRL);
     });
     private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> DEFAULT_SUGGESTIONS_BUILDER = (builder) -> {
         return builder.buildFuture();

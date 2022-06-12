@@ -14,7 +14,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -37,20 +36,20 @@ public class TextComponentMakerWidget extends NestedWidget {
 
     public TextComponentMakerWidget(int xIn, int yIn, int widthIn, int heightIn) {
         super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY);
-        this.children.add(new SmallButton(this.x + 3, this.y + 15, 63, 12, new TextComponent("Text"), (btn) -> {
-            this.addPart(new ComponentPart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 80, 20, new TextComponent("Comp Piece"), this));
+        this.children.add(new SmallButton(this.x + 3, this.y + 15, 63, 12, Component.literal("Text"), (btn) -> {
+            this.addPart(new ComponentPart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 80, 20, Component.literal("Comp Piece"), this));
         }));
 
 //        this.children.add(new SmallButton(this.x + 18, this.y + 15, 13, 12, "N", (btn) -> {
 //            this.addPart(new NewLinePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, "\\n", this));
 //        }));
 
-        this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, new TextComponent("Color"), (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new TextComponent(ChatFormatting.BLUE.getName()), this, ChatFormatting.BLUE));
+        this.children.add(new SmallButton(this.x + 68, this.y + 15, 63, 12, Component.literal("Color"), (btn) -> {
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, Component.literal(ChatFormatting.BLUE.getName()), this, ChatFormatting.BLUE));
         }));
 
-        this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, new TextComponent("Format"), (btn) -> {
-            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, new TextComponent(ChatFormatting.ITALIC.getName()), this, ChatFormatting.ITALIC));
+        this.children.add(new SmallButton(this.x + 133, this.y + 15, 63, 12, Component.literal("Format"), (btn) -> {
+            this.addPart(new StylePart(x + (int) (Math.random() * 150), y + (int) (Math.random() * 150), 20, 20, Component.literal(ChatFormatting.ITALIC.getName()), this, ChatFormatting.ITALIC));
         }));
     }
 

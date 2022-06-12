@@ -11,12 +11,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -130,14 +130,14 @@ public class TooltipFlagsAttribute extends IItemAttribute {
             @Override
             public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
                 Font font = screen.getMinecraft().font;
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.dye")), x + 6, y + 157, 10526880);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.enchantment")), x + 6, y + 25, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.attribute_modifier")), x + 6, y + 47, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.unbreakable")), x + 6, y + 69, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.block_destroy")), x + 6, y + 91, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.can_place_on")), x + 6, y + 113, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.normal_info")), x + 6, y + 135, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.dye")), x + 6, y + 157, 10526880);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flag.all")), x + 6, y + height - 22, 16777120);
             }
 
             @Override

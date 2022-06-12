@@ -9,9 +9,9 @@ import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.SelectionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
@@ -37,7 +37,7 @@ public class SetBiomeCommand {
         ISelection selection = selectionManager.get(player);
 
         if (!selection.isSet()) {
-            source.sendFailure(new TranslatableComponent("world_editor.mapmakingtools.selection.none"));
+            source.sendFailure(Component.translatable("world_editor.mapmakingtools.selection.none"));
             return 0;
         }
 
@@ -49,7 +49,7 @@ public class SetBiomeCommand {
 
         }
 
-        source.sendSuccess(new TranslatableComponent("command.mapmakingtools.set.success"), true);
+        source.sendSuccess(Component.translatable("command.mapmakingtools.set.success"), true);
         return 1;
     }
 }

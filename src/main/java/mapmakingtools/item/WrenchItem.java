@@ -24,8 +24,6 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class WrenchItem extends Item {
 
@@ -116,9 +114,9 @@ public class WrenchItem extends Item {
     @Override
     public Component getName(ItemStack stack) {
         Mode mode = this.getMode(stack);
-        MutableComponent label = new TranslatableComponent(this.getDescriptionId(stack));
+        MutableComponent label = Component.translatable(this.getDescriptionId(stack));
         if (mode.getFeatureState() != State.RELEASE) {
-            label = label.append(new TextComponent(" ("+mode.getFeatureState().letter+")").withStyle(ChatFormatting.RED));
+            label = label.append(Component.literal(" ("+mode.getFeatureState().letter+")").withStyle(ChatFormatting.RED));
         }
         return label;
     }
@@ -132,11 +130,11 @@ public class WrenchItem extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         Mode mode = this.getMode(stack);
         if (!mode.canUse()) {
-            tooltip.add(new TranslatableComponent("item.mapmakingtools.wrench.in_development").withStyle(ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("item.mapmakingtools.wrench.in_development").withStyle(ChatFormatting.ITALIC));
         } else {
-            tooltip.add(new TranslatableComponent(this.getDescriptionId(stack) + ".desc.1", new TranslatableComponent(this.getDescriptionId(stack) + ".word.primary").withStyle(ChatFormatting.YELLOW)));
-            tooltip.add(new TranslatableComponent(this.getDescriptionId(stack) + ".desc.2", new TranslatableComponent(this.getDescriptionId(stack) + ".word.secondary").withStyle(ChatFormatting.AQUA)));
-            tooltip.add(new TranslatableComponent(this.getDescriptionId(stack) + ".desc.3"));
+            tooltip.add(Component.translatable(this.getDescriptionId(stack) + ".desc.1", Component.translatable(this.getDescriptionId(stack) + ".word.primary").withStyle(ChatFormatting.YELLOW)));
+            tooltip.add(Component.translatable(this.getDescriptionId(stack) + ".desc.2", Component.translatable(this.getDescriptionId(stack) + ".word.secondary").withStyle(ChatFormatting.AQUA)));
+            tooltip.add(Component.translatable(this.getDescriptionId(stack) + ".desc.3"));
         }
     }
 

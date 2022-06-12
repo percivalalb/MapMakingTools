@@ -79,7 +79,7 @@ public class KeyboardInput {
             hoveredSlot.ifPresent(slot -> {
                 Minecraft mc = Minecraft.getInstance();
 
-                if (FeatureAvailability.canEdit(mc.player) && slot.getItem().getItem() == MapMakingTools.WRENCH) {
+                if (FeatureAvailability.canEdit(mc.player) && slot.getItem().is(MapMakingTools.WRENCH.get())) {
                     MapMakingTools.HANDLER.sendToServer(new PacketWrenchMode(slot.getSlotIndex(), Math.signum(event.getScrollDelta()) == 1));
                     event.setCanceled(true);
                 }
@@ -94,7 +94,7 @@ public class KeyboardInput {
 
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.screen == null && FeatureAvailability.canEdit(mc.player) && mc.player.getMainHandItem().getItem() == MapMakingTools.WRENCH) {
+        if (mc.screen == null && FeatureAvailability.canEdit(mc.player) && mc.player.getMainHandItem().is(MapMakingTools.WRENCH.get())) {
             if (event.getAction() == 1) {
                 if (lastPressed == null || lastPressed + 500 < System.currentTimeMillis()) {
                     lastPressed = System.currentTimeMillis();

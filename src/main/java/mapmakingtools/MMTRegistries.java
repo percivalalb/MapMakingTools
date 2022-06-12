@@ -5,6 +5,7 @@ import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.api.itemeditor.Registries;
 import mapmakingtools.lib.Constants;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -25,8 +26,8 @@ public class MMTRegistries {
 
         @SuppressWarnings("unchecked")
         @Override
-        public void onAdd(IForgeRegistryInternal<IItemAttribute> owner, RegistryManager stage, int id, IItemAttribute newAttribute, @Nullable IItemAttribute oldAttribute) {
-            owner.getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class).put(newAttribute.delegate, DistExecutor.callWhenOn(Dist.CLIENT, newAttribute.client()));
+        public void onAdd(IForgeRegistryInternal<IItemAttribute> owner, RegistryManager stage, int id, ResourceKey<IItemAttribute> key, IItemAttribute newAttribute, @Nullable IItemAttribute oldAttribute) {
+            owner.getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class).put(key, DistExecutor.callWhenOn(Dist.CLIENT, newAttribute.client()));
         }
 
         @Override
@@ -47,7 +48,7 @@ public class MMTRegistries {
     }
 
     @SuppressWarnings("unchecked")
-    public static HashMap<ResourceLocation, IItemAttributeClient> getClientMapping() {
+    public static HashMap<ResourceKey<IItemAttribute>, IItemAttributeClient> getClientMapping() {
         return Registries.ITEM_ATTRIBUTES.get().getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class);
     }
 }

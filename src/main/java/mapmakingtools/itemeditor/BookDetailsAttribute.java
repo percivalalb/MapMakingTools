@@ -22,7 +22,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -56,7 +55,7 @@ public class BookDetailsAttribute extends IItemAttribute {
             }
             return stack;
         case 3:
-            if (!stack.getItem().delegate.equals(Items.WRITTEN_BOOK.delegate)) {
+            if (!stack.is(Items.WRITTEN_BOOK)) {
                 throw new IllegalStateException("Book is not a written book");
             }
 
@@ -105,7 +104,7 @@ public class BookDetailsAttribute extends IItemAttribute {
                 this.generationInput.setResponder(BufferFactory.createInteger(2, Strings::isNullOrEmpty, update));
                 this.generationInput.setFilter(Util.NON_NEGATIVE_NUMBER_INPUT_PREDICATE);
 
-                this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, new TextComponent("Convert back to writable book"), BufferFactory.ping(3, update));
+                this.convertBackBtn = new Button(x + 2, y + 48, 200, 20, Component.literal("Convert back to writable book"), BufferFactory.ping(3, update));
 
                 add.accept(this.bookNameInput);
                 add.accept(this.authorInput);

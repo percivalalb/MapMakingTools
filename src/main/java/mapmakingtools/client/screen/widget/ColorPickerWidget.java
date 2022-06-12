@@ -8,12 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.BookEditScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import com.mojang.math.Matrix4f;
-import net.minecraft.network.chat.TextComponent;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -131,40 +130,37 @@ public class ColorPickerWidget extends NestedWidget {
     protected void testFillGradient(PoseStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
        Matrix4f matrix = stackIn.last().pose();
        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-       BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+       BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().getBuilder();
        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
        bufferbuilder.vertex(matrix, xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
        bufferbuilder.vertex(matrix, xIn, yIn, this.getBlitOffset()).color(255, 255, 255, 255).endVertex();
        bufferbuilder.vertex(matrix, xIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
        bufferbuilder.vertex(matrix, xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(0, 0, 0, 255).endVertex();
-       bufferbuilder.end();
-       BufferUploader.end(bufferbuilder);
+       BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
     protected void drawSingleColor(PoseStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] color) {
         Matrix4f matrix = stackIn.last().pose();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         bufferbuilder.vertex(matrix, xIn + widthIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.vertex(matrix, xIn, yIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.vertex(matrix, xIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
         bufferbuilder.vertex(matrix, xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(color[0], color[1], color[2], 255).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        BufferUploader.drawWithShader(bufferbuilder.end());
      }
 
     protected void fillGradientHorizontal(PoseStack stackIn, int xIn, int yIn, int widthIn, int heightIn, int[] left, int[] right) {
         Matrix4f matrix = stackIn.last().pose();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         bufferbuilder.vertex(matrix, xIn + widthIn, yIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
         bufferbuilder.vertex(matrix, xIn, yIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
         bufferbuilder.vertex(matrix, xIn, yIn + heightIn, this.getBlitOffset()).color(left[0], left[1], left[2], 255).endVertex();
         bufferbuilder.vertex(matrix, xIn + widthIn, yIn + heightIn, this.getBlitOffset()).color(right[0], right[1], right[2], 255).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
     public class MainColorWidget extends AbstractWidget {
@@ -176,7 +172,7 @@ public class ColorPickerWidget extends NestedWidget {
         private double distanceY = 0;
 
         public MainColorWidget(int xIn, int yIn, int widthIn, int heightIn, @Nullable MainColorWidget previous) {
-            super(xIn, yIn, widthIn, heightIn, new TextComponent("Main Color Picker"));
+            super(xIn, yIn, widthIn, heightIn, Component.literal("Main Color Picker"));
 
             if (previous != null) {
                 this.mainColor = previous.mainColor;
@@ -246,7 +242,7 @@ public class ColorPickerWidget extends NestedWidget {
         private double distX = 0;
 
         public BaseColorWidget(int xIn, int yIn, int widthIn, int heightIn, @Nullable BaseColorWidget previous) {
-            super(xIn, yIn, widthIn, heightIn, new TextComponent("Base Color Picker"));
+            super(xIn, yIn, widthIn, heightIn, Component.literal("Base Color Picker"));
 
             if (previous != null) {
                 this.baseColor = previous.baseColor;

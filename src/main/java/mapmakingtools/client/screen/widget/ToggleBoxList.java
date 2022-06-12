@@ -2,8 +2,11 @@ package mapmakingtools.client.screen.widget;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
 
@@ -11,13 +14,14 @@ import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class ToggleBoxList<T> extends ScrollPane {
 
-    private int noElements;
-    private ToggleBoxGroup<T> toggleGroup = ToggleBoxGroup.single();
+    protected int noElements;
+    protected ToggleBoxGroup<T> toggleGroup = ToggleBoxGroup.single();
 
     public ToggleBoxList(int xIn, int yIn, int widthIn, int heightIn, @Nullable ToggleBoxList<T> previous) {
         super(xIn, yIn, widthIn, heightIn);
@@ -58,6 +62,28 @@ public class ToggleBoxList<T> extends ScrollPane {
         }
 
         return this;
+    }
+
+    public ToggleBoxList<Map.Entry<ResourceKey<T>, T>> setValues(IForgeRegistry<T> registry, @Nullable ToggleBoxList<Map.Entry<ResourceKey<T>, T>> previous) {
+        this.clear(); // clear old values
+
+        int i = 2;
+        for (Map.Entry<ResourceKey<T>, T> value : registry.getEntries()) {
+            ToggleBoxWidget<Map.Entry<ResourceKey<T>, T>> box = new ToggleBoxWidget<>(this.x + 2, this.y + i, null, () -> value, this.toggleGroup::buttonClicked);
+            box.setDisplayString(t -> t.getKey().location());
+
+            this.widgets.add(box);
+            i += 10;
+            this.noElements++;
+        }
+
+        this.hiddenHeight = Math.max(0, i + 2 - this.height);
+
+        if (previous != null) {
+            this.clampScrollOffset(previous.scrollOffset);
+        }
+
+        return (ToggleBoxList<Map.Entry<ResourceKey<T>, T>>) this;
     }
 
     public ToggleBoxList<T> setValues(Iterable<T> values, Function<T, Object> toStringFunc, @Nullable ToggleBoxList<?> previous) { // ? instead of T

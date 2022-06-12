@@ -6,6 +6,7 @@ import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
 import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
+import mapmakingtools.client.screen.widget.ToggleBoxRegistryList;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
@@ -14,6 +15,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -22,11 +25,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -148,35 +152,35 @@ public class EnchantmentAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private ToggleBoxList<Enchantment> enchantmentList;
+            private ToggleBoxRegistryList<Enchantment> enchantmentList;
             private ToggleBoxList<EnchantmentDetails> currentEnchantmentList;
             private Button addBtn, removeBtn, removeAllBtn;
             private EditBox lvlInput;
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.enchantmentList = new ToggleBoxList<>(x + 2, y + 12, width - 4, (height - 80) / 2, this.enchantmentList);
+                this.enchantmentList = new ToggleBoxRegistryList<>(x + 2, y + 12, width - 4, (height - 80) / 2, this.enchantmentList);
                 this.enchantmentList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
-                this.enchantmentList.setValues(ForgeRegistries.ENCHANTMENTS.getValues(), Enchantment::getRegistryName, this.enchantmentList);
+                this.enchantmentList.setValues(ForgeRegistries.ENCHANTMENTS, this.enchantmentList);
 
                 this.currentEnchantmentList = new ToggleBoxList<>(x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, this.currentEnchantmentList);
                 this.currentEnchantmentList.setSelectionGroupManager(ToggleBoxGroup.builder(EnchantmentDetails.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> { this.removeBtn.active = !selection.isEmpty(); }).build());
                 this.currentEnchantmentList.setValues(getEnchaments(stack), EnchantmentDetails::getDisplayString, this.currentEnchantmentList);
 
                 //this.currentEnchantmentList.set
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.add")), (btn) -> {
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, Component.translatable(getTranslationKey("button.add")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
-                    List<Enchantment> enchamtments = this.enchantmentList.getGroupManager().getSelected();
+                    List<Map.Entry<ResourceKey<Enchantment>, Enchantment>> enchantments = this.enchantmentList.getGroupManager().getSelected();
                     buf.writeInt(Integer.valueOf(this.lvlInput.getValue()));
-                    buf.writeInt(enchamtments.size());
-                    enchamtments.forEach(ench -> {
-                        buf.writeRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS, ench);
+                    buf.writeInt(enchantments.size());
+                    enchantments.forEach(ench -> {
+                        buf.writeRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS, ench.getValue());
                     });
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, Component.translatable(getTranslationKey("button.remove")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(1);
                     List<EnchantmentDetails> enchamtments = this.currentEnchantmentList.getGroupManager().getSelected();
@@ -190,7 +194,7 @@ public class EnchantmentAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(2, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.all")), BufferFactory.ping(2, update));
 
                 this.lvlInput = WidgetFactory.getTextField(screen, x + 2, y + height / 2 - 20, 50, 14, this.lvlInput, "1"::toString);
                 this.lvlInput.setMaxLength(3);

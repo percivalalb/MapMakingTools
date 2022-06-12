@@ -10,6 +10,7 @@ import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 
@@ -21,11 +22,11 @@ public class ItemModels extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        handheld(MapMakingTools.WRENCH.delegate);
+        handheld(MapMakingTools.WRENCH);
     }
 
     private String name(Supplier<? extends ItemLike> item) {
-        return item.get().asItem().getRegistryName().getPath();
+        return ForgeRegistries.ITEMS.getKey(item.get().asItem()).getPath();
     }
 
     private ResourceLocation itemTexture(Supplier<? extends ItemLike> item) {

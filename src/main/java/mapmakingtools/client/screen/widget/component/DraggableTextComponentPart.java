@@ -22,9 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -67,15 +65,15 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             Vec2 otherSide = WidgetUtil.getCentreOfSide(otherPart, dir);
 
             BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-            GL11.glLineWidth(2.5F);
 
             bufferbuilder.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
+            RenderSystem.lineWidth(2.5F);
             bufferbuilder.vertex(thisSide.x, thisSide.y, 0).color(0, 0, 0, 255).endVertex();
             bufferbuilder.vertex(otherSide.x, otherSide.y, 0).color(0, 0, 0, 255).endVertex();
 
-            bufferbuilder.end();
-            BufferUploader.end(bufferbuilder);
+            BufferUploader.draw(bufferbuilder.end());
         }
+        RenderSystem.lineWidth(1.0F);
         stackIn.popPose();
     }
 
@@ -219,16 +217,16 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         public Component getLabel(ChatFormatting formattingIn) {
             if (formattingIn.isFormat()) {
                 switch (formattingIn) {
-                    case BOLD: return new TextComponent("B").withStyle(ChatFormatting.BOLD);
-                    case STRIKETHROUGH: return new TextComponent("S").withStyle(ChatFormatting.STRIKETHROUGH);
-                    case UNDERLINE: return new TextComponent("U").withStyle(ChatFormatting.UNDERLINE);
-                    case ITALIC: return new TextComponent("I").withStyle(ChatFormatting.ITALIC);
-                    case OBFUSCATED: return new TextComponent("O").withStyle(ChatFormatting.OBFUSCATED);
+                    case BOLD: return Component.literal("B").withStyle(ChatFormatting.BOLD);
+                    case STRIKETHROUGH: return Component.literal("S").withStyle(ChatFormatting.STRIKETHROUGH);
+                    case UNDERLINE: return Component.literal("U").withStyle(ChatFormatting.UNDERLINE);
+                    case ITALIC: return Component.literal("I").withStyle(ChatFormatting.ITALIC);
+                    case OBFUSCATED: return Component.literal("O").withStyle(ChatFormatting.OBFUSCATED);
                 }
 
             }
 
-            return new TextComponent("?");
+            return Component.literal("?");
         }
 
         @Override
@@ -332,9 +330,9 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         @Override
         public Component create() {
             if (!this.translation) {
-                return new TextComponent(this.text);
+                return Component.literal(this.text);
             } else {
-                return new TranslatableComponent(this.text);
+                return Component.translatable(this.text);
             }
         }
 
@@ -356,12 +354,12 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             widget.setResponder((str) -> {
                 this.text = str;
             });
-            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, new TextComponent("Exact"), new Boolean[] {true, false}, null, (btn) -> {
+            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, Component.literal("Exact"), new Boolean[] {true, false}, null, (btn) -> {
                 this.translation = ((ToggleButton<Boolean>) btn).getValue();
                 if (this.translation) {
-                    btn.setMessage(new TextComponent("Trans"));
+                    btn.setMessage(Component.literal("Trans"));
                 } else {
-                    btn.setMessage(new TextComponent("Exact"));
+                    btn.setMessage(Component.literal("Exact"));
                 }
             });
             return Collections.unmodifiableList(Lists.newArrayList(widget, toggleButton));
@@ -404,7 +402,7 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
 
         @Override
         public Component create() {
-            return new TextComponent("\n");
+            return Component.literal("\n");
         }
 
         @Override

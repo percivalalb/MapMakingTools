@@ -12,12 +12,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -34,9 +33,9 @@ public class ItemNameAttribute extends IItemAttribute {
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
         case 0:
-            return stack.setHoverName(new TextComponent(buffer.readUtf(128)));
+            return stack.setHoverName(Component.literal(buffer.readUtf(128)));
         case 1:
-            return stack.setHoverName(new TranslatableComponent(buffer.readUtf(128)));
+            return stack.setHoverName(Component.translatable(buffer.readUtf(128)));
         case 2:
             stack.resetHoverName();
             return stack;
@@ -61,7 +60,7 @@ public class ItemNameAttribute extends IItemAttribute {
                 this.widgetMaker = new TextComponentMakerWidget(x + 3, y + 16, width - 6, height - 36);
                 add.accept(this.widgetMaker);
 
-                Button setBtn = new SmallButton(x + width / 2 - 100, y + height - 23, 200, 20, new TranslatableComponent(getTranslationKey("button.set")), (btn) -> {
+                Button setBtn = new SmallButton(x + width / 2 - 100, y + height - 23, 200, 20, Component.translatable(getTranslationKey("button.set")), (btn) -> {
                     System.out.println("Send");
                     if (this.widgetMaker.hasTextComponent()) {
                         FriendlyByteBuf buf = Util.createBuf();
@@ -93,7 +92,7 @@ public class ItemNameAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslatableComponent(getTranslationKey("button.remove.tag")), (btn) -> {
+                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, Component.translatable(getTranslationKey("button.remove.tag")), (btn) -> {
                     btn.active = false;
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(2);

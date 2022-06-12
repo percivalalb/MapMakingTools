@@ -16,31 +16,32 @@ import mapmakingtools.worldeditor.action.FloorAction;
 import mapmakingtools.worldeditor.action.MazeAction;
 import mapmakingtools.worldeditor.action.RoofAction;
 import mapmakingtools.worldeditor.action.SetAction;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.commands.arguments.blocks.BlockInput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 
 import static net.minecraft.commands.Commands.literal;
 
 public class WorldEditCommand {
 
-    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher, final CommandBuildContext buildCtx) {
         MapMakingTools.LOGGER.info("Registering quick build commands.");
-        registerSimple(dispatcher, "set", new SetAction());
-        registerSimple(dispatcher, "roof", new RoofAction());
-        registerSimple(dispatcher, "floor", new FloorAction());
+        registerSimple(dispatcher, buildCtx, "set", new SetAction());
+        registerSimple(dispatcher, buildCtx, "roof", new RoofAction());
+        registerSimple(dispatcher, buildCtx, "floor", new FloorAction());
 
-        registerSimple(dispatcher, "maze", new MazeAction());
+        registerSimple(dispatcher, buildCtx, "maze", new MazeAction());
     }
 
-    public static void registerSimple(final CommandDispatcher<CommandSourceStack> dispatcher, String command, Action action) {
+    public static void registerSimple(final CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildCtx, String command, Action action) {
         dispatcher.register(literal(Config.SERVER.generateQuickBuildCommand(command))
                 .requires(s -> s.hasPermission(2))
-                .then(Commands.argument("block", BlockStateArgument.block())
+                .then(Commands.argument("block", BlockStateArgument.block(buildCtx))
                         .executes(c -> doCommand(c, action))));
     }
 
@@ -55,7 +56,7 @@ public class WorldEditCommand {
         ISelection selection = selectionManager.get(player);
 
         if (!selection.isSet()) {
-            source.sendFailure(new TranslatableComponent("world_editor.mapmakingtools.selection.none"));
+            source.sendFailure(Component.translatable("world_editor.mapmakingtools.selection.none"));
             return 0;
         }
 
@@ -66,7 +67,7 @@ public class WorldEditCommand {
         EditHistory editHistory = DimensionData.get(world).getEditHistoryManager().get(player);
         editHistory.add(cachedArea);
 
-        source.sendSuccess(new TranslatableComponent("command.mapmakingtools.set.success", cachedArea.getSize()), true);
+        source.sendSuccess(Component.translatable("command.mapmakingtools.set.success", cachedArea.getSize()), true);
         return 1;
     }
 }

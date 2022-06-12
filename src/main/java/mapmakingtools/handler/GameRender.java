@@ -13,11 +13,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
@@ -36,13 +35,13 @@ public class GameRender {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         ItemStack stack = player.getMainHandItem();
-        if (e.getType() == ElementType.TEXT && FeatureAvailability.canEdit(mc.player) && stack.getItem() == MapMakingTools.WRENCH && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
+        if (e.getType() == ElementType.TEXT && FeatureAvailability.canEdit(mc.player) && stack.is(MapMakingTools.WRENCH.get()) && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
 
             if (mc.getOverlay() instanceof LoadingOverlay) {
                 return;
             }
 
-            PoseStack poseStack = e.getMatrixStack();
+            PoseStack poseStack = e.getPoseStack();
 
             Font font = Minecraft.getInstance().font;
             poseStack.pushPose();
@@ -53,14 +52,14 @@ public class GameRender {
 
             if (ClientSelection.SELECTION.isSet()) {
                 int[] dimensions = ClientSelection.SELECTION.getDimensions();
-                font.drawShadow(poseStack, new TranslatableComponent("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
+                font.drawShadow(poseStack, Component.translatable("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
             }
             else {
-                font.drawShadow(poseStack, new TranslatableComponent("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
+                font.drawShadow(poseStack, Component.translatable("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
             }
 
             if (ClientSelection.LAST_COMMAND != null) {
-                font.drawShadow(poseStack, new TextComponent(ClientSelection.LAST_COMMAND), 4, 15, -1);
+                font.drawShadow(poseStack, Component.literal(ClientSelection.LAST_COMMAND), 4, 15, -1);
             }
 
             poseStack.popPose();
@@ -95,7 +94,7 @@ public class GameRender {
     public static void onWorldRenderLast(final RenderLevelLastEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         ItemStack stack = player.getMainHandItem();
-        if (ClientSelection.SELECTION.anySet() && stack.getItem() == MapMakingTools.WRENCH && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
+        if (ClientSelection.SELECTION.anySet() && stack.is(MapMakingTools.WRENCH.get()) && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
             drawSelectionBox(event.getPoseStack(), ClientSelection.SELECTION.getPrimaryBB(), ClientSelection.SELECTION.getSecondaryBB());
         }
     }

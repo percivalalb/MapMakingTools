@@ -39,9 +39,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -114,7 +112,7 @@ public class ModifiersAttribute extends IItemAttribute {
                         || compound.getString("Slot").equals(slotType.getName());
                 boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, compound.getUUID("UUID"));
 
-                if (attr != null && attr.delegate.equals(modifier.attribute.get().delegate) && correctSlot && correctOp && correctUUID) {
+                if (attr != null && attr.equals(modifier.attribute.get()) && correctSlot && correctOp && correctUUID) {
                     nbttaglist.remove(k);
                     break; // Only remove one modifier
                 }
@@ -179,7 +177,7 @@ public class ModifiersAttribute extends IItemAttribute {
                     }, (_button, matrixStack, mouseX, mouseY) -> {
                         ToggleButton<AttributeModifier.Operation> button = (ToggleButton<AttributeModifier.Operation>) _button;
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, screen.getMinecraft().font.split(new TranslatableComponent("item_editor.mapmakingtools.modifiers.button.op." + button.getValue().name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.ITALIC), Math.max(screen.width / 2 - 43, 170)), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, screen.getMinecraft().font.split(Component.translatable("item_editor.mapmakingtools.modifiers.button.op." + button.getValue().name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.ITALIC), Math.max(screen.width / 2 - 43, 170)), mouseX, mouseY);
                         }
                     });
 
@@ -187,7 +185,7 @@ public class ModifiersAttribute extends IItemAttribute {
                     inputWidget.setFilter(Util.NUMBER_INPUT_PREDICATE);
 
 
-                    Button addBtn = new SmallButton(x + 155 + inputSize, y + 38 + i * 17, 16, 16, new TextComponent("+"), (btn) -> {
+                    Button addBtn = new SmallButton(x + 155 + inputSize, y + 38 + i * 17, 16, 16, Component.literal("+"), (btn) -> {
                         if (Strings.isNullOrEmpty(inputWidget.getValue()) || "-".equals(inputWidget.getValue())) {
                             return;
                         }
@@ -201,11 +199,11 @@ public class ModifiersAttribute extends IItemAttribute {
                         update.accept(buf);
                     }, (button, matrixStack, mouseX, mouseY) -> {
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, new TranslatableComponent("item_editor.mapmakingtools.modifiers.button." + (button.getMessage().getString().equals("#") ? "modify" : "add")), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, Component.translatable("item_editor.mapmakingtools.modifiers.button." + (button.getMessage().getString().equals("#") ? "modify" : "add")), mouseX, mouseY);
                         }
                     });
 
-                    Button removeBtn = new SmallButton(x + 171 + inputSize, y + 38 + i * 17, 16, 16, new TextComponent("-"), (btn) -> {
+                    Button removeBtn = new SmallButton(x + 171 + inputSize, y + 38 + i * 17, 16, 16, Component.literal("-"), (btn) -> {
                         FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(1);
                         buf.writeInt(index);
@@ -214,7 +212,7 @@ public class ModifiersAttribute extends IItemAttribute {
                         update.accept(buf);
                     }, (button, matrixStack, mouseX, mouseY) -> {
                         if (button.active) {
-                            screen.renderTooltip(matrixStack, new TranslatableComponent("item_editor.mapmakingtools.modifiers.button.remove"), mouseX, mouseY);
+                            screen.renderTooltip(matrixStack, Component.translatable("item_editor.mapmakingtools.modifiers.button.remove"), mouseX, mouseY);
                         }
                     });
 
@@ -224,14 +222,14 @@ public class ModifiersAttribute extends IItemAttribute {
                     this.removeBtnList.add(removeBtn);
                 }
 
-                this.btn_slot = new SmallToggleButton<>(x + 2, y + 16, 100, 20, EquipmentSlot.values(), (type) -> new TranslatableComponent("item.modifiers." + type.getName()), this.btn_slot, (btn) -> {
+                this.btn_slot = new SmallToggleButton<>(x + 2, y + 16, 100, 20, EquipmentSlot.values(), (type) -> Component.translatable("item.modifiers." + type.getName()), this.btn_slot, (btn) -> {
                     this.populateFrom(screen, stack.get());
                 });
 
-                this.convertInternalBtn = new Button(x + 110, y + 16, 130, 20, new TranslatableComponent(getTranslationKey("button.convert_to_tag")), BufferFactory.ping(2, update));
+                this.convertInternalBtn = new Button(x + 110, y + 16, 130, 20, Component.translatable(getTranslationKey("button.convert_to_tag")), BufferFactory.ping(2, update));
 
-                this.removeModifiersNBT = new Button(x + 10, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.tag")), BufferFactory.ping(3, update));
-                this.removeModifiers = new Button(x + 145, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(4, update));
+                this.removeModifiersNBT = new Button(x + 10, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.tag")), BufferFactory.ping(3, update));
+                this.removeModifiers = new Button(x + 145, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.all")), BufferFactory.ping(4, update));
 
                 this.valueInputList.forEach(add);
                 this.opBtnList.forEach(add);
@@ -249,8 +247,9 @@ public class ModifiersAttribute extends IItemAttribute {
                 //font.drawString(stackIn, "OP", x + 130 + MathHelper.clamp(width - 200, 40, 100), y + 25, 16777120);
                 for (int i = 0; i < MODIFIERS.length; i++) {
                     Attribute attr = MODIFIERS[i].attribute.get();
-                    String translationKey = "attribute.name." + attr.getRegistryName().getNamespace() + '.' + attr.getRegistryName().getPath() + (MODIFIERS[i].modifierId != null ? '.' + MODIFIERS[i].modifierId : "");
-                    font.draw(stackIn, I18n.exists(translationKey) ? new TranslatableComponent(translationKey) : new TextComponent(MODIFIERS[i].attribute.get().getDescriptionId()), x + 6, y + 42 + i * 17, 16777120);
+                    ResourceLocation attrLoc = ForgeRegistries.ATTRIBUTES.getKey(attr);
+                    String translationKey = "attribute.name." +  attrLoc.getNamespace() + '.' + attrLoc.getPath() + (MODIFIERS[i].modifierId != null ? '.' + MODIFIERS[i].modifierId : "");
+                    font.draw(stackIn, I18n.exists(translationKey) ? Component.translatable(translationKey) : Component.literal(MODIFIERS[i].attribute.get().getDescriptionId()), x + 6, y + 42 + i * 17, 16777120);
                 }
             }
 
@@ -268,8 +267,8 @@ public class ModifiersAttribute extends IItemAttribute {
                         boolean correctOp = attributemodifier.getOperation() == this.opBtnList.get(i).getValue();
                         boolean correctUUID = modifier.uuid == null || Objects.equals(modifier.uuid, attributemodifier.getId());
 
-                        if (key.delegate.equals(modifier.attribute.get().delegate) && correctOp && correctUUID) {
-                            this.addBtnList.get(i).setMessage(new TextComponent("#"));
+                        if (key.equals(modifier.attribute.get()) && correctOp && correctUUID) {
+                            this.addBtnList.get(i).setMessage(Component.literal("#"));
 
                             double amount = attributemodifier.getAmount();
 
@@ -291,7 +290,7 @@ public class ModifiersAttribute extends IItemAttribute {
                     }
 
                     // Only run if no modifier is found
-                    this.addBtnList.get(i).setMessage(new TextComponent("+"));
+                    this.addBtnList.get(i).setMessage(Component.literal("+"));
 
                     this.valueInputList.get(i).setValue("");
                     //this.opBtnList.get(i).setValue(AttributeModifier.Operation.ADDITION);
@@ -319,13 +318,13 @@ public class ModifiersAttribute extends IItemAttribute {
             public Component getOpString(AttributeModifier.Operation op) {
                 switch(op) {
                 case ADDITION:
-                    return new TextComponent("+|");
+                    return Component.literal("+|");
                 case MULTIPLY_BASE:
-                    return new TextComponent("+%");
+                    return Component.literal("+%");
                 case MULTIPLY_TOTAL:
-                    return new TextComponent("x%");
+                    return Component.literal("x%");
                 default:
-                    return new TextComponent("??");
+                    return Component.literal("??");
                 }
             }
         };
@@ -337,25 +336,25 @@ public class ModifiersAttribute extends IItemAttribute {
 
     //     Item.ATTACK_DAMAGE_MODIFIER
     // Until hardcoded == on UUID are removed just use null
-    private Modifier ATTACK_DAMAGE = new Modifier(null, Attributes.ATTACK_DAMAGE.delegate, "Weapon modifier", "weapon");
-    private Modifier ATTACK_SPEED = new Modifier(null, Attributes.ATTACK_SPEED.delegate, "Weapon modifier", "weapon");
-    private Modifier ATTACK_KNOCKBACK = new Modifier(Attributes.ATTACK_KNOCKBACK.delegate, "Weapon modifier");
-    private Modifier KNOCKBACK_RESISTANCE = new Modifier(Attributes.KNOCKBACK_RESISTANCE.delegate, "Knockback Resistance");
-    private Modifier MAX_HEALTH = new Modifier(Attributes.MAX_HEALTH.delegate, "Max Health");
-    private Modifier MOVEMENT_SPEED = new Modifier(Attributes.MOVEMENT_SPEED.delegate, "Movement Speed"); // MULT_PERCENTAGE_OPERATION
-    private Modifier SPRINTING_SPEED_BOOST = new Modifier(LivingEntity.SPEED_MODIFIER_SPRINTING_UUID, Attributes.MOVEMENT_SPEED.delegate, "Sprinting speed boost", "sprinting"); //MULTIPLY_TOTAL
-    private Modifier FLYING_SPEED = new Modifier(Attributes.FLYING_SPEED.delegate, "Flying Speed"); // MULT_PERCENTAGE_OPERATION
-    private Modifier FOLLOW_RANGE = new Modifier(Attributes.FOLLOW_RANGE.delegate, "Follow Range"); // MULT_PERCENTAGE_OPERATION
-    private Modifier ARMOR = new Modifier(Attributes.ARMOR.delegate, "Armor modifier");
-    private Modifier ARMOR_TOUGHNESS = new Modifier(Attributes.ARMOR_TOUGHNESS.delegate, "Armor toughness");
-    private Modifier SPAWN_REINFORCEMENTS = new Modifier(Attributes.SPAWN_REINFORCEMENTS_CHANCE.delegate, "Spawn Reinforcements Chance");
-    private Modifier BABY_SPEED_BOOST = new Modifier(Zombie.SPEED_MODIFIER_BABY_UUID, Attributes.MOVEMENT_SPEED.delegate, "Baby speed boost", "zombie.baby");
-    private Modifier HORSE_JUMP_STRENGTH = new Modifier(Attributes.JUMP_STRENGTH.delegate, "Jump Strength");
-    private Modifier HORSE_ARMOR = new Modifier(Horse.ARMOR_MODIFIER_UUID, Attributes.ARMOR.delegate, "Horse armor bonus", "horse.bonus");
+    private Modifier ATTACK_DAMAGE = new Modifier(null, () -> Attributes.ATTACK_DAMAGE, "Weapon modifier", "weapon");
+    private Modifier ATTACK_SPEED = new Modifier(null, () -> Attributes.ATTACK_SPEED, "Weapon modifier", "weapon");
+    private Modifier ATTACK_KNOCKBACK = new Modifier(() -> Attributes.ATTACK_KNOCKBACK, "Weapon modifier");
+    private Modifier KNOCKBACK_RESISTANCE = new Modifier(() -> Attributes.KNOCKBACK_RESISTANCE, "Knockback Resistance");
+    private Modifier MAX_HEALTH = new Modifier(() -> Attributes.MAX_HEALTH, "Max Health");
+    private Modifier MOVEMENT_SPEED = new Modifier(() -> Attributes.MOVEMENT_SPEED, "Movement Speed"); // MULT_PERCENTAGE_OPERATION
+    private Modifier SPRINTING_SPEED_BOOST = new Modifier(LivingEntity.SPEED_MODIFIER_SPRINTING_UUID, () -> Attributes.MOVEMENT_SPEED, "Sprinting speed boost", "sprinting"); //MULTIPLY_TOTAL
+    private Modifier FLYING_SPEED = new Modifier(() -> Attributes.FLYING_SPEED, "Flying Speed"); // MULT_PERCENTAGE_OPERATION
+    private Modifier FOLLOW_RANGE = new Modifier(() -> Attributes.FOLLOW_RANGE, "Follow Range"); // MULT_PERCENTAGE_OPERATION
+    private Modifier ARMOR = new Modifier(() -> Attributes.ARMOR, "Armor modifier");
+    private Modifier ARMOR_TOUGHNESS = new Modifier(() -> Attributes.ARMOR_TOUGHNESS, "Armor toughness");
+    private Modifier SPAWN_REINFORCEMENTS = new Modifier(() -> Attributes.SPAWN_REINFORCEMENTS_CHANCE, "Spawn Reinforcements Chance");
+    private Modifier BABY_SPEED_BOOST = new Modifier(Zombie.SPEED_MODIFIER_BABY_UUID, () -> Attributes.MOVEMENT_SPEED, "Baby speed boost", "zombie.baby");
+    private Modifier HORSE_JUMP_STRENGTH = new Modifier(() -> Attributes.JUMP_STRENGTH, "Jump Strength");
+    private Modifier HORSE_ARMOR = new Modifier(Horse.ARMOR_MODIFIER_UUID, () -> Attributes.ARMOR, "Horse armor bonus", "horse.bonus");
 
     // Potion Luck Modifier
-    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), Attributes.LUCK.delegate, MobEffects.LUCK.getDescriptionId(), null);
-    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), Attributes.LUCK.delegate, MobEffects.UNLUCK.getDescriptionId(), "un");
+    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), () -> Attributes.LUCK, MobEffects.LUCK.getDescriptionId(), null);
+    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), () -> Attributes.LUCK, MobEffects.UNLUCK.getDescriptionId(), "un");
 
     // Forge Modifiers
     private Modifier SLOW_FALLING = new Modifier(UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA"), ForgeMod.ENTITY_GRAVITY, "Slow falling acceleration reduction", "slow.falling");

@@ -7,8 +7,8 @@ import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.storage.DimensionData;
 import mapmakingtools.worldeditor.EditHistory;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -26,11 +26,11 @@ public class UndoCommand {
 
         ICachedArea area;
         if ((area = editHistory.undo(player.getCommandSenderWorld())) == null) {
-            source.sendFailure(new TranslatableComponent("command.mapmakingtools.undo.none"));
+            source.sendFailure(Component.translatable("command.mapmakingtools.undo.none"));
             return 0;
         }
 
-        source.sendSuccess(new TranslatableComponent("command.mapmakingtools.undo.success", area.getSize()), true);
+        source.sendSuccess(Component.translatable("command.mapmakingtools.undo.success", area.getSize()), true);
         return 1;
     }
 }

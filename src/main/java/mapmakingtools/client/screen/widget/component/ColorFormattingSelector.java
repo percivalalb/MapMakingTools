@@ -10,8 +10,8 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.Util;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class ColorFormattingSelector extends AbstractWidget {
     private Consumer<ChatFormatting> action;
 
     public ColorFormattingSelector(int xIn, int yIn, Consumer<ChatFormatting> action) {
-        super(xIn, yIn, COLORS.size() * 20, 20, new TextComponent("Color Formatting Selector"));
+        super(xIn, yIn, COLORS.size() * 20, 20, Component.literal("Color Formatting Selector"));
         this.action = action;
     }
 

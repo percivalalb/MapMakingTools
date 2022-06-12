@@ -19,15 +19,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -35,7 +34,6 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 public class ItemEditorScreen extends Screen {
@@ -45,9 +43,9 @@ public class ItemEditorScreen extends Screen {
 
     private int currentPage = 0;
     private int maxPages = 1;
-    private static Optional<Pair<IRegistryDelegate<IItemAttribute>, IItemAttributeClient>> current = Optional.empty();
+    private static Optional<Pair<IItemAttribute, IItemAttributeClient>> current = Optional.empty();
     private List<AbstractWidget> attributeWidgets = Lists.newArrayList();
-    private Map<IRegistryDelegate<IItemAttribute>, AbstractWidget> attributeTabWidgets = new HashMap<>();
+    private Map<IItemAttribute, AbstractWidget> attributeTabWidgets = new HashMap<>();
     private int guiX, guiY, guiWidth, guiHeight;
     private long blockUpdateTill = 0;
     private boolean requiresUpdate = false;
@@ -55,16 +53,16 @@ public class ItemEditorScreen extends Screen {
     private Player player;
     private ItemStack stack;
     private int slotIndex;
-    private List<IRegistryDelegate<IItemAttribute>> itemList;
+    private List<Map.Entry<ResourceKey<IItemAttribute>, IItemAttribute>> itemList;
 
     private Button leftBtn, rightBtn;
 
     public ItemEditorScreen(Player player, int slotIndex, ItemStack stack) {
-        super(new TranslatableComponent("screen.mapmakingtools.item_editor"));
+        super(Component.translatable("screen.mapmakingtools.item_editor"));
         this.player = player;
         this.stack = stack;
         this.slotIndex = slotIndex;
-        this.itemList = Util.getDelegates(Registries.ITEM_ATTRIBUTES.get(), IFeatureState::isVisible);
+        this.itemList = Util.getDelegates(Registries.ITEM_ATTRIBUTES, IFeatureState::isVisible);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class ItemEditorScreen extends Screen {
         int perPage = Math.max(Mth.floor((this.height - 42 - 3) / (double) TAB_HEIGHT), 1);
 
         if (perPage < size) {
-            this.leftBtn = new Button(49, 18, 20, 20, new TextComponent("<"), (btn) -> {
+            this.leftBtn = new Button(49, 18, 20, 20, Component.literal("<"), (btn) -> {
                 this.currentPage = Math.max(0, this.currentPage - 1);
                 btn.active = this.currentPage > 0;
                 this.rightBtn.active = true;
@@ -88,7 +86,7 @@ public class ItemEditorScreen extends Screen {
             });
             this.leftBtn.active = false;
 
-            this.rightBtn = new Button(72, 18, 20, 20, new TextComponent(">"), (btn) -> {
+            this.rightBtn = new Button(72, 18, 20, 20, Component.literal(">"), (btn) -> {
                 this.currentPage = Math.min(this.maxPages - 1, this.currentPage + 1);
                 btn.active = this.currentPage < this.maxPages - 1;
                 this.leftBtn.active = true;
@@ -103,7 +101,7 @@ public class ItemEditorScreen extends Screen {
 
         ItemEditorScreen.current.ifPresent(p -> {
             // If old selected attribute is no longer applicable delete
-            if (!p.getLeft().get().canUse() || !p.getLeft().get().isApplicable(this.player, this.stack)) {
+            if (!p.getLeft().canUse() || !p.getLeft().isApplicable(this.player, this.stack)) {
                 ItemEditorScreen.current = Optional.empty();
                 return;
             }
@@ -124,8 +122,8 @@ public class ItemEditorScreen extends Screen {
         if (!ItemStack.matches(playersStack, this.stack)) {
             this.requiresUpdate = ItemEditorScreen.current.isPresent() ? this.current.get().getRight().requiresUpdate(playersStack, this.stack) : false;
             this.stack = playersStack.copy();
-            for (Entry<IRegistryDelegate<IItemAttribute>, AbstractWidget> attributeBtns : this.attributeTabWidgets.entrySet()) {
-                IItemAttribute iAttr = attributeBtns.getKey().get();
+            for (Map.Entry<IItemAttribute, AbstractWidget> attributeBtns : this.attributeTabWidgets.entrySet()) {
+                IItemAttribute iAttr = attributeBtns.getKey();
                 attributeBtns.getValue().active = iAttr.canUse() && iAttr.isApplicable(this.player, this.stack);
             }
         }
@@ -172,7 +170,7 @@ public class ItemEditorScreen extends Screen {
         return false;
      }
 
-    public void selectAttribute(Pair<IRegistryDelegate<IItemAttribute>, IItemAttributeClient> attribute) {
+    public void selectAttribute(Pair<IItemAttribute, IItemAttributeClient> attribute) {
         ItemEditorScreen.current.ifPresent(p -> {
             this.clearAttribute(p);
         });
@@ -183,7 +181,7 @@ public class ItemEditorScreen extends Screen {
         attribute.getRight().populateFrom(this, this.stack);
     }
 
-    public void clearAttribute(@Nullable Pair<IRegistryDelegate<IItemAttribute>, IItemAttributeClient> attribute) {
+    public void clearAttribute(@Nullable Pair<IItemAttribute, IItemAttributeClient> attribute) {
         this.attributeWidgets.forEach(this::removeWidget);
         this.attributeWidgets.clear(); // Remove widget from screen first then from list to avoid concurrent modification errors
 
@@ -195,7 +193,7 @@ public class ItemEditorScreen extends Screen {
     public void sendItemUpdate(FriendlyByteBuf buf) {
         ItemEditorScreen.current.ifPresent(c -> {
             this.pauseStackUpdatesFor(1000);
-            MapMakingTools.HANDLER.sendToServer(new PacketItemEditorUpdate(this.slotIndex, c.getLeft().get(), buf));
+            MapMakingTools.HANDLER.sendToServer(new PacketItemEditorUpdate(this.slotIndex, c.getLeft(), buf));
         });
     }
 
@@ -225,22 +223,23 @@ public class ItemEditorScreen extends Screen {
             int index = this.currentPage * perPage + i;
             if (index >= this.itemList.size()) break;
 
-            IRegistryDelegate<IItemAttribute> attribute = this.itemList.get(index);
-            IItemAttributeClient client = MMTRegistries.getClientMapping().get(attribute);
+            Map.Entry<ResourceKey<IItemAttribute>, IItemAttribute> attribute = this.itemList.get(index);
+            IItemAttribute attr = attribute.getValue();
+            IItemAttributeClient client = MMTRegistries.getClientMapping().get(attribute.getKey());
 
-            MutableComponent label = new TranslatableComponent(attribute.get().getTranslationKey());
-            if (attribute.get().getFeatureState() != State.RELEASE) {
-                label = label.append(new TextComponent(" ("+attribute.get().getFeatureState().letter+")").withStyle(ChatFormatting.RED));
+            MutableComponent label = Component.translatable(attribute.getValue().getTranslationKey());
+            if (attr.getFeatureState() != State.RELEASE) {
+                label = label.append(Component.literal(" ("+attr.getFeatureState().letter+")").withStyle(ChatFormatting.RED));
             }
 
             Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, label, (btn) -> {
-                Pair<IRegistryDelegate<IItemAttribute>, IItemAttributeClient> p = Pair.of(attribute, client);
+                Pair<IItemAttribute, IItemAttributeClient> p = Pair.of(attr, client);
                 ItemEditorScreen.this.selectAttribute(p);
                 ItemEditorScreen.current = Optional.of(p);
             });
-            button.active = attribute.get().canUse() && attribute.get().isApplicable(this.player, this.stack);
+            button.active = attribute.getValue().canUse() && attribute.getValue().isApplicable(this.player, this.stack);
 
-            this.attributeTabWidgets.put(attribute, button);
+            this.attributeTabWidgets.put(attr, button);
             this.addRenderableWidget(button);
         }
     }
@@ -262,7 +261,7 @@ public class ItemEditorScreen extends Screen {
 
         ItemEditorScreen.current.ifPresent(p -> {
             if (p.getRight().shouldRenderTitle(this, this.stack)) {
-                this.minecraft.font.draw(stackIn, new TranslatableComponent(p.getLeft().get().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
+                this.minecraft.font.draw(stackIn, Component.translatable(p.getLeft().getTranslationKey()), this.guiX + 2, this.guiY + 2, 1);
             }
             p.getRight().render(stackIn, this, this.guiX, this.guiY, this.guiWidth, this.guiHeight);
         });

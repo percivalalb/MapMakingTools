@@ -5,16 +5,16 @@ import io.netty.buffer.Unpooled;
 import mapmakingtools.lib.Constants;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Util {
@@ -132,21 +132,15 @@ public class Util {
         }
     }
 
-    public static <T extends ForgeRegistryEntry<T>> List<IRegistryDelegate<T>> getDelegates(IForgeRegistry<T> registry, Predicate<T> filter) {
-        return getDelegates(registry.getValues(), filter);
-    }
-
-    public static <T extends ForgeRegistryEntry<T>> List<IRegistryDelegate<T>> getDelegates(Collection<T> values, @Nullable Predicate<T> filter) {
+    public static <T> List<Map.Entry<ResourceKey<T>, T>> getDelegates(Supplier<IForgeRegistry<T>> registry, Predicate<T> filter) {
         // Create an empty list for the delegates, initialise to
         // it's final size to avoid resizes down the road (improves efficiency)
-        List<IRegistryDelegate<T>> list = new ArrayList<>(values.size());
-
-        for (T value : values) {
-            if (filter == null || filter.test(value)) {
-                list.add(value.delegate);
+        List<Map.Entry<ResourceKey<T>, T>> list = new ArrayList<>(25);
+        for (Map.Entry<ResourceKey<T>, T> t : registry.get().getEntries()) {
+            if (filter == null || filter.test(t.getValue())) {
+                list.add(t);
             }
         }
-
         return list;
     }
 }

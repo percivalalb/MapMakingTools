@@ -8,12 +8,12 @@ import mapmakingtools.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -62,14 +62,14 @@ public class ArmorColorAttribute extends IItemAttribute {
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, Supplier<ItemStack> stack, int x, int y, int width, int height) {
                 this.colorPicker = new ColorPickerWidget(x + 3, y + 15, width - 106, height - 20, this.colorPicker);
 
-                this.setBtn = new Button(x + width - 100, y + 70, 40, 20, new TextComponent("Set"), (btn) -> {
+                this.setBtn = new Button(x + width - 100, y + 70, 40, 20, Component.literal("Set"), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
                     buf.writeInt(this.colorPicker.getColorPickedRGB());
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + width - 100, y + 93, 50, 20, new TextComponent("Remove"), BufferFactory.ping(1, update));
+                this.removeBtn = new Button(x + width - 100, y + 93, 50, 20, Component.literal("Remove"), BufferFactory.ping(1, update));
 
                 add.accept(this.colorPicker);
                 add.accept(this.setBtn);

@@ -4,12 +4,15 @@ import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
 import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
+import mapmakingtools.client.screen.widget.ToggleBoxRegistryList;
 import mapmakingtools.client.screen.widget.WidgetFactory;
 import mapmakingtools.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,11 +21,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -62,35 +66,35 @@ public class PotionAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private ToggleBoxList<MobEffect> potionList;
+            private ToggleBoxRegistryList<MobEffect> potionList;
             private ToggleBoxList<MobEffectInstance> currentPotionList;
             private Button addBtn, removeBtn, removeAllBtn;
             private EditBox lvlInput;
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.potionList = new ToggleBoxList<>(x + 2, y + 12, width - 4, (height - 80) / 2, this.potionList);
+                this.potionList = new ToggleBoxRegistryList<>(x + 2, y + 12, width - 4, (height - 80) / 2, this.potionList);
                 this.potionList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
-                this.potionList.setValues(ForgeRegistries.MOB_EFFECTS.getValues(), MobEffect::getRegistryName, this.potionList);
+                this.potionList.setValues(ForgeRegistries.MOB_EFFECTS, this.potionList);
 
                 this.currentPotionList = new ToggleBoxList<>(x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, this.currentPotionList);
                 this.currentPotionList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
                 this.currentPotionList.setValues(PotionUtils.getMobEffects(stack), MobEffectInstance::toString, this.currentPotionList);
 
                 //this.currentEnchantmentList.set
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.add")), (btn) -> {
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, Component.translatable(getTranslationKey("button.add")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
-                    List<MobEffect> effects = this.potionList.getGroupManager().getSelected();
+                    List<Map.Entry<ResourceKey<MobEffect>, MobEffect>> effects = this.potionList.getGroupManager().getSelected();
                     buf.writeInt(Integer.valueOf(this.lvlInput.getValue()));
                     buf.writeInt(effects.size());
                     effects.forEach(ench -> {
-                        buf.writeRegistryIdUnsafe(ForgeRegistries.MOB_EFFECTS, ench);
+                        buf.writeRegistryIdUnsafe(ForgeRegistries.MOB_EFFECTS, ench.getValue());
                     });
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, Component.translatable(getTranslationKey("button.remove")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(1);
                     List<MobEffectInstance> enchamtments = this.currentPotionList.getGroupManager().getSelected();
@@ -104,7 +108,7 @@ public class PotionAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), (btn) -> {
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.all")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(2);
                     update.accept(buf);

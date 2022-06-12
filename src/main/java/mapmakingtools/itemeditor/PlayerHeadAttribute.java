@@ -13,13 +13,13 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -91,7 +91,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
                     this.triggerAfter = net.minecraft.Util.getMillis() + 750L;
                 });
 
-                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                this.nameRemoval = new Button(x + width / 2 - 100, y + 40, 200, 20, Component.translatable(getTranslationKey("button.remove")), (btn) -> {
                     WidgetUtil.setTextQuietly(this.nameInput, "");
                     btn.active = false;
                     FriendlyByteBuf buf = Util.createBuf();
@@ -108,7 +108,7 @@ public class PlayerHeadAttribute extends IItemAttribute {
                 this.nameExists.ifPresent(b -> {
                     String text = b ? "text.player.exists" : "text.player.exists.not";
                     int colour = b ? 65025 : 16581375;
-                    screen.getMinecraft().font.draw(stackIn, new TranslatableComponent(getTranslationKey(text)), x + 2, y + 30, colour);
+                    screen.getMinecraft().font.draw(stackIn, Component.translatable(getTranslationKey(text)), x + 2, y + 30, colour);
                 });
             }
 

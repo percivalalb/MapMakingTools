@@ -22,7 +22,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,7 +43,7 @@ public class LoreAttribute extends IItemAttribute {
             ListTag list = new ListTag();
             int size = buffer.readInt();
             for (int i = 0; i < size; i++) {
-                list.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent(buffer.readUtf(256)))));
+                list.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(buffer.readUtf(256)))));
             }
 
             display.put("Lore", list);
@@ -92,7 +91,7 @@ public class LoreAttribute extends IItemAttribute {
                     textWidget.visible = false;
 
 
-                    Button btnRemove = new SmallButton(x + width - 13, y + 30 + i * 14, 13, 12, new TextComponent("-"), (btn) -> {
+                    Button btnRemove = new SmallButton(x + width - 13, y + 30 + i * 14, 13, 12, Component.literal("-"), (btn) -> {
                         FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(1);
                         buf.writeInt(index);
@@ -104,7 +103,7 @@ public class LoreAttribute extends IItemAttribute {
                     this.removeInput.add(btnRemove);
                 }
 
-                this.addBtn = new SmallButton(x + 18, y + 16, 13, 12, new TextComponent("+"), (btn) -> {
+                this.addBtn = new SmallButton(x + 18, y + 16, 13, 12, Component.literal("+"), (btn) -> {
                     if (this.lines < MAX_LINES) {
                         this.lineInput.get(this.lines).visible = true;
                         this.removeInput.get(this.lines++).visible = true;
@@ -113,7 +112,7 @@ public class LoreAttribute extends IItemAttribute {
                         this.triggerUpdate(update);
                     }
                 });
-                this.btnRemove = new SmallButton(x + 2, y + 16, 13, 12, new TextComponent("-"), (btn) -> {
+                this.btnRemove = new SmallButton(x + 2, y + 16, 13, 12, Component.literal("-"), (btn) -> {
                     if (this.lines > 0) {
                         this.lineInput.get(--this.lines).visible = false;
                         this.removeInput.get(this.lines).visible = false;
@@ -158,7 +157,7 @@ public class LoreAttribute extends IItemAttribute {
 
                         if (i < list.size()) {
                             Component text = Component.Serializer.fromJson(list.getString(i));
-                            WidgetUtil.setTextQuietly(textWidget,  text == null ? "" : text.getContents());
+                            WidgetUtil.setTextQuietly(textWidget,  text == null ? "" : text.getContents().toString());
                             textWidget.visible = true;
                             removeBtn.visible = true;
                         } else {

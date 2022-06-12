@@ -19,11 +19,11 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -133,17 +133,17 @@ public class FireworksAttribute extends IItemAttribute {
                 this.typeList.setSelectionGroupManager(ToggleBoxGroup.builder(FireworkRocketItem.Shape.class).min(1).max(1).listen((selection) -> {
                     this.addBtn.active = !selection.isEmpty();
                 }).build());
-                this.typeList.setValues(FireworkRocketItem.Shape.values(), (v) -> new TranslatableComponent("item.minecraft.firework_star.shape." + v.getName()), this.typeList);
+                this.typeList.setValues(FireworkRocketItem.Shape.values(), (v) -> Component.translatable("item.minecraft.firework_star.shape." + v.getName()), this.typeList);
 
                 int colourMenuWidth = Math.max((width - 105) / 2, 82);
 
                 this.mainColorsList = new ToggleBoxList<>(x + 105, y + 42, colourMenuWidth, 14 * 5, this.mainColorsList);
                 this.mainColorsList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
-                this.mainColorsList.setValues(DyeColor.values(), (v) -> new TranslatableComponent(v.getName()), this.mainColorsList);
+                this.mainColorsList.setValues(DyeColor.values(), (v) -> Component.translatable(v.getName()), this.mainColorsList);
 
                 this.fadeColorsList = new ToggleBoxList<>(x + 106 + colourMenuWidth, y + 42, colourMenuWidth, 14 * 5, this.fadeColorsList);
                 this.fadeColorsList.setSelectionGroupManager(ToggleBoxGroup.noLimits());
-                this.fadeColorsList.setValues(DyeColor.values(), (v) -> new TranslatableComponent(v.getName()), this.fadeColorsList);
+                this.fadeColorsList.setValues(DyeColor.values(), (v) -> Component.translatable(v.getName()), this.fadeColorsList);
 
                 this.currentEffectsList = new ToggleBoxList<>(x + 2, y + 25 + height / 2, width - 4, height / 2 - 35 - y, this.currentEffectsList);
                 this.currentEffectsList.setSelectionGroupManager(ToggleBoxGroup.builder(Byte.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> {
@@ -154,7 +154,7 @@ public class FireworksAttribute extends IItemAttribute {
                 this.trailBtn = new Checkbox(x + 34, y + 14 * 5 + 43, 20, 20, TextUtil.EMPTY, false);
                 this.flickerBtn = new Checkbox(x + 101, y + 14 * 5 + 43, 20, 20, TextUtil.EMPTY, false);
 
-                this.addBtn = new SmallButton(x + width - 90, y + 14 * 5 + 45, 80, 16, new TranslatableComponent(getTranslationKey("button.add")), (btn) -> {
+                this.addBtn = new SmallButton(x + width - 90, y + 14 * 5 + 45, 80, 16, Component.translatable(getTranslationKey("button.add")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(1);
 
@@ -167,7 +167,7 @@ public class FireworksAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, Component.translatable(getTranslationKey("button.remove")), (btn) -> {
                     btn.active = !this.currentEffectsList.getGroupManager().isEmpty();
                     this.removeAllBtn.active = !this.currentEffectsList.isEmpty();
                     FriendlyByteBuf buf = Util.createBuf();
@@ -180,7 +180,7 @@ public class FireworksAttribute extends IItemAttribute {
                     };
                     update.accept(buf);
                 });
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
 
                 add.accept(this.flightInput);
                 add.accept(this.typeList);
@@ -197,12 +197,12 @@ public class FireworksAttribute extends IItemAttribute {
             @Override
             public void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
                 Font font = screen.getMinecraft().font;
-                font.draw(stackIn, new TranslatableComponent("item.minecraft.firework_rocket.flight"), x + 6, y + 17, 16777120);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("shape")), x + 4, y + 32, 16777120);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("color")), x + 108, y + 32, 16777120);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("fade_color")), x + 109 + Math.max((width - 105) / 2, 82), y + 32, 16777120);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("trail")), x + 6, y + 14 * 5 + 47, 16777120);
-                font.draw(stackIn, new TranslatableComponent(getTranslationKey("flicker")), x + 63, y + 14 * 5 + 47, 16777120);
+                font.draw(stackIn, Component.translatable("item.minecraft.firework_rocket.flight"), x + 6, y + 17, 16777120);
+                font.draw(stackIn, Component.translatable(getTranslationKey("shape")), x + 4, y + 32, 16777120);
+                font.draw(stackIn, Component.translatable(getTranslationKey("color")), x + 108, y + 32, 16777120);
+                font.draw(stackIn, Component.translatable(getTranslationKey("fade_color")), x + 109 + Math.max((width - 105) / 2, 82), y + 32, 16777120);
+                font.draw(stackIn, Component.translatable(getTranslationKey("trail")), x + 6, y + 14 * 5 + 47, 16777120);
+                font.draw(stackIn, Component.translatable(getTranslationKey("flicker")), x + 63, y + 14 * 5 + 47, 16777120);
             }
 
             @Override

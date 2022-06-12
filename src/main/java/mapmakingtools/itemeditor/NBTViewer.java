@@ -9,11 +9,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.TextComponentTagVisitor;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -47,7 +47,7 @@ public class NBTViewer extends IItemAttribute {
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, Supplier<ItemStack> stack, int x, int y, int width, int height) {
-                this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                this.nbtRemoval = new Button(x + 3, y + 13, 120, 20, Component.translatable(getTranslationKey("button.remove")), (btn) -> {
                     btn.active = false;
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);

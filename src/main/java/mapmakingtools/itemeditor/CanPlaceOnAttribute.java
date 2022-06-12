@@ -7,9 +7,15 @@ import mapmakingtools.api.itemeditor.IItemAttribute;
 import mapmakingtools.api.itemeditor.IItemAttributeClient;
 import mapmakingtools.client.screen.widget.ToggleBoxList;
 import mapmakingtools.client.screen.widget.ToggleBoxList.ToggleBoxGroup;
+import mapmakingtools.client.screen.widget.ToggleBoxRegistryList;
 import mapmakingtools.util.NBTUtil;
 import mapmakingtools.util.Util;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.gui.screens.Screen;
@@ -23,10 +29,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -92,7 +98,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 //
 //                }
 //                String parse = BlockStateParser.toString(blockState);
-                String parse = block.getRegistryName().toString();
+                String parse = ForgeRegistries.BLOCKS.getKey(block).toString();
                 NBTUtil.addToSet(blockPlaceList, parse, Tag.TAG_STRING);
             }
             return stack;
@@ -155,7 +161,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
             ListTag blockPlaceList = stack.getTag().getList(this.getNBTName(), Tag.TAG_STRING);
             for (int i = 0; i < blockPlaceList.size(); ++i) {
                 try {
-                    BlockStateParser blockstateparser = (new BlockStateParser(new StringReader(blockPlaceList.getString(i)), true)).parse(true);
+                    BlockStateParser.BlockResult blockResult = (BlockStateParser.parseForBlock(HolderLookup.forRegistry(Registry.BLOCK), new StringReader(blockPlaceList.getString(i)), true));
 
                     blocks.add(blockPlaceList.getString(i));
 
@@ -172,7 +178,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private ToggleBoxList<Block> blockList;
+            private ToggleBoxRegistryList<Block> blockList;
             private ToggleBoxList<ResourceLocation> tagList;
 //            private ScrollWidget<Property<?>> blockPropertiesList;
 //            private ScrollWidget<String> blockPropertyValuesList;
@@ -181,17 +187,17 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
             @Override
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
-                this.blockList = new ToggleBoxList<>(x + 2, y + 12, 200, (height - 80) / 2, this.blockList);
-                this.blockList.setSelectionGroupManager(ToggleBoxGroup.builder(Block.class).min(1).max(1).listen((selection) -> {
+                this.blockList = new ToggleBoxRegistryList<>(x + 2, y + 12, 200, (height - 80) / 2, this.blockList);
+                this.blockList.setSelectionGroupManager(new ToggleBoxGroup.Builder<Map.Entry<ResourceKey<Block>, Block>>().min(1).max(1).listen((selection) -> {
                     if (!selection.isEmpty()) {
                         List<Property<?>> p = Lists.newArrayList();
-                        selection.get(0).getStateDefinition().getProperties().forEach(p::add);
+                        selection.get(0).getValue().getStateDefinition().getProperties().forEach(p::add);
 //                        this.blockPropertiesList.setValues(p, Property::getName, this.blockPropertiesList);
 //                        this.blockPropertyValuesList.clear();
                     }
                     updateAddButton();
                 }).build());
-                this.blockList.setValues(ForgeRegistries.BLOCKS.getValues(), Block::getRegistryName, this.blockList);
+                this.blockList.setValues(ForgeRegistries.BLOCKS, this.blockList);
 
                 this.tagList = new ToggleBoxList<>(x + 2, y + 12, 200, (height - 80) / 2, this.tagList);
                 this.tagList.setSelectionGroupManager(ToggleBoxGroup.builder(ResourceLocation.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> {
@@ -214,27 +220,27 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 this.currentPlacableList.setSelectionGroupManager(ToggleBoxGroup.builder(String.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> { this.removeBtn.active = !selection.isEmpty(); }).build());
                 this.currentPlacableList.setValues(getBlocks(stack), Objects::toString, this.currentPlacableList);
 
-                this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.tag")), (btn) -> {
+                this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, Component.translatable(getTranslationKey("button.tag")), (btn) -> {
                     this.blockList.visible = this.tagList.visible;
 //                    this.blockPropertiesList.visible = this.blockList.visible;
                     this.tagList.visible = !this.tagList.visible;
                     this.updateAddButton();
-                    btn.setMessage(new TranslatableComponent(getTranslationKey(this.blockList.visible ? "button.tag" : "button.block")));
+                    btn.setMessage(Component.translatable(getTranslationKey(this.blockList.visible ? "button.tag" : "button.block")));
                 });
 
-                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, new TranslatableComponent(getTranslationKey("button.add")), (btn) -> {
+                this.addBtn = new Button(x + 60, y + height / 2 - 23, 50, 20, Component.translatable(getTranslationKey("button.add")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
 
 
                     if (this.blockList.visible) {
                         buf.writeByte(0);
 
-                        List<Block> blocksSelected = this.blockList.getGroupManager().getSelected();
+                        List<Map.Entry<ResourceKey<Block>, Block>> blocksSelected = this.blockList.getGroupManager().getSelected();
 //                        List<Property<?>> blockProperties = this.blockPropertiesList.getGroupManager().getSelected();
                         List<? extends Comparable<?>> blockPropertyValues = Lists.newArrayList();// this.blockPropertyValuesList.getGroupManager().getSelected();
                         buf.writeInt(blocksSelected.size());
                         blocksSelected.forEach(ench -> {
-                            buf.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, ench);
+                            buf.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, ench.getValue());
 
 //                            if (!blockProperties.isEmpty() && !blockPropertyValues.isEmpty()) {
 //                                buf.writeBoolean(true);
@@ -263,7 +269,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                 });
                 this.addBtn.active = false;
 
-                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, new TranslatableComponent(getTranslationKey("button.remove")), (btn) -> {
+                this.removeBtn = new Button(x + 60, y + height - 23, 60, 20, Component.translatable(getTranslationKey("button.remove")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(2);
                     List<String> blockStates = this.currentPlacableList.getGroupManager().getSelected();
@@ -274,7 +280,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, new TranslatableComponent(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
+                this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));
 
                 add.accept(this.blockList);
                 add.accept(this.tagList);
