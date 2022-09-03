@@ -6,13 +6,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketUpdateLastCommand {
-
-    private String lastCommand;
-
-    public PacketUpdateLastCommand(String lastCommand) {
-        this.lastCommand = lastCommand;
-    }
+public record PacketUpdateLastCommand(String lastCommand) {
 
     public static void encode(PacketUpdateLastCommand msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.lastCommand != null);

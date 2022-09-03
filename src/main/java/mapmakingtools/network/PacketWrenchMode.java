@@ -8,15 +8,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketWrenchMode {
-
-    public final int slotIdx;
-    public final boolean up;
-
-    public PacketWrenchMode(int slotIdx, boolean up) {
-        this.slotIdx = slotIdx;
-        this.up = up;
-    }
+public record PacketWrenchMode(int slotIdx, boolean up) {
 
     public static void encode(PacketWrenchMode msg, FriendlyByteBuf buf) {
         buf.writeInt(msg.slotIdx);

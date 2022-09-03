@@ -10,13 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class PacketSelectionPoints {
-
-    public ISelection selection;
-
-    public PacketSelectionPoints(ISelection selection) {
-        this.selection = selection;
-    }
+public record PacketSelectionPoints(ISelection selection) {
 
     public static void encode(PacketSelectionPoints msg, FriendlyByteBuf buf) {
         msg.selection.write(buf);

@@ -9,12 +9,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketLastAction {
-
-
-    public PacketLastAction() {
-
-    }
+public record PacketLastAction() {
 
     public static void encode(PacketLastAction msg, FriendlyByteBuf buf) {
 
