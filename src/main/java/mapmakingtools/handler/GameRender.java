@@ -17,8 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -86,7 +86,11 @@ public class GameRender {
         }
     }
 
-    public static void onWorldRenderLast(final RenderLevelLastEvent event) {
+    public static void onWorldRenderLast(final RenderLevelStageEvent event) {
+        if (!(event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
+            return;
+        }
+
         LocalPlayer player = Minecraft.getInstance().player;
         ItemStack stack = player.getMainHandItem();
         if (ClientSelection.SELECTION.anySet() && stack.is(MapMakingTools.WRENCH.get()) && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
