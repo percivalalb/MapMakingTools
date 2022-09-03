@@ -35,7 +35,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,6 +71,7 @@ public class MapMakingTools {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::interModProcess);
+        modEventBus.addListener(KeyboardInput::initBinding);
 
         ITEMS.register(modEventBus);
         modEventBus.addListener(this::registerItemAttributes);
@@ -96,7 +97,7 @@ public class MapMakingTools {
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> mapmakingtools.handler.KeyboardInput::initBinding);
+
     }
 
     public void registerItemAttributes(final RegisterEvent event) {

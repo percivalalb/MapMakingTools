@@ -8,8 +8,8 @@ import mapmakingtools.worldeditor.CommandTracker;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,8 +24,8 @@ public class World {
         forgeEventBus.addListener(EventPriority.LOWEST, World::changeDimension);
     }
 
-    public static void onJoinWorld(final EntityJoinWorldEvent e) {
-        if (e.getWorld().isClientSide) {
+    public static void onJoinWorld(final EntityJoinLevelEvent e) {
+        if (e.getLevel().isClientSide) {
             return;
         }
 
@@ -37,17 +37,17 @@ public class World {
         ServerPlayer player = (ServerPlayer) entity;
 
         // TODO Combine
-        DimensionData.get(e.getWorld()).getSelectionManager().sync(player);
-        CommandTracker tracker = WorldData.get(e.getWorld()).getCommandTracker();
+        DimensionData.get(e.getLevel()).getSelectionManager().sync(player);
+        CommandTracker tracker = WorldData.get(e.getLevel()).getCommandTracker();
         MapMakingTools.HANDLER.send(PacketDistributor.PLAYER.with(() -> player),
                 new PacketUpdateLastCommand(tracker.getLastCommand(player)));
     }
 
-    public static void onLeaveWorld(final EntityLeaveWorldEvent e) {
+    public static void onLeaveWorld(final EntityLeaveLevelEvent e) {
 
     }
 
     public static void changeDimension(final PlayerEvent.PlayerChangedDimensionEvent e) {
-        DimensionData.get(e.getEntity().getCommandSenderWorld().getServer().getLevel(e.getTo())).getSelectionManager().sync(e.getPlayer());
+        DimensionData.get(e.getEntity().getCommandSenderWorld().getServer().getLevel(e.getTo())).getSelectionManager().sync(e.getEntity());
     }
 }

@@ -44,7 +44,7 @@ public class SpawnEggAttribute extends IItemAttribute {
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
         switch(buffer.readByte()) {
             case 0:
-                EntityType<?> entityType = buffer.readRegistryIdUnsafe(ForgeRegistries.ENTITIES);
+                EntityType<?> entityType = buffer.readRegistryIdUnsafe(ForgeRegistries.ENTITY_TYPES);
 
                 CompoundTag tag = NBTUtil.getOrCreateTag(stack);
                 if (tag.contains("EntityTag", Tag.TAG_COMPOUND)) {
@@ -53,7 +53,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                 }
 
                 CompoundTag entityTagCreate = new CompoundTag();
-                entityTagCreate.putString("id", ForgeRegistries.ENTITIES.getKey(entityType).toString());
+                entityTagCreate.putString("id", ForgeRegistries.ENTITY_TYPES.getKey(entityType).toString());
                 tag.put("EntityTag", entityTagCreate);
 
                 return stack;
@@ -74,14 +74,14 @@ public class SpawnEggAttribute extends IItemAttribute {
             public void init(Screen screen, Consumer<AbstractWidget> add, Consumer<FriendlyByteBuf> update, Consumer<Integer> pauseUpdates, final ItemStack stack, int x, int y, int width, int height) {
                 this.entityTypeList = new ToggleBoxRegistryList<>(x + 2, y + 32, width - 4, (height - 80) / 2, this.entityTypeList);
                 this.entityTypeList.setSelectionGroupManager(new ToggleBoxGroup.Builder<Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>>>().min(1).max(1).build());
-                this.entityTypeList.setValues(ForgeRegistries.ENTITIES, this.entityTypeList);
+                this.entityTypeList.setValues(ForgeRegistries.ENTITY_TYPES, this.entityTypeList);
 
                 this.addBtn = new Button(x + 2, y + height / 2 - 3, 50, 20, Component.translatable(getTranslationKey("button.set")), (btn) -> {
                     FriendlyByteBuf buf = Util.createBuf();
                     buf.writeByte(0);
                     List<Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>>> entityTypes = this.entityTypeList.getGroupManager().getSelected();
                     entityTypes.forEach((type) -> {
-                        buf.writeRegistryIdUnsafe(ForgeRegistries.ENTITIES, type.getValue());
+                        buf.writeRegistryIdUnsafe(ForgeRegistries.ENTITY_TYPES, type.getValue());
                     });
                     update.accept(buf);
                 });
@@ -105,7 +105,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                     if (entityTag.contains("id", Tag.TAG_STRING)) {
                         this.currentEntitySpawned = entityTag.getString("id");
                         ResourceLocation rl = ResourceLocation.tryParse(this.currentEntitySpawned);
-                        if (rl != null && ForgeRegistries.ENTITIES.containsKey(rl)) {
+                        if (rl != null && ForgeRegistries.ENTITY_TYPES.containsKey(rl)) {
                             // TODO this.entityTypeList.selectValue(ForgeRegistries.ENTITIES.getValue(rl).delegate);
                         }
                     }
@@ -115,7 +115,7 @@ public class SpawnEggAttribute extends IItemAttribute {
                     Item item = stack.getItem();
                     if (item instanceof SpawnEggItem eggItem) {
                         // Pass null just to get the base type of the spawn egg
-                        this.currentEntitySpawned = ForgeRegistries.ENTITIES.getKey(eggItem.getType(null)).toString();
+                        this.currentEntitySpawned = ForgeRegistries.ENTITY_TYPES.getKey(eggItem.getType(null)).toString();
                     }
                 }
             }

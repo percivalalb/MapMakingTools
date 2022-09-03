@@ -38,7 +38,7 @@ public class PacketLastAction {
                 return;
             }
 
-            player.getServer().getCommands().performCommand(player.createCommandSourceStack(), lastCommand);
+            player.getServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(), lastCommand);
         });
 
         ctx.get().setPacketHandled(true);

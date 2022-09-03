@@ -11,13 +11,13 @@ import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.event.ScreenEvent.KeyboardKeyPressedEvent;
+import net.minecraftforge.client.event.ScreenEvent.KeyPressed;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.client.ClientRegistry;
 
 import java.util.Optional;
 
@@ -27,8 +27,9 @@ public class KeyboardInput {
     public static Long lastPressed = null;
     public static boolean released = false;
 
-    public static void initBinding() {
+    public static void initBinding(final RegisterKeyMappingsEvent event) {
         KEY_ITEM_EDITOR = KeyboardInput.create("item_editor", "m");
+        event.register(KEY_ITEM_EDITOR);
     }
 
     public static void initListeners() {
@@ -41,11 +42,10 @@ public class KeyboardInput {
 
     public static KeyMapping create(String name, String key) {
         KeyMapping keyBinding = new KeyMapping("mapmakingtools.keybind." + name, (key == null ? InputConstants.UNKNOWN : InputConstants.getKey("key.keyboard." + key)).getValue(), "mapmakingtools.key.category");
-        ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }
 
-    public static void onKeyPressed(final KeyboardKeyPressedEvent.Pre event) {
+    public static void onKeyPressed(final KeyPressed.Pre event) {
         if (KEY_ITEM_EDITOR == null || event.getKeyCode() != KEY_ITEM_EDITOR.getKey().getValue()) {
             return;
         }
@@ -67,7 +67,7 @@ public class KeyboardInput {
         }
     }
 
-    public static void onGUIScroll(final ScreenEvent.MouseScrollEvent event) {
+    public static void onGUIScroll(final ScreenEvent.MouseScrolled event) {
         if (event.getScreen() instanceof AbstractContainerScreen) {
             AbstractContainerScreen<?> containerScreen = (AbstractContainerScreen<?>) event.getScreen();
 
@@ -87,7 +87,7 @@ public class KeyboardInput {
         };
     }
 
-    public static void onKeyReleased(final InputEvent.KeyInputEvent event) {
+    public static void onKeyReleased(final InputEvent.Key event) {
         if (KEY_ITEM_EDITOR == null || event.getKey() != KEY_ITEM_EDITOR.getKey().getValue()) {
             return;
         }

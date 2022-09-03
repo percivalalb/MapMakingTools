@@ -16,7 +16,7 @@ public class Interact {
 
     public static void onMouseClick(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getItemStack().is(MapMakingTools.WRENCH.get())) {
-            boolean pass = MapMakingTools.WRENCH.get().onBlockStartBreak(event.getItemStack(), event.getPos(), event.getPlayer());
+            boolean pass = MapMakingTools.WRENCH.get().onBlockStartBreak(event.getItemStack(), event.getPos(), event.getEntity());
             if (!pass) {
                 event.setCanceled(true);
             }

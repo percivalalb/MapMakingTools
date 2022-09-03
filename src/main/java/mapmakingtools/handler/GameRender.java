@@ -17,9 +17,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -31,16 +31,11 @@ public class GameRender {
         forgeEventBus.addListener(GameRender::onWorldRenderLast);
     }
 
-    public static void onPreRenderGameOverlay(RenderGameOverlayEvent.Pre e) {
+    public static void onPreRenderGameOverlay(RenderGuiOverlayEvent.Pre e) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         ItemStack stack = player.getMainHandItem();
-        if (e.getType() == ElementType.TEXT && FeatureAvailability.canEdit(mc.player) && stack.is(MapMakingTools.WRENCH.get()) && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
-
-            if (mc.getOverlay() instanceof LoadingOverlay) {
-                return;
-            }
-
+        if (e.getOverlay().id().equals(VanillaGuiOverlay.DEBUG_TEXT.id()) && FeatureAvailability.canEdit(mc.player) && stack.is(MapMakingTools.WRENCH.get()) && WrenchItem.getMode(stack) == WrenchItem.Mode.QUICK_BUILD) {
             PoseStack poseStack = e.getPoseStack();
 
             Font font = Minecraft.getInstance().font;
