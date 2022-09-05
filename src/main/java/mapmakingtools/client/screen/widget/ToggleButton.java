@@ -2,13 +2,11 @@ package mapmakingtools.client.screen.widget;
 
 import mapmakingtools.util.Util;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.util.Mth;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.client.gui.components.Button.OnPress;
 
 public class ToggleButton<T> extends Button {
 

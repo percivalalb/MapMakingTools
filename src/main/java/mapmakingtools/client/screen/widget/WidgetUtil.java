@@ -1,7 +1,7 @@
 package mapmakingtools.client.screen.widget;
 
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec2;
 

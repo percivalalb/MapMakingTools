@@ -3,12 +3,12 @@ package mapmakingtools.worldeditor;
 import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 
 public class CachedCuboidArea implements ICachedArea {
 

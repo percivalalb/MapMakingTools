@@ -1,20 +1,20 @@
 package mapmakingtools.handler;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.util.FeatureAvailability;
 import mapmakingtools.client.screen.ItemEditorScreen;
 import mapmakingtools.network.PacketLastAction;
 import mapmakingtools.network.PacketWrenchMode;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.KeyMapping;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.ScreenEvent.KeyPressed;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;

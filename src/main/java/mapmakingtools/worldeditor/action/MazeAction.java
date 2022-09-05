@@ -5,13 +5,13 @@ import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.worldeditor.CachedCuboidArea;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Clearable;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.Clearable;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.Map;

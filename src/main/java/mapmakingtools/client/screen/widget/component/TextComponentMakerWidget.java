@@ -8,13 +8,13 @@ import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.
 import mapmakingtools.client.screen.widget.component.DraggableTextComponentPart.StylePart;
 import mapmakingtools.util.TextUtil;
 import mapmakingtools.util.Util;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;

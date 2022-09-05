@@ -1,14 +1,13 @@
 package mapmakingtools.api.itemeditor;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
 
 public interface IItemAttributeClient {
 

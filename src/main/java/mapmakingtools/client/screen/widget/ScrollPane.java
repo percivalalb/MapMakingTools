@@ -1,7 +1,6 @@
 package mapmakingtools.client.screen.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mapmakingtools.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

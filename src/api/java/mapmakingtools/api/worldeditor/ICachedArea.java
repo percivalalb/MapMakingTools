@@ -1,8 +1,8 @@
 package mapmakingtools.api.worldeditor;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 
 public interface ICachedArea {
 

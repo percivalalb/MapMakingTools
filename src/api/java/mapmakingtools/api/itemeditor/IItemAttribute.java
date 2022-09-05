@@ -1,17 +1,15 @@
 package mapmakingtools.api.itemeditor;
 
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import mapmakingtools.api.util.IFeatureState;
-import mapmakingtools.api.util.State;
+import net.minecraft.Util;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.Util;
+
+import javax.annotation.Nullable;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public abstract class IItemAttribute implements IFeatureState {
 

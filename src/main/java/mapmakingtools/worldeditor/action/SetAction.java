@@ -5,8 +5,8 @@ import mapmakingtools.api.worldeditor.CachedBlock;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.worldeditor.CachedCuboidArea;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 
 public class SetAction implements Action {
 

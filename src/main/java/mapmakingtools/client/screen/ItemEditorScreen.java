@@ -1,8 +1,8 @@
 package mapmakingtools.client.screen;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mapmakingtools.MMTRegistries;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.itemeditor.IItemAttribute;
@@ -14,19 +14,19 @@ import mapmakingtools.client.screen.widget.SmallButton;
 import mapmakingtools.lib.Resources;
 import mapmakingtools.network.PacketItemEditorUpdate;
 import mapmakingtools.util.Util;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Mth;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.ChatFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;

@@ -3,8 +3,8 @@ package mapmakingtools.network;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.client.ClientSelection;
 import mapmakingtools.worldeditor.Selection;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 import javax.annotation.Nullable;

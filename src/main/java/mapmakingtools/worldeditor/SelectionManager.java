@@ -3,12 +3,12 @@ package mapmakingtools.worldeditor;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.ISelection;
 import mapmakingtools.network.PacketSelectionPoints;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;

@@ -1,6 +1,5 @@
 package mapmakingtools.worldeditor;
 
-import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.worldeditor.ICachedArea;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

@@ -4,8 +4,8 @@ import mapmakingtools.lib.Constants;
 import mapmakingtools.worldeditor.EditHistoryManager;
 import mapmakingtools.worldeditor.SelectionManager;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 
 public class DimensionData extends SavedData {

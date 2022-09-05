@@ -6,25 +6,22 @@ import mapmakingtools.api.itemeditor.Registries;
 import mapmakingtools.client.data.ItemModels;
 import mapmakingtools.command.RedoCommand;
 import mapmakingtools.command.UndoCommand;
-import mapmakingtools.command.WorldEditCommand;
 import mapmakingtools.handler.*;
 import mapmakingtools.item.WrenchItem;
 import mapmakingtools.itemeditor.*;
 import mapmakingtools.lib.Constants;
 import mapmakingtools.network.*;
 import mapmakingtools.util.Util;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.Item;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -35,12 +32,9 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.function.Supplier;
 
 @Mod(value = Constants.MOD_ID)
 public class MapMakingTools {

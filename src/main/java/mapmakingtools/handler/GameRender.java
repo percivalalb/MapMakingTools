@@ -1,16 +1,15 @@
 package mapmakingtools.handler;
 
-import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import mapmakingtools.MapMakingTools;
 import mapmakingtools.api.util.FeatureAvailability;
 import mapmakingtools.client.ClientSelection;
 import mapmakingtools.item.WrenchItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.network.chat.Component;

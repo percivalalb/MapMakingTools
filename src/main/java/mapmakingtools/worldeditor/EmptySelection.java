@@ -1,9 +1,9 @@
 package mapmakingtools.worldeditor;
 
 import mapmakingtools.api.worldeditor.ISelection;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nullable;
 

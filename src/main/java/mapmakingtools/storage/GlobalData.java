@@ -1,6 +1,5 @@
 package mapmakingtools.storage;
 
-import mapmakingtools.lib.Constants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
 

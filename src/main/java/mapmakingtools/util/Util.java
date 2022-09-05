@@ -3,13 +3,12 @@ package mapmakingtools.util;
 import com.google.common.base.Strings;
 import io.netty.buffer.Unpooled;
 import mapmakingtools.lib.Constants;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
