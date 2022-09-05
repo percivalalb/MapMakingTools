@@ -11,12 +11,12 @@ public interface ICachedArea {
      *
      * @param world The world to restore to
      */
-    public void restore(Level world);
+    void restore(Level world);
 
     /**
      * Returns the number blocks represented by this cached area
      */
-    public int getSize();
+    int getSize();
 
     /**
      * Caches the blocks currently at the positions this cache describes
@@ -24,7 +24,7 @@ public interface ICachedArea {
      * @param world The world
      * @return The live cached area of the area represented by this cache
      */
-    public ICachedArea cacheLive(LevelReader world);
+    ICachedArea cacheLive(LevelReader world);
 
-    public CompoundTag write(CompoundTag nbt);
+    CompoundTag write(CompoundTag nbt);
 }

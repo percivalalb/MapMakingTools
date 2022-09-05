@@ -39,7 +39,7 @@ public class ToggleButton<T> extends Button {
             return true;
         }
 
-       return false;
+        return false;
     }
 
     public T getValue() {

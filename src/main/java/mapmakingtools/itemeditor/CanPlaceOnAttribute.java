@@ -50,12 +50,12 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            int amount = buffer.readInt();
-            ListTag blockPlaceList = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Tag.TAG_STRING);
+        switch (buffer.readByte()) {
+            case 0:
+                int amount = buffer.readInt();
+                ListTag blockPlaceList = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Tag.TAG_STRING);
 
-            for (int i = 0; i < amount; i++) {
+                for (int i = 0; i < amount; i++) {
 //                StringBuilder stringbuilder = new StringBuilder(block.getRegistryName().toString());
 //                if (buffer.readBoolean()) {
 //                   stringbuilder.append('[');
@@ -85,7 +85,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 //                   stringbuilder.append(']');
 //                }
 
-                Block block = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+                    Block block = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
 //                BlockState blockState = block.getDefaultState();
 //                if (buffer.readBoolean()) {
 //                    int noProps = buffer.readInt();
@@ -97,56 +97,58 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 //
 //                }
 //                String parse = BlockStateParser.toString(blockState);
-                String parse = ForgeRegistries.BLOCKS.getKey(block).toString();
-                NBTUtil.addToSet(blockPlaceList, parse, Tag.TAG_STRING);
-            }
-            return stack;
-        case 1:
-            int amount2 = buffer.readInt();
-            ListTag blockPlaceList2 = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Tag.TAG_STRING);
+                    String parse = ForgeRegistries.BLOCKS.getKey(block).toString();
+                    NBTUtil.addToSet(blockPlaceList, parse, Tag.TAG_STRING);
+                }
+                return stack;
+            case 1:
+                int amount2 = buffer.readInt();
+                ListTag blockPlaceList2 = NBTUtil.getOrCreateSubList(stack, this.getNBTName(), Tag.TAG_STRING);
 
-            for (int i = 0; i < amount2; i++) {
-                ResourceLocation blockTag = buffer.readResourceLocation();
-                NBTUtil.addToSet(blockPlaceList2, "#" + blockTag, Tag.TAG_STRING);
-            }
-            return stack;
-        case 2:
-            if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
-                ListTag list = stack.getTag().getList(this.getNBTName(), Tag.TAG_STRING);
+                for (int i = 0; i < amount2; i++) {
+                    ResourceLocation blockTag = buffer.readResourceLocation();
+                    NBTUtil.addToSet(blockPlaceList2, "#" + blockTag, Tag.TAG_STRING);
+                }
+                return stack;
+            case 2:
+                if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
+                    ListTag list = stack.getTag().getList(this.getNBTName(), Tag.TAG_STRING);
 
-                int amount1 = buffer.readInt();
-                for (int i = 0; i < amount1; i++) {
-                    String blockStateStr = buffer.readUtf(1024);
-                    for (int j = 0; j < list.size(); j++) {
-                        if (blockStateStr.equals(list.getString(j))) {
-                            list.remove(j);
-                            break;
+                    int amount1 = buffer.readInt();
+                    for (int i = 0; i < amount1; i++) {
+                        String blockStateStr = buffer.readUtf(1024);
+                        for (int j = 0; j < list.size(); j++) {
+                            if (blockStateStr.equals(list.getString(j))) {
+                                list.remove(j);
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (list.isEmpty()) {
+                    if (list.isEmpty()) {
+                        stack.getTag().remove(this.getNBTName());
+                    }
+
+                    NBTUtil.removeTagIfEmpty(stack);
+                }
+                return stack;
+            case 3:
+                if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
                     stack.getTag().remove(this.getNBTName());
+                    NBTUtil.removeTagIfEmpty(stack);
                 }
-
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            return stack;
-        case 3:
-            if (NBTUtil.hasTag(stack, this.getNBTName(), Tag.TAG_LIST)) {
-                stack.getTag().remove(this.getNBTName());
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
     }
 
     @SuppressWarnings("unchecked")
     public <T extends Comparable<T>> void applyPropertyValue(BlockState blockState, String propertyStr, String valueStr) {
         Property<T> property = (Property<T>) blockState.getBlock().getStateDefinition().getProperty(propertyStr);
-        property.getValue(valueStr).ifPresent(value -> { blockState.setValue(property, value); });
+        property.getValue(valueStr).ifPresent(value -> {
+            blockState.setValue(property, value);
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -179,7 +181,7 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 
             private ToggleBoxRegistryList<Block> blockList;
             private ToggleBoxList<ResourceLocation> tagList;
-//            private ScrollWidget<Property<?>> blockPropertiesList;
+            //            private ScrollWidget<Property<?>> blockPropertiesList;
 //            private ScrollWidget<String> blockPropertyValuesList;
             private ToggleBoxList<String> currentPlacableList;
             private Button blockTagBtn, addBtn, removeBtn, removeAllBtn;
@@ -216,7 +218,9 @@ public class CanPlaceOnAttribute extends IItemAttribute {
 //                this.blockPropertyValuesList.setSelectionGroupManager(ToggleBoxGroup.default1());
 
                 this.currentPlacableList = new ToggleBoxList<>(x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, this.currentPlacableList);
-                this.currentPlacableList.setSelectionGroupManager(ToggleBoxGroup.builder(String.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> { this.removeBtn.active = !selection.isEmpty(); }).build());
+                this.currentPlacableList.setSelectionGroupManager(ToggleBoxGroup.builder(String.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> {
+                    this.removeBtn.active = !selection.isEmpty();
+                }).build());
                 this.currentPlacableList.setValues(getBlocks(stack), Objects::toString, this.currentPlacableList);
 
                 this.blockTagBtn = new Button(x + 2, y + height / 2 - 23, 50, 20, Component.translatable(getTranslationKey("button.tag")), (btn) -> {

@@ -30,6 +30,15 @@ public class WrenchItem extends Item {
         super(new Properties().fireResistant().setNoRepair());
     }
 
+    public static Mode getMode(ItemStack stack) {
+        Mode mode;
+        if (stack.hasTag() && (mode = Mode.getFromString(stack.getTag().getString("mode"))) != null) {
+            return mode;
+        }
+
+        return Mode.QUICK_BUILD;
+    }
+
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Mode mode = this.getMode(stack);
@@ -109,13 +118,12 @@ public class WrenchItem extends Item {
         return InteractionResult.PASS;
     }
 
-
     @Override
     public Component getName(ItemStack stack) {
         Mode mode = this.getMode(stack);
         MutableComponent label = Component.translatable(this.getDescriptionId(stack));
         if (mode.getFeatureState() != State.RELEASE) {
-            label = label.append(Component.literal(" ("+mode.getFeatureState().letter+")").withStyle(ChatFormatting.RED));
+            label = label.append(Component.literal(" (" + mode.getFeatureState().letter + ")").withStyle(ChatFormatting.RED));
         }
         return label;
     }
@@ -135,15 +143,6 @@ public class WrenchItem extends Item {
             tooltip.add(Component.translatable(this.getDescriptionId(stack) + ".desc.2", Component.translatable(this.getDescriptionId(stack) + ".word.secondary").withStyle(ChatFormatting.AQUA)));
             tooltip.add(Component.translatable(this.getDescriptionId(stack) + ".desc.3"));
         }
-    }
-
-    public static Mode getMode(ItemStack stack) {
-        Mode mode;
-        if (stack.hasTag() && (mode = Mode.getFromString(stack.getTag().getString("mode"))) != null) {
-            return mode;
-        }
-
-        return Mode.QUICK_BUILD;
     }
 
     public enum Mode implements IFeatureState {

@@ -5,7 +5,8 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 public class GlobalData extends SavedData {
 
-    public GlobalData() {}
+    public GlobalData() {
+    }
 
     public static GlobalData load(CompoundTag nbt) {
         GlobalData savedData = new GlobalData();

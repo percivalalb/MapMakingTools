@@ -27,19 +27,19 @@ public class DimensionData extends SavedData {
                 .computeIfAbsent(DimensionData::load, DimensionData::new, Constants.STORAGE_DIMENSION);
     }
 
+    public static DimensionData load(CompoundTag nbt) {
+        DimensionData savedData = new DimensionData();
+        savedData.selectionManager = SelectionManager.read(nbt.getCompound("selection"), savedData::setDirty);
+        savedData.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), savedData::setDirty);
+        return savedData;
+    }
+
     public SelectionManager getSelectionManager() {
         return this.selectionManager;
     }
 
     public EditHistoryManager getEditHistoryManager() {
         return this.editHistoryManager;
-    }
-
-    public static DimensionData load(CompoundTag nbt) {
-        DimensionData savedData = new DimensionData();
-        savedData.selectionManager = SelectionManager.read(nbt.getCompound("selection"), savedData::setDirty);
-        savedData.editHistoryManager = EditHistoryManager.read(nbt.getCompound("history"), savedData::setDirty);
-        return savedData;
     }
 
     @Override

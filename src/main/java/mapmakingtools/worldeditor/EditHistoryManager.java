@@ -11,15 +11,11 @@ import java.util.UUID;
 
 public class EditHistoryManager {
 
-    private HashMap<UUID, EditHistory> POSITION = new HashMap<>();
     private final Runnable markDirty;
+    private HashMap<UUID, EditHistory> POSITION = new HashMap<>();
 
     public EditHistoryManager(Runnable markDirty) {
         this.markDirty = markDirty;
-    }
-
-    public EditHistory get(Player player) {
-        return this.POSITION.computeIfAbsent(player.getUUID(), k -> new EditHistory());
     }
 
     public static EditHistoryManager read(CompoundTag nbt, Runnable markDirty) {
@@ -45,6 +41,10 @@ public class EditHistoryManager {
         }
 
         return editHistoryManager;
+    }
+
+    public EditHistory get(Player player) {
+        return this.POSITION.computeIfAbsent(player.getUUID(), k -> new EditHistory());
     }
 
     public CompoundTag write(CompoundTag nbt) {

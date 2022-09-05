@@ -32,31 +32,30 @@ public class ItemDamageAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            int damage = buffer.readInt();
+        switch (buffer.readByte()) {
+            case 0:
+                int damage = buffer.readInt();
 
-            if (damage == 0) {
-                NBTUtil.removeTag(stack, "Damage", Tag.TAG_ANY_NUMERIC);
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            else {
-                stack.setDamageValue(damage);
-            }
+                if (damage == 0) {
+                    NBTUtil.removeTag(stack, "Damage", Tag.TAG_ANY_NUMERIC);
+                    NBTUtil.removeTagIfEmpty(stack);
+                } else {
+                    stack.setDamageValue(damage);
+                }
 
-            return stack;
-        case 1:
-            CompoundTag nbt = NBTUtil.getOrCreateTag(stack);
+                return stack;
+            case 1:
+                CompoundTag nbt = NBTUtil.getOrCreateTag(stack);
 
-            if (NBTUtil.hasTag(stack, "Unbreakable", Tag.TAG_BYTE) && nbt.getBoolean("Unbreakable")) {
-                nbt.remove("Unbreakable");
-            } else {
-                nbt.putBoolean("Unbreakable", true);
-            }
+                if (NBTUtil.hasTag(stack, "Unbreakable", Tag.TAG_BYTE) && nbt.getBoolean("Unbreakable")) {
+                    nbt.remove("Unbreakable");
+                } else {
+                    nbt.putBoolean("Unbreakable", true);
+                }
 
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }

@@ -11,7 +11,8 @@ public final class EmptySelection implements ISelection {
 
     public static final EmptySelection INSTANCE = new EmptySelection();
 
-    private EmptySelection() {}
+    private EmptySelection() {
+    }
 
     @Nullable
     @Override

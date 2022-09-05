@@ -28,12 +28,12 @@ public class NBTViewer extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            stack.setTag(null);
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+        switch (buffer.readByte()) {
+            case 0:
+                stack.setTag(null);
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }

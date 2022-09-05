@@ -158,18 +158,34 @@ public class ToggleBoxList<T> extends ScrollPane {
 
         public static final ToggleBoxGroup.Builder<?> DEFAULT = new ToggleBoxGroup.Builder<>().min(1).max(1);
         public static final ToggleBoxGroup.Builder<?> NO_LIMITS = new ToggleBoxGroup.Builder<String>().min(0).max(Integer.MAX_VALUE);
-
-        private ISelectionChange<T> onChange;
-
         private final int minSelected;
         private final int maxSelected;
         private final LinkedHashMap<T, ToggleBoxWidget<T>> selected;
+        private ISelectionChange<T> onChange;
 
         private ToggleBoxGroup(int min, int max, @Nullable ISelectionChange<T> onChange) {
             this.minSelected = min;
             this.maxSelected = max;
             this.onChange = onChange;
             this.selected = Maps.newLinkedHashMap();
+        }
+
+        @SuppressWarnings("unchecked")
+        public static <E> ToggleBoxGroup<E> single() {
+            return (ToggleBoxGroup<E>) DEFAULT.build();
+        }
+
+        @SuppressWarnings("unchecked")
+        public static <E> ToggleBoxGroup<E> noLimits() {
+            return (ToggleBoxGroup<E>) NO_LIMITS.build();
+        }
+
+        public static <E> Builder<E> builder(Class<E> type) {
+            return new Builder<E>();
+        }
+
+        public static Builder<Property<?>> builderProperty() {
+            return new Builder<Property<?>>();
         }
 
         public boolean buttonClicked(AbstractTickButton btn) {
@@ -187,7 +203,9 @@ public class ToggleBoxList<T> extends ScrollPane {
             boolean change = false;
 
             if (ticked) {
-                if (isSelected) { return false; } // Already selected then do nothing
+                if (isSelected) {
+                    return false;
+                } // Already selected then do nothing
 
                 // If list is already at max capacity
                 if (this.selected.size() >= this.maxSelected) {
@@ -203,7 +221,7 @@ public class ToggleBoxList<T> extends ScrollPane {
                     this.selected.remove(value);
                     change = true;
                 } else {
-                 // If it would take below min re-tick the box
+                    // If it would take below min re-tick the box
                     box.setTicked(true);
                 }
             }
@@ -223,30 +241,12 @@ public class ToggleBoxList<T> extends ScrollPane {
             return this.selected.keySet().stream().map(mapper);
         }
 
-        public interface ISelectionChange<T> {
-            void onChange(List<T> selction);
-        }
-
         public List<T> getSelected() {
             return Lists.newArrayList(this.selected.keySet());
         }
 
-        @SuppressWarnings("unchecked")
-        public static <E> ToggleBoxGroup<E> single() {
-            return (ToggleBoxGroup<E>) DEFAULT.build();
-        }
-
-        @SuppressWarnings("unchecked")
-        public static <E> ToggleBoxGroup<E> noLimits() {
-            return (ToggleBoxGroup<E>) NO_LIMITS.build();
-        }
-
-        public static <E> Builder<E> builder(Class<E> type) {
-            return new Builder<E>();
-        }
-
-        public static Builder<Property<?>> builderProperty() {
-            return new Builder<Property<?>>();
+        public interface ISelectionChange<T> {
+            void onChange(List<T> selction);
         }
 
         public static class Builder<T> {

@@ -51,46 +51,46 @@ public class EnchantmentAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            int level = buffer.readInt();
-            int amount = buffer.readInt();
-            for (int i = 0; i < amount; i++) {
-                Enchantment ench = buffer.readRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS);
-                this.addEnchantment(stack, ench, level);
-            }
+        switch (buffer.readByte()) {
+            case 0:
+                int level = buffer.readInt();
+                int amount = buffer.readInt();
+                for (int i = 0; i < amount; i++) {
+                    Enchantment ench = buffer.readRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS);
+                    this.addEnchantment(stack, ench, level);
+                }
 
-            return stack;
-        case 1:
-            if (NBTUtil.hasTag(stack, getNBTName(), Tag.TAG_LIST)) {
-                ListTag enchantments = stack.getTag().getList(getNBTName(), Tag.TAG_COMPOUND);
-                int amount2 = buffer.readInt();
-                for (int i = 0; i < amount2; i++) {
-                    EnchantmentDetails details = EnchantmentDetails.readFromBuffer(buffer);
+                return stack;
+            case 1:
+                if (NBTUtil.hasTag(stack, getNBTName(), Tag.TAG_LIST)) {
+                    ListTag enchantments = stack.getTag().getList(getNBTName(), Tag.TAG_COMPOUND);
+                    int amount2 = buffer.readInt();
+                    for (int i = 0; i < amount2; i++) {
+                        EnchantmentDetails details = EnchantmentDetails.readFromBuffer(buffer);
 
-                    for (int j = 0; j < enchantments.size(); j++) {
-                        CompoundTag nbt = enchantments.getCompound(j);
-                        if (details.equals(nbt)) {
-                            enchantments.remove(j);
-                            break;
+                        for (int j = 0; j < enchantments.size(); j++) {
+                            CompoundTag nbt = enchantments.getCompound(j);
+                            if (details.equals(nbt)) {
+                                enchantments.remove(j);
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (enchantments.isEmpty()) {
-                    stack.getTag().remove(getNBTName());
+                    if (enchantments.isEmpty()) {
+                        stack.getTag().remove(getNBTName());
+                    }
+                    NBTUtil.removeTagIfEmpty(stack);
                 }
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            return stack;
-        case 2:
-            if (stack.hasTag()) {
-                stack.getTag().remove(getNBTName());
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            case 2:
+                if (stack.hasTag()) {
+                    stack.getTag().remove(getNBTName());
+                    NBTUtil.removeTagIfEmpty(stack);
+                }
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
     }
 
@@ -109,44 +109,6 @@ public class EnchantmentAttribute extends IItemAttribute {
         return enchantments;
     }
 
-    public static class EnchantmentDetails {
-        private Enchantment enchantment;
-        private int level;
-
-        public EnchantmentDetails(Enchantment enchantment, int level) {
-            this.enchantment = enchantment;
-            this.level = level;
-        }
-
-        public static EnchantmentDetails readFromBuffer(FriendlyByteBuf buf) {
-            Enchantment ench = buf.readRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS);
-            int level = buf.readInt();
-
-            return new EnchantmentDetails(ench, level);
-        }
-
-        public boolean equals(CompoundTag nbt) {
-            if (nbt.getInt("lvl") != this.level) {
-                return false;
-            }
-
-            Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(nbt.getString("id")));
-            return Objects.equal(ench, this.enchantment);
-        }
-
-        public Enchantment getEnchantment() {
-            return this.enchantment;
-        }
-
-        public int getLevel() {
-            return this.level;
-        }
-
-        public String getDisplayString() {
-            return this.enchantment.getFullname(this.level).getString();
-        }
-    }
-
     @Override
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
@@ -163,7 +125,9 @@ public class EnchantmentAttribute extends IItemAttribute {
                 this.enchantmentList.setValues(ForgeRegistries.ENCHANTMENTS, this.enchantmentList);
 
                 this.currentEnchantmentList = new ToggleBoxList<>(x + 2, y + 15 + height / 2, width - 4, height / 2 - 40, this.currentEnchantmentList);
-                this.currentEnchantmentList.setSelectionGroupManager(ToggleBoxGroup.builder(EnchantmentDetails.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> { this.removeBtn.active = !selection.isEmpty(); }).build());
+                this.currentEnchantmentList.setSelectionGroupManager(ToggleBoxGroup.builder(EnchantmentDetails.class).min(0).max(Integer.MAX_VALUE).listen((selection) -> {
+                    this.removeBtn.active = !selection.isEmpty();
+                }).build());
                 this.currentEnchantmentList.setValues(getEnchaments(stack), EnchantmentDetails::getDisplayString, this.currentEnchantmentList);
 
                 //this.currentEnchantmentList.set
@@ -230,5 +194,43 @@ public class EnchantmentAttribute extends IItemAttribute {
                 return true; // TODO
             }
         };
+    }
+
+    public static class EnchantmentDetails {
+        private Enchantment enchantment;
+        private int level;
+
+        public EnchantmentDetails(Enchantment enchantment, int level) {
+            this.enchantment = enchantment;
+            this.level = level;
+        }
+
+        public static EnchantmentDetails readFromBuffer(FriendlyByteBuf buf) {
+            Enchantment ench = buf.readRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS);
+            int level = buf.readInt();
+
+            return new EnchantmentDetails(ench, level);
+        }
+
+        public boolean equals(CompoundTag nbt) {
+            if (nbt.getInt("lvl") != this.level) {
+                return false;
+            }
+
+            Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(nbt.getString("id")));
+            return Objects.equal(ench, this.enchantment);
+        }
+
+        public Enchantment getEnchantment() {
+            return this.enchantment;
+        }
+
+        public int getLevel() {
+            return this.level;
+        }
+
+        public String getDisplayString() {
+            return this.enchantment.getFullname(this.level).getString();
+        }
     }
 }

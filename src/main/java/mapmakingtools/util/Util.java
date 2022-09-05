@@ -18,21 +18,6 @@ import java.util.regex.Pattern;
 
 public class Util {
 
-    private static Pattern number = Pattern.compile("^-?\\d*\\.?\\d*$");
-
-    private static DecimalFormat FORMAT_NUMBER_3DP = net.minecraft.Util.make(() -> {
-        DecimalFormat df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.CEILING);
-        return df;
-    });
-
-    public static Predicate<String> NUMBER_INPUT_PREDICATE = (str) -> {
-        return number.matcher(str).matches();
-    };
-
-
-
-
     // Numbers greater or equal to 0
     public static Predicate<String> NON_NEGATIVE_NUMBER_INPUT_PREDICATE = (str) -> {
         if (Strings.isNullOrEmpty(str)) {
@@ -46,7 +31,6 @@ public class Util {
             return false;
         }
     };
-
     // Numbers greater or equal to 0
     public static Predicate<String> POSITIVE_NUMBER_INPUT_PREDICATE = (str) -> {
         if (Strings.isNullOrEmpty(str)) {
@@ -60,7 +44,6 @@ public class Util {
             return false;
         }
     };
-
     public static Predicate<String> BYTE_INPUT_PREDICATE = (str) -> {
         if (Strings.isNullOrEmpty(str)) {
             return true;
@@ -73,12 +56,19 @@ public class Util {
             return false;
         }
     };
-
     public static Predicate<String> IS_NULL_OR_EMPTY = Strings::isNullOrEmpty;
-
     public static Direction[] HORIZONTAL_DIRECTIONS = net.minecraft.Util.make(() -> Arrays.stream(Direction.values()).filter((dir) -> {
         return dir.getAxis().isHorizontal();
     }).sorted(Comparator.comparingInt(Direction::get2DDataValue)).toArray(Direction[]::new));
+    private static Pattern number = Pattern.compile("^-?\\d*\\.?\\d*$");
+    public static Predicate<String> NUMBER_INPUT_PREDICATE = (str) -> {
+        return number.matcher(str).matches();
+    };
+    private static DecimalFormat FORMAT_NUMBER_3DP = net.minecraft.Util.make(() -> {
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return df;
+    });
 
     public static ResourceLocation getResource(String name) {
         return new ResourceLocation(Constants.MOD_ID, name);
@@ -104,6 +94,7 @@ public class Util {
     /**
      * Converts byte array to hex pads hex numbers so they
      * are always two characters long
+     *
      * @param arr
      * @return
      */
@@ -125,8 +116,7 @@ public class Util {
     public static String tryToWriteAsInt(double value) {
         if ((int) value == value) { //Is int
             return String.valueOf((int) value);
-        }
-        else {
+        } else {
             return FORMAT_NUMBER_3DP.format(value);
         }
     }

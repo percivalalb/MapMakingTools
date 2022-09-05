@@ -53,8 +53,8 @@ public class ScrollPane extends AbstractWidget {
         double scale = minecraft.getWindow().getGuiScale();
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor((int)(this.x * scale), (int)((minecraft.getWindow().getGuiScaledHeight() - this.height - this.y) * scale),
-                (int)(this.width * scale), (int)(this.height * scale));
+        GL11.glScissor((int) (this.x * scale), (int) ((minecraft.getWindow().getGuiScaledHeight() - this.height - this.y) * scale),
+                (int) (this.width * scale), (int) (this.height * scale));
 
         stackIn.translate(0, this.scrollOffset, 0);
 

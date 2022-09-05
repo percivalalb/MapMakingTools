@@ -37,15 +37,15 @@ public class PlayerHeadAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            this.setPlayerName(stack, buffer.readUtf(128));
-            return stack;
-        case 1:
-            this.setPlayerName(stack, null);
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+        switch (buffer.readByte()) {
+            case 0:
+                this.setPlayerName(stack, buffer.readUtf(128));
+                return stack;
+            case 1:
+                this.setPlayerName(stack, null);
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }

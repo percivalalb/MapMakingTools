@@ -15,6 +15,28 @@ public class EditHistory {
     public LinkedList<ICachedArea> historyBackwards = new LinkedList<>();
     public LinkedList<ICachedArea> historyForwards = new LinkedList<>();
 
+    public static EditHistory read(CompoundTag nbt) {
+        EditHistory selection = new EditHistory();
+        if (nbt.contains("history", Tag.TAG_LIST)) {
+            ListTag historyList = nbt.getList("history", Tag.TAG_COMPOUND);
+            for (int i = Math.max(0, historyList.size() - MAX_UNDO_HISTORY_SIZE); i < historyList.size(); i++) {
+                CompoundTag cacheNBT = historyList.getCompound(i);
+                selection.historyBackwards.add(CachedCuboidArea.read(cacheNBT));
+            }
+        }
+
+        if (nbt.contains("future", Tag.TAG_LIST)) {
+            ListTag futureList = nbt.getList("future", Tag.TAG_COMPOUND);
+
+            for (int i = Math.max(0, futureList.size() - MAX_UNDO_HISTORY_SIZE); i < futureList.size(); i++) {
+                CompoundTag cacheNBT = futureList.getCompound(i);
+                selection.historyForwards.add(CachedCuboidArea.read(cacheNBT));
+            }
+        }
+
+        return selection;
+    }
+
     public void add(ICachedArea cachedArea) {
         this.historyBackwards.add(cachedArea);
 
@@ -53,28 +75,6 @@ public class EditHistory {
         this.add(cachedArea.cacheLive(world));
         cachedArea.restore(world);
         return cachedArea;
-    }
-
-    public static EditHistory read(CompoundTag nbt) {
-        EditHistory selection = new EditHistory();
-        if (nbt.contains("history", Tag.TAG_LIST)) {
-            ListTag historyList = nbt.getList("history", Tag.TAG_COMPOUND);
-            for (int i = Math.max(0, historyList.size() - MAX_UNDO_HISTORY_SIZE); i < historyList.size(); i++) {
-                CompoundTag cacheNBT = historyList.getCompound(i);
-                selection.historyBackwards.add(CachedCuboidArea.read(cacheNBT));
-            }
-        }
-
-        if (nbt.contains("future", Tag.TAG_LIST)) {
-            ListTag futureList = nbt.getList("future", Tag.TAG_COMPOUND);
-
-            for (int i = Math.max(0, futureList.size() - MAX_UNDO_HISTORY_SIZE); i < futureList.size(); i++) {
-                CompoundTag cacheNBT = futureList.getCompound(i);
-                selection.historyForwards.add(CachedCuboidArea.read(cacheNBT));
-            }
-        }
-
-        return selection;
     }
 
     public CompoundTag write(CompoundTag nbt) {

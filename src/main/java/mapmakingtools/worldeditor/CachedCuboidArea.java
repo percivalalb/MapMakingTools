@@ -36,25 +36,6 @@ public class CachedCuboidArea implements ICachedArea {
         }
     }
 
-    @Override
-    public void restore(Level world) {
-        int i = 0;
-        // Assumes that getAllInBoxMutable generates BlockPos
-        for (BlockPos pos : BlockPos.betweenClosed(this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.pos.getX() + this.width - 1, this.pos.getY()  + this.height - 1, this.pos.getZ() + this.depth - 1)) {
-            this.blocks[i++].place(world, pos);
-        }
-    }
-
-    @Override
-    public int getSize() {
-        return this.blocks.length;
-    }
-
-    @Override
-    public ICachedArea cacheLive(LevelReader world) {
-        return new CachedCuboidArea(world, this.pos, new BlockPos(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
-    }
-
     public static CachedCuboidArea read(CompoundTag nbt) {
         if (!nbt.contains("base_pos", Tag.TAG_LONG) || !nbt.contains("other_pos", Tag.TAG_LONG)) {
             // TODO Throw
@@ -71,6 +52,35 @@ public class CachedCuboidArea implements ICachedArea {
         return area;
     }
 
+    public static CachedCuboidArea from(LevelReader world, ISelection selection) {
+        // TODO when selection is not set
+        return new CachedCuboidArea(world, selection.getPrimaryPoint(), selection.getSecondaryPoint());
+    }
+
+    public static CachedCuboidArea from(LevelReader world, BlockPos pos1, BlockPos pos2) {
+        // TODO when selection is not set
+        return new CachedCuboidArea(world, pos1, pos2);
+    }
+
+    @Override
+    public void restore(Level world) {
+        int i = 0;
+        // Assumes that getAllInBoxMutable generates BlockPos
+        for (BlockPos pos : BlockPos.betweenClosed(this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1)) {
+            this.blocks[i++].place(world, pos);
+        }
+    }
+
+    @Override
+    public int getSize() {
+        return this.blocks.length;
+    }
+
+    @Override
+    public ICachedArea cacheLive(LevelReader world) {
+        return new CachedCuboidArea(world, this.pos, new BlockPos(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
+    }
+
     public CompoundTag write(CompoundTag nbt) {
         nbt.putLong("base_pos", this.pos.asLong());
         nbt.putLong("other_pos", BlockPos.asLong(this.pos.getX() + this.width - 1, this.pos.getY() + this.height - 1, this.pos.getZ() + this.depth - 1));
@@ -80,15 +90,5 @@ public class CachedCuboidArea implements ICachedArea {
         }
         nbt.put("blocks", blockList);
         return nbt;
-    }
-
-    public static CachedCuboidArea from(LevelReader world, ISelection selection) {
-        // TODO when selection is not set
-        return new CachedCuboidArea(world, selection.getPrimaryPoint(), selection.getSecondaryPoint());
-    }
-
-    public static CachedCuboidArea from(LevelReader world, BlockPos pos1, BlockPos pos2) {
-        // TODO when selection is not set
-        return new CachedCuboidArea(world, pos1, pos2);
     }
 }

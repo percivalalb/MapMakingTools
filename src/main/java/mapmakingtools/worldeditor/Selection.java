@@ -12,42 +12,6 @@ public class Selection implements ISelection {
 
     protected final BlockPos[] points = new BlockPos[2];
 
-    @Nullable
-    @Override
-    public BlockPos getPrimaryPoint() {
-        return this.points[0];
-    }
-
-    @Nullable
-    @Override
-    public BlockPos getSecondaryPoint() {
-        return this.points[1];
-    }
-
-    @Override
-    public boolean isSet() {
-        return this.points[0] != null && this.points[1] != null;
-    }
-
-    @Override
-    public long getChangeTime() {
-        return 0;
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbt) {
-        putBlockPos(nbt, "primary_pos", this.points[0]);
-        putBlockPos(nbt, "secondary_pos", this.points[1]);
-        return nbt;
-    }
-
-    @Override
-    public FriendlyByteBuf write(FriendlyByteBuf buf) {
-        writeBlockPos(buf, this.points[0]);
-        writeBlockPos(buf, this.points[1]);
-        return buf;
-    }
-
     public static Selection read(CompoundTag nbt) {
         Selection selection = new Selection();
         selection.points[0] = getBlockPos(nbt, "primary_pos");
@@ -93,5 +57,41 @@ public class Selection implements ISelection {
         }
 
         return null;
+    }
+
+    @Nullable
+    @Override
+    public BlockPos getPrimaryPoint() {
+        return this.points[0];
+    }
+
+    @Nullable
+    @Override
+    public BlockPos getSecondaryPoint() {
+        return this.points[1];
+    }
+
+    @Override
+    public boolean isSet() {
+        return this.points[0] != null && this.points[1] != null;
+    }
+
+    @Override
+    public long getChangeTime() {
+        return 0;
+    }
+
+    @Override
+    public CompoundTag write(CompoundTag nbt) {
+        putBlockPos(nbt, "primary_pos", this.points[0]);
+        putBlockPos(nbt, "secondary_pos", this.points[1]);
+        return nbt;
+    }
+
+    @Override
+    public FriendlyByteBuf write(FriendlyByteBuf buf) {
+        writeBlockPos(buf, this.points[0]);
+        writeBlockPos(buf, this.points[1]);
+        return buf;
     }
 }

@@ -46,6 +46,6 @@ public class AbstractTickButton extends AbstractButton {
 
     @OnlyIn(Dist.CLIENT)
     public interface IPressable {
-       void onPress(AbstractTickButton btn);
+        void onPress(AbstractTickButton btn);
     }
 }

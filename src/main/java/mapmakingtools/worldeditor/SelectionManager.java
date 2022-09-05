@@ -19,10 +19,10 @@ import java.util.UUID;
 
 public class SelectionManager {
 
+    private final Runnable markDirty;
     // Even though signature is ISelection implementation guarantees only Selection
     // is present
     private HashMap<UUID, ISelection> POSITION = new HashMap<>();
-    private final Runnable markDirty;
 
     public SelectionManager(Runnable markDirty) {
         this.markDirty = markDirty;
@@ -78,7 +78,7 @@ public class SelectionManager {
      * Sets the primary selection position for the given player.
      *
      * @param player The player
-     * @param pos The position to set to
+     * @param pos    The position to set to
      * @return If the position changed
      */
     public boolean setPrimary(Player player, @Nullable BlockPos pos) {
@@ -97,7 +97,7 @@ public class SelectionManager {
      * Sets the secondary selection position for the given player.
      *
      * @param player The player
-     * @param pos The position to set to
+     * @param pos    The position to set to
      * @return If the position changed
      */
     public boolean setSecondary(Player player, @Nullable BlockPos pos) {

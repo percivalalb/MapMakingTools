@@ -40,10 +40,9 @@ public class ItemEditorScreen extends Screen {
 
     private static final int attributeBackgroundColour = new Color(255, 255, 255, 75).getRGB();
     private static final int TAB_HEIGHT = 15;
-
+    private static Optional<Pair<IItemAttribute, IItemAttributeClient>> current = Optional.empty();
     private int currentPage = 0;
     private int maxPages = 1;
-    private static Optional<Pair<IItemAttribute, IItemAttributeClient>> current = Optional.empty();
     private List<AbstractWidget> attributeWidgets = Lists.newArrayList();
     private Map<IItemAttribute, AbstractWidget> attributeTabWidgets = new HashMap<>();
     private int guiX, guiY, guiWidth, guiHeight;
@@ -168,7 +167,7 @@ public class ItemEditorScreen extends Screen {
         }
 
         return false;
-     }
+    }
 
     public void selectAttribute(Pair<IItemAttribute, IItemAttributeClient> attribute) {
         ItemEditorScreen.current.ifPresent(p -> {
@@ -229,7 +228,7 @@ public class ItemEditorScreen extends Screen {
 
             MutableComponent label = Component.translatable(attribute.getValue().getTranslationKey());
             if (attr.getFeatureState() != State.RELEASE) {
-                label = label.append(Component.literal(" ("+attr.getFeatureState().letter+")").withStyle(ChatFormatting.RED));
+                label = label.append(Component.literal(" (" + attr.getFeatureState().letter + ")").withStyle(ChatFormatting.RED));
             }
 
             Button button = new SmallButton(18, 42 + i * TAB_HEIGHT, 100, TAB_HEIGHT, label, (btn) -> {
@@ -294,7 +293,9 @@ public class ItemEditorScreen extends Screen {
         }
 
         for (Widget w : this.renderables) {
-            if (!(w instanceof AbstractWidget widget)) { continue; }
+            if (!(w instanceof AbstractWidget widget)) {
+                continue;
+            }
 
             if (widget.visible && widget.isHoveredOrFocused()) {
                 widget.renderToolTip(stackIn, mouseX, mouseY);

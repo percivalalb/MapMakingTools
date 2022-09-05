@@ -21,7 +21,7 @@ public abstract class IItemAttribute implements IFeatureState {
      */
     public String getTranslationKey() {
         if (this.translationKey == null) {
-           this.translationKey = Util.makeDescriptionId("item_editor", Registries.ITEM_ATTRIBUTES.get().getKey(this));
+            this.translationKey = Util.makeDescriptionId("item_editor", Registries.ITEM_ATTRIBUTES.get().getKey(this));
         }
 
         return this.translationKey;
@@ -33,8 +33,9 @@ public abstract class IItemAttribute implements IFeatureState {
 
     /**
      * Controls if the button should be active in the editor
+     *
      * @param player The player editing the item
-     * @param stack The stack in question
+     * @param stack  The stack in question
      * @return If the stack can have the given attribute
      */
     public boolean isApplicable(Player player, ItemStack stack) {
@@ -44,8 +45,7 @@ public abstract class IItemAttribute implements IFeatureState {
     public abstract boolean isApplicable(Player player, Item item);
 
     /**
-     *
-     * @param stack A copy of the stack to edit
+     * @param stack  A copy of the stack to edit
      * @param buffer Data sent from the client
      */
     @Deprecated // Call player sensitive version

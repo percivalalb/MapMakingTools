@@ -40,24 +40,24 @@ public class PotionAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            int level = buffer.readInt();
-            int amount = buffer.readInt();
-            for (int i = 0; i < amount; i++) {
-                MobEffect effect = buffer.readRegistryIdUnsafe(ForgeRegistries.MOB_EFFECTS);
-                PotionUtils.setCustomEffects(stack, Collections.singletonList(new MobEffectInstance(effect, amount, level)));
-            }
+        switch (buffer.readByte()) {
+            case 0:
+                int level = buffer.readInt();
+                int amount = buffer.readInt();
+                for (int i = 0; i < amount; i++) {
+                    MobEffect effect = buffer.readRegistryIdUnsafe(ForgeRegistries.MOB_EFFECTS);
+                    PotionUtils.setCustomEffects(stack, Collections.singletonList(new MobEffectInstance(effect, amount, level)));
+                }
 
-            return stack;
-        case 1:
+                return stack;
+            case 1:
 
-            return stack;
-        case 2:
+                return stack;
+            case 2:
 
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
     }
 

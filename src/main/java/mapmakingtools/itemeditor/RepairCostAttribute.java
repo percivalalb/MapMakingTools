@@ -29,20 +29,19 @@ public class RepairCostAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            int cost = buffer.readInt();
+        switch (buffer.readByte()) {
+            case 0:
+                int cost = buffer.readInt();
 
-            if (cost == 0) {
-                NBTUtil.removeTag(stack, "RepairCost", Tag.TAG_ANY_NUMERIC);
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            else {
-                stack.setRepairCost(cost);
-            }
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                if (cost == 0) {
+                    NBTUtil.removeTag(stack, "RepairCost", Tag.TAG_ANY_NUMERIC);
+                    NBTUtil.removeTagIfEmpty(stack);
+                } else {
+                    stack.setRepairCost(cost);
+                }
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }

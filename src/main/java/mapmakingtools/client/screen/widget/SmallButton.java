@@ -41,5 +41,5 @@ public class SmallButton extends Button {
         this.renderBg(stackIn, minecraft, mouseX, mouseY);
         int j = getFGColor();
         GuiComponent.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
-     }
+    }
 }

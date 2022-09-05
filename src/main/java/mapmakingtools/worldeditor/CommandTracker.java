@@ -11,20 +11,11 @@ import java.util.UUID;
 
 public class CommandTracker {
 
-    private Map<UUID, String> lastCommand = new HashMap<>();
     private final Runnable markDirty;
+    private Map<UUID, String> lastCommand = new HashMap<>();
 
     public CommandTracker(Runnable markDirty) {
         this.markDirty = markDirty;
-    }
-
-    public String getLastCommand(Player entity) {
-        return this.lastCommand.get(entity.getUUID());
-    }
-
-    public void setLastCommand(Player entity, String command) {
-        this.lastCommand.put(entity.getUUID(), command);
-        this.markDirty.run();
     }
 
     public static CommandTracker read(CompoundTag nbt, Runnable markDirty) {
@@ -50,6 +41,15 @@ public class CommandTracker {
         }
 
         return tracker;
+    }
+
+    public String getLastCommand(Player entity) {
+        return this.lastCommand.get(entity.getUUID());
+    }
+
+    public void setLastCommand(Player entity, String command) {
+        this.lastCommand.put(entity.getUUID(), command);
+        this.markDirty.run();
     }
 
     public CompoundTag write(CompoundTag nbt) {

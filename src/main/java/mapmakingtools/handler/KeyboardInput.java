@@ -61,8 +61,8 @@ public class KeyboardInput {
                     .filter(Slot::hasItem);
 
             hoveredSlot.ifPresent(slot -> {
-               containerScreen.getMinecraft().setScreen(new ItemEditorScreen(containerScreen.getMinecraft().player, slot.getSlotIndex(), slot.getItem()));
-               event.setCanceled(true);
+                containerScreen.getMinecraft().setScreen(new ItemEditorScreen(containerScreen.getMinecraft().player, slot.getSlotIndex(), slot.getItem()));
+                event.setCanceled(true);
             });
         }
     }
@@ -84,7 +84,8 @@ public class KeyboardInput {
                     event.setCanceled(true);
                 }
             });
-        };
+        }
+        ;
     }
 
     public static void onKeyReleased(final InputEvent.Key event) {

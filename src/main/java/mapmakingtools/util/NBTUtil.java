@@ -84,9 +84,10 @@ public class NBTUtil {
 
     public static Function<Object, Tag> toHolder(int type) {
         switch (type) {
-        case Tag.TAG_STRING:
-            return (v) -> StringTag.valueOf(v.toString());
-        default: throw new RuntimeException();
+            case Tag.TAG_STRING:
+                return (v) -> StringTag.valueOf(v.toString());
+            default:
+                throw new RuntimeException();
         }
     }
 
@@ -104,9 +105,6 @@ public class NBTUtil {
                 removeSubList(stack, key);
         }
     }
-
-
-
 
 
     public static boolean contains(ListTag tagList, String value) {
@@ -159,8 +157,6 @@ public class NBTUtil {
 
         return stack.getTag().getInt(key);
     }
-
-
 
 
     @Deprecated // Use ItemStack.removeChildTag, Note also removes empty tags afterwards

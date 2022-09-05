@@ -32,8 +32,8 @@ public class TickButton extends AbstractTickButton {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-       // this.blit(stackIn, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
-      //  this.blit(stackIn, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        // this.blit(stackIn, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
+        //  this.blit(stackIn, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
 
         short short1 = 219;
         int k = 0;

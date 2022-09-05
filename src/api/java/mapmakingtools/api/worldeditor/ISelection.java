@@ -53,7 +53,7 @@ public interface ISelection {
         int width = Math.abs(secondary.getX() - primary.getX()) + 1;
         int height = Math.abs(secondary.getY() - primary.getY()) + 1;
         int depth = Math.abs(secondary.getZ() - primary.getZ()) + 1;
-        return new int[] {width, height, depth};
+        return new int[]{width, height, depth};
     }
 
     @Nullable

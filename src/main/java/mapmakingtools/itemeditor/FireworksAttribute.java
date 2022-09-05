@@ -41,54 +41,54 @@ public class FireworksAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            CompoundTag fireworkNBT = NBTUtil.getOrCreateSubCompound(stack, "Fireworks");
-            fireworkNBT.putInt("Flight", buffer.readInt());
-            return stack;
-        case 1:
-            CompoundTag fireworkNBT2 = NBTUtil.getOrCreateSubCompound(stack, "Fireworks");
-            if (!fireworkNBT2.contains("Explosions", Tag.TAG_LIST)) {
-                fireworkNBT2.put("Explosions", new ListTag());
-            }
-
-            ListTag explosionListNBT = fireworkNBT2.getList("Explosions", Tag.TAG_COMPOUND);
-
-            CompoundTag newExplosion = new CompoundTag();
-            newExplosion.putByte("Type", buffer.readByte());
-            newExplosion.putIntArray("Colors", buffer.readVarIntArray());
-            newExplosion.putIntArray("FadeColors", buffer.readVarIntArray());
-            newExplosion.putBoolean("Trail", buffer.readBoolean());
-            newExplosion.putBoolean("Flicker", buffer.readBoolean());
-            explosionListNBT.add(newExplosion);
-            return stack;
-        case 2:
-            if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
-                CompoundTag fireworkNBT3 = stack.getTag().getCompound("Fireworks");
-                ListTag explosionsNBT = fireworkNBT3.getList("Explosions", Tag.TAG_COMPOUND);
-                int amount = buffer.readInt();
-                for (int i = 0; i < amount; i++) {
-                    explosionsNBT.remove(buffer.readByte());
+        switch (buffer.readByte()) {
+            case 0:
+                CompoundTag fireworkNBT = NBTUtil.getOrCreateSubCompound(stack, "Fireworks");
+                fireworkNBT.putInt("Flight", buffer.readInt());
+                return stack;
+            case 1:
+                CompoundTag fireworkNBT2 = NBTUtil.getOrCreateSubCompound(stack, "Fireworks");
+                if (!fireworkNBT2.contains("Explosions", Tag.TAG_LIST)) {
+                    fireworkNBT2.put("Explosions", new ListTag());
                 }
 
-                //Remove empty NBT data
-                if (explosionsNBT.isEmpty()) {
-                    fireworkNBT3.remove("Explosions");
-                    if (fireworkNBT3.isEmpty()) {
-                        stack.getTag().remove("Fireworks");
+                ListTag explosionListNBT = fireworkNBT2.getList("Explosions", Tag.TAG_COMPOUND);
+
+                CompoundTag newExplosion = new CompoundTag();
+                newExplosion.putByte("Type", buffer.readByte());
+                newExplosion.putIntArray("Colors", buffer.readVarIntArray());
+                newExplosion.putIntArray("FadeColors", buffer.readVarIntArray());
+                newExplosion.putBoolean("Trail", buffer.readBoolean());
+                newExplosion.putBoolean("Flicker", buffer.readBoolean());
+                explosionListNBT.add(newExplosion);
+                return stack;
+            case 2:
+                if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
+                    CompoundTag fireworkNBT3 = stack.getTag().getCompound("Fireworks");
+                    ListTag explosionsNBT = fireworkNBT3.getList("Explosions", Tag.TAG_COMPOUND);
+                    int amount = buffer.readInt();
+                    for (int i = 0; i < amount; i++) {
+                        explosionsNBT.remove(buffer.readByte());
                     }
+
+                    //Remove empty NBT data
+                    if (explosionsNBT.isEmpty()) {
+                        fireworkNBT3.remove("Explosions");
+                        if (fireworkNBT3.isEmpty()) {
+                            stack.getTag().remove("Fireworks");
+                        }
+                    }
+                    NBTUtil.removeTagIfEmpty(stack);
                 }
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            return stack;
-        case 3:
-            if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
-                NBTUtil.removeTagFromSubCompound(stack, "Fireworks", Tag.TAG_LIST, "Explosions");
-                NBTUtil.removeTagIfEmpty(stack);
-            }
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            case 3:
+                if (NBTUtil.hasTagInSubCompound(stack, "Fireworks", "Explosions", Tag.TAG_LIST)) {
+                    NBTUtil.removeTagFromSubCompound(stack, "Fireworks", Tag.TAG_LIST, "Explosions");
+                    NBTUtil.removeTagIfEmpty(stack);
+                }
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
     }
 
@@ -172,7 +172,8 @@ public class FireworksAttribute extends IItemAttribute {
                     buf.writeInt(fireworkEffects.size());
                     for (int index = fireworkEffects.size() - 1; index >= 0; index--) {
                         buf.writeByte(index);
-                    };
+                    }
+                    ;
                     update.accept(buf);
                 });
                 this.removeAllBtn = new Button(x + 130, y + height - 23, 130, 20, Component.translatable(getTranslationKey("button.remove.all")), BufferFactory.ping(3, update));

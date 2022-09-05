@@ -9,7 +9,7 @@ public class WidgetUtil {
 
     /**
      * Sets the text without triggering responder
-     *
+     * <p>
      * A copy of {@link TextFieldWidget#setText(String)} with necessary changes
      */
     public static void setTextQuietly(EditBox widget, String textIn) {
@@ -36,25 +36,25 @@ public class WidgetUtil {
         float x = widget.x;
         float y = widget.y;
 
-        switch(dir) {
-        case NORTH:
-            x += widget.getWidth() / 2F;
-            break;
-        case EAST:
-            x += widget.getWidth();
-            y += widget.getHeight() / 2F;
-            break;
-        case SOUTH:
-            x += widget.getWidth() / 2F;
-            y += widget.getHeight();
-            break;
-        case WEST:
-            y += widget.getHeight() / 2F;
-            break;
-        default:
-            x += widget.getWidth() / 2F;
-            y += widget.getHeight() / 2F;
-            break;
+        switch (dir) {
+            case NORTH:
+                x += widget.getWidth() / 2F;
+                break;
+            case EAST:
+                x += widget.getWidth();
+                y += widget.getHeight() / 2F;
+                break;
+            case SOUTH:
+                x += widget.getWidth() / 2F;
+                y += widget.getHeight();
+                break;
+            case WEST:
+                y += widget.getHeight() / 2F;
+                break;
+            default:
+                x += widget.getWidth() / 2F;
+                y += widget.getHeight() / 2F;
+                break;
         }
 
         return new Vec2(x, y);

@@ -22,15 +22,22 @@ public interface IItemAttributeClient {
 
     public void populateFrom(Screen screen, final ItemStack stack);
 
-    default boolean shouldRenderTitle(Screen screen, final ItemStack stack) { return true; }
+    default boolean shouldRenderTitle(Screen screen, final ItemStack stack) {
+        return true;
+    }
 
-    default void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {}
+    default void render(PoseStack stackIn, Screen screen, int x, int y, int width, int height) {
+    }
 
-    default boolean writeAll(ItemStack stack, FriendlyByteBuf buffer) { return false; }
+    default boolean writeAll(ItemStack stack, FriendlyByteBuf buffer) {
+        return false;
+    }
 
-    default void clear(Screen screen) {}
+    default void clear(Screen screen) {
+    }
 
-    default void tick(Screen screen, long systemTimeMillis, Consumer<FriendlyByteBuf> update) {}
+    default void tick(Screen screen, long systemTimeMillis, Consumer<FriendlyByteBuf> update) {
+    }
 
     default boolean requiresUpdate(ItemStack newStack, ItemStack oldStack) {
         return true;

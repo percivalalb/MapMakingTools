@@ -20,15 +20,15 @@ public class BiomeArgument implements ArgumentType<Biome> {
         return new BiomeArgument();
     }
 
+    public static <S> Biome getBiome(CommandContext<S> context, String name) {
+        return context.getArgument(name, Biome.class);
+    }
+
     @Override
     public Biome parse(StringReader reader) throws CommandSyntaxException {
         BiomeParser biomeParser = new BiomeParser(reader).parse();
 
         return biomeParser.getBiome();
-    }
-
-    public static <S> Biome getBiome(CommandContext<S> context, String name) {
-        return context.getArgument(name, Biome.class);
     }
 
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> p_listSuggestions_1_, SuggestionsBuilder p_listSuggestions_2_) {

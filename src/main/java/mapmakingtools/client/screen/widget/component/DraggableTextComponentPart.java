@@ -30,6 +30,7 @@ import java.util.function.BiConsumer;
 
 public abstract class DraggableTextComponentPart extends AbstractWidget {
 
+    public Map<Direction, DraggableTextComponentPart> connections = Maps.newEnumMap(Direction.class);
     protected TextComponentMakerWidget parent;
     private List<? extends AbstractWidget> editWidget;
 
@@ -112,19 +113,18 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         this.parent.connectToClosest(this);
     }
 
-    public Map<Direction, DraggableTextComponentPart> connections = Maps.newEnumMap(Direction.class);
     protected void connectTo(DraggableTextComponentPart otherPart, Direction dir) {
         this.connections.put(dir, otherPart);
     }
 
     public Direction getSide(DraggableTextComponentPart otherPart) {
-       for (Entry<Direction, DraggableTextComponentPart> da : this.connections.entrySet()) {
-           if (da.getValue() == otherPart) {
-               return da.getKey();
-           }
-       }
+        for (Entry<Direction, DraggableTextComponentPart> da : this.connections.entrySet()) {
+            if (da.getValue() == otherPart) {
+                return da.getKey();
+            }
+        }
 
-       return null;
+        return null;
     }
 
     public Set<Entry<Direction, DraggableTextComponentPart>> getConnectionEntries() {
@@ -205,7 +205,7 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             if (!this.color.isColor()) {
                 this.drawCenteredString(stackIn, fontrenderer, this.getLabel(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
             } else {
-               // this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+                // this.drawCenteredString(stackIn, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
             }
         }
 
@@ -216,11 +216,16 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         public Component getLabel(ChatFormatting formattingIn) {
             if (formattingIn.isFormat()) {
                 switch (formattingIn) {
-                    case BOLD: return Component.literal("B").withStyle(ChatFormatting.BOLD);
-                    case STRIKETHROUGH: return Component.literal("S").withStyle(ChatFormatting.STRIKETHROUGH);
-                    case UNDERLINE: return Component.literal("U").withStyle(ChatFormatting.UNDERLINE);
-                    case ITALIC: return Component.literal("I").withStyle(ChatFormatting.ITALIC);
-                    case OBFUSCATED: return Component.literal("O").withStyle(ChatFormatting.OBFUSCATED);
+                    case BOLD:
+                        return Component.literal("B").withStyle(ChatFormatting.BOLD);
+                    case STRIKETHROUGH:
+                        return Component.literal("S").withStyle(ChatFormatting.STRIKETHROUGH);
+                    case UNDERLINE:
+                        return Component.literal("U").withStyle(ChatFormatting.UNDERLINE);
+                    case ITALIC:
+                        return Component.literal("I").withStyle(ChatFormatting.ITALIC);
+                    case OBFUSCATED:
+                        return Component.literal("O").withStyle(ChatFormatting.OBFUSCATED);
                 }
 
             }
@@ -231,7 +236,7 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         @Override
         public boolean canConnectTo(DraggableTextComponentPart otherPart, Direction direction) {
             if (otherPart instanceof StylePart) {
-                StylePart otherStyle = (StylePart)otherPart;
+                StylePart otherStyle = (StylePart) otherPart;
                 if (otherStyle.color.isColor() && this.color.isColor() || (this.color == otherStyle.color && otherStyle.color != ChatFormatting.RESET)) {
                     return false;
                 }
@@ -353,7 +358,7 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
             widget.setResponder((str) -> {
                 this.text = str;
             });
-            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, Component.literal("Exact"), new Boolean[] {true, false}, null, (btn) -> {
+            ToggleButton<Boolean> toggleButton = new ToggleButton<>(this.parent.x + this.parent.getWidth() / 2 - 120 - 15, this.parent.y + this.parent.getHeight() - 25, 30, 20, Component.literal("Exact"), new Boolean[]{true, false}, null, (btn) -> {
                 this.translation = ((ToggleButton<Boolean>) btn).getValue();
                 if (this.translation) {
                     btn.setMessage(Component.literal("Trans"));
@@ -419,7 +424,8 @@ public abstract class DraggableTextComponentPart extends AbstractWidget {
         @Override
         public List<? extends AbstractWidget> createEditWidget() {
             EditBox widget = new EditBox(Minecraft.getInstance().font, this.parent.x + (this.parent.getWidth() - 200) / 2, this.parent.y + this.parent.getHeight() - 25, 200, 20, TextUtil.EMPTY);
-            widget.setResponder((str) -> {});
+            widget.setResponder((str) -> {
+            });
             return Collections.unmodifiableList(Lists.newArrayList(widget));
         }
     }

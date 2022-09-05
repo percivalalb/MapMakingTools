@@ -47,8 +47,7 @@ public class GameRender {
             if (ClientSelection.SELECTION.isSet()) {
                 int[] dimensions = ClientSelection.SELECTION.getDimensions();
                 font.drawShadow(poseStack, Component.translatable("world_editor.mapmakingtools.selection.describe", dimensions[0], dimensions[1], dimensions[2], dimensions[0] * dimensions[1] * dimensions[2]), 4, 4, -1);
-            }
-            else {
+            } else {
                 font.drawShadow(poseStack, Component.translatable("world_editor.mapmakingtools.selection.none"), 4, 4, -1);
             }
 

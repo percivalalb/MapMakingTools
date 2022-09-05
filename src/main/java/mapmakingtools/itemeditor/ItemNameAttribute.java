@@ -31,18 +31,18 @@ public class ItemNameAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            return stack.setHoverName(Component.literal(buffer.readUtf(128)));
-        case 1:
-            return stack.setHoverName(Component.translatable(buffer.readUtf(128)));
-        case 2:
-            stack.resetHoverName();
-            return stack;
-        case 3:
-            return stack.setHoverName(buffer.readComponent());
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+        switch (buffer.readByte()) {
+            case 0:
+                return stack.setHoverName(Component.literal(buffer.readUtf(128)));
+            case 1:
+                return stack.setHoverName(Component.translatable(buffer.readUtf(128)));
+            case 2:
+                stack.resetHoverName();
+                return stack;
+            case 3:
+                return stack.setHoverName(buffer.readComponent());
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }
@@ -73,11 +73,6 @@ public class ItemNameAttribute extends IItemAttribute {
                 add.accept(setBtn);
 
 
-
-
-
-
-
                 this.nameInput = WidgetFactory.getTextField(screen, x + 2, y + 15, width - 4, 13, this.nameInput, () -> stack.get().getHoverName().getContents());
                 this.nameInput.setMaxLength(128);
                 this.nameInput.setResponder(str -> {
@@ -99,7 +94,7 @@ public class ItemNameAttribute extends IItemAttribute {
                     update.accept(buf);
                 });
 
-              ///  add.accept(this.nameInput);
+                ///  add.accept(this.nameInput);
                 //add.accept(this.nameRemoval);
             }
 

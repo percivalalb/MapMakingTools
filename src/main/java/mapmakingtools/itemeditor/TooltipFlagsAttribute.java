@@ -32,62 +32,36 @@ public class TooltipFlagsAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            int index = buffer.readInt();
-            CompoundTag tag = NBTUtil.getOrCreateTag(stack);
-            int flagBinaryString = tag.getInt("HideFlags") ^ (1 << index);
+        switch (buffer.readByte()) {
+            case 0:
+                int index = buffer.readInt();
+                CompoundTag tag = NBTUtil.getOrCreateTag(stack);
+                int flagBinaryString = tag.getInt("HideFlags") ^ (1 << index);
 
-            if (flagBinaryString == 0) {
-                NBTUtil.removeTag(stack, "HideFlags", Tag.TAG_ANY_NUMERIC);
-                NBTUtil.removeTagIfEmpty(stack);
-            } else {
-                tag.putInt("HideFlags", tag.getInt("HideFlags") ^ (1 << index));
-            }
+                if (flagBinaryString == 0) {
+                    NBTUtil.removeTag(stack, "HideFlags", Tag.TAG_ANY_NUMERIC);
+                    NBTUtil.removeTagIfEmpty(stack);
+                } else {
+                    tag.putInt("HideFlags", tag.getInt("HideFlags") ^ (1 << index));
+                }
 
-            return stack;
-        case 1:
-            boolean showAll = buffer.readBoolean();
+                return stack;
+            case 1:
+                boolean showAll = buffer.readBoolean();
 
-            if (showAll) {
-                NBTUtil.removeTag(stack, "HideFlags", Tag.TAG_ANY_NUMERIC);
-                NBTUtil.removeTagIfEmpty(stack);
-            } else {
-                CompoundTag tag1 = NBTUtil.getOrCreateTag(stack);
-                tag1.putInt("HideFlags", (int) Math.pow(2, 7) - 1);
-            }
+                if (showAll) {
+                    NBTUtil.removeTag(stack, "HideFlags", Tag.TAG_ANY_NUMERIC);
+                    NBTUtil.removeTagIfEmpty(stack);
+                } else {
+                    CompoundTag tag1 = NBTUtil.getOrCreateTag(stack);
+                    tag1.putInt("HideFlags", (int) Math.pow(2, 7) - 1);
+                }
 
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
-    }
-
-    public static class FlexibleArrayList<T> extends ArrayList<T> {
-
-        private static final long serialVersionUID = 1L;
-
-        public FlexibleArrayList(int size) {
-            super(size);
-        }
-
-        @Override
-        public T set(int index, T element) {
-            if (this.size() == index) {
-                this.add(element);
-                return null;
-            } else {
-                return super.set(index, element);
-            }
-        }
-
-        public T getSafe(int index) {
-            if (index < 0 || index >= this.size()) {
-                return null;
-            }
-            return this.get(index);
-        }
     }
 
     @Override
@@ -104,7 +78,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
                     final int index = i; // creates final variable
 
                     TickButton tickBtn = WidgetFactory.getTickbox(x + 102, y + 16 + 22 * i, this.flagTickButtons.getSafe(i), () -> true, (btn) -> {
-                        this.flagAllButton.setTicked(this.allTicked(((TickButton)btn).isTicked()));
+                        this.flagAllButton.setTicked(this.allTicked(((TickButton) btn).isTicked()));
                         FriendlyByteBuf buf = Util.createBuf();
                         buf.writeByte(0);
                         buf.writeInt(index);
@@ -116,7 +90,7 @@ public class TooltipFlagsAttribute extends IItemAttribute {
                 }
 
                 this.flagAllButton = WidgetFactory.getTickbox(x + 112, y + height - 29, this.flagAllButton, () -> true, (btn) -> {
-                    boolean ticked = ((TickButton)btn).isTicked();
+                    boolean ticked = ((TickButton) btn).isTicked();
                     for (TickButton button : this.flagTickButtons) {
                         button.setTicked(ticked);
                     }
@@ -179,6 +153,32 @@ public class TooltipFlagsAttribute extends IItemAttribute {
                 return NBTUtil.getInt(newStack, "HideFlags") != NBTUtil.getInt(oldStack, "HideFlags");
             }
         };
+    }
+
+    public static class FlexibleArrayList<T> extends ArrayList<T> {
+
+        private static final long serialVersionUID = 1L;
+
+        public FlexibleArrayList(int size) {
+            super(size);
+        }
+
+        @Override
+        public T set(int index, T element) {
+            if (this.size() == index) {
+                this.add(element);
+                return null;
+            } else {
+                return super.set(index, element);
+            }
+        }
+
+        public T getSafe(int index) {
+            if (index < 0 || index >= this.size()) {
+                return null;
+            }
+            return this.get(index);
+        }
     }
 
 }

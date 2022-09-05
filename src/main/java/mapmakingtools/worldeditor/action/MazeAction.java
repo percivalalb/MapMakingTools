@@ -34,8 +34,7 @@ public class MazeAction implements Action {
                 world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 groups.put(new BlockPos(pos.getX(), 0, pos.getZ()), group);
                 group += 1;
-            }
-            else {
+            } else {
                 input.place(world, pos);
             }
         }

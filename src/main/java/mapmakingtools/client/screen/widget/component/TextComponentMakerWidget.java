@@ -30,9 +30,9 @@ public class TextComponentMakerWidget extends NestedWidget {
     @Nullable
     public DraggableTextComponentPart draggingPart;
     @Nullable
-    private List<? extends AbstractWidget> editWidget;
-    @Nullable
     public Component textComponent;
+    @Nullable
+    private List<? extends AbstractWidget> editWidget;
 
     public TextComponentMakerWidget(int xIn, int yIn, int widthIn, int heightIn) {
         super(xIn, yIn, widthIn, heightIn, TextUtil.EMPTY);
@@ -69,7 +69,7 @@ public class TextComponentMakerWidget extends NestedWidget {
             Component component = this.starting.create();
             this.applyRecursive(component, this.starting, Sets.newHashSet(this.starting));
             this.textComponent = component;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -113,6 +113,7 @@ public class TextComponentMakerWidget extends NestedWidget {
 
     /**
      * Adds part and brings to top, follows the mouse
+     *
      * @param part
      */
     public void addPart(DraggableTextComponentPart part) {
@@ -146,11 +147,11 @@ public class TextComponentMakerWidget extends NestedWidget {
     public Optional<DraggableTextComponentPart> getPartAbove(double mouseX, double mouseY) {
         for (GuiEventListener iguieventlistener : this.children()) {
             if (iguieventlistener instanceof DraggableTextComponentPart && iguieventlistener.isMouseOver(mouseX, mouseY)) {
-               return Optional.of((DraggableTextComponentPart) iguieventlistener);
+                return Optional.of((DraggableTextComponentPart) iguieventlistener);
             }
-         }
+        }
 
-         return Optional.empty();
+        return Optional.empty();
     }
 
     public boolean connectToClosest(DraggableTextComponentPart part) {
@@ -186,35 +187,35 @@ public class TextComponentMakerWidget extends NestedWidget {
 
         int PADDING = 5;
 
-        switch(dir) {
-        case NORTH:
-            part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
-            part.y = otherPart.y - part.getHeight() - PADDING;
-            break;
-        case EAST:
-            part.x = otherPart.x + otherPart.getWidth() + PADDING;
-            part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
-            break;
-        case SOUTH:
-            part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
-            part.y = otherPart.y + otherPart.getHeight() + PADDING;
-            break;
-        case WEST:
-            part.x = otherPart.x - part.getWidth() - PADDING;
-            part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
-            break;
-        default:
-            break;
+        switch (dir) {
+            case NORTH:
+                part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
+                part.y = otherPart.y - part.getHeight() - PADDING;
+                break;
+            case EAST:
+                part.x = otherPart.x + otherPart.getWidth() + PADDING;
+                part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
+                break;
+            case SOUTH:
+                part.x = otherPart.x + otherPart.getWidth() / 2 - part.getWidth() / 2;
+                part.y = otherPart.y + otherPart.getHeight() + PADDING;
+                break;
+            case WEST:
+                part.x = otherPart.x - part.getWidth() - PADDING;
+                part.y = otherPart.y + otherPart.getHeight() / 2 - part.getHeight() / 2;
+                break;
+            default:
+                break;
         }
     }
 
     @Nullable
     public Optional<Pair<DraggableTextComponentPart, Direction>> getClosest(DraggableTextComponentPart part) {
         List<DraggableTextComponentPart> parts = this.children.stream()
-          .filter(m -> m instanceof DraggableTextComponentPart)
-          .filter(m -> m != part)
-          .map(m -> (DraggableTextComponentPart)m)
-          .collect(Collectors.toList());
+                .filter(m -> m instanceof DraggableTextComponentPart)
+                .filter(m -> m != part)
+                .map(m -> (DraggableTextComponentPart) m)
+                .collect(Collectors.toList());
 
         for (Direction dir : Util.HORIZONTAL_DIRECTIONS) {
             Optional<DraggableTextComponentPart> closest = this.getClosestOnSide(part, parts, dir);
@@ -235,21 +236,21 @@ public class TextComponentMakerWidget extends NestedWidget {
     }
 
     public double getDistanceBetween(DraggableTextComponentPart part, DraggableTextComponentPart otherPair, Direction direction) {
-        switch(direction) {
-        case SOUTH:
-            return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
-                    + Math.pow(part.y - otherPair.y - otherPair.getHeight(), 2);
-        case WEST:
-            return Math.pow(part.x + part.getWidth() - otherPair.x, 2)
-                    + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2) ;
-        case NORTH:
-            return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
-                    + Math.pow(part.y + part.getHeight() - otherPair.y, 2);
-        case EAST:
-            return Math.pow(part.x - otherPair.x - otherPair.getWidth(), 2)
-                    + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2) ;
-        default:
-            return Double.MAX_VALUE;
+        switch (direction) {
+            case SOUTH:
+                return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
+                        + Math.pow(part.y - otherPair.y - otherPair.getHeight(), 2);
+            case WEST:
+                return Math.pow(part.x + part.getWidth() - otherPair.x, 2)
+                        + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2);
+            case NORTH:
+                return Math.pow(part.x + part.getWidth() / 2 - otherPair.x - otherPair.getWidth() / 2, 2)
+                        + Math.pow(part.y + part.getHeight() - otherPair.y, 2);
+            case EAST:
+                return Math.pow(part.x - otherPair.x - otherPair.getWidth(), 2)
+                        + Math.pow(part.y + part.getHeight() / 2 - otherPair.y - otherPair.getHeight() / 2, 2);
+            default:
+                return Double.MAX_VALUE;
         }
     }
 

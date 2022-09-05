@@ -47,11 +47,9 @@ public class MapMakingTools {
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .simpleChannel();
-
-    public static MapMakingTools INSTANCE;
-
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
     public static final RegistryObject<WrenchItem> WRENCH = ITEMS.register("wrench", WrenchItem::new);
+    public static MapMakingTools INSTANCE;
 
     public MapMakingTools() {
         INSTANCE = this;
@@ -130,15 +128,16 @@ public class MapMakingTools {
         // CommandBuildContext buildCtx = event.getBuildContext();
         // WorldEditCommand.register(dispatcher, buildCtx);
     }
+
     protected void interModProcess(final InterModProcessEvent event) {
 
     }
 
     public void newRegistry(final NewRegistryEvent event) {
         Registries.ITEM_ATTRIBUTES = event.create(new RegistryBuilder<IItemAttribute>()
-                                            .setName(Util.getResource("item_attributes"))
-                                            .disableSaving()
-                                            .addCallback(MMTRegistries.AttributeCallbacks.INSTANCE));
+                .setName(Util.getResource("item_attributes"))
+                .disableSaving()
+                .addCallback(MMTRegistries.AttributeCallbacks.INSTANCE));
     }
 
     public void gatherData(final GatherDataEvent event) {
@@ -147,7 +146,7 @@ public class MapMakingTools {
 
         if (event.includeServer()) {
             //gen.addProvider(true, new DTItemTagsProvider(gen));
-           // gen.addProvider(true, new DTRecipeProvider(gen));
+            // gen.addProvider(true, new DTRecipeProvider(gen));
         }
 
         if (event.includeClient()) {

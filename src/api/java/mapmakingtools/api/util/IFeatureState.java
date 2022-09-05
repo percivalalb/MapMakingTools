@@ -6,6 +6,7 @@ public interface IFeatureState {
 
     /**
      * If the feature should be visible to the current player
+     *
      * @return If the feature is visible
      */
     default boolean isVisible() {

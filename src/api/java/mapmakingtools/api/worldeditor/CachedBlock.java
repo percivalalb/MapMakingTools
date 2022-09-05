@@ -23,6 +23,23 @@ public class CachedBlock {
         this.tag = nbt;
     }
 
+    public static CachedBlock read(CompoundTag nbt) {
+        BlockState state = NbtUtils.readBlockState(nbt);
+        CompoundTag tileNBT = null;
+        if (nbt.contains("tag", Tag.TAG_COMPOUND)) {
+            tileNBT = nbt.getCompound("tag");
+        }
+
+        return new CachedBlock(state, tileNBT);
+    }
+
+    public static CachedBlock from(LevelReader world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        BlockEntity tileEntity = world.getBlockEntity(pos);
+        CompoundTag nbt = tileEntity != null ? tileEntity.saveWithId() : null;
+        return new CachedBlock(state, nbt);
+    }
+
     public void place(Level world, BlockPos pos) {
         // Clear the last tile entity
         Clearable.tryClear(world.getBlockEntity(pos));
@@ -41,16 +58,6 @@ public class CachedBlock {
         }
     }
 
-    public static CachedBlock read(CompoundTag nbt) {
-        BlockState state = NbtUtils.readBlockState(nbt);
-        CompoundTag tileNBT = null;
-        if (nbt.contains("tag", Tag.TAG_COMPOUND)) {
-            tileNBT = nbt.getCompound("tag");
-        }
-
-        return new CachedBlock(state, tileNBT);
-    }
-
     public CompoundTag write(CompoundTag nbt) {
         CompoundTag state = nbt.merge(NbtUtils.writeBlockState(this.state));
         if (this.tag != null) {
@@ -58,12 +65,5 @@ public class CachedBlock {
         }
 
         return nbt;
-    }
-
-    public static CachedBlock from(LevelReader world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-        BlockEntity tileEntity = world.getBlockEntity(pos);
-        CompoundTag nbt = tileEntity != null ? tileEntity.saveWithId() : null;
-        return new CachedBlock(state, nbt);
     }
 }

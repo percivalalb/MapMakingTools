@@ -20,6 +20,11 @@ public class MMTRegistries {
 
     private static final ResourceLocation SERVER_TO_CLIENT_MAP = new ResourceLocation(Constants.MOD_ID, "client_attribute");
 
+    @SuppressWarnings("unchecked")
+    public static HashMap<ResourceKey<IItemAttribute>, IItemAttributeClient> getClientMapping() {
+        return Registries.ITEM_ATTRIBUTES.get().getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class);
+    }
+
     public static class AttributeCallbacks implements IForgeRegistry.AddCallback<IItemAttribute>, IForgeRegistry.ClearCallback<IItemAttribute>, IForgeRegistry.BakeCallback<IItemAttribute>, IForgeRegistry.CreateCallback<IItemAttribute> {
 
         static final AttributeCallbacks INSTANCE = new AttributeCallbacks();
@@ -41,14 +46,8 @@ public class MMTRegistries {
         }
 
         @Override
-        public void onBake(IForgeRegistryInternal<IItemAttribute> owner, RegistryManager stage)
-        {
+        public void onBake(IForgeRegistryInternal<IItemAttribute> owner, RegistryManager stage) {
 
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static HashMap<ResourceKey<IItemAttribute>, IItemAttributeClient> getClientMapping() {
-        return Registries.ITEM_ATTRIBUTES.get().getSlaveMap(SERVER_TO_CLIENT_MAP, HashMap.class);
     }
 }

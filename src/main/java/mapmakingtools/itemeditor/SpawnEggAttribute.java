@@ -39,7 +39,7 @@ public class SpawnEggAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
+        switch (buffer.readByte()) {
             case 0:
                 EntityType<?> entityType = buffer.readRegistryIdUnsafe(ForgeRegistries.ENTITY_TYPES);
 
@@ -85,7 +85,8 @@ public class SpawnEggAttribute extends IItemAttribute {
 
 
                 add.accept(this.entityTypeList);
-                add.accept(this.addBtn);;
+                add.accept(this.addBtn);
+                ;
             }
 
             @Override

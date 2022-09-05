@@ -36,7 +36,7 @@ public class ColorFormattingSelector extends AbstractWidget {
         int index = (int) ((mouseX - this.x) / 20);
         index = Mth.clamp(index, 0, COLORS.size() - 1);
         this.action.accept(COLORS.get(index));
-     }
+    }
 
     @Override
     public void renderButton(PoseStack stackIn, int mouseX, int mouseY, float partialTicks) {

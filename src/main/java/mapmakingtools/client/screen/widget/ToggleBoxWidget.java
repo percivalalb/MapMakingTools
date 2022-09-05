@@ -16,8 +16,8 @@ import java.util.function.Supplier;
 
 public class ToggleBoxWidget<T> extends AbstractTickButton {
 
-    private Supplier<T> value;
     public Function<T, Object> toStringFunc = Objects::toString;
+    private Supplier<T> value;
 
     public ToggleBoxWidget(int xIn, int yIn, @Nullable TickButton previous, Supplier<T> value, IPressable onPress) {
         super(xIn, yIn, 8, 9, TextUtil.EMPTY, previous, onPress);

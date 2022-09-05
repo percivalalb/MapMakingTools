@@ -37,32 +37,32 @@ public class LoreAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            CompoundTag display = stack.getOrCreateTagElement("display");
-            ListTag list = new ListTag();
-            int size = buffer.readInt();
-            for (int i = 0; i < size; i++) {
-                list.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(buffer.readUtf(256)))));
-            }
-
-            display.put("Lore", list);
-            return stack;
-        case 1:
-            if (NBTUtil.hasTagInSubCompound(stack, "display", "Lore", Tag.TAG_LIST)) {
-                ListTag list2 = stack.getTag().getCompound("display").getList("Lore", Tag.TAG_STRING);
-                int index = buffer.readInt();
-                if (index >= 0 && index < list2.size()) {
-                    list2.remove(index);
+        switch (buffer.readByte()) {
+            case 0:
+                CompoundTag display = stack.getOrCreateTagElement("display");
+                ListTag list = new ListTag();
+                int size = buffer.readInt();
+                for (int i = 0; i < size; i++) {
+                    list.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(buffer.readUtf(256)))));
                 }
-            }
-            return stack;
-        case 2:
-            NBTUtil.removeTagFromSubCompound(stack, "display", Tag.TAG_LIST, "Lore");
-            NBTUtil.removeTagIfEmpty(stack);
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+
+                display.put("Lore", list);
+                return stack;
+            case 1:
+                if (NBTUtil.hasTagInSubCompound(stack, "display", "Lore", Tag.TAG_LIST)) {
+                    ListTag list2 = stack.getTag().getCompound("display").getList("Lore", Tag.TAG_STRING);
+                    int index = buffer.readInt();
+                    if (index >= 0 && index < list2.size()) {
+                        list2.remove(index);
+                    }
+                }
+                return stack;
+            case 2:
+                NBTUtil.removeTagFromSubCompound(stack, "display", Tag.TAG_LIST, "Lore");
+                NBTUtil.removeTagIfEmpty(stack);
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }
@@ -71,9 +71,8 @@ public class LoreAttribute extends IItemAttribute {
     public Supplier<Callable<IItemAttributeClient>> client() {
         return () -> () -> new IItemAttributeClient() {
 
-            private int MAX_LINES = 10;
             public int lines = 0;
-
+            private int MAX_LINES = 10;
             private List<EditBox> lineInput = Lists.newArrayList();
             private List<Button> removeInput = Lists.newArrayList();
             private Button addBtn;
@@ -157,7 +156,7 @@ public class LoreAttribute extends IItemAttribute {
 
                         if (i < list.size()) {
                             Component text = Component.Serializer.fromJson(list.getString(i));
-                            WidgetUtil.setTextQuietly(textWidget,  text == null ? "" : text.getContents().toString());
+                            WidgetUtil.setTextQuietly(textWidget, text == null ? "" : text.getContents().toString());
                             textWidget.visible = true;
                             removeBtn.visible = true;
                         } else {

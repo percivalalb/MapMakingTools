@@ -13,7 +13,7 @@ import net.minecraft.world.item.Items;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
-public class RecipeKnowledgeAttribute extends IItemAttribute  {
+public class RecipeKnowledgeAttribute extends IItemAttribute {
 
     @Override
     public boolean isApplicable(Player player, Item item) {
@@ -30,7 +30,8 @@ public class RecipeKnowledgeAttribute extends IItemAttribute  {
         return () -> () -> new IItemAttributeClient() {
 
             @Override
-            public void populateFrom(Screen screen, ItemStack stack) {}
+            public void populateFrom(Screen screen, ItemStack stack) {
+            }
         };
     }
 

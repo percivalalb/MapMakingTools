@@ -52,6 +52,36 @@ import java.util.function.Supplier;
 
 public class ModifiersAttribute extends IItemAttribute {
 
+    public static AttributeModifier.Operation ADD_OPERATION = AttributeModifier.Operation.ADDITION;
+    public static AttributeModifier.Operation MULT_PERCENTAGE_OPERATION = AttributeModifier.Operation.MULTIPLY_BASE;
+    public static AttributeModifier.Operation ADD_PERCENTAGE_OPERATION = AttributeModifier.Operation.MULTIPLY_TOTAL;
+    //     Item.ATTACK_DAMAGE_MODIFIER
+    // Until hardcoded == on UUID are removed just use null
+    private Modifier ATTACK_DAMAGE = new Modifier(null, () -> Attributes.ATTACK_DAMAGE, "Weapon modifier", "weapon");
+    private Modifier ATTACK_SPEED = new Modifier(null, () -> Attributes.ATTACK_SPEED, "Weapon modifier", "weapon");
+    private Modifier ATTACK_KNOCKBACK = new Modifier(() -> Attributes.ATTACK_KNOCKBACK, "Weapon modifier");
+    private Modifier KNOCKBACK_RESISTANCE = new Modifier(() -> Attributes.KNOCKBACK_RESISTANCE, "Knockback Resistance");
+    private Modifier MAX_HEALTH = new Modifier(() -> Attributes.MAX_HEALTH, "Max Health");
+    private Modifier MOVEMENT_SPEED = new Modifier(() -> Attributes.MOVEMENT_SPEED, "Movement Speed"); // MULT_PERCENTAGE_OPERATION
+    private Modifier SPRINTING_SPEED_BOOST = new Modifier(LivingEntity.SPEED_MODIFIER_SPRINTING_UUID, () -> Attributes.MOVEMENT_SPEED, "Sprinting speed boost", "sprinting"); //MULTIPLY_TOTAL
+    private Modifier FLYING_SPEED = new Modifier(() -> Attributes.FLYING_SPEED, "Flying Speed"); // MULT_PERCENTAGE_OPERATION
+    private Modifier FOLLOW_RANGE = new Modifier(() -> Attributes.FOLLOW_RANGE, "Follow Range"); // MULT_PERCENTAGE_OPERATION
+    private Modifier ARMOR = new Modifier(() -> Attributes.ARMOR, "Armor modifier");
+    private Modifier ARMOR_TOUGHNESS = new Modifier(() -> Attributes.ARMOR_TOUGHNESS, "Armor toughness");
+    private Modifier SPAWN_REINFORCEMENTS = new Modifier(() -> Attributes.SPAWN_REINFORCEMENTS_CHANCE, "Spawn Reinforcements Chance");
+    private Modifier BABY_SPEED_BOOST = new Modifier(Zombie.SPEED_MODIFIER_BABY_UUID, () -> Attributes.MOVEMENT_SPEED, "Baby speed boost", "zombie.baby");
+    private Modifier HORSE_JUMP_STRENGTH = new Modifier(() -> Attributes.JUMP_STRENGTH, "Jump Strength");
+    private Modifier HORSE_ARMOR = new Modifier(Horse.ARMOR_MODIFIER_UUID, () -> Attributes.ARMOR, "Horse armor bonus", "horse.bonus");
+    // Potion Luck Modifier
+    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), () -> Attributes.LUCK, MobEffects.LUCK.getDescriptionId(), null);
+    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), () -> Attributes.LUCK, MobEffects.UNLUCK.getDescriptionId(), "un");
+    // Forge Modifiers
+    private Modifier SLOW_FALLING = new Modifier(UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA"), ForgeMod.ENTITY_GRAVITY, "Slow falling acceleration reduction", "slow.falling");
+    private Modifier ENITTY_GRAVITY = new Modifier(ForgeMod.ENTITY_GRAVITY, "Gravity");
+    private Modifier NAMETAG_DISTANCE = new Modifier(ForgeMod.NAMETAG_DISTANCE, "Name Tag");
+    private Modifier SWIM_SPEED = new Modifier(ForgeMod.SWIM_SPEED, "Swim Speed");
+    private final Modifier[] MODIFIERS = new Modifier[]{ATTACK_DAMAGE, ATTACK_SPEED, ATTACK_KNOCKBACK, KNOCKBACK_RESISTANCE, MAX_HEALTH, MOVEMENT_SPEED, SPRINTING_SPEED_BOOST, FLYING_SPEED, FOLLOW_RANGE, ARMOR, ARMOR_TOUGHNESS, LUCK, UNLUCK, SLOW_FALLING, ENITTY_GRAVITY, NAMETAG_DISTANCE, SWIM_SPEED, HORSE_ARMOR, HORSE_JUMP_STRENGTH, SPAWN_REINFORCEMENTS, BABY_SPEED_BOOST};
+
     @Override
     public boolean isApplicable(Player player, Item item) {
         return true;
@@ -59,47 +89,47 @@ public class ModifiersAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer, Player player) {
-        switch(buffer.readByte()) {
-        case 0:
+        switch (buffer.readByte()) {
+            case 0:
 
-            this.convertModifiersToNBT(stack, player);
-            Modifier modifier = MODIFIERS[buffer.readInt()];
-            double value = buffer.readDouble();
-            AttributeModifier.Operation op = AttributeModifier.Operation.fromValue(buffer.readInt());
-            EquipmentSlot equipmentType = EquipmentSlot.byName(buffer.readUtf(64));
+                this.convertModifiersToNBT(stack, player);
+                Modifier modifier = MODIFIERS[buffer.readInt()];
+                double value = buffer.readDouble();
+                AttributeModifier.Operation op = AttributeModifier.Operation.fromValue(buffer.readInt());
+                EquipmentSlot equipmentType = EquipmentSlot.byName(buffer.readUtf(64));
 
-            value /= op != AttributeModifier.Operation.ADDITION ? 100 : 1;
+                value /= op != AttributeModifier.Operation.ADDITION ? 100 : 1;
 
-            this.removeSimilarModifier(stack, modifier, op, equipmentType);
-            stack.addAttributeModifier(modifier.attribute.get(), modifier.getEdited(value, op), equipmentType);
-            return stack;
-        case 1:
-            // Ensure the modifiers have been converted to NBT otherwise we can't
-            // actually edit the modifiers list
-            this.convertModifiersToNBT(stack, player);
+                this.removeSimilarModifier(stack, modifier, op, equipmentType);
+                stack.addAttributeModifier(modifier.attribute.get(), modifier.getEdited(value, op), equipmentType);
+                return stack;
+            case 1:
+                // Ensure the modifiers have been converted to NBT otherwise we can't
+                // actually edit the modifiers list
+                this.convertModifiersToNBT(stack, player);
 
-            Modifier modifier2 = MODIFIERS[buffer.readInt()];
-            AttributeModifier.Operation op2 = AttributeModifier.Operation.fromValue(buffer.readInt());
-            EquipmentSlot equipmentType2 = EquipmentSlot.byName(buffer.readUtf(64));
+                Modifier modifier2 = MODIFIERS[buffer.readInt()];
+                AttributeModifier.Operation op2 = AttributeModifier.Operation.fromValue(buffer.readInt());
+                EquipmentSlot equipmentType2 = EquipmentSlot.byName(buffer.readUtf(64));
 
-            this.removeSimilarModifier(stack, modifier2, op2, equipmentType2);
-            return stack;
-        case 2:
-            this.convertModifiersToNBT(stack, player);
-            return stack;
-        case 3:
-            NBTUtil.removeTag(stack, "AttributeModifiers", Tag.TAG_LIST);
-            NBTUtil.removeTagIfEmpty(stack);
-            return stack;
-        case 4:
-            stack.getOrCreateTag().put("AttributeModifiers", new ListTag());
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                this.removeSimilarModifier(stack, modifier2, op2, equipmentType2);
+                return stack;
+            case 2:
+                this.convertModifiersToNBT(stack, player);
+                return stack;
+            case 3:
+                NBTUtil.removeTag(stack, "AttributeModifiers", Tag.TAG_LIST);
+                NBTUtil.removeTagIfEmpty(stack);
+                return stack;
+            case 4:
+                stack.getOrCreateTag().put("AttributeModifiers", new ListTag());
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
     }
 
-    public void removeSimilarModifier(ItemStack stack,  Modifier modifier, AttributeModifier.Operation op, EquipmentSlot slotType) {
+    public void removeSimilarModifier(ItemStack stack, Modifier modifier, AttributeModifier.Operation op, EquipmentSlot slotType) {
         // Removes modifier with same name, slot and op
         if (NBTUtil.hasTag(stack, "AttributeModifiers", Tag.TAG_LIST)) {
             ListTag nbttaglist = stack.getTag().getList("AttributeModifiers", Tag.TAG_COMPOUND);
@@ -126,24 +156,24 @@ public class ModifiersAttribute extends IItemAttribute {
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 Multimap<Attribute, AttributeModifier> builtIn = stack.getAttributeModifiers(equipmentSlot);
 
-                 for (Entry<Attribute, AttributeModifier> entry : builtIn.entries()) {
+                for (Entry<Attribute, AttributeModifier> entry : builtIn.entries()) {
 
-                     AttributeModifier modifier = entry.getValue();
+                    AttributeModifier modifier = entry.getValue();
 
-                     // The damage a player can deal is not just based
-                     if (player != null) {
-                         double bonus = 0D;
-                         if (entry.getValue().getId() == Item.BASE_ATTACK_DAMAGE_UUID) {
-                             bonus += player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
-                             bonus += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
-                         } else if (entry.getValue().getId() == Item.BASE_ATTACK_SPEED_UUID) {
-                             bonus += player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
-                         }
+                    // The damage a player can deal is not just based
+                    if (player != null) {
+                        double bonus = 0D;
+                        if (entry.getValue().getId() == Item.BASE_ATTACK_DAMAGE_UUID) {
+                            bonus += player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+                            bonus += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
+                        } else if (entry.getValue().getId() == Item.BASE_ATTACK_SPEED_UUID) {
+                            bonus += player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
+                        }
 
-                         modifier = new AttributeModifier(modifier.getId(), modifier.getName(), modifier.getAmount() + bonus, modifier.getOperation());
-                     }
+                        modifier = new AttributeModifier(modifier.getId(), modifier.getName(), modifier.getAmount() + bonus, modifier.getOperation());
+                    }
 
-                     stack.addAttributeModifier(entry.getKey(), modifier, equipmentSlot);
+                    stack.addAttributeModifier(entry.getKey(), modifier, equipmentSlot);
                 }
             }
         }
@@ -248,7 +278,7 @@ public class ModifiersAttribute extends IItemAttribute {
                 for (int i = 0; i < MODIFIERS.length; i++) {
                     Attribute attr = MODIFIERS[i].attribute.get();
                     ResourceLocation attrLoc = ForgeRegistries.ATTRIBUTES.getKey(attr);
-                    String translationKey = "attribute.name." +  attrLoc.getNamespace() + '.' + attrLoc.getPath() + (MODIFIERS[i].modifierId != null ? '.' + MODIFIERS[i].modifierId : "");
+                    String translationKey = "attribute.name." + attrLoc.getNamespace() + '.' + attrLoc.getPath() + (MODIFIERS[i].modifierId != null ? '.' + MODIFIERS[i].modifierId : "");
                     font.draw(stackIn, I18n.exists(translationKey) ? Component.translatable(translationKey) : Component.literal(MODIFIERS[i].attribute.get().getDescriptionId()), x + 6, y + 42 + i * 17, 16777120);
                 }
             }
@@ -257,7 +287,8 @@ public class ModifiersAttribute extends IItemAttribute {
             public void populateFrom(Screen screen, final ItemStack stack) {
                 Multimap<Attribute, AttributeModifier> modifiers = stack.getAttributeModifiers(this.btn_slot.getValue());
 
-                MODIFIER: for (int i = 0; i < MODIFIERS.length; i++) {
+                MODIFIER:
+                for (int i = 0; i < MODIFIERS.length; i++) {
                     Modifier modifier = MODIFIERS[i];
 
                     for (Entry<Attribute, AttributeModifier> entry : modifiers.entries()) {
@@ -316,53 +347,24 @@ public class ModifiersAttribute extends IItemAttribute {
             }
 
             public Component getOpString(AttributeModifier.Operation op) {
-                switch(op) {
-                case ADDITION:
-                    return Component.literal("+|");
-                case MULTIPLY_BASE:
-                    return Component.literal("+%");
-                case MULTIPLY_TOTAL:
-                    return Component.literal("x%");
-                default:
-                    return Component.literal("??");
+                switch (op) {
+                    case ADDITION:
+                        return Component.literal("+|");
+                    case MULTIPLY_BASE:
+                        return Component.literal("+%");
+                    case MULTIPLY_TOTAL:
+                        return Component.literal("x%");
+                    default:
+                        return Component.literal("??");
                 }
             }
         };
     }
 
-    public static AttributeModifier.Operation ADD_OPERATION = AttributeModifier.Operation.ADDITION;
-    public static AttributeModifier.Operation MULT_PERCENTAGE_OPERATION = AttributeModifier.Operation.MULTIPLY_BASE;
-    public static AttributeModifier.Operation ADD_PERCENTAGE_OPERATION = AttributeModifier.Operation.MULTIPLY_TOTAL;
-
-    //     Item.ATTACK_DAMAGE_MODIFIER
-    // Until hardcoded == on UUID are removed just use null
-    private Modifier ATTACK_DAMAGE = new Modifier(null, () -> Attributes.ATTACK_DAMAGE, "Weapon modifier", "weapon");
-    private Modifier ATTACK_SPEED = new Modifier(null, () -> Attributes.ATTACK_SPEED, "Weapon modifier", "weapon");
-    private Modifier ATTACK_KNOCKBACK = new Modifier(() -> Attributes.ATTACK_KNOCKBACK, "Weapon modifier");
-    private Modifier KNOCKBACK_RESISTANCE = new Modifier(() -> Attributes.KNOCKBACK_RESISTANCE, "Knockback Resistance");
-    private Modifier MAX_HEALTH = new Modifier(() -> Attributes.MAX_HEALTH, "Max Health");
-    private Modifier MOVEMENT_SPEED = new Modifier(() -> Attributes.MOVEMENT_SPEED, "Movement Speed"); // MULT_PERCENTAGE_OPERATION
-    private Modifier SPRINTING_SPEED_BOOST = new Modifier(LivingEntity.SPEED_MODIFIER_SPRINTING_UUID, () -> Attributes.MOVEMENT_SPEED, "Sprinting speed boost", "sprinting"); //MULTIPLY_TOTAL
-    private Modifier FLYING_SPEED = new Modifier(() -> Attributes.FLYING_SPEED, "Flying Speed"); // MULT_PERCENTAGE_OPERATION
-    private Modifier FOLLOW_RANGE = new Modifier(() -> Attributes.FOLLOW_RANGE, "Follow Range"); // MULT_PERCENTAGE_OPERATION
-    private Modifier ARMOR = new Modifier(() -> Attributes.ARMOR, "Armor modifier");
-    private Modifier ARMOR_TOUGHNESS = new Modifier(() -> Attributes.ARMOR_TOUGHNESS, "Armor toughness");
-    private Modifier SPAWN_REINFORCEMENTS = new Modifier(() -> Attributes.SPAWN_REINFORCEMENTS_CHANCE, "Spawn Reinforcements Chance");
-    private Modifier BABY_SPEED_BOOST = new Modifier(Zombie.SPEED_MODIFIER_BABY_UUID, () -> Attributes.MOVEMENT_SPEED, "Baby speed boost", "zombie.baby");
-    private Modifier HORSE_JUMP_STRENGTH = new Modifier(() -> Attributes.JUMP_STRENGTH, "Jump Strength");
-    private Modifier HORSE_ARMOR = new Modifier(Horse.ARMOR_MODIFIER_UUID, () -> Attributes.ARMOR, "Horse armor bonus", "horse.bonus");
-
-    // Potion Luck Modifier
-    private Modifier LUCK = new Modifier(UUID.fromString("03C3C89D-7037-4B42-869F-B146BCB64D2E"), () -> Attributes.LUCK, MobEffects.LUCK.getDescriptionId(), null);
-    private Modifier UNLUCK = new Modifier(UUID.fromString("CC5AF142-2BD2-4215-B636-2605AED11727"), () -> Attributes.LUCK, MobEffects.UNLUCK.getDescriptionId(), "un");
-
-    // Forge Modifiers
-    private Modifier SLOW_FALLING = new Modifier(UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA"), ForgeMod.ENTITY_GRAVITY, "Slow falling acceleration reduction", "slow.falling");
-    private Modifier ENITTY_GRAVITY = new Modifier(ForgeMod.ENTITY_GRAVITY, "Gravity");
-    private Modifier NAMETAG_DISTANCE = new Modifier(ForgeMod.NAMETAG_DISTANCE, "Name Tag");
-    private Modifier SWIM_SPEED = new Modifier(ForgeMod.SWIM_SPEED, "Swim Speed");
-
-    private final Modifier[] MODIFIERS = new Modifier[] {ATTACK_DAMAGE, ATTACK_SPEED, ATTACK_KNOCKBACK, KNOCKBACK_RESISTANCE, MAX_HEALTH, MOVEMENT_SPEED, SPRINTING_SPEED_BOOST, FLYING_SPEED, FOLLOW_RANGE, ARMOR, ARMOR_TOUGHNESS, LUCK, UNLUCK, SLOW_FALLING, ENITTY_GRAVITY, NAMETAG_DISTANCE, SWIM_SPEED, HORSE_ARMOR, HORSE_JUMP_STRENGTH, SPAWN_REINFORCEMENTS, BABY_SPEED_BOOST};
+    @Override
+    public State getFeatureState() {
+        return State.BETA;
+    }
 
     public static class Modifier {
 
@@ -390,10 +392,5 @@ public class ModifiersAttribute extends IItemAttribute {
                 return new AttributeModifier(this.uuid, this.attributeName, amountIn, operationIn);
             }
         }
-    }
-
-    @Override
-    public State getFeatureState() {
-        return State.BETA;
     }
 }

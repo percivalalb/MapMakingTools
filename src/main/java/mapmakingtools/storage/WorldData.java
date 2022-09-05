@@ -31,15 +31,14 @@ public class WorldData extends SavedData {
                 .computeIfAbsent(WorldData::load, WorldData::new, Constants.STORAGE_WORLD);
     }
 
-
-    public CommandTracker getCommandTracker() {
-        return this.lastCommand;
-    }
-
     public static WorldData load(CompoundTag nbt) {
         WorldData savedData = new WorldData();
         savedData.lastCommand = CommandTracker.read(nbt, savedData::setDirty);
         return savedData;
+    }
+
+    public CommandTracker getCommandTracker() {
+        return this.lastCommand;
     }
 
     @Override

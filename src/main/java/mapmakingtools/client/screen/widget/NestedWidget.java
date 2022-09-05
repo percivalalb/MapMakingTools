@@ -29,26 +29,26 @@ public class NestedWidget extends AbstractWidget implements ContainerEventHandle
 
     @Override
     public final boolean isDragging() {
-       return this.isDragging;
+        return this.isDragging;
     }
 
     @Override
     public final void setDragging(boolean dragging) {
-       this.isDragging = dragging;
+        this.isDragging = dragging;
     }
 
     @Override
     @Nullable
     public GuiEventListener getFocused() {
-       return this.focused;
+        return this.focused;
     }
 
     @Override
     public void setFocused(@Nullable GuiEventListener eventListener) {
-       this.focused = eventListener;
+        this.focused = eventListener;
     }
 
- // Methods for a Widget that is also a INestedGuiEventHandler
+    // Methods for a Widget that is also a INestedGuiEventHandler
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
@@ -59,7 +59,7 @@ public class NestedWidget extends AbstractWidget implements ContainerEventHandle
         }
 
         return false;
-     }
+    }
 
 
     @Override

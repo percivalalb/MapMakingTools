@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 public class FeatureAvailability {
 
     public static boolean canEdit(@Nullable Player player) {
-        if(player == null) {
+        if (player == null) {
             return false;
         }
 

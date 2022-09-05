@@ -36,46 +36,46 @@ public class BookDetailsAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer, Player player) {
-        switch(buffer.readByte()) {
-        case 0:
-            NBTUtil.getOrCreateTag(stack).putString("title", buffer.readUtf(128));
-            return stack;
-        case 1:
-            NBTUtil.getOrCreateTag(stack).putString("author", buffer.readUtf(128));
-            return stack;
-        case 2:
-            int generation = buffer.readInt();
-            if (generation == 0) {
-                if (NBTUtil.hasTag(stack, "generation", Tag.TAG_ANY_NUMERIC)) {
-                    stack.getTag().remove("generation");
-                    NBTUtil.removeTagIfEmpty(stack);
+        switch (buffer.readByte()) {
+            case 0:
+                NBTUtil.getOrCreateTag(stack).putString("title", buffer.readUtf(128));
+                return stack;
+            case 1:
+                NBTUtil.getOrCreateTag(stack).putString("author", buffer.readUtf(128));
+                return stack;
+            case 2:
+                int generation = buffer.readInt();
+                if (generation == 0) {
+                    if (NBTUtil.hasTag(stack, "generation", Tag.TAG_ANY_NUMERIC)) {
+                        stack.getTag().remove("generation");
+                        NBTUtil.removeTagIfEmpty(stack);
+                    }
+                } else {
+                    NBTUtil.getOrCreateTag(stack).putInt("generation", generation);
                 }
-            } else {
-                NBTUtil.getOrCreateTag(stack).putInt("generation", generation);
-            }
-            return stack;
-        case 3:
-            if (!stack.is(Items.WRITTEN_BOOK)) {
-                throw new IllegalStateException("Book is not a written book");
-            }
-
-            ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount());
-            book.setTag(stack.getTag());
-            if (NBTUtil.hasTag(stack, "pages", Tag.TAG_LIST)) {
-                ListTag listNBT = book.getTag().getList("pages", Tag.TAG_STRING);
-
-                for (int i = 0; i < listNBT.size(); ++i) {
-                    String s = listNBT.getString(i);
-
-                    Component textComponent = Component.Serializer.fromJson(s);
-                    listNBT.set(i, StringTag.valueOf(textComponent.getString()));
+                return stack;
+            case 3:
+                if (!stack.is(Items.WRITTEN_BOOK)) {
+                    throw new IllegalStateException("Book is not a written book");
                 }
 
-            }
+                ItemStack book = new ItemStack(Items.WRITABLE_BOOK, stack.getCount());
+                book.setTag(stack.getTag());
+                if (NBTUtil.hasTag(stack, "pages", Tag.TAG_LIST)) {
+                    ListTag listNBT = book.getTag().getList("pages", Tag.TAG_STRING);
 
-            return book;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                    for (int i = 0; i < listNBT.size(); ++i) {
+                        String s = listNBT.getString(i);
+
+                        Component textComponent = Component.Serializer.fromJson(s);
+                        listNBT.set(i, StringTag.valueOf(textComponent.getString()));
+                    }
+
+                }
+
+                return book;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }

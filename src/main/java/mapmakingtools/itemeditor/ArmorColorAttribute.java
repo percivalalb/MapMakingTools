@@ -28,24 +28,24 @@ public class ArmorColorAttribute extends IItemAttribute {
 
     @Override
     public ItemStack read(ItemStack stack, FriendlyByteBuf buffer) {
-        switch(buffer.readByte()) {
-        case 0:
-            if (stack.getItem() instanceof DyeableLeatherItem) {
-                DyeableLeatherItem dye = (DyeableLeatherItem) stack.getItem();
-                dye.setColor(stack, buffer.readInt());
-            }
+        switch (buffer.readByte()) {
+            case 0:
+                if (stack.getItem() instanceof DyeableLeatherItem) {
+                    DyeableLeatherItem dye = (DyeableLeatherItem) stack.getItem();
+                    dye.setColor(stack, buffer.readInt());
+                }
 
-            return stack;
-        case 1:
-            if (stack.getItem() instanceof DyeableLeatherItem) {
-                DyeableLeatherItem dye = (DyeableLeatherItem) stack.getItem();
-                dye.clearColor(stack);
-                NBTUtil.removeTagIfEmpty(stack);
-            }
+                return stack;
+            case 1:
+                if (stack.getItem() instanceof DyeableLeatherItem) {
+                    DyeableLeatherItem dye = (DyeableLeatherItem) stack.getItem();
+                    dye.clearColor(stack);
+                    NBTUtil.removeTagIfEmpty(stack);
+                }
 
-            return stack;
-        default:
-            throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
+                return stack;
+            default:
+                throw new IllegalArgumentException("Received invalid type option in " + this.getClass().getSimpleName());
         }
 
     }
@@ -78,11 +78,11 @@ public class ArmorColorAttribute extends IItemAttribute {
 
             @Override
             public void populateFrom(Screen screen, final ItemStack stack) {
-                this.removeBtn.active = stack.getItem() instanceof DyeableLeatherItem && ((DyeableLeatherItem)stack.getItem()).hasCustomColor(stack);
+                this.removeBtn.active = stack.getItem() instanceof DyeableLeatherItem && ((DyeableLeatherItem) stack.getItem()).hasCustomColor(stack);
 
                 if (stack.getItem() instanceof DyeableLeatherItem) {
                     if (this.removeBtn.active) {
-                        this.colorPicker.setColor(((DyeableLeatherItem)stack.getItem()).getColor(stack));
+                        this.colorPicker.setColor(((DyeableLeatherItem) stack.getItem()).getColor(stack));
                     }
                 }
             }
