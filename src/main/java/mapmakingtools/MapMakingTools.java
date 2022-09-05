@@ -57,7 +57,7 @@ public class MapMakingTools {
     public static MapMakingTools INSTANCE;
 
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
-    public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", WrenchItem::new);
+    public static final RegistryObject<WrenchItem> WRENCH = ITEMS.register("wrench", WrenchItem::new);
 
     public MapMakingTools() {
         INSTANCE = this;
