@@ -211,7 +211,7 @@ curseforge {
         id = project.curseforge_project_id
         changelog = file("$buildDir/changelog.html")
         changelogType = 'html'
-        releaseType = 'beta'
+        releaseType = 'alpha'
         addGameVersion project.target_mc_version
         for (String v : project.additional_mc_versions.split(',')) {
             if (v) {
