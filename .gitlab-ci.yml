@@ -1,3 +1,5 @@
+image: gradle:7-jdk17-alpine
+
 stages:
   - build
   - publish
@@ -18,6 +20,8 @@ cache: &global_cache
 
 build:
   stage: build
+  tags:
+    - docker
   script:
     - ./gradlew build
   artifacts:
@@ -29,6 +33,8 @@ build:
 
 publish:
   stage: publish
+  tags:
+    - docker
   cache:
     <<: *global_cache
     policy: pull
